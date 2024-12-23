@@ -1,12 +1,12 @@
 {
     "Version": "1.2",
     "Data": {
-        "Source": "c:\\users\\qq00a\\desktop\\gp\\project_animagus\\source\\project_animagus\\project_animagus.cpp",
+        "Source": "c:\\myunreal\\animagus\\project_animagus\\source\\project_animagus\\project_animagus.cpp",
         "ProvidedModule": "",
-        "PCH": "c:\\users\\qq00a\\desktop\\gp\\project_animagus\\intermediate\\build\\win64\\x64\\project_animaguseditor\\development\\unrealed\\sharedpch.unrealed.project.valapi.cpp20.h.pch",
+        "PCH": "c:\\myunreal\\animagus\\project_animagus\\intermediate\\build\\win64\\x64\\project_animaguseditor\\development\\unrealed\\sharedpch.unrealed.project.valapi.cpp20.h.pch",
         "Includes": [
-            "c:\\users\\qq00a\\desktop\\gp\\project_animagus\\intermediate\\build\\win64\\x64\\unrealeditor\\development\\project_animagus\\definitions.project_animagus.h",
-            "c:\\users\\qq00a\\desktop\\gp\\project_animagus\\source\\project_animagus\\project_animagus.h"
+            "c:\\myunreal\\animagus\\project_animagus\\intermediate\\build\\win64\\x64\\unrealeditor\\development\\project_animagus\\definitions.project_animagus.h",
+            "c:\\myunreal\\animagus\\project_animagus\\source\\project_animagus\\project_animagus.h"
         ],
         "ImportedModules": [],
         "ImportedHeaderUnits": []

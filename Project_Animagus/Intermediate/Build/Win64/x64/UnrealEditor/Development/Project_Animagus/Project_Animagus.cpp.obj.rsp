@@ -1,11 +1,11 @@
-"C:\Users\qq00a\Desktop\GP\Project_Animagus\Source\Project_Animagus\Project_Animagus.cpp"
-/FI"C:\Users\qq00a\Desktop\GP\Project_Animagus\Intermediate\Build\Win64\x64\Project_AnimagusEditor\Development\UnrealEd\SharedPCH.UnrealEd.Project.ValApi.Cpp20.h"
-/FI"C:\Users\qq00a\Desktop\GP\Project_Animagus\Intermediate\Build\Win64\x64\UnrealEditor\Development\Project_Animagus\Definitions.Project_Animagus.h"
-/Yu"C:\Users\qq00a\Desktop\GP\Project_Animagus\Intermediate\Build\Win64\x64\Project_AnimagusEditor\Development\UnrealEd\SharedPCH.UnrealEd.Project.ValApi.Cpp20.h"
-/Fp"C:\Users\qq00a\Desktop\GP\Project_Animagus\Intermediate\Build\Win64\x64\Project_AnimagusEditor\Development\UnrealEd\SharedPCH.UnrealEd.Project.ValApi.Cpp20.h.pch"
-/Fo"C:\Users\qq00a\Desktop\GP\Project_Animagus\Intermediate\Build\Win64\x64\UnrealEditor\Development\Project_Animagus\Project_Animagus.cpp.obj"
-/sourceDependencies "C:\Users\qq00a\Desktop\GP\Project_Animagus\Intermediate\Build\Win64\x64\UnrealEditor\Development\Project_Animagus\Project_Animagus.cpp.dep.json"
-@"C:\Users\qq00a\Desktop\GP\Project_Animagus\Intermediate\Build\Win64\x64\UnrealEditor\Development\Project_Animagus\Project_Animagus.Shared.rsp"
+"C:\MyUnreal\Animagus\Project_Animagus\Source\Project_Animagus\Project_Animagus.cpp"
+/FI"C:\MyUnreal\Animagus\Project_Animagus\Intermediate\Build\Win64\x64\Project_AnimagusEditor\Development\UnrealEd\SharedPCH.UnrealEd.Project.ValApi.Cpp20.h"
+/FI"C:\MyUnreal\Animagus\Project_Animagus\Intermediate\Build\Win64\x64\UnrealEditor\Development\Project_Animagus\Definitions.Project_Animagus.h"
+/Yu"C:\MyUnreal\Animagus\Project_Animagus\Intermediate\Build\Win64\x64\Project_AnimagusEditor\Development\UnrealEd\SharedPCH.UnrealEd.Project.ValApi.Cpp20.h"
+/Fp"C:\MyUnreal\Animagus\Project_Animagus\Intermediate\Build\Win64\x64\Project_AnimagusEditor\Development\UnrealEd\SharedPCH.UnrealEd.Project.ValApi.Cpp20.h.pch"
+/Fo"C:\MyUnreal\Animagus\Project_Animagus\Intermediate\Build\Win64\x64\UnrealEditor\Development\Project_Animagus\Project_Animagus.cpp.obj"
+/sourceDependencies "C:\MyUnreal\Animagus\Project_Animagus\Intermediate\Build\Win64\x64\UnrealEditor\Development\Project_Animagus\Project_Animagus.cpp.dep.json"
+@"C:\MyUnreal\Animagus\Project_Animagus\Intermediate\Build\Win64\x64\UnrealEditor\Development\Project_Animagus\Project_Animagus.Shared.rsp"
 /Zc:inline
 /nologo
 /Oi
