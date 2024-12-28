@@ -26,6 +26,5 @@ void ALogingTestActor::Tick(float DeltaTime)
 	UE_LOG(LogTemp, Display, TEXT("ALogingTestActor Testing!"));
 
 	// 한글 테스트
-	// 한글 테스트2
 }
 
