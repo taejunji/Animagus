@@ -25,5 +25,7 @@ void ALogingTestActor::Tick(float DeltaTime)
 
 	UE_LOG(LogTemp, Display, TEXT("ALogingTestActor Testing!"));
 
+	// 왜 자꾸 뜨는거냥
+	// test
 }
 
