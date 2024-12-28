@@ -3,7 +3,7 @@
 
 #include "BattleGameMode.h"
 
-void BattleGameMode::BeginPlay()
+void ABattleGameMode::BeginPlay()
 {
     Super::BeginPlay();
 
