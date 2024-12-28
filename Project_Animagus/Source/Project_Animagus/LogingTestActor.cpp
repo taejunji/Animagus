@@ -24,6 +24,7 @@ void ALogingTestActor::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 	UE_LOG(LogTemp, Display, TEXT("ALogingTestActor Testing!"));
-	// hi
+	// hi beelo
+	// ¾È³ç
 }
 
