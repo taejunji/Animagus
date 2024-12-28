@@ -1372,3 +1372,4 @@ _MatTransl_3B7A55D3409170328211A060FC2E3BB1E263C720_BBD650804D314CE7A44ADF9BB4F3
 [2024.12.28-07.51.08:177][713]LogEditorTransaction: Undo 엘리먼트 클릭
 [2024.12.28-07.51.09:724][776]Cmd: TRANSACTION UNDO
 [2024.12.28-07.51.09:724][776]LogEditorTransaction: Undo 오브젝트 배치
+[2024.12.28-07.52.34:310][212]LogDerivedDataCache: C:/Users/gwang/AppData/Local/UnrealEngine/Common/DerivedDataCache: Maintenance finished in +00:00:00.000 and deleted 0 files with total size 0 MiB and 0 empty folders. Scanned 0 files in 1 folders with total size 0 MiB.
