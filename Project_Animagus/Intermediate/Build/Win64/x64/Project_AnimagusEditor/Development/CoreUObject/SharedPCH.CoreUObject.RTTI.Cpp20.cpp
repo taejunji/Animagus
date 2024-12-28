@@ -1,2 +1,2 @@
-// Compiler: 14.41.34123
+// Compiler: 14.38.33141
 #include "C:/MyUnreal/Animagus/Project_Animagus/Intermediate/Build/Win64/x64/Project_AnimagusEditor/Development/CoreUObject/SharedPCH.CoreUObject.RTTI.Cpp20.h"

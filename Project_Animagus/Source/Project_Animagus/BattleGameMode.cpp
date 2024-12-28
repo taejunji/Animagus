@@ -10,4 +10,7 @@ void ABattleGameMode::BeginPlay()
     UE_LOG(LogTemp, Display, TEXT("Battle Game Mode Begin"));
 }
 
-
+ABattleGameMode::ABattleGameMode()
+{
+    
+}

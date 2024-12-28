@@ -17,5 +17,7 @@ class PROJECT_ANIMAGUS_API ABattleGameMode : public AGameModeBase
 protected:
 	virtual void BeginPlay();
 
+public:
+	ABattleGameMode();
 	
 };
