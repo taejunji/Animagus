@@ -45,7 +45,7 @@ Part4
 
 언리얼 학교 
 	ㅇ LE08 입력 시스템 - enhanced input systsem
-	ㅇ LE09 캐릭터 - RPG 스타일 카메라 / 디버깅 
+	ㅇ LE09 캐릭터 - RPG 스타일 카메라 / 카메라 디버깅 
 
 Part3
 	- 캐릭터 회전 28
@@ -54,13 +54,33 @@ Part3
 Part4 
 	- Pawn Character 4.31 
 
+ ===========================
+12월 26일 목
 
+@ 속도 조절 / 걷기-뛰기 / 애니메이션 / C++ 작업 
 
+Part3
+	- 캐릭터 회전 28
+	- PlayerController 17
 
+Part4 
+	- Pawn Character 4.31 
 
+ ===========================
+12월 27일 금
 
+Part3
+	ㅇ 캐릭터 회전 28
+	ㅇ PlayerController 17
 
+Part4 
+	- Pawn Character 4.31 
 
+ ===========================
+12월 28일 토
+
+Part4 
+	- Pawn Character 4.31 
 
 
 
