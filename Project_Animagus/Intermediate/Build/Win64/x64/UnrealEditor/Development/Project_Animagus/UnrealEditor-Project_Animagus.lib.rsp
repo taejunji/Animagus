@@ -7,6 +7,9 @@
 /IGNORE:4221
 /NODEFAULTLIB
 "C:\MyUnreal\Animagus\Project_Animagus\Intermediate\Build\Win64\x64\Project_AnimagusEditor\Development\UnrealEd\SharedPCH.UnrealEd.Project.ValApi.Cpp20.h.obj"
+"C:\MyUnreal\Animagus\Project_Animagus\Intermediate\Build\Win64\x64\UnrealEditor\Development\Project_Animagus\BattleGameMode.gen.cpp.obj"
+"C:\MyUnreal\Animagus\Project_Animagus\Intermediate\Build\Win64\x64\UnrealEditor\Development\Project_Animagus\Project_Animagus.init.gen.cpp.obj"
 "C:\MyUnreal\Animagus\Project_Animagus\Intermediate\Build\Win64\x64\UnrealEditor\Development\Project_Animagus\Project_Animagus.cpp.obj"
+"C:\MyUnreal\Animagus\Project_Animagus\Intermediate\Build\Win64\x64\UnrealEditor\Development\Project_Animagus\BattleGameMode.cpp.obj"
 "C:\MyUnreal\Animagus\Project_Animagus\Intermediate\Build\Win64\x64\UnrealEditor\Development\Project_Animagus\Default.rc2.res"
 /OUT:"C:\MyUnreal\Animagus\Project_Animagus\Intermediate\Build\Win64\x64\UnrealEditor\Development\Project_Animagus\UnrealEditor-Project_Animagus.lib"
