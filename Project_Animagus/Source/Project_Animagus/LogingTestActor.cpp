@@ -27,6 +27,5 @@ void ALogingTestActor::Tick(float DeltaTime)
 
 	// 한글 테스트
 	// 한글 테스트2
-
 }
 
