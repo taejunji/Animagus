@@ -12,5 +12,5 @@ void ABattleGameMode::BeginPlay()
 
 ABattleGameMode::ABattleGameMode()
 {
-    
+    // 안녕
 }

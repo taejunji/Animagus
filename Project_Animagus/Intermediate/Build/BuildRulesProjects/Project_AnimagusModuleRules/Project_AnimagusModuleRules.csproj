@@ -14,8 +14,8 @@
     <ProjectReference Include="..\..\..\..\..\..\..\Program Files\Epic Games\UE_5.4\Engine\Source\Programs\UnrealBuildTool\UnrealBuildTool.csproj"><Private>false</Private></ProjectReference>
   </ItemGroup>
   <ItemGroup>
+  <Compile Include="..\..\..\..\Source\Project_Animagus.Build.cs"><Link>Source\Project_Animagus.Build.cs</Link></Compile>
   <Compile Include="..\..\..\..\Source\Project_Animagus.Target.cs"><Link>Source\Project_Animagus.Target.cs</Link></Compile>
   <Compile Include="..\..\..\..\Source\Project_AnimagusEditor.Target.cs"><Link>Source\Project_AnimagusEditor.Target.cs</Link></Compile>
-  <Compile Include="..\..\..\..\Source\Project_Animagus\Project_Animagus.Build.cs"><Link>Source\Project_Animagus\Project_Animagus.Build.cs</Link></Compile>
   </ItemGroup>
 </Project>

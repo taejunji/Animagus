@@ -24,7 +24,7 @@ void ALogingTestActor::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 	UE_LOG(LogTemp, Display, TEXT("ALogingTestActor Testing!"));
-	// hi beelo
-	// �ȳ�
+
+	// 한글 테스트
 }
 
