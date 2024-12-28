@@ -95,6 +95,7 @@ Saved/*.log
 Intermediate/*
 Plugins/**/Intermediate/*
 Intermediate/*.bin
+Intermediate/**/*.bin
 
 # Cache files for the editor to use
 # 에디터 캐시 파일은 언리얼 엔진에서 데이터를 임시 저장하는 데 사용됩니다. 이 파일들은 매번 달라지므로 Git에서는 제외해야 합니다.
