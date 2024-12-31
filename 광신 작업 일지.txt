@@ -1,0 +1,92 @@
+===========================
+12월 23일 월
+ 
+# 이번주 - 캐릭터 컨트롤러 설정 / 후르츠팡팡 AI 작업 공부 / (애니메이션)
+# 입력 컨트롤러 강의 정리 
+
+언리얼 학교 
+	- LE08 입력 시스템
+	- LE09 캐릭터	
+
+유데미 
+	- 인풋 설정 
+	- 복습 
+
+이득우
+	ㅇ- 캐릭터와 입력 시스템 40 - Enhanced Input System 
+	ㅇ- 캐릭터 컨트롤 설정 34
+
+Part3
+	ㅇ 캐릭터 생성 31
+	- 캐릭터 회전 28
+	- PlayerController 17
+
+Part4 
+	- Pawn Character 4.31 
+
+-> 후르츠 팡팡 코드 이해
+===========================
+12월 24일 화
+
+언리얼 학교 
+	ㅇ LE07 게임 프레임 워크 - 월드 세팅 프로젝트 세팅 / Default Pawn / GameMode 
+	- LE08 입력 시스템
+	- LE09 캐릭터
+
+Part3
+	- 캐릭터 회전 28
+	- PlayerController 17
+
+Part4 
+	- Pawn Character 4.31 
+
+ ===========================
+12월 25일 수
+
+언리얼 학교 
+	ㅇ LE08 입력 시스템 - enhanced input systsem
+	ㅇ LE09 캐릭터 - RPG 스타일 카메라 / 카메라 디버깅 
+
+Part3
+	- 캐릭터 회전 28
+	- PlayerController 17
+
+Part4 
+	- Pawn Character 4.31 
+
+ ===========================
+12월 26일 목
+
+@ 속도 조절 / 걷기-뛰기 / 애니메이션 / C++ 작업 
+
+Part3
+	- 캐릭터 회전 28
+	- PlayerController 17
+
+Part4 
+	- Pawn Character 4.31 
+
+ ===========================
+12월 27일 금
+
+Part3
+	ㅇ 캐릭터 회전 28
+	ㅇ PlayerController 17
+
+Part4 
+	- Pawn Character 4.31 
+
+ ===========================
+12월 28일 토
+
+Part4 
+	- Pawn Character 4.31 
+
+
+
+
+
+
+
+
+
