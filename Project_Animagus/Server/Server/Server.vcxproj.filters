@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="ServerMain">
+      <UniqueIdentifier>{1827c34b-4bed-4bbc-b912-6cd22e34690f}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="ServerMain.cpp">
+      <Filter>ServerMain</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>
