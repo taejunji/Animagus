@@ -87,8 +87,13 @@ Part4
 
 ㅇ Part4 3시간 
 
+ ===========================
+1월 1일 수
 
-
+ㅇ 언리얼 학교 LEC 2,3 복습
+ㅇ Part4 : Reflection ~ Actor 
+	GEngine, UWorld, UClass, CDO( Class Default Object )
+	
 
 
 
