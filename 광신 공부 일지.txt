@@ -1,0 +1,342 @@
+===========================
+12월 23일 월
+ 
+# 이번주 - 캐릭터 컨트롤러 설정 / 후르츠팡팡 AI 작업 공부 / (애니메이션)
+# 입력 컨트롤러 강의 정리 
+
+이득우
+	ㅇ- 캐릭터와 입력 시스템 40 - Enhanced Input System 
+	ㅇ- 캐릭터 컨트롤 설정 34
+
+Part3
+	ㅇ 캐릭터 생성 31
+
+===========================
+12월 24일 화
+
+언리얼 학교 
+	ㅇ LE07 게임 프레임 워크 - 월드 세팅 프로젝트 세팅 / Default Pawn / GameMode 
+
+		레벨마다 고유의 게임 모드를 사용하고 싶다면 **월드 세팅(World Settings)*
+
+		스태틱 메쉬로 바꾸는법
+			중심을 선택하고 나머지 선택하고 Actor -> Merge Actors -> Settings
+			메쉬 데이터를 합치겠다 -> SM_Aircraft
+
+		Use Controller Rotation Pitch / Yaw / Roll 
+		-> 컨트롤 회전할 때 인형도 돌아감
+
+ ===========================
+12월 25일 수
+
+언리얼 학교 
+	ㅇ LE08 입력 시스템 - Enhanced Input Systsem
+
+		 "리디렉터 레퍼런스 업데이트"
+			파일 리다이렉션 -> 내부에서 에셋 이름 바귀면 다른곳에서 바뀐이름 
+			쓰도록 해줌 -> 파일에 대한 포인터를 중간에서 관리하기 때문임 
+
+		BP_AirCraft -> "AssetActions 에셋액션" -> Migrate 
+
+	Input Action
+		: 입력의 이름( 비행기를 오른쪽으로 밀어라 )과 타입을 정의
+		입력의 타입
+		// 자동차 액셀 점점 쎄지거나 느려지는
+		// 0~1 float value - Axis 1D
+		// Axis 2D - x,y축 - 조이스틱 => Aircraft Roll 안쓰니
+
+	 Input Mapping Context
+		input Action과 실제 입력( 키보드, 마우스, 조이스틱 ) 연결
+		입력 인가( Trigger ) 조건 설정
+		입력값을 추가 조정( Modifier )
+			-> 입력 액션과 실제 키보드 마우스를 연결한다
+		매핑 -> IA를 입력을 발생시킬수있는 키보드나 마우스가 뭐냐를 설정
+			ex) 마우스 XY 2D 축을 IA_Rotate의 입력으로 활용하겠다
+			-> Event로 넘어온다
+
+	Add Default Movement Binding 해제 
+		-> 안끄면 내가 만든거 상관없이 wasd로 씀 
+
+	Add Yaw Input Node 
+		-> 입력이 들어오면 Y축 방향 회전을 더한다
+
+	Default Pawn에서 
+		-> Use Controller  Roation YawPitch - 할아버지를 따르겠다
+
+	Get Controlled Pawn 
+	Add Movement Input
+
+	ㅇ LE09 캐릭터 - RPG 스타일 카메라 / 카메라 디버깅 
+		PlayerController 자체를 회전시킨다 
+		- Add Yaw Input, Add Pitch Input, Add Roll Input
+		Pawn의 회전을 Controller와 일치시킬지 여부를 결정한다
+
+ 	-> BP_Chacter에서 Pawn검색 -> 컨트롤러 Yaw 설정 끄기
+	-> 카메라 세팅 -> "폰 제어 회전 사용 Use Pawn Control Rotation" 
+		== 이 스프링 암이 컨트롤 로테이션을 따르라 -> 체크
+	-> Orient Rotation to Movement -> 무브먼트 방향으로 회전해라
+
+
+ ===========================
+12월 26일 목
+
+@ 속도 조절 / 걷기-뛰기 / 애니메이션 / C++ 작업 
+
+ ===========================
+12월 27일 금
+
+Part3
+	ㅇ 캐릭터 회전 28
+	ㅇ PlayerController 17
+
+ ===========================
+12월 28일 토
+
+ ===========================
+12월 31일 화
+
+ㅇ Part4 3시간 
+
+ ===========================
+1월 1일 수
+
+ㅇ 언리얼 학교 LEC 2,3 복습
+	길이 기본 단위 - 1uu( unreal unit ) = 1cm
+	
+	복붙하기  -> Ctrl + D 
+	-> Alt 작고 끌기 == 알까기 
+
+	 버텍스 스내핑 = 천장에 붙이기 
+	"V"키를 누른채로 z축을 누르고 위로 끌어 -> 지붕에 붙음
+
+	Ctrl + L : 태양의 방향 옮기기
+
+	-1~1 와리가리하니까 
+	Sin Radians
+
+	**GetWorld()**는 언리얼 엔진에서 현재 객체가 속한 월드(UWorld)를 가져오는 함수
+		UWorld는 레벨(Level)당 하나씩 존재한다고 보는 것이 일반적
+		UWorld는 단순히 레벨을 담는 객체가 아니라, 게임 세계 전체를 표현하는 월드 		컨텍스트를 포함하는 객체
+
+	UWorld::GetActorIterator()
+	GetTimerManager().SetTimer(MyTimerHandle, this, &MyClass::MyFunction, 2.0f, true)
+	UGameplayStatics::OpenLevel(GetWorld(), FName("NewLevel"));
+	SpawnActor<AActor>(MyActorClass, SpawnLocation, SpawnRotation);
+	GetWorld()->LineTraceSingleByChannel(...);
+	GetWorld()->GetTimeSeconds();
+	GetWorld()->GetGameInstance();
+	GetOwner()->GetWorld();
+
+		월드 컨텍스트는 주로 함수 호출 시 어떤 UWorld 객체를 사용할지 명시하는 역할
+		월드 컨텍스트는 객체 그 자체라기보다는, 어떤 UWorld가 사용되고 있는지 
+		구분하고 관련 데이터를 관리하기 위한 구조체나 메타데이터에 가까운 개념
+
+
+ㅇ Part4 : Reflection ~ Actor 
+	GEngine, UWorld, UClass, CDO( Class Default Object )
+	
+ ===========================
+1월 4일 토
+
+C++로 GameInstance, GameMode, Level 전환
+Timer, ConstructorHelpers::FClassFinder<APawn>, ConstructorHelpers::FClassFinder<APlayerController>
+
+ ===========================
+1월 5일 일
+
+ㅇ 언리얼 학교 4 
+	- spawn emitter, play sound, rotating movement component
+	- On Component HIt Event : 충돌했을 때 
+	- On Component Begin Overlap : 겹치기 시작했을 때 
+	- On Component End Overlap : 나갔을 때 
+	- UBoxComponent, USphereComponent, UCapsuleComponent
+Part4 
+	ㅇ Actor 
+		CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Box"));
+			컴포넌트를 초기화하고 액터의 서브오브젝트로 등록
+
+			UClass는 언리얼의 리플렉션 시스템에서 사용되는 핵심 클래스입니다. 
+			각 클래스의 메타데이터, 기본 생성 정보, 그리고 CDO에 대한 정보를 포함
+	
+			StaticClass()를 통해 해당 클래스의 UClass 참조를 반환
+	
+			CDO(Class Default Object)는 클래스의 기본 객체입니다. 
+			이 객체는 모든 인스턴스가 공유하는 기본 데이터를 제공
+
+		TSubclassOf
+		SetLifeSpan
+		SpawnActor
+		DestroyActor
+	
+	ㅇ Vector
+		SetActorLocation 
+			액터의 위치를 절대 값으로 설정하는 함수
+			지정된 위치로 완전히 이동
+		AddActorWorldOffset
+			현재 위치에서 상대적인 이동을 수행합니다. 
+			즉, 액터의 현재 위치에서 특정한 오프셋만큼 이동합니다.
+			이동의 방향과 크기를 지정하여 액터를 이동시킵니다.
+
+	
+ ===========================
+1월 6일 월
+
+Part4 	
+	ㅇ 블루프린트
+		FName : 영구적으로 변하지 않는 것들
+		FString : 자주 바뀌는것들
+		TEXT : 다국어 지원할 때 UI에 들어가는 내용들
+
+	ㅇ 계층구조
+	    Body->SetRelativeScale3D(FVector(1, 1, 1));  
+		= 컴포넌트의 상대적인 스케일(크기)을 설정하는 함수
+
+	    Wing->SetupAttachment(Body); 
+		= 이 컴포넌트를 다른 컴포넌트에 붙이는 함수입니다. 
+		즉, 부모-자식 관계 설정
+
+	    Wing->SetRelativeLocationAndRotation();
+		= 컴포넌트의 상대적인 위치와 회전을 설정
+		= FRotator(0, 90, 0)은 Yaw 방향으로 90도 회전을 의미
+
+	조심할거
+	FRotator( Pitch, Yaw, Roll )인데 
+		X, Y, Z 순서가 아니고 -> Y, Z, X 순서이다
+
+ ===========================
+1월 8일 수
+
+ㅇ 언리얼 학교 5
+	"오토 팬스" 만들기 -> 위젯 클릭, 드래그
+
+	Construction Script
+		컴포넌트를 집어넣는 작업을 자동으로 해주는 역할
+
+	XFrom -> Bake Transform
+		현재 변환(Transform) 값을 초기 기준값으로 설정하는 것
+
+	FVector FenceEnd -> 3D 위젯 표시
+
+	**Procedural Content Generation (PCG)**
+		나무, 바위, 풀 같은 환경 오브젝트를 무작위로 배치
+
+	Get Unit Direction [ From To ]
+		= .GetSafeNormal()을 사용하여 안전하게 처리합니다.
+		이는 크기가 0인 경우 (0,0,0)를 반환
+
+	Rotation From X Vector
+		= Direction.Rotation():
+		바라보고 싶은 방향을 기준으로 현재 X축( Forward Vector )이
+		그 방향을 바라보도록 "회전값" 반환
+
+
+	Random Float in Range
+		= FMath::FRandRange(MinValue, MaxValue);
+
+	Combine Rotators 
+		= FRotator::CombineRotators(Rotator1, Rotator2);
+		두 회전값을 하나로 결합해서 "하나의 회전"으로 만드는 기능
+
+	FQuat Quat1 = FQuat(FRotator(0.0f, 90.0f, 0.0f)); // 첫 번째 회전값 (Yaw 90도)
+	// 두 쿼터니언을 결합
+	FQuat CombinedQuat = Quat1 * Quat2;
+	// 쿼터니언을 다시 오일러 회전값으로 변환
+	FRotator CombinedRotation = CombinedQuat.Rotator();
+		더 안전한 회전 결합
+
+ ===========================================
+1월 9일 목
+
+ㅇ 언리얼 학교6
+	아이템 먹고 문 폭파해서 다음 단계 넘어가기
+	
+	Add Actor Local Offset
+		액터의 로컬 좌표계를 기준으로 이동.
+		캐릭터의 앞/뒤/좌/우 방향을 따라 이동할 때 사용.
+	
+	Text Render Actor
+		Tex Render Component -> Set Visibility 시각화 
+		Make Literal Text -> Set Text
+
+	Trigger Box
+		게임 월드에서 특정 영역을 정의하여 플레이어 또는 다른 액터와의 상호작용		을 감지할 수 있는 객체
+		OnComponentBeginOverlap
+		OnComponentEndOverlap
+
+		Add On event begin overlap 
+		Add On Actor End Overlap 
+
+	Get Actor Bounds 	
+		액터의 바운드박스의 가운데 점 
+
+	특정 액터 개수 검사하기
+	Get All Actors Of Class
+		= UGameplayStatics::GetAllActorsOfClass(GetWorld(), 
+				AMyActor::StaticClass(), FoundActors);
+
+		특정 클래스의 모든 액터를 검색하고 배열로 반환하는 함수
+		반환된 액터는 기본적으로 AActor* 타입이므로, 필요한 경우 **Cast**로 원하		는 클래스 타입으로 변환해야 합니다.
+
+	TSubclassOf
+		는 클래스 타입을 가리키는 데 유연성을 제공하며, 부모-자식 관계가 있는 		클래스 타입을 안전하게 사용할 수 있습니다.
+		= 실제로는 타입 세이프티가 적용된 UClass* 포인터를 래핑한 자료형
+
+	StaticClass()
+		역할: 언리얼 엔진에서 특정 클래스의 메타데이터를 담고 있는 UClass 객체를 		반환하는 함수입니다.
+		= 반환값은 UClass* 타입의 포인터로, 
+		클래스의 메타데이터와 정보를 담고 있습니다.
+
+	StaticClass()로 반환된 UClass*는 TSubclassOf로 할당할 수 있으며, TSubclassOf는 	타입 검사를 통해 안전성을 보장.
+
+	"새 에디터 창"으로 실행
+		마우스 나가기 "Shift + F1"
+
+ ===========================================
+1월 10일 금
+
+PART4 
+	@ Pawn
+		1. GameMode DefaultPawn
+			레벨 들어갈 때 자동으로 Pawn 인스턴스 생성
+		2. Auto Possess Player 
+			레벨에 배치된 인스턴스를 player로 지정 가능 
+	
+		Capsule
+			- Skeletal Mesh
+			- Spring Arm
+				Camera
+
+	@ Input
+		FObjectInitializer
+
+		UInputMappingContext
+		UInputAction
+		FInputActionValue
+
+ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer());
+		AddMappingContext
+
+		UEnhancedInputComponent
+		InputValue.Get<FVector2D>();
+
+			ETriggerEvent::Triggered: 버튼이 눌리면 발생
+			ETriggerEvent::Started: 버튼을 눌렀을 때 처음 발생
+			ETriggerEvent::Ongoing: 버튼이 눌려진 상태로 계속 진행
+			ETriggerEvent::Completed: 버튼을 뗄 때 발생
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
