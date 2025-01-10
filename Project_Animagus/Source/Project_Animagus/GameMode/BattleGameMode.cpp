@@ -11,14 +11,14 @@ ABattleGameMode::ABattleGameMode()
 {
     PrimaryActorTick.bCanEverTick = false;
 
-    static ConstructorHelpers::FClassFinder<APawn> PlayerPawn(TEXT("/Game/WorkFolder/Bluprints/BP_Player.BP_Player_C"));
+    static ConstructorHelpers::FClassFinder<APawn> PlayerPawn(TEXT("/Game/WorkFolder/Bluprints/BP_TEST_Player.BP_TEST_Player_C"));
     if (PlayerPawn.Succeeded())
     {
         DefaultPawnClass = PlayerPawn.Class;
     }
     else UE_LOG(LogTemp, Warning, TEXT("디폴트 폰 로드 실패")); 
 
-    static ConstructorHelpers::FClassFinder<APlayerController> PController(TEXT("/Game/WorkFolder/Bluprints/BP_PlayerController.BP_PlayerController_C"));
+    static ConstructorHelpers::FClassFinder<APlayerController> PController(TEXT("/Game/WorkFolder/Controller/BP_TEST_PC_BattleGame.BP_TEST_PC_BattleGame_C"));
     if (PController.Succeeded())
     {
         PlayerControllerClass = PController.Class;
