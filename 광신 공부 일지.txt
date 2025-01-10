@@ -207,7 +207,7 @@ Part4
 1월 8일 수
 
 ㅇ 언리얼 학교 5
-	"오토 팬스" 만들기
+	"오토 팬스" 만들기 -> 위젯 클릭, 드래그
 
 	Construction Script
 		컴포넌트를 집어넣는 작업을 자동으로 해주는 역할
@@ -215,7 +215,7 @@ Part4
 	XFrom -> Bake Transform
 		현재 변환(Transform) 값을 초기 기준값으로 설정하는 것
 
-	3D 위젯 표시
+	FVector FenceEnd -> 3D 위젯 표시
 
 	**Procedural Content Generation (PCG)**
 		나무, 바위, 풀 같은 환경 오브젝트를 무작위로 배치
@@ -244,8 +244,85 @@ Part4
 	FRotator CombinedRotation = CombinedQuat.Rotator();
 		더 안전한 회전 결합
 
-인프런 마지막 챕터
+ ===========================================
+1월 9일 목
 
+ㅇ 언리얼 학교6
+	아이템 먹고 문 폭파해서 다음 단계 넘어가기
+	
+	Add Actor Local Offset
+		액터의 로컬 좌표계를 기준으로 이동.
+		캐릭터의 앞/뒤/좌/우 방향을 따라 이동할 때 사용.
+	
+	Text Render Actor
+		Tex Render Component -> Set Visibility 시각화 
+		Make Literal Text -> Set Text
+
+	Trigger Box
+		게임 월드에서 특정 영역을 정의하여 플레이어 또는 다른 액터와의 상호작용		을 감지할 수 있는 객체
+		OnComponentBeginOverlap
+		OnComponentEndOverlap
+
+		Add On event begin overlap 
+		Add On Actor End Overlap 
+
+	Get Actor Bounds 	
+		액터의 바운드박스의 가운데 점 
+
+	특정 액터 개수 검사하기
+	Get All Actors Of Class
+		= UGameplayStatics::GetAllActorsOfClass(GetWorld(), 
+				AMyActor::StaticClass(), FoundActors);
+
+		특정 클래스의 모든 액터를 검색하고 배열로 반환하는 함수
+		반환된 액터는 기본적으로 AActor* 타입이므로, 필요한 경우 **Cast**로 원하		는 클래스 타입으로 변환해야 합니다.
+
+	TSubclassOf
+		는 클래스 타입을 가리키는 데 유연성을 제공하며, 부모-자식 관계가 있는 		클래스 타입을 안전하게 사용할 수 있습니다.
+		= 실제로는 타입 세이프티가 적용된 UClass* 포인터를 래핑한 자료형
+
+	StaticClass()
+		역할: 언리얼 엔진에서 특정 클래스의 메타데이터를 담고 있는 UClass 객체를 		반환하는 함수입니다.
+		= 반환값은 UClass* 타입의 포인터로, 
+		클래스의 메타데이터와 정보를 담고 있습니다.
+
+	StaticClass()로 반환된 UClass*는 TSubclassOf로 할당할 수 있으며, TSubclassOf는 	타입 검사를 통해 안전성을 보장.
+
+	"새 에디터 창"으로 실행
+		마우스 나가기 "Shift + F1"
+
+ ===========================================
+1월 10일 금
+
+PART4 
+	@ Pawn
+		1. GameMode DefaultPawn
+			레벨 들어갈 때 자동으로 Pawn 인스턴스 생성
+		2. Auto Possess Player 
+			레벨에 배치된 인스턴스를 player로 지정 가능 
+	
+		Capsule
+			- Skeletal Mesh
+			- Spring Arm
+				Camera
+
+	@ Input
+		FObjectInitializer
+
+		UInputMappingContext
+		UInputAction
+		FInputActionValue
+
+ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer());
+		AddMappingContext
+
+		UEnhancedInputComponent
+		InputValue.Get<FVector2D>();
+
+			ETriggerEvent::Triggered: 버튼이 눌리면 발생
+			ETriggerEvent::Started: 버튼을 눌렀을 때 처음 발생
+			ETriggerEvent::Ongoing: 버튼이 눌려진 상태로 계속 진행
+			ETriggerEvent::Completed: 버튼을 뗄 때 발생
 
 
 
