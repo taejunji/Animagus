@@ -11,7 +11,8 @@ ABattleGameMode::ABattleGameMode()
 {
     PrimaryActorTick.bCanEverTick = false;
 
-    static ConstructorHelpers::FClassFinder<APawn> PlayerPawn(TEXT("/Game/WorkFolder/Bluprints/BP_TEST_Player.BP_TEST_Player_C"));
+    // BluePirnt Class인 BP_Player, BP_PlayerController의 정보를 생성자에서 읽어서 게임모드에 설정한다.
+    static ConstructorHelpers::FClassFinder<APawn> PlayerPawn(TEXT("/Game/WorkFolder/Bluprints/BP_Player.BP_Player_C"));
     if (PlayerPawn.Succeeded())
     {
         DefaultPawnClass = PlayerPawn.Class;
@@ -64,6 +65,11 @@ void ABattleGameMode::PrintElapsedtime()
     UMyGameInstance* MyGameInstance = Cast<UMyGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
     if (MyGameInstance)
     {
+        // 5초마다 라운드 증가 [ 그냥 테스트 코드 ]
+        if ((int)elasped_time % 5 == 0)
+        {
+            MyGameInstance->round_count++;
+        }
         MyGameInstance->PrintGameInstanceData(); 
     }
 }
