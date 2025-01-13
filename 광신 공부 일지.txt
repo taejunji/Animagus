@@ -208,6 +208,9 @@ Part4
 
 ㅇ 언리얼 학교 5
 	"오토 팬스" 만들기 -> 위젯 클릭, 드래그
+		판자 한개 길이 20cm => 간격 20cm
+		x(빨간 화살표)가 늘어나는 쪽이다
+		다른 메쉬로 바꾼다면 -> ( 메쉬, 스케일 20, 방향 )만 바구면 된다		
 
 	Construction Script
 		컴포넌트를 집어넣는 작업을 자동으로 해주는 역할
@@ -323,6 +326,89 @@ ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer())
 			ETriggerEvent::Started: 버튼을 눌렀을 때 처음 발생
 			ETriggerEvent::Ongoing: 버튼이 눌려진 상태로 계속 진행
 			ETriggerEvent::Completed: 버튼을 뗄 때 발생
+
+	@ ControlRotation
+		AddMovementInput
+		GetControlRotation
+		UKismetMathLibrary::GetForwardVector( FRotator(0, Rotator.Yaw, 0) ) 
+
+ ===========================================
+1월 12일 일
+
+PART4
+	@ Character
+
+		1. 컨트롤러 회전 요 사용 ("Use Controller Rotation Yaw")
+		[ Pawn -> Pawn검색 ] 	
+		=  Pawn이 컨트롤러의 Yaw(좌우 회전) 값에 따라 회전하도록 만듭니다.
+		마우스를 좌우로 움직이면 Pawn이 회전하고, 이를 따라 Camera도 함께 회전합니다.
+			
+		* 폰은 꺼져있는게 Default // 캐릭터는 켜져있는게 Default
+
+	# TPS 기본 방식 세팅
+- 기본 / 기본 / 기본
+1. PAWN -> "컨트롤러 회전 요 사용" TRUE
+	= Use Controller Rotation Yaw
+2. SpringArm -> "폰 제어 회전 사용"FALSE
+	= Use Pawn Control Rotation
+3. CharacterMovement -> "컨트롤러 선호 회전 사용" FALSE
+	= Use Controller Desired Rotation
+3. CharacterMovement -> "무브먼트 방향으로 회전 조정" FALSE
+	= Orient Rotation to Movement
+
+
+# RPG 세팅
+- 반대 / 반대 / 반대 
+1. PAWN -> "컨트롤러 회전 요 사용" FALSE
+2. SpringArm -> "폰 제어 회전 사용" TRUE
+	: 캐릭터는 가만히 있고 카메라만 회전한다
+
+3. CharacterMovement -> "컨트롤러 선호 회전 사용" FALSE 
+3. CharacterMovement -> "무브먼트 방향으로 회전 조정" TRUE
+	: 캐릭터가 움직이는 방향으로 회전한다 
+
+ ===========================================
+1월 13일 화
+
+C++ -> TPS / Character [ switch RPG - alt ]  // Static Mesh 변경
+
+PART4 
+	@ 점프
+
+	@ 보너스
+		AddMovementInput
+			내부적으로 이동 속도, 중력, 마찰, DeltaTime 등을 모두 자동으로 처리
+			사용자는 **방향(Direction)**과 **강도(ScaleValue)**만 지정하면 됩니다.
+			DeltaTime을 신경 쓰지 않아도 됩니다.
+			CharacterMovementComponent가 이를 자동으로 처리하므로, 
+			사용자는 단순히 원하는 방향과 강도를 전달하기만 하면 됩니다.
+
+		SetActorLocation / AddActorWorldOffset
+			이 함수들은 직접 위치를 제어하는 함수입니다.
+			물리 기반 처리나 자동 이동 계산이 없습니다. 
+			단순히 지정된 위치로 이동하거나 오프셋만큼 이동합니다.
+			DeltaTime을 고려하지 않으면, 
+			프레임 속도에 따라 이동 속도가 달라질 수 있습니다.
+			DeltaTime을 직접 고려해야 합니다.
+			( 물리 무시, 위치 강제 이동 // 물리 무시, 오프셋만큼 이동 )
+
+		Spawn Actor From Class
+
+****************
+입력 / 레벨 전환 / 애니메이션
+인프런 
+나이아가라
+
+character / PC
+
+1. 게임인스턴스에서 mehs 4개 데이터 로드
+	로그인, 배틀 레벨에 플레이어 데이터 넘겨주기
+	mehs 데이터
+	
+
+****************
+
+
 
 
 
