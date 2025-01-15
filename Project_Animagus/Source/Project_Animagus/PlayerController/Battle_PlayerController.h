@@ -4,21 +4,25 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/PlayerController.h"
-#include "TPS_PlayerController.generated.h"
+#include "Battle_PlayerController.generated.h"
 
 struct FInputActionValue;
 
+enum class ControllerType { TPS, RPG };
 /**
  * 
  */
 //------------------------------------------------------------------------------
 UCLASS()
-class PROJECT_ANIMAGUS_API ATPS_PlayerController : public APlayerController
+class PROJECT_ANIMAGUS_API ABattle_PlayerController : public APlayerController
 {
 	GENERATED_BODY()
+    
+private:
+    ControllerType control_type = ControllerType::TPS; // 기본이 TPS, Alt 누르면 RPG
 
 public:
-    ATPS_PlayerController(const FObjectInitializer& ObjectInitializer);
+    ABattle_PlayerController(const FObjectInitializer& ObjectInitializer);
 
 protected:
     virtual void BeginPlay() override;
@@ -28,6 +32,9 @@ private:
     void Input_Move(const FInputActionValue& InputValue);
     void Input_Rotate(const FInputActionValue& InputValue);
     void Input_Jump(const FInputActionValue& InputValue);
+
+    void Input_ControlToggle_Pressed();     // 키가 눌렸을 때 -> 잠시동안 RPG 모드
+    void Input_ControlToggle_Released();    // 키가 떼질 때   -> 잠시동안 TPS 모드
 
 protected:
 
@@ -44,4 +51,6 @@ protected:
     UPROPERTY(EditAnywhere, Category = "Input")
     TObjectPtr<class UInputAction> jump_action;
 
+    UPROPERTY(EditAnywhere, Category = "Input")
+    TObjectPtr<class UInputAction> control_toggle_action;
 };

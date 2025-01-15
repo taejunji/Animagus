@@ -1,20 +1,20 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "TPS_PlayerController.h"
+#include "Battle_PlayerController.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "Kismet/KismetMathLibrary.h" // 이동 구현할 때 유틸리티 많은 애 
 
 #include "../Character/PlayerCharacter.h" 
 
-ATPS_PlayerController::ATPS_PlayerController(const FObjectInitializer& ObjectInitializer)
+ABattle_PlayerController::ABattle_PlayerController(const FObjectInitializer& ObjectInitializer)
     : Super(ObjectInitializer)
 {
 
 }
 
-void ATPS_PlayerController::BeginPlay()
+void ABattle_PlayerController::BeginPlay()
 {
     Super::BeginPlay();
 
@@ -27,11 +27,11 @@ void ATPS_PlayerController::BeginPlay()
     if (auto* MyPlayer = Cast<APlayerCharacter>(GetPawn())) 
     {
         // TPS 설정을 위한 변수 설정 [ 컨트롤러 회전 Yaw 끄기, Spring Arm 폰 제어 회전 켜기, Character Movement 컨트롤러 선호 회전 켜기 ]
-        MyPlayer->InitializeTPSSettings();
+        MyPlayer->Initialize_TPS_Settings(); 
     }
 }
 
-void ATPS_PlayerController::SetupInputComponent()
+void ABattle_PlayerController::SetupInputComponent()
 {
     Super::SetupInputComponent();
 
@@ -40,10 +40,13 @@ void ATPS_PlayerController::SetupInputComponent()
         EnhancedInputComponent->BindAction(move_action, ETriggerEvent::Triggered, this, &ThisClass::Input_Move);
         EnhancedInputComponent->BindAction(rotate_action, ETriggerEvent::Triggered, this, &ThisClass::Input_Rotate);
         EnhancedInputComponent->BindAction(jump_action, ETriggerEvent::Triggered, this, &ThisClass::Input_Jump);
+
+        EnhancedInputComponent->BindAction(control_toggle_action, ETriggerEvent::Started, this, &ThisClass::Input_ControlToggle_Pressed);
+        EnhancedInputComponent->BindAction(control_toggle_action, ETriggerEvent::Completed, this, &ThisClass::Input_ControlToggle_Released);
     }
 }
 
-void ATPS_PlayerController::Input_Move(const FInputActionValue& InputValue)
+void ABattle_PlayerController::Input_Move(const FInputActionValue& InputValue)
 {
     FVector2D MoveInput = InputValue.Get<FVector2D>();
     // IMC에 연결된 Action이 행해지면 InputValue에서 값을 추출할 수 있다. 
@@ -73,7 +76,7 @@ void ATPS_PlayerController::Input_Move(const FInputActionValue& InputValue)
     }
 }
 
-void ATPS_PlayerController::Input_Rotate(const FInputActionValue& InputValue)
+void ABattle_PlayerController::Input_Rotate(const FInputActionValue& InputValue)
 {
     FVector2D MouseInput = InputValue.Get<FVector2D>();
     
@@ -81,10 +84,41 @@ void ATPS_PlayerController::Input_Rotate(const FInputActionValue& InputValue)
     AddPitchInput(MouseInput.Y);
 }
 
-void ATPS_PlayerController::Input_Jump(const FInputActionValue& InputValue)
+void ABattle_PlayerController::Input_Jump(const FInputActionValue& InputValue)
 {
     if (auto* MyPlayer = Cast<APlayerCharacter>(GetPawn()))
     {
         MyPlayer->Jump();
     }
 }
+
+void ABattle_PlayerController::Input_ControlToggle_Pressed()
+{
+    // 키가 눌렸을 때 -> RPG 
+
+    control_type = ControllerType::RPG; 
+    if (auto* MyPlayer = Cast<APlayerCharacter>(GetPawn())) 
+    {
+        MyPlayer->Initialize_RPG_Settings();
+    }
+    GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Emerald, TEXT("RPG 컨트롤 모드"));
+}
+
+void ABattle_PlayerController::Input_ControlToggle_Released()
+{
+    // 카가 떼진 상태 -> TPG 유지
+
+    if (control_type == ControllerType::TPS) {
+        return;
+    }
+    else {
+        control_type = ControllerType::TPS;
+        if (auto* MyPlayer = Cast<APlayerCharacter>(GetPawn()))
+        {
+            MyPlayer->Initialize_TPS_Settings();
+        }
+    }
+    GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Emerald, TEXT("TPS 컨트롤 모드"));
+}
+
+

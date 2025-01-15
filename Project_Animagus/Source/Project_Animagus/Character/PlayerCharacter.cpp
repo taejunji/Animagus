@@ -8,20 +8,21 @@
 #include "Components/CapsuleComponent.h"
 #include "../System//MyGameInstance.h"
 
-APlayerCharacter::APlayerCharacter()
+APlayerCharacter::APlayerCharacter() 
 {
     PrimaryActorTick.bCanEverTick = true;
 
     // 생성자에서 메쉬 설정하는법 -> 단점 [ 로비에서 설정한 메쉬를 적용할 때 코드가 귀찮아진다 ]
-    //auto* MyMesh = GetMesh();
-    //ConstructorHelpers::FObjectFinder<USkeletalMesh> FindMesh(TEXT("/Game/WorkFolder/Assets/Sheep/Character144_RiggedSheep.Character144_RiggedSheep"));
-    //if (FindMesh.Succeeded())
-    //{
-    //    MyMesh->SetSkeletalMesh(FindMesh.Object);
-    //    MyMesh->SetRelativeLocationAndRotation(FVector(0, 0, -60), FRotator(0, -90, 0));
-    //}
-    //else UE_LOG(LogTemp, Warning, TEXT("스켈레탈 로드 오류"));
-
+#if 0
+    auto* MyMesh = GetMesh();
+    ConstructorHelpers::FObjectFinder<USkeletalMesh> FindMesh(TEXT("/Game/WorkFolder/Assets/Sheep/Character144_RiggedSheep.Character144_RiggedSheep"));
+    if (FindMesh.Succeeded())
+    {
+        MyMesh->SetSkeletalMesh(FindMesh.Object);
+        MyMesh->SetRelativeLocationAndRotation(FVector(0, 0, -60), FRotator(0, -90, 0));
+    }
+    else UE_LOG(LogTemp, Warning, TEXT("스켈레탈 로드 오류"));
+#endif
 
     GetCapsuleComponent()->SetCapsuleSize(54.358692, 38.444557);
 
@@ -79,11 +80,28 @@ void APlayerCharacter::InitPlayerMesh()
     }
 }
 
-void APlayerCharacter::InitializeTPSSettings()
+void APlayerCharacter::Initialize_TPS_Settings()
 {
-    // TPS 설정을 위한 변수 설정 [ 컨트롤러 회전 Yaw 끄기, Spring Arm 폰 제어 회전 켜기, Character Movement 컨트롤러 선호 회전 켜기 ]
+    // TPS 설정을 위한 변수 설정 [ Character Movement 컨트롤러 선호 회전 켜기, 무브먼트 방향으로 회전 조절 끄기 ]
 
+    // 컨트롤러 회전 Yaw 끄기, Spring Arm 폰 제어 회전 켜기
     bUseControllerRotationYaw = false;
     spring_arm->bUsePawnControlRotation = true;
-    GetCharacterMovement()->bUseControllerDesiredRotation = true;
+
+    auto* character_movement = GetCharacterMovement(); 
+    character_movement->bUseControllerDesiredRotation = true;
+    character_movement->bOrientRotationToMovement = false; 
+}
+
+void APlayerCharacter::Initialize_RPG_Settings()
+{
+    // RPG 설정을 위한 변수 설정 [ Character Movement 컨트롤러 선호 회전 끄기, 무브먼트 방향으로 회전 조절 켜기 ]
+    
+    // 컨트롤러 회전 Yaw 끄기, Spring Arm 폰 제어 회전 켜기
+    bUseControllerRotationYaw = false;
+    spring_arm->bUsePawnControlRotation = true;
+
+    auto* character_movement = GetCharacterMovement();
+    character_movement->bUseControllerDesiredRotation = false; 
+    character_movement->bOrientRotationToMovement = true; 
 }

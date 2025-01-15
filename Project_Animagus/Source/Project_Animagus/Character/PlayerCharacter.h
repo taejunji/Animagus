@@ -25,7 +25,8 @@ public:
     APlayerCharacter();
     virtual void Tick(float DeltaTime) override;
 
-    void InitializeTPSSettings(); 
+    void Initialize_TPS_Settings(); // TPS 타입 컨트롤 변수 설정
+    void Initialize_RPG_Settings(); // RPG 타입 컨트롤 변수 설정
 
 protected:
     virtual void BeginPlay() override;
