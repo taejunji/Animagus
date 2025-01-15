@@ -5,10 +5,10 @@
 #include "CoreMinimal.h"
 #include "BaseCharacter.h"
 #include "PlayerCharacter.generated.h"
-
 /**
  * 
  */
+
 UCLASS()
 class PROJECT_ANIMAGUS_API APlayerCharacter : public ABaseCharacter
 {
@@ -24,6 +24,8 @@ protected:
 public:
     APlayerCharacter();
     virtual void Tick(float DeltaTime) override;
+
+    void InitializeTPSSettings(); 
 
 protected:
     virtual void BeginPlay() override;
