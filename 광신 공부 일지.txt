@@ -345,7 +345,7 @@ PART4
 			
 		* 폰은 꺼져있는게 Default // 캐릭터는 켜져있는게 Default
 
-	# TPS 기본 방식 세팅
+# TPS 기본 방식 세팅
 - 기본 / 기본 / 기본
 1. PAWN -> "컨트롤러 회전 요 사용" TRUE
 	= Use Controller Rotation Yaw
