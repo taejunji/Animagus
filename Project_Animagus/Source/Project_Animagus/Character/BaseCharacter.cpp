@@ -8,6 +8,11 @@ ABaseCharacter::ABaseCharacter()
 {
 	PrimaryActorTick.bCanEverTick = true;
 
+    static ConstructorHelpers::FClassFinder<UAnimInstance> AnimBP(TEXT("/Game/WorkFolder/Bluprints/ABP_TEST.ABP_TEST_C"));
+    if (AnimBP.Succeeded())
+    {
+        GetMesh()->SetAnimInstanceClass(AnimBP.Class);
+    }
 }
 
 void ABaseCharacter::BeginPlay()
