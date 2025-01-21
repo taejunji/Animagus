@@ -11,6 +11,7 @@
 ABattle_PlayerController::ABattle_PlayerController(const FObjectInitializer& ObjectInitializer)
     : Super(ObjectInitializer)
 {
+    PrimaryActorTick.bCanEverTick = true; // Tick 활성화
 
 }
 
@@ -47,6 +48,30 @@ void ABattle_PlayerController::SetupInputComponent()
 
         EnhancedInputComponent->BindAction(control_toggle_action, ETriggerEvent::Started, this, &ThisClass::Input_ControlToggle_Pressed);
         EnhancedInputComponent->BindAction(control_toggle_action, ETriggerEvent::Completed, this, &ThisClass::Input_ControlToggle_Released);
+
+        EnhancedInputComponent->BindAction(run_toggle_action, ETriggerEvent::Started, this, &ThisClass::Input_RunToggle_Pressed);
+        EnhancedInputComponent->BindAction(run_toggle_action, ETriggerEvent::Completed, this, &ThisClass::Input_RunToggle_Released);
+    }
+}
+
+void ABattle_PlayerController::Tick(float DeltaTime)
+{
+    Super::Tick(DeltaTime); 
+
+    if (auto* MyPlayer = Cast<APlayerCharacter>(GetPawn())) 
+    {
+        // 목표 속도 설정 (달리기 상태에 따라 달라짐)
+        float TargetSpeed = is_running ? MyPlayer->default_run_speed : MyPlayer->default_walk_speed; 
+
+        // 현재 속도를 목표 속도로 점진적으로 변경 
+		// 내부적으로 DeltaTime * speed_change_rete라서 1초에 5.f의 속도가 변하길 기대했는데 디버깅 해보니 이론과 다름
+        MyPlayer->current_speed = FMath::FInterpTo(MyPlayer->current_speed, TargetSpeed, DeltaTime, MyPlayer->speed_change_rete);  
+
+        FString CurrentSpeedString = FString::Printf(TEXT("Current Speed: %.2f"), MyPlayer->current_speed);
+        GEngine->AddOnScreenDebugMessage(-1, 0.1f, FColor::Green, CurrentSpeedString);
+
+        // 캐릭터의 이동 속도 업데이트
+        MyPlayer->SetWalkSpeed(MyPlayer->current_speed); 
     }
 }
 
@@ -100,12 +125,17 @@ void ABattle_PlayerController::Input_ControlToggle_Pressed()
 {
     // 키가 눌렸을 때 -> RPG 
 
-    control_type = ControllerType::RPG; 
-    if (auto* MyPlayer = Cast<APlayerCharacter>(GetPawn())) 
-    {
-        MyPlayer->Initialize_RPG_Settings();
+    if (control_type == ControllerType::RPG) {
+        return;
     }
-    GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Emerald, TEXT("RPG 컨트롤 모드"));
+    else {
+        control_type = ControllerType::RPG;
+        if (auto* MyPlayer = Cast<APlayerCharacter>(GetPawn()))
+        {
+            MyPlayer->Initialize_RPG_Settings();
+        }
+        GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Emerald, TEXT("RPG 컨트롤 모드"));
+    }
 }
 
 void ABattle_PlayerController::Input_ControlToggle_Released()
@@ -123,6 +153,16 @@ void ABattle_PlayerController::Input_ControlToggle_Released()
         }
     }
     GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Emerald, TEXT("TPS 컨트롤 모드"));
+}
+
+void ABattle_PlayerController::Input_RunToggle_Pressed()
+{
+    is_running = true;
+}
+
+void ABattle_PlayerController::Input_RunToggle_Released()
+{
+    is_running = false;
 }
 
 
