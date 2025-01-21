@@ -22,6 +22,10 @@ void ABattle_PlayerController::BeginPlay()
     {
         // IMC 등록 및 Priority는 0으로
         SubSystem->AddMappingContext(input_mapping_context, 0);
+
+        // 입력 매핑 컨텍스트 해제하는 법
+        // 1. SubSystem->RemoveMappingContext(input_mapping_context);
+        // 2. SubSystem->ClearAllMappings();
     }
 
     if (auto* MyPlayer = Cast<APlayerCharacter>(GetPawn())) 
@@ -50,7 +54,7 @@ void ABattle_PlayerController::Input_Move(const FInputActionValue& InputValue)
 {
     FVector2D MoveInput = InputValue.Get<FVector2D>();
     // IMC에 연결된 Action이 행해지면 InputValue에서 값을 추출할 수 있다. 
-    // Axis2D의 값 = 2D float => X는 좌우 이동, Y는 상하 이동
+    // Axis2D의 값 = 2D float => X는 앞뒤 이동, Y는 양옆 이동
 
     if (MoveInput.X != 0)
     {
