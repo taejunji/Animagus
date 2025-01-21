@@ -28,7 +28,7 @@ void UCharacterAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
     if (movement_component == nullptr) return;
 
     velocity = movement_component->Velocity;
-    ground_speed = velocity.Size2D();
+    ground_speed = velocity.Size2D(); // X,Y축 평지 속도만 추출
 
     b_should_move = (ground_speed > 3.f && movement_component->GetCurrentAcceleration() != FVector::ZeroVector);
     b_is_falling = movement_component->IsFalling(); 

@@ -20,9 +20,12 @@ class PROJECT_ANIMAGUS_API ABattle_PlayerController : public APlayerController
     
 private:
     ControllerType control_type = ControllerType::TPS; // 기본이 TPS, Alt 누르면 RPG
+    bool is_running = false;
 
 public:
     ABattle_PlayerController(const FObjectInitializer& ObjectInitializer);
+
+    virtual void Tick(float DeltaTime) override;
 
 protected:
     virtual void BeginPlay() override;
@@ -35,6 +38,9 @@ private:
 
     void Input_ControlToggle_Pressed();     // 키가 눌렸을 때 -> 잠시동안 RPG 모드
     void Input_ControlToggle_Released();    // 키가 떼질 때   -> 잠시동안 TPS 모드
+
+    void Input_RunToggle_Pressed();  // 달리기
+    void Input_RunToggle_Released(); // 걷기
 
 protected:
 
@@ -53,4 +59,7 @@ protected:
 
     UPROPERTY(EditAnywhere, Category = "Input")
     TObjectPtr<class UInputAction> control_toggle_action;
+
+    UPROPERTY(EditAnywhere, Category = "Input")
+    TObjectPtr<class UInputAction> run_toggle_action;
 };
