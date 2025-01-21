@@ -19,7 +19,7 @@ ABattleGameMode::ABattleGameMode()
     }
     else UE_LOG(LogTemp, Warning, TEXT("디폴트 폰 로드 실패")); 
 
-    static ConstructorHelpers::FClassFinder<APlayerController> PController(TEXT("/Game/WorkFolder/Controller/BP_TEST_PC_BattleGame.BP_TEST_PC_BattleGame_C"));
+    static ConstructorHelpers::FClassFinder<APlayerController> PController(TEXT("/Game/WorkFolder/Controller/BP_Battle_PlayerController.BP_Battle_PlayerController_C"));
     if (PController.Succeeded())
     {
         PlayerControllerClass = PController.Class;
