@@ -45,6 +45,7 @@ void ABattle_PlayerController::SetupInputComponent()
         EnhancedInputComponent->BindAction(move_action, ETriggerEvent::Triggered, this, &ThisClass::Input_Move);
         EnhancedInputComponent->BindAction(rotate_action, ETriggerEvent::Triggered, this, &ThisClass::Input_Rotate);
         EnhancedInputComponent->BindAction(jump_action, ETriggerEvent::Triggered, this, &ThisClass::Input_Jump);
+        EnhancedInputComponent->BindAction(attack_action, ETriggerEvent::Started, this, &ThisClass::Input_Attack);
 
         EnhancedInputComponent->BindAction(control_toggle_action, ETriggerEvent::Started, this, &ThisClass::Input_ControlToggle_Pressed);
         EnhancedInputComponent->BindAction(control_toggle_action, ETriggerEvent::Completed, this, &ThisClass::Input_ControlToggle_Released);
@@ -118,6 +119,16 @@ void ABattle_PlayerController::Input_Jump(const FInputActionValue& InputValue)
     if (auto* MyPlayer = Cast<APlayerCharacter>(GetPawn()))
     {
         MyPlayer->Jump();
+    }
+}
+
+void ABattle_PlayerController::Input_Attack(const FInputActionValue& InputValue)
+{
+    GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Red, TEXT("Left Mouse Attack!"));
+
+    if (attack_montage)
+    {
+        Cast<ABaseCharacter>(GetPawn())->PlayAnimMontage(attack_montage);
     }
 }
 
