@@ -46,4 +46,7 @@ protected:
 
     UPROPERTY(BlueprintReadOnly)
     bool b_is_falling = false;
+
+    UPROPERTY(BlueprintReadOnly)
+    bool b_dead = false;
 };

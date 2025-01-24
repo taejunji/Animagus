@@ -130,6 +130,16 @@ void ABattle_PlayerController::Input_Attack(const FInputActionValue& InputValue)
     {
         Cast<ABaseCharacter>(GetPawn())->PlayAnimMontage(attack_montage);
     }
+
+    // 제거 
+    if (auto* MyPlayer = Cast<APlayerCharacter>(GetPawn()))
+    {
+        float current_hp = MyPlayer->GetHP();
+        if(current_hp <= 0.f ) 
+            MyPlayer->SetHP(MyPlayer->GetHP() + 25.f);
+        else 
+            MyPlayer->SetHP(MyPlayer->GetHP() - 25.f);
+    }
 }
 
 void ABattle_PlayerController::Input_ControlToggle_Pressed()

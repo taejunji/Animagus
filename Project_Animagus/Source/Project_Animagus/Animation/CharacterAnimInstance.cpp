@@ -24,8 +24,10 @@ void UCharacterAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 {
     Super::NativeUpdateAnimation(DeltaSeconds);
 
-    if (character == nullptr) return;
-    if (movement_component == nullptr) return;
+    if (character == nullptr || movement_component == nullptr) return;
+
+    if (character->GetIsDead() == true) { b_dead = true; }
+    else b_dead = false; // <- 제거
 
     velocity = movement_component->Velocity;
     ground_speed = velocity.Size2D(); // X,Y축 평지 속도만 추출

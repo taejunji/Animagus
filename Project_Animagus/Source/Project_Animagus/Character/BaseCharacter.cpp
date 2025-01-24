@@ -28,6 +28,9 @@ void ABaseCharacter::BeginPlay()
     speed_change_rete = 5.f; // 1초에 5.f정도의 속도 변화를 꿈 꿨는데 뭔가 이상하다 
     current_speed = default_walk_speed;
 
+    hp = 100.f;
+    is_dead = false;
+
     SetWalkSpeed(default_walk_speed);
 }
 
@@ -35,6 +38,8 @@ void ABaseCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+    if (hp <= 0.f) { is_dead = true; }
+    else is_dead = false; // 제거 
 }
 
 void ABaseCharacter::SetWalkSpeed(float fValue)

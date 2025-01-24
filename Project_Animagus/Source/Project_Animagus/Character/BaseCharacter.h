@@ -24,6 +24,11 @@ public:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement")
     float speed_change_rete; // 속도 변화 비율 ( 30.f면 1초에 30씩 변화 )
 
+protected:
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stat")
+    float hp;
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stat")
+    bool is_dead;
 
 public:
 	ABaseCharacter();
@@ -35,6 +40,9 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
     void SetWalkSpeed(float fValue);
+    void SetHP(float fValue) { hp = fValue; }
+    float GetHP() const { return hp; }
+    bool GetIsDead() const { return is_dead; }
 };
 
 // Called to bind functionality to input
