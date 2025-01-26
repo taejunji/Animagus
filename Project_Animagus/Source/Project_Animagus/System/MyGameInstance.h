@@ -29,6 +29,8 @@ struct StoredPlayerData
 //          PlayerController    <- 플레이어 컨트롤러 
 //           DefaultPawn        <- 플레이어
 // ------------------------------------------------------------------------------
+//  로그인 후에 DB에 저장된 플레이어 데이터를 게임 인스턴스에서 저장하여 언제든 접근하도록 할 것
+// -------------------------------------------------------------------------------
 UCLASS()
 class PROJECT_ANIMAGUS_API UMyGameInstance : public UGameInstance
 {
