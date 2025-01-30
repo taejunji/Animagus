@@ -36,7 +36,7 @@ public:
     float current_speed; // 현재 속도
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement")
-    float speed_change_rete; // 속도 변화 비율 ( 30.f면 1초에 30씩 변화 )
+    float speed_change_rate; // 속도 변화 비율 ( 30.f면 1초에 30씩 변화 )
 
 protected:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stat")
