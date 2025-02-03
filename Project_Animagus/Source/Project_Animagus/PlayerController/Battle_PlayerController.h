@@ -35,6 +35,8 @@ private:
     void Input_Move(const FInputActionValue& InputValue);
     void Input_Rotate(const FInputActionValue& InputValue);
     void Input_Jump(const FInputActionValue& InputValue);
+    void Input_Attack(const FInputActionValue& InputValue);
+    void Input_Ready(const FInputActionValue& InputValue);
 
     void Input_ControlToggle_Pressed();     // 키가 눌렸을 때 -> 잠시동안 RPG 모드
     void Input_ControlToggle_Released();    // 키가 떼질 때   -> 잠시동안 TPS 모드
@@ -56,6 +58,12 @@ protected:
 
     UPROPERTY(EditAnywhere, Category = "Input")
     TObjectPtr<class UInputAction> jump_action;
+
+    UPROPERTY(EditAnywhere, Category = "Input")
+    TObjectPtr<class UInputAction> attack_action;
+    UPROPERTY(EditAnywhere, Category = "Input")
+    TObjectPtr<class UInputAction> ready_action;
+
 
     UPROPERTY(EditAnywhere, Category = "Input")
     TObjectPtr<class UInputAction> control_toggle_action;

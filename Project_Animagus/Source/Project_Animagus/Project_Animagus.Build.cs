@@ -8,7 +8,21 @@ public class Project_Animagus : ModuleRules
 	{
 		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 	
+<<<<<<< HEAD
 		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "EnhancedInput","Niagara" });
+=======
+		PublicDependencyModuleNames.AddRange(new string[] 
+        { 
+            "Core", 
+            "CoreUObject", 
+            "Engine", 
+            "InputCore", 
+            "EnhancedInput",
+            "AIModule",
+            "Niagara",
+            "NavigationSystem",
+        });
+>>>>>>> main
 
 		PrivateDependencyModuleNames.AddRange(new string[] {  });
 
