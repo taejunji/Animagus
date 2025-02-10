@@ -13,12 +13,17 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="c94fed68-4612-47ce-94ff-3d688b636d7a" name="변경" comment="">
-      <change beforePath="$PROJECT_DIR$/Content/ToonProjectiles/Blueprints/BP_Projectile_2.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/ToonProjectiles/Blueprints/BP_Projectile_2.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/ToonProjectiles/Effects/P_Flash_2.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/ToonProjectiles/Effects/P_Flash_2.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/ToonProjectiles/Maps/UI_HowToUseDemoProjectiles.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/ToonProjectiles/Maps/UI_HowToUseDemoProjectiles.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/WorkFolder/Levels/InGameBattle.umap" beforeDir="false" afterPath="$PROJECT_DIR$/Content/WorkFolder/Levels/InGameBattle.umap" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/WorkFolder/Niagara/M_Fog.uasset" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/WorkFolder/Niagara/NS_Fog.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.Project_Animagus/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Project_Animagus/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Location_4_Temple/Maps/Demonstration.umap" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Location_4_Temple/Maps/Demonstration.umap" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Location_4_Temple/Meshes/SM_stairs_001.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Location_4_Temple/Meshes/SM_stairs_001.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/WorkFolder/Assets/Map/Meshes/ground02_low.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/WorkFolder/Assets/Map/Meshes/ground02_low.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/WorkFolder/Levels/L_Map.umap" beforeDir="false" afterPath="$PROJECT_DIR$/Content/WorkFolder/Levels/L_Map.umap" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Intermediate/Build/BuildRules/Project_AnimagusModuleRules.pdb" beforeDir="false" afterPath="$PROJECT_DIR$/Intermediate/Build/BuildRules/Project_AnimagusModuleRules.pdb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Intermediate/Build/BuildRules/Project_AnimagusModuleRulesManifest.json" beforeDir="false" afterPath="$PROJECT_DIR$/Intermediate/Build/BuildRules/Project_AnimagusModuleRulesManifest.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Intermediate/Build/BuildRulesProjects/Project_AnimagusModuleRules/Project_AnimagusModuleRules.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/Intermediate/Build/BuildRulesProjects/Project_AnimagusModuleRules/Project_AnimagusModuleRules.csproj" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Intermediate/Build/Win64/x64/Project_AnimagusEditor/Development/UnrealEd/SharedPCH.UnrealEd.Project.ValApi.Cpp20.h" beforeDir="false" afterPath="$PROJECT_DIR$/Intermediate/Build/Win64/x64/Project_AnimagusEditor/Development/UnrealEd/SharedPCH.UnrealEd.Project.ValApi.Cpp20.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Intermediate/Build/Win64/x64/UnrealEditor/Development/Project_Animagus/Definitions.Project_Animagus.h" beforeDir="false" afterPath="$PROJECT_DIR$/Intermediate/Build/Win64/x64/UnrealEditor/Development/Project_Animagus/Definitions.Project_Animagus.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Intermediate/Build/XmlConfigCache.bin" beforeDir="false" afterPath="$PROJECT_DIR$/Intermediate/Build/XmlConfigCache.bin" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -28,27 +33,31 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
   </component>
-  <component name="ProjectColorInfo"><![CDATA[{
-  "associatedIndex": 4
-}]]></component>
+  <component name="HighlightingSettingsPerFile">
+    <setting file="file://$PROJECT_DIR$/../../../../../../Program Files/Epic Games/UE_5.4/Engine/Source/Developer/AITestSuite/Public/AITestsCommon.h" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/../../../../../../Program Files/Epic Games/UE_5.4/Engine/Source/Programs/Shared/EpicGames.Redis/RedisSerializer.cs" root0="FORCE_HIGHLIGHTING" />
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 4
+}</component>
   <component name="ProjectId" id="2sWUj0fhatsY1m4EOduYpIoYUuE" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "taejun",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;skill&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RunManager" selected="C/C++ 프로젝트.Project_Animagus">
     <configuration name="Project_Animagus" type="CppProject" factoryName="C++ Project">
       <configuration_1 setup="1">
@@ -141,7 +150,10 @@
       <method v="2" />
     </configuration>
     <configuration default="true" type="docker-deploy" factoryName="dockerfile" temporary="true">
-      <deployment type="dockerfile" />
+      <deployment type="dockerfile">
+        <settings />
+      </deployment>
+      <EXTENSION ID="com.jetbrains.rider.docker.debug" isFastModeEnabled="true" isSslEnabled="false" />
       <method v="2" />
     </configuration>
   </component>
@@ -154,6 +166,10 @@
       <option name="presentableId" value="Default" />
       <updated>1738570961057</updated>
       <workItem from="1738570964397" duration="3044000" />
+      <workItem from="1739105699699" duration="3303000" />
+      <workItem from="1739170703821" duration="3786000" />
+      <workItem from="1739217753309" duration="391000" />
+      <workItem from="1739218194787" duration="84000" />
     </task>
     <servers />
   </component>
