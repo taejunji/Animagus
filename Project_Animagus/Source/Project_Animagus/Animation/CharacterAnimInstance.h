@@ -52,6 +52,9 @@ protected:
     float ground_speed = 0.f;  // X,Y만 포함한 지면 속도
 
     UPROPERTY(BlueprintReadOnly)
+    float movement_offset_yaw;  // 캐릭터 이동방향 - 캐릭터가 바라보는 방향 
+
+    UPROPERTY(BlueprintReadOnly)
     bool b_is_moving = false; // 움직이는지
 
     UPROPERTY(BlueprintReadOnly)

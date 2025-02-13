@@ -27,7 +27,7 @@ void ABaseCharacter::BeginPlay()
 
     default_walk_speed = 250.f;
     default_run_speed = 500.f;
-    speed_change_rete = 5.f; // 1초에 5.f정도의 속도 변화를 꿈 꿨는데 뭔가 이상하다 
+    speed_change_rate = 5.f; // 1초에 5.f정도의 속도 변화를 꿈 꿨는데 뭔가 이상하다 
     current_speed = default_walk_speed;
 
     hp = 100.f;
@@ -66,6 +66,8 @@ void ABaseCharacter::Tick(float DeltaTime)
     if (hp <= 0.f) {        
         if (is_dead == false) is_dead = true;
         if (GetCharacterMovement()->IsFalling() == false) {
+            // 일시적으로 이동을 멈추고 싶다면? → DisableMovement()
+            // 이동을 완전히 비활성화하고 싶다면 ? → SetMovementMode(MOVE_None)
             GetCharacterMovement()->DisableMovement();
         }
         return;
