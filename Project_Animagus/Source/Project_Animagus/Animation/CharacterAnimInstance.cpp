@@ -34,7 +34,7 @@ void UCharacterAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
     velocity = movement_component->Velocity; // X,Y,Z 속도
     ground_speed = velocity.Size2D(); // X,Y축 평지 속도만 추출
 
-    // ---- 미완성 -----
+    // ---- 미완성 ----- 에임 오프셋 제작중인데 안쓸 수도
     FRotator AimRotation = character->GetActorRotation(); // 캐릭터가 바라보는 방향 
     FRotator DeltaRotation = FRotator::ZeroRotator; 
     if (!velocity.IsNearlyZero()) // 속도가 거의 0이 아니면 각도 계산 
