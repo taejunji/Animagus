@@ -127,7 +127,15 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="IOCPCore.cpp" />
+    <ClCompile Include="pch.cpp" />
     <ClCompile Include="ServerMain.cpp" />
+    <ClCompile Include="ServerPacketHandler.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="IOCPCore.h" />
+    <ClInclude Include="pch.h" />
+    <ClInclude Include="protocol.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -4,10 +4,36 @@
     <Filter Include="ServerMain">
       <UniqueIdentifier>{1827c34b-4bed-4bbc-b912-6cd22e34690f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="IOCP">
+      <UniqueIdentifier>{5352ebb5-a0b9-4635-a9a5-b63c193e19f5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Utils">
+      <UniqueIdentifier>{a43081cc-a6a8-4318-bd54-c69d3a070306}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ServerMain.cpp">
       <Filter>ServerMain</Filter>
     </ClCompile>
+    <ClCompile Include="ServerPacketHandler.cpp">
+      <Filter>ServerMain</Filter>
+    </ClCompile>
+    <ClCompile Include="IOCPCore.cpp">
+      <Filter>IOCP</Filter>
+    </ClCompile>
+    <ClCompile Include="pch.cpp">
+      <Filter>Utils</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="IOCPCore.h">
+      <Filter>IOCP</Filter>
+    </ClInclude>
+    <ClInclude Include="pch.h">
+      <Filter>Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="protocol.h">
+      <Filter>Utils</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
