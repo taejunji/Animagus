@@ -13,7 +13,6 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="c94fed68-4612-47ce-94ff-3d688b636d7a" name="변경" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.Project_Animagus/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Project_Animagus/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Content/WorkFolder/Levels/L_Map.umap" beforeDir="false" afterPath="$PROJECT_DIR$/Content/WorkFolder/Levels/L_Map.umap" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -164,7 +163,7 @@
       <workItem from="1739217753309" duration="391000" />
       <workItem from="1739218194787" duration="84000" />
       <workItem from="1739276868749" duration="3091000" />
-      <workItem from="1739378522093" duration="5477000" />
+      <workItem from="1739378522093" duration="6196000" />
     </task>
     <servers />
   </component>
