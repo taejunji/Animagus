@@ -75,7 +75,7 @@ void ABattle_PlayerController::Tick(float DeltaTime)
 
         // 현재 속도를 목표 속도로 점진적으로 변경 
 		// 내부적으로 DeltaTime * speed_change_rete라서 1초에 5.f의 속도가 변하길 기대했는데 디버깅 해보니 이론과 다름
-        MyPlayer->current_speed = FMath::FInterpTo(MyPlayer->current_speed, TargetSpeed, DeltaTime, MyPlayer->speed_change_rete);  
+        MyPlayer->current_speed = FMath::FInterpTo(MyPlayer->current_speed, TargetSpeed, DeltaTime, MyPlayer->speed_change_rate);  
 
         FString CurrentSpeedString = FString::Printf(TEXT("Current Speed: %.2f"), MyPlayer->current_speed);
         GEngine->AddOnScreenDebugMessage(-1, 0.01f, FColor::Green, CurrentSpeedString);

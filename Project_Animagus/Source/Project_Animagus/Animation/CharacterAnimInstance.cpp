@@ -4,6 +4,7 @@
 #include "CharacterAnimInstance.h"
 #include "GameFramework/Character.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "Kismet/KismetMathLibrary.h"
 #include "../Character/BaseCharacter.h"
 
 UCharacterAnimInstance::UCharacterAnimInstance(const FObjectInitializer& ObjectInitializer)
@@ -32,6 +33,17 @@ void UCharacterAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 
     velocity = movement_component->Velocity; // X,Y,Z 속도
     ground_speed = velocity.Size2D(); // X,Y축 평지 속도만 추출
+
+    // ---- 미완성 ----- 에임 오프셋 제작중인데 안쓸 수도
+    FRotator AimRotation = character->GetActorRotation(); // 캐릭터가 바라보는 방향 
+    FRotator DeltaRotation = FRotator::ZeroRotator; 
+    if (!velocity.IsNearlyZero()) // 속도가 거의 0이 아니면 각도 계산 
+    {
+        FRotator MoveRotation = UKismetMathLibrary::MakeRotFromX(velocity); // 캐릭터 이동 방향 
+        DeltaRotation = UKismetMathLibrary::NormalizedDeltaRotator(MoveRotation, AimRotation); // 각도 차이 
+    }
+    movement_offset_yaw = DeltaRotation.Yaw; // 이 값으로 Blend Space의 좌,우,앞,뒤 애니메이션 조절
+    // ---- 미완성 -----
 
     // **3.f**는 단순히 속도의 임계값으로, 이 값 이상일 경우 움직이고 있다고 판단하는 것입니다. 
     // 속도가 3보다 작으면 움직이지 않는 것으로 간주 + 캐릭터가 현재 가속 중인지 확인
