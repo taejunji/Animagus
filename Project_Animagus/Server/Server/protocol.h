@@ -1,5 +1,6 @@
 #pragma once
 
+
 enum class PlayerType
 {
     Tiger,
@@ -8,7 +9,7 @@ enum class PlayerType
     Koala,
 };
 
-enum class SkillID
+enum class SkillType
 {
     Heal,           // 힐
     EnergyWave,     // 에너지파
@@ -24,7 +25,13 @@ enum class SkillID
     Thunderstrike,  // 천둥
 };
 
-
+enum class StatusType
+{
+    Health,         // 체력
+    AttackDamage,   // 공격력
+    MovementSpeed,  // 이동속도
+    AbilityHaste,   // 스킬가속
+};
 
 
 #pragma pack (push, 1)

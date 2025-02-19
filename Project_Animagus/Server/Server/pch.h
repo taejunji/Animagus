@@ -20,6 +20,7 @@
 #include <MSWSock.h>
 #include <windows.h>
 
+#include "Types.h"
 
 #pragma comment (lib, "WS2_32.lib")
 #pragma comment (lib, "MSWSock.lib")
