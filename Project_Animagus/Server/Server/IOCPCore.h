@@ -7,7 +7,7 @@
 // 소켓핸들 관리, 해당 소켓에 대한 이벤트 처리
 //-----------------------------------------
 
-class IocpObject : public std::enable_shared_from_this<IocpObject>  // 소켓
+class IocpObject : public std::enable_shared_from_this<IocpObject>
 {
 public:
     virtual HANDLE	GetHandle() abstract;

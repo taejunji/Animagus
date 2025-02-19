@@ -1,5 +1,6 @@
 #pragma once
 #include "Types.h"
+#include "IocpCore.h"
 
 
 enum class EventType : uint8

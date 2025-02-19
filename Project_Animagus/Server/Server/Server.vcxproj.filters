@@ -18,15 +18,18 @@
     <ClCompile Include="ServerPacketHandler.cpp">
       <Filter>ServerMain</Filter>
     </ClCompile>
-    <ClCompile Include="IOCPCore.cpp">
+    <ClCompile Include="IocpCore.cpp">
       <Filter>IOCP</Filter>
     </ClCompile>
     <ClCompile Include="pch.cpp">
       <Filter>Utils</Filter>
     </ClCompile>
+    <ClCompile Include="IcopEvent.cpp">
+      <Filter>IOCP</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="IOCPCore.h">
+    <ClInclude Include="IocpCore.h">
       <Filter>IOCP</Filter>
     </ClInclude>
     <ClInclude Include="pch.h">
@@ -34,6 +37,12 @@
     </ClInclude>
     <ClInclude Include="protocol.h">
       <Filter>Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="Types.h">
+      <Filter>Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="IocpEvent.h">
+      <Filter>IOCP</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
