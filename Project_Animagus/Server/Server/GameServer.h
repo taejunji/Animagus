@@ -15,7 +15,7 @@ public:
 
 private:
     SOCKET                      m_listenSocket;
-    IocpCore*                   m_iocpCore;         // IOCP 관련 기능 담당
+    IocpCoreRef                 m_iocpCore;         // IOCP 관련 기능 담당
     std::vector<std::thread>    m_workerThreads;    // IOCP 작업 스레드 풀
     std::atomic<bool>           m_running;          // 서버 실행 상태 플래그
 

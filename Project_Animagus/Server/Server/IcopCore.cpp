@@ -42,7 +42,7 @@ bool IocpCore::Dispatch(uint32 timeoutMs)
         {
         case WAIT_TIMEOUT:
             return false;
-        default:    // 그 비동기 뭐드라 그거 코드
+        default:    // 그 비동기 뭐드라 그거 펜딩
             IocpObjectRef iocpObject = iocpEvent->owner;
             iocpObject->Dispatch(iocpEvent, numOfBytes);
             break;
