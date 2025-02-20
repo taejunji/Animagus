@@ -18,20 +18,20 @@
     <ClCompile Include="ServerPacketHandler.cpp">
       <Filter>ServerMain</Filter>
     </ClCompile>
-    <ClCompile Include="IocpCore.cpp">
-      <Filter>IOCP</Filter>
-    </ClCompile>
     <ClCompile Include="pch.cpp">
       <Filter>Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="IcopCore.cpp">
+      <Filter>IOCP</Filter>
     </ClCompile>
     <ClCompile Include="IcopEvent.cpp">
       <Filter>IOCP</Filter>
     </ClCompile>
+    <ClCompile Include="GameServer.cpp">
+      <Filter>ServerMain</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="IocpCore.h">
-      <Filter>IOCP</Filter>
-    </ClInclude>
     <ClInclude Include="pch.h">
       <Filter>Utils</Filter>
     </ClInclude>
@@ -41,8 +41,14 @@
     <ClInclude Include="Types.h">
       <Filter>Utils</Filter>
     </ClInclude>
+    <ClInclude Include="IocpCore.h">
+      <Filter>IOCP</Filter>
+    </ClInclude>
     <ClInclude Include="IocpEvent.h">
       <Filter>IOCP</Filter>
+    </ClInclude>
+    <ClInclude Include="GameServer.h">
+      <Filter>ServerMain</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -131,13 +131,15 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="IocpCore.cpp" />
+    <ClCompile Include="GameServer.cpp" />
+    <ClCompile Include="IcopCore.cpp" />
     <ClCompile Include="IcopEvent.cpp" />
     <ClCompile Include="pch.cpp" />
     <ClCompile Include="ServerMain.cpp" />
     <ClCompile Include="ServerPacketHandler.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="GameServer.h" />
     <ClInclude Include="IocpCore.h" />
     <ClInclude Include="IocpEvent.h" />
     <ClInclude Include="pch.h" />
