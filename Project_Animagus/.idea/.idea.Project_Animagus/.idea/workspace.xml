@@ -13,7 +13,17 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="c94fed68-4612-47ce-94ff-3d688b636d7a" name="변경" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.Project_Animagus/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Project_Animagus/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/WorkFolder/Assets/Fog/MyShrinkingZone.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/WorkFolder/Assets/Fog/MyShrinkingZone.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/WorkFolder/Assets/Map/materials/M_Tree3.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/WorkFolder/Assets/Map/materials/M_Tree3.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/WorkFolder/Bluprints/BP_Player.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/WorkFolder/Bluprints/BP_Player.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/WorkFolder/Effect/Niagara/M_VolumeFog_Inst.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/WorkFolder/Effect/Niagara/NewNiagaraSystem.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/WorkFolder/GameMode/BP_BattleGameMode.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/WorkFolder/GameMode/BP_BattleGameMode.uasset" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Content/WorkFolder/Levels/L_Map.umap" beforeDir="false" afterPath="$PROJECT_DIR$/Content/WorkFolder/Levels/L_Map.umap" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Intermediate/Build/XmlConfigCache.bin" beforeDir="false" afterPath="$PROJECT_DIR$/Intermediate/Build/XmlConfigCache.bin" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/Project_Animagus/Actor/ShrinkingZone.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Project_Animagus/Actor/ShrinkingZone.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/Project_Animagus/PlayerController/Battle_PlayerController.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Project_Animagus/PlayerController/Battle_PlayerController.cpp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -164,6 +174,9 @@
       <workItem from="1739218194787" duration="84000" />
       <workItem from="1739276868749" duration="3091000" />
       <workItem from="1739378522093" duration="6196000" />
+      <workItem from="1739643260016" duration="11170000" />
+      <workItem from="1739933544009" duration="1197000" />
+      <workItem from="1740189194882" duration="6175000" />
     </task>
     <servers />
   </component>
