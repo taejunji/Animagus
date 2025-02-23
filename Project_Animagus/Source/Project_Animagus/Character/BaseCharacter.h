@@ -23,12 +23,12 @@ enum class MontageType { DefaultAttack, Hit };
 UCLASS()
 class PROJECT_ANIMAGUS_API ABaseCharacter : public ACharacter
 {
-	GENERATED_BODY()
+    GENERATED_BODY()
 
 public:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement")
     float default_walk_speed; // 기본 걷기 속도
-    
+
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement")
     float default_run_speed; // 최대 달리기 속도
 
@@ -40,9 +40,9 @@ public:
 
 protected:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stat")
-    float hp;   // HP 체력
+    float hp; // HP 체력
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stat")
-    float max_hp;   // MaxHP 체력
+    float max_hp; // MaxHP 체력
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stat")
     bool is_dead; // 죽었는지
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stat")
@@ -55,13 +55,13 @@ protected:
     TObjectPtr<class UAnimMontage> hit_montage;
 
 public:
-	ABaseCharacter();
+    ABaseCharacter();
 
 protected:
-	virtual void BeginPlay() override;
+    virtual void BeginPlay() override;
 
-public:	
-	virtual void Tick(float DeltaTime) override;
+public:
+    virtual void Tick(float DeltaTime) override;
     virtual void PlayAnimMontageByType(MontageType montage_type);
 
     void SetWalkSpeed(float fValue);
@@ -72,16 +72,15 @@ public:
     bool GetIsDead() const { return is_dead; }
     bool GetIsHardHit() const { return is_stun; }
 
-<<<<<<< HEAD
+
     virtual float TakeDamage(
-     float DamageAmount, 
-     struct FDamageEvent const& DamageEvent, 
-     AController* EventInstigator, 
-     AActor* DamageCauser
- ) override;
-    
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
+        float DamageAmount,
+        struct FDamageEvent const& DamageEvent,
+        AController* EventInstigator,
+        AActor* DamageCauser
+    ) override;
+
+
     // 4개의 스킬 슬롯 (TArray를 사용)
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Skills")
     TArray<UBaseSkill*> Skills;
@@ -89,27 +88,17 @@ public:
     // UFireball 스킬 블루프린트 클래스를 할당할 변수 (에디터에서 선택)
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Skills")
     TSubclassOf<class UFireball> FireballBPClass;
-    
+
     // 지정 슬롯에 스킬을 장착하는 함수
     UFUNCTION(BlueprintCallable, Category="Skills")
     void EquipSkill(int32 SlotIndex, UBaseSkill* NewSkill);
-    
+
     // 스킬 초기화 함수 (예: BeginPlay에서 호출)
     UFUNCTION(BlueprintCallable, Category="Skills")
-    void InitializeSkills(); 
-=======
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
-=======
+    void InitializeSkills();
+
 public:
-    // 스킬 관련 
-    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Skill")
-    TSubclassOf<class AProjectileSkill> projectile_class; // BP Projectile 클래스 정보
-
-     virtual void FireProjectile();
-
->>>>>>> main
+   
 };
 
 // Called to bind functionality to input
