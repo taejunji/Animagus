@@ -41,7 +41,7 @@ void AShrinkingZone::Tick(float DeltaTime)
     {
         CurrentRadius = 0.0f;
     }
-    UE_LOG(LogTemp, Warning, TEXT("CurrentRadius: %f"), CurrentRadius);
+   // UE_LOG(LogTemp, Warning, TEXT("CurrentRadius: %f"), CurrentRadius);
     
     // Cylinder Collision 및 Niagara Component의 스케일 업데이트
     float NewScale = CurrentRadius / InitialRadius;
@@ -80,7 +80,7 @@ void AShrinkingZone::Tick(float DeltaTime)
         FVector End = ZoneCenter + FVector(0, 0, Height * 0.5f);
         
         // DrawDebugCylinder(World, Start, End, Radius, Segments, Color, bPersistentLines, LifeTime, DepthPriority)
-        UE_LOG(LogTemp, Warning, TEXT("CurrentRadius_2: %f"), CurrentRadius);
+        //UE_LOG(LogTemp, Warning, TEXT("CurrentRadius_2: %f"), CurrentRadius);
         DrawDebugCylinder(GetWorld(), Start, End, CurrentRadius, 32, FColor::Green, false, 0.2f, 0, 5.0f);
         DrawDebugSphere(GetWorld(), GetActorLocation(), 50.0f, 12, FColor::Red, false, 0.2f);
     }

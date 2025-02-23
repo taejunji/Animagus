@@ -7,6 +7,7 @@
 #include "Kismet/KismetMathLibrary.h" // 이동 구현할 때 유틸리티 많은 애 
 
 #include "../Character/PlayerCharacter.h" 
+#include "Project_Animagus/Skill/BaseSkill.h"
 
 ABattle_PlayerController::ABattle_PlayerController(const FObjectInitializer& ObjectInitializer)
     : Super(ObjectInitializer)
@@ -138,18 +139,34 @@ void ABattle_PlayerController::Input_Attack(const FInputActionValue& InputValue)
 {
     GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Blue, TEXT("Left Mouse Attack!"));
 
-    auto* MyPlayer = Cast<ABaseCharacter>(GetPawn());
-    if (MyPlayer) MyPlayer->PlayAnimMontageByType(MontageType::DefaultAttack);
-
-    // 제거 - 마우스 좌클릭으로 애니메이션 테스트용 
-    if (MyPlayer)
+    if (APawn* MyPawn  = GetPawn())
     {
-        float current_hp = MyPlayer->GetHP();
-        if(current_hp <= 0.f ) 
-            MyPlayer->SetHP(MyPlayer->GetHP() + 25.f);
-        else 
-            MyPlayer->SetHP(MyPlayer->GetHP() - 25.f);
+        ABaseCharacter* MyCharacter = Cast<ABaseCharacter>(MyPawn );
+        if (MyCharacter && MyCharacter->Skills.IsValidIndex(0) && MyCharacter->Skills[0])
+        {
+            MyCharacter->Skills[0]->ActiveSkill();
+        }
     }
+    
+    // auto* MyPlayer = Cast<ABaseCharacter>(GetPawn());
+    //
+    // if (MyPlayer) MyPlayer->PlayAnimMontageByType(MontageType::DefaultAttack);
+    //
+    // if (MyPlayer && MyPlayer->Skills.IsValidIndex(0) && MyPlayer->Skills[0])
+    // {
+    //     MyPlayer->Skills[0]->ActiveSkill();
+    // }
+
+    
+    // 제거 - 마우스 좌클릭으로 애니메이션 테스트용 
+    // if (MyPlayer)
+    // {
+    //     float current_hp = MyPlayer->GetHP();
+    //     if(current_hp <= 0.f ) 
+    //         MyPlayer->SetHP(MyPlayer->GetHP() + 25.f);
+    //     else 
+    //         MyPlayer->SetHP(MyPlayer->GetHP() - 25.f);
+    // }
 }
 
 void ABattle_PlayerController::Input_Ready(const FInputActionValue& InputValue)

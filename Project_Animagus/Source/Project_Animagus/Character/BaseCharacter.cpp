@@ -4,17 +4,34 @@
 #include "BaseCharacter.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Animation/AnimInstance.h"
+#include "../Skill/BaseSkill.h"
+#include "../Skill/Fireball.h"
 
 ABaseCharacter::ABaseCharacter()
 {
 	PrimaryActorTick.bCanEverTick = true;
-
+    
     // 애님 인스턴스 설정
     static ConstructorHelpers::FClassFinder<UAnimInstance> AnimBP(TEXT("/Game/WorkFolder/Animation/AnimSystem/ABP_TEST2.ABP_TEST2_C"));
     if (AnimBP.Succeeded())
     {
         GetMesh()->SetAnimInstanceClass(AnimBP.Class);
     }
+
+    Skills.SetNum(4);
+
+    // ConstructorHelpers를 사용하여 UFireball 블루프린트 클래스 로드
+    static ConstructorHelpers::FClassFinder<UFireball> FireballBPClassFinder(TEXT("/Game/WorkFolder/Bluprints/Skills/MyFireball"));
+    if (FireballBPClassFinder.Succeeded())
+    {
+        FireballBPClass = FireballBPClassFinder.Class;
+        UE_LOG(LogTemp, Log, TEXT("BaseCharacter: Successfully loaded FireballBPClass: %s"), *FireballBPClass->GetName());
+    }
+    else
+    {
+        UE_LOG(LogTemp, Warning, TEXT("BaseCharacter: Failed to load FireballBPClass!"));
+    }
+    
 }
 
 void ABaseCharacter::BeginPlay()
@@ -35,6 +52,8 @@ void ABaseCharacter::BeginPlay()
     is_stun = false;
 
     SetWalkSpeed(default_walk_speed);
+
+    InitializeSkills();
 }
 
 void ABaseCharacter::PlayAnimMontageByType(MontageType montage_type)
@@ -107,6 +126,30 @@ float ABaseCharacter::TakeDamage(float DamageAmount, struct FDamageEvent const& 
     }
     return ActualDamage;
     //return Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
+    
+}
+
+void ABaseCharacter::EquipSkill(int32 SlotIndex, UBaseSkill* NewSkill)
+{
+    if (Skills.IsValidIndex(SlotIndex))
+    {
+        Skills[SlotIndex] = NewSkill;
+    }
+}
+
+void ABaseCharacter::InitializeSkills()
+{
+    for (int32 i = 0; i < Skills.Num(); i++)
+    {
+        // UFireballSkill은 UBaseSkill을 상속받은 파이어볼 스킬 클래스입니다.
+        UBaseSkill* NewSkill = NewObject<UFireball>(this, UFireball::StaticClass());
+        if (NewSkill)
+        {
+            // 스킬의 소유자(Owner) 설정
+            NewSkill->Owner = this;
+            Skills[i] = NewSkill;
+        }
+    }
     
 }
 

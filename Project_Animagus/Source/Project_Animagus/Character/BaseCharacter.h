@@ -77,6 +77,21 @@ public:
      AActor* DamageCauser
  ) override;
     
+    // 4개의 스킬 슬롯 (TArray를 사용)
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Skills")
+    TArray<UBaseSkill*> Skills;
+
+    // UFireball 스킬 블루프린트 클래스를 할당할 변수 (에디터에서 선택)
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Skills")
+    TSubclassOf<class UFireball> FireballBPClass;
+    
+    // 지정 슬롯에 스킬을 장착하는 함수
+    UFUNCTION(BlueprintCallable, Category="Skills")
+    void EquipSkill(int32 SlotIndex, UBaseSkill* NewSkill);
+    
+    // 스킬 초기화 함수 (예: BeginPlay에서 호출)
+    UFUNCTION(BlueprintCallable, Category="Skills")
+    void InitializeSkills(); 
 };
 
 // Called to bind functionality to input
