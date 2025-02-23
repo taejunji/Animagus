@@ -5,7 +5,7 @@
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "Kismet/KismetMathLibrary.h" // 이동 구현할 때 유틸리티 많은 애 
-
+#include "../Skill/ProjectileSkill.h"
 #include "../Character/PlayerCharacter.h" 
 #include "Project_Animagus/Skill/BaseSkill.h"
 
@@ -139,6 +139,7 @@ void ABattle_PlayerController::Input_Attack(const FInputActionValue& InputValue)
 {
     GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Blue, TEXT("Left Mouse Attack!"));
 
+<<<<<<< HEAD
     if (APawn* MyPawn  = GetPawn())
     {
         ABaseCharacter* MyCharacter = Cast<ABaseCharacter>(MyPawn );
@@ -167,6 +168,21 @@ void ABattle_PlayerController::Input_Attack(const FInputActionValue& InputValue)
     //     else 
     //         MyPlayer->SetHP(MyPlayer->GetHP() - 25.f);
     // }
+=======
+    FireProjectileFromPlayer();
+
+    // 제거 - 마우스 좌클릭으로 애니메이션 테스트용 
+    //if (MyPlayer)
+    //{
+    //    float current_hp = MyPlayer->GetHP();
+    //    if(current_hp <= 0.f ) 
+    //        MyPlayer->SetHP(MyPlayer->GetHP() + 25.f);
+    //    else 
+    //        MyPlayer->SetHP(MyPlayer->GetHP() - 25.f);
+    //}
+
+
+>>>>>>> main
 }
 
 void ABattle_PlayerController::Input_Ready(const FInputActionValue& InputValue)
@@ -224,4 +240,10 @@ void ABattle_PlayerController::Input_RunToggle_Released()
     is_running = false;
 }
 
-
+void ABattle_PlayerController::FireProjectileFromPlayer()
+{
+    if (auto* MyPlayer = Cast<ABaseCharacter>(GetPawn()))
+    {
+       MyPlayer->FireProjectile();
+    }
+}

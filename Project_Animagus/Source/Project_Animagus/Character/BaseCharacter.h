@@ -42,6 +42,8 @@ protected:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stat")
     float hp;   // HP 체력
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stat")
+    float max_hp;   // MaxHP 체력
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stat")
     bool is_dead; // 죽었는지
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stat")
     bool is_stun; // 스턴 상태인지
@@ -70,6 +72,7 @@ public:
     bool GetIsDead() const { return is_dead; }
     bool GetIsHardHit() const { return is_stun; }
 
+<<<<<<< HEAD
     virtual float TakeDamage(
      float DamageAmount, 
      struct FDamageEvent const& DamageEvent, 
@@ -98,6 +101,15 @@ public:
 >>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
+=======
+public:
+    // 스킬 관련 
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Skill")
+    TSubclassOf<class AProjectileSkill> projectile_class; // BP Projectile 클래스 정보
+
+     virtual void FireProjectile();
+
+>>>>>>> main
 };
 
 // Called to bind functionality to input
