@@ -80,6 +80,8 @@ void ABattle_PlayerController::Tick(float DeltaTime)
         FString CurrentSpeedString = FString::Printf(TEXT("Current Speed: %.2f"), MyPlayer->current_speed);
         GEngine->AddOnScreenDebugMessage(-1, 0.01f, FColor::Green, CurrentSpeedString);
 
+
+        
         // 캐릭터의 이동 속도 업데이트
         MyPlayer->SetWalkSpeed(MyPlayer->current_speed); 
     }

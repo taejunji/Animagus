@@ -77,8 +77,8 @@ void AShrinkingZone::Tick(float DeltaTime)
         
         // DrawDebugCylinder(World, Start, End, Radius, Segments, Color, bPersistentLines, LifeTime, DepthPriority)
         UE_LOG(LogTemp, Warning, TEXT("CurrentRadius_2: %f"), CurrentRadius);
-        DrawDebugCylinder(GetWorld(), Start, End, CurrentRadius, 32, FColor::Green, false, 2.0f, 0, 5.0f);
-        DrawDebugSphere(GetWorld(), GetActorLocation(), 50.0f, 12, FColor::Red, false, 2.0f);
+        DrawDebugCylinder(GetWorld(), Start, End, CurrentRadius, 32, FColor::Green, false, 0.2f, 0, 5.0f);
+        DrawDebugSphere(GetWorld(), GetActorLocation(), 50.0f, 12, FColor::Red, false, 0.2f);
     }
 }
 
