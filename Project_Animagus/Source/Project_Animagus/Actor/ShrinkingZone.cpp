@@ -58,9 +58,13 @@ void AShrinkingZone::Tick(float DeltaTime)
     UGameplayStatics::GetAllActorsOfClass(GetWorld(), APawn::StaticClass(), PlayerActors);
     for (AActor* Actor : PlayerActors)
     {
-        if (!IsActorInsideZone(Actor))
+        APawn* Pawn = Cast<APawn>(Actor);
+        if (Pawn && Pawn->IsLocallyControlled())
         {
-            ApplyGasDamage(Actor, DeltaTime);
+            if (!IsActorInsideZone(Pawn))
+            {
+                ApplyGasDamage(Pawn, DeltaTime);
+            }
         }
     }
 

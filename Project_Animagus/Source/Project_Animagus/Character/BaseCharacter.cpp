@@ -84,5 +84,31 @@ void ABaseCharacter::SetWalkSpeed(float fValue)
     GetCharacterMovement()->MaxWalkSpeed = fValue;
 }
 
+float ABaseCharacter::TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent,
+    AController* EventInstigator, AActor* DamageCauser)
+{
+    float ActualDamage = Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
+
+    hp -= ActualDamage;
+    
+    // FDamagePacket DamagePacket;
+    // DamagePacket.CharacterID = this->GetUniqueID(); // 예시로 캐릭터의 고유 ID 사용
+    // DamagePacket.DamageAmount = ActualDamage;
+    // DamagePacket.DamageCauserID = DamageCauser ? DamageCauser->GetUniqueID() : 0;
+    // DamagePacket.Timestamp = GetWorld()->TimeSeconds;
+    //
+    // // 네트워크 매니저를 통해 서버로 데미지 패킷 전송
+    // // MyNetworkManager는 여러분이 구현한 네트워크 시스템 클래스여야 합니다.
+    // MyNetworkManager::Get()->SendDamagePacket(DamagePacket);
+    
+    if (hp <= 0)
+    {
+        // 사망 처리 로직...
+    }
+    return ActualDamage;
+    //return Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
+    
+}
+
 
 

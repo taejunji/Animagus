@@ -69,6 +69,14 @@ public:
     float GetHP() const { return hp; }
     bool GetIsDead() const { return is_dead; }
     bool GetIsHardHit() const { return is_stun; }
+
+    virtual float TakeDamage(
+     float DamageAmount, 
+     struct FDamageEvent const& DamageEvent, 
+     AController* EventInstigator, 
+     AActor* DamageCauser
+ ) override;
+    
 };
 
 // Called to bind functionality to input
