@@ -129,6 +129,7 @@ float ABaseCharacter::TakeDamage(float DamageAmount, struct FDamageEvent const& 
     
 }
 
+<<<<<<< Updated upstream
 void ABaseCharacter::EquipSkill(int32 SlotIndex, UBaseSkill* NewSkill)
 {
     if (Skills.IsValidIndex(SlotIndex))
@@ -153,5 +154,7 @@ void ABaseCharacter::InitializeSkills()
     
 }
 
+=======
+>>>>>>> Stashed changes
 
 

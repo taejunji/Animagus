@@ -16,8 +16,11 @@
       <change beforePath="$PROJECT_DIR$/.idea/.idea.Project_Animagus/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Project_Animagus/.idea/workspace.xml" afterDir="false" />
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
       <change beforePath="$PROJECT_DIR$/Intermediate/Build/BuildRules/Project_AnimagusModuleRules.pdb" beforeDir="false" afterPath="$PROJECT_DIR$/Intermediate/Build/BuildRules/Project_AnimagusModuleRules.pdb" afterDir="false" />
 =======
+=======
+>>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
       <change beforePath="$PROJECT_DIR$/Content/ToonProjectiles/Blueprints/BP_Projectile.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/ToonProjectiles/Blueprints/BP_Projectile.uasset" afterDir="false" />
@@ -30,6 +33,9 @@
       <change beforePath="$PROJECT_DIR$/Source/Project_Animagus/Skill/BaseSkill.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Project_Animagus/Skill/BaseSkill.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/Project_Animagus/Skill/BaseSkill.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Project_Animagus/Skill/BaseSkill.h" afterDir="false" />
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
@@ -49,7 +55,11 @@
     <setting file="file://$PROJECT_DIR$/Source/Project_Animagus/Actor/ShrinkingZone.h" root0="FORCE_HIGHLIGHTING" />
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
     <setting file="file://$PROJECT_DIR$/Source/Project_Animagus/Skill/BaseSkill.h" root0="SKIP_HIGHLIGHTING" />
+=======
+    <setting file="file://$PROJECT_DIR$/Source/Project_Animagus/Character/BaseCharacter.cpp" root0="FORCE_HIGHLIGHTING" />
+>>>>>>> Stashed changes
 =======
     <setting file="file://$PROJECT_DIR$/Source/Project_Animagus/Character/BaseCharacter.cpp" root0="FORCE_HIGHLIGHTING" />
 >>>>>>> Stashed changes
@@ -198,7 +208,11 @@
       <workItem from="1740189194882" duration="6175000" />
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
       <workItem from="1740292734488" duration="1013000" />
+=======
+      <workItem from="1740210410365" duration="13680000" />
+>>>>>>> Stashed changes
 =======
       <workItem from="1740210410365" duration="13680000" />
 >>>>>>> Stashed changes

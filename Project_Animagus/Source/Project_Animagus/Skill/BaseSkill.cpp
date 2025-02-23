@@ -8,7 +8,11 @@ UBaseSkill::UBaseSkill()
     // 기본값 초기화 (필요에 따라 값을 수정하세요)
     SkillName = "DefaultSkill";
     SkillDescription = "This is a default skill.";
+<<<<<<< Updated upstream
     CooldownTime = 0.1f;
+=======
+    CooldownTime = 5.0f;
+>>>>>>> Stashed changes
     bIsCooldown = false;
     LastUsedTime = -CooldownTime; // 처음에는 사용 가능하도록
 }
