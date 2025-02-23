@@ -78,6 +78,7 @@ public:
  ) override;
     
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
     // 4개의 스킬 슬롯 (TArray를 사용)
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Skills")
     TArray<UBaseSkill*> Skills;
@@ -93,6 +94,8 @@ public:
     // 스킬 초기화 함수 (예: BeginPlay에서 호출)
     UFUNCTION(BlueprintCallable, Category="Skills")
     void InitializeSkills(); 
+=======
+>>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
 };

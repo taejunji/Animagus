@@ -17,8 +17,11 @@
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
       <change beforePath="$PROJECT_DIR$/Intermediate/Build/BuildRules/Project_AnimagusModuleRules.pdb" beforeDir="false" afterPath="$PROJECT_DIR$/Intermediate/Build/BuildRules/Project_AnimagusModuleRules.pdb" afterDir="false" />
 =======
+=======
+>>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
 =======
@@ -34,6 +37,9 @@
       <change beforePath="$PROJECT_DIR$/Source/Project_Animagus/Skill/BaseSkill.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Project_Animagus/Skill/BaseSkill.h" afterDir="false" />
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
@@ -56,7 +62,11 @@
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
     <setting file="file://$PROJECT_DIR$/Source/Project_Animagus/Skill/BaseSkill.h" root0="SKIP_HIGHLIGHTING" />
+=======
+    <setting file="file://$PROJECT_DIR$/Source/Project_Animagus/Character/BaseCharacter.cpp" root0="FORCE_HIGHLIGHTING" />
+>>>>>>> Stashed changes
 =======
     <setting file="file://$PROJECT_DIR$/Source/Project_Animagus/Character/BaseCharacter.cpp" root0="FORCE_HIGHLIGHTING" />
 >>>>>>> Stashed changes
@@ -209,7 +219,11 @@
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
       <workItem from="1740292734488" duration="1013000" />
+=======
+      <workItem from="1740210410365" duration="13680000" />
+>>>>>>> Stashed changes
 =======
       <workItem from="1740210410365" duration="13680000" />
 >>>>>>> Stashed changes

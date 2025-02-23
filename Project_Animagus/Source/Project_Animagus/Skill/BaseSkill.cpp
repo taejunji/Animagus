@@ -9,7 +9,11 @@ UBaseSkill::UBaseSkill()
     SkillName = "DefaultSkill";
     SkillDescription = "This is a default skill.";
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
     CooldownTime = 0.1f;
+=======
+    CooldownTime = 5.0f;
+>>>>>>> Stashed changes
 =======
     CooldownTime = 5.0f;
 >>>>>>> Stashed changes
