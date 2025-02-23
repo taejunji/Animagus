@@ -31,6 +31,9 @@ protected:
     virtual void BeginPlay() override;
     virtual void SetupInputComponent() override;
 
+    // * 스킬 입력
+    void FireProjectileFromPlayer();
+
 private:
     void Input_Move(const FInputActionValue& InputValue);
     void Input_Rotate(const FInputActionValue& InputValue);

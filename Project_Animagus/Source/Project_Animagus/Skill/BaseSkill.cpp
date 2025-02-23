@@ -3,20 +3,19 @@
 
 #include "BaseSkill.h"
 
-void UBaseSkill::ActiveSkill()
+// Sets default values
+ABaseSkill::ABaseSkill()
+{
+ 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
+	PrimaryActorTick.bCanEverTick = false;
+
+}
+
+void ABaseSkill::ActivateSkill(AActor* Target)
 {
 }
 
-void UBaseSkill::DeactiveSkill()
+void ABaseSkill::EndSkill()
 {
 }
 
-void UBaseSkill::StartCoolDown()
-{
-    is_cooldown = true;
-}
-
-void UBaseSkill::EndCoolDown()
-{
-    is_cooldown = false;
-}
