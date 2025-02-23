@@ -3,40 +3,50 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "UObject/NoExportTypes.h"
+#include "GameFramework/Actor.h"
+//#include "../Character/BaseCharacter.h"
+
 #include "BaseSkill.generated.h"
 
 /**
  *  스킬 기본 베이스 - 공통 작업
  */
+
 UCLASS()
-class PROJECT_ANIMAGUS_API UBaseSkill : public UObject
+class PROJECT_ANIMAGUS_API ABaseSkill : public AActor
 {
 	GENERATED_BODY()
+	
+public:	
+	ABaseSkill();
 
-public:
+    // * 스킬 속성
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Skill")
+    FString skill_name; // 이름
 
-    UPROPERTY(BlueprintReadWrite, Category = "Skill")
-    FString skill_name; // 스킬 이름
-
-    UPROPERTY(BlueprintReadWrite, Category = "Skill")
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Skill")
     FString skill_description; // 스킬 설명
 
-    UPROPERTY(BlueprintReadWrite, Category = "Skill")
-    TObjectPtr<class ABaseCharacter> owner; // 소유자
+    //UPROPERTY(EditAnywhere, BlueprintReadWrite, Category ="Skill")
+    //TObjectPtr<class ABaseCharacter> skil_owner; // 주인 
 
-    UPROPERTY(BlueprintReadWrite, Category = "Skill")
-    float cooldown_time; // 스킬 쿨타임 시간 
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Skill")
+    float damage;  // 데미지
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Skill")
+    float cool_down_time;  // 쿨타임
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Skill")
+    float range;  // 사거리
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Skill")
+    float life_time;  // 지속시간
 
 public:
-    virtual void ActiveSkill();   // 스킬 활성화
-    virtual void DeactiveSkill(); // 스킬 비활성화
-	
-    // 쿨타임
-    virtual void StartCoolDown();
-    virtual void EndCoolDown();
-    bool is_cooldown = false; 
+    // * 스킬 사용 함수
+    UFUNCTION(BlueprintCallable, Category = "Skill")
+    virtual void ActivateSkill(AActor* Target);  // 스킬 활성화
 
-
-
+    UFUNCTION(BlueprintCallable, Category = "Skill")
+    virtual void EndSkill();  // 스킬 종료
 };
