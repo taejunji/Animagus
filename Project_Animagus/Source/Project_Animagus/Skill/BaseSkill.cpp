@@ -3,41 +3,26 @@
 #include "TimerManager.h"
 #include "../Character/BaseCharacter.h"  // 소유자 캐릭터 클래스 헤더
 
-<<<<<<< HEAD
+
 UBaseSkill::UBaseSkill()
-=======
-// Sets default values
-ABaseSkill::ABaseSkill()
-{
- 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = false;
-
-}
-
-void ABaseSkill::ActivateSkill(AActor* Target)
->>>>>>> main
 {
     // 기본값 초기화 (필요에 따라 값을 수정하세요)
     SkillName = "DefaultSkill";
     SkillDescription = "This is a default skill.";
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
+
     CooldownTime = 0.1f;
-=======
+
     CooldownTime = 5.0f;
->>>>>>> Stashed changes
-=======
+
     CooldownTime = 5.0f;
->>>>>>> Stashed changes
+
     bIsCooldown = false;
     LastUsedTime = -CooldownTime; // 처음에는 사용 가능하도록
 }
 
-<<<<<<< HEAD
+
 void UBaseSkill::ActiveSkill_Implementation()
-=======
-void ABaseSkill::EndSkill()
->>>>>>> main
+
 {
     // 기본 스킬 활성화 로직: 서브 클래스에서 오버라이드 하세요.
     if (!bIsCooldown)
@@ -47,7 +32,7 @@ void ABaseSkill::EndSkill()
     }
 }
 
-<<<<<<< HEAD
+
 void UBaseSkill::DeactiveSkill_Implementation()
 {
     // 기본 스킬 비활성화 로직: 필요시 서브 클래스에서 오버라이드하세요.
@@ -92,5 +77,4 @@ bool UBaseSkill::IsOnCooldown() const
     float CurrentTime = Owner->GetWorld()->GetTimeSeconds();
     return (CurrentTime - LastUsedTime) < CooldownTime;
 }
-=======
->>>>>>> main
+

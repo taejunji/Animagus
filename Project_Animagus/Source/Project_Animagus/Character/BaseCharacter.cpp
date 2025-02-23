@@ -4,13 +4,10 @@
 #include "BaseCharacter.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Animation/AnimInstance.h"
-<<<<<<< HEAD
+
 #include "../Skill/BaseSkill.h"
 #include "../Skill/Fireball.h"
-=======
-#include "../Skill/ProjectileSkill.h"
-#include "../System/MyGameInstance.h"
->>>>>>> main
+
 
 ABaseCharacter::ABaseCharacter()
 {
@@ -23,7 +20,7 @@ ABaseCharacter::ABaseCharacter()
         GetMesh()->SetAnimInstanceClass(AnimBP.Class);
     }
 
-<<<<<<< HEAD
+
     Skills.SetNum(4);
 
     // ConstructorHelpers를 사용하여 UFireball 블루프린트 클래스 로드
@@ -38,14 +35,8 @@ ABaseCharacter::ABaseCharacter()
         UE_LOG(LogTemp, Warning, TEXT("BaseCharacter: Failed to load FireballBPClass!"));
     }
     
-=======
-    // 기본 투사체 BP 설정 -> 파이어볼
-    static ConstructorHelpers::FObjectFinder<UClass> ProjectileClassFinder(TEXT("/Game/WorkFolder/Bluprints/BP_ProjectileSkill.BP_ProjectileSkill_C"));
-    if (ProjectileClassFinder.Succeeded())
-    {
-        projectile_class = ProjectileClassFinder.Object;
-    }
->>>>>>> main
+
+
 }
 
 void ABaseCharacter::BeginPlay()
@@ -118,7 +109,7 @@ void ABaseCharacter::SetWalkSpeed(float fValue)
     GetCharacterMovement()->MaxWalkSpeed = fValue;
 }
 
-<<<<<<< HEAD
+
 float ABaseCharacter::TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent,
     AController* EventInstigator, AActor* DamageCauser)
 {
@@ -145,8 +136,7 @@ float ABaseCharacter::TakeDamage(float DamageAmount, struct FDamageEvent const& 
     
 }
 
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
+
 void ABaseCharacter::EquipSkill(int32 SlotIndex, UBaseSkill* NewSkill)
 {
     if (Skills.IsValidIndex(SlotIndex))
@@ -171,26 +161,8 @@ void ABaseCharacter::InitializeSkills()
     
 }
 
-=======
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
-=======
-void ABaseCharacter::FireProjectile()
-{
-    // 투사체 발사
-    if (projectile_class)
-    { 
-        PlayAnimMontageByType(MontageType::DefaultAttack);
 
-        FVector SpawnLocation = GetActorLocation() + GetActorForwardVector() * 100.0f; // 오프셋 추가
-        FRotator SpawnRotation = GetActorRotation(); 
 
-        AProjectileSkill* Projectile = GetWorld()->SpawnActor<AProjectileSkill>(projectile_class, SpawnLocation, SpawnRotation);
-        Projectile->SetOwner(this);
-        Projectile->ActivateSkill(nullptr);
-    }
-}
->>>>>>> main
+
 
 
