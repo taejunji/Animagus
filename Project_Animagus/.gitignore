@@ -91,7 +91,8 @@ Saved/*
 
 # Compiled source files for the engine to use
 # 엔진이나 플러그인에서 사용하는 임시 중간 파일들입니다. 이 파일들은 컴파일 시마다 재생성되므로 버전 관리 대상에서 제외됩니다.
-Intermediate/*
+#Intermediate/*
+Intermediate/
 Plugins/**/Intermediate/*
 
 # Cache files for the editor to use
