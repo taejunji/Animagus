@@ -50,7 +50,7 @@ void UFireball::ActiveSkill_Implementation()
     }
 
     // 스폰 위치: 캐릭터의 전면 (예: 캐릭터 위치에서 전방으로 100cm)
-    FVector SpawnLocation = Owner->GetActorLocation() + Owner->GetActorForwardVector() * 100.f  + FVector(0.f, 0.f, 50.f);
+    FVector SpawnLocation = Owner->GetActorLocation() + Owner->GetActorForwardVector() * 50.f + Owner->GetActorRightVector() * 40.f;
     // 진행 방향: 카메라 뷰 방향 사용
     FRotator SpawnRotation = CameraRotation;
     
