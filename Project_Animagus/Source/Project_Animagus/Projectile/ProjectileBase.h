@@ -47,6 +47,10 @@ protected:
                        UPrimitiveComponent* OtherComp, FVector NormalImpulse,
                        const FHitResult& Hit);
 
+    /** 충돌 시 상대 플레이어에게 적용할 Knockback Force (충돌 방향 반대 방향으로 밀어내는 힘) */
+    UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Fireball")
+    float KnockbackForce;
+
 
     
     public:
@@ -73,6 +77,9 @@ protected:
     /** Niagara component for continuous projectile effect */
     UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
     UNiagaraComponent* ProjectileEffectComponent;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Effects")
+    float EffectScale;
     
     /** 투사체를 소멸시키는 함수 (타이머에서 호출) */
     UFUNCTION()

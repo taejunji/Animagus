@@ -41,8 +41,10 @@ AProjectileBase::AProjectileBase()
     DamageValue = 50.0f;
     Lifetime = 10.0f;  // 예를 들어, 5초 후 자동 소멸
     Shooter = nullptr; // 스폰 시 발사자 정보를 외부에서 설정
-
+    KnockbackForce = 1000;
     // 충돌 이벤트 바인딩
+    EffectScale = 1.0f;
+    
     CollisionSphere->OnComponentHit.AddDynamic(this, &AProjectileBase::OnHit);
 }
 
@@ -51,7 +53,7 @@ void AProjectileBase::BeginPlay()
     Super::BeginPlay();
 
     // 스폰 시 FlashEffect 이펙트 재생
-    if (FlashEffect)
+    if (FlashEffect && ProjectileEffectComponent)
     {
         UNiagaraFunctionLibrary::SpawnSystemAtLocation(
             GetWorld(),
@@ -61,6 +63,16 @@ void AProjectileBase::BeginPlay()
         );
     }
 
+    if (ProjectileEffectComponent && ProjectileEffectComponent->GetAsset())
+    {
+        ProjectileEffectComponent->SetFloatParameter(FName("Scale"), EffectScale);
+        ProjectileEffectComponent->Activate();
+    }
+    else
+    {
+        UE_LOG(LogTemp, Warning, TEXT("ProjectileEffectComponent has no asset assigned."));
+    }
+    
     // Lifetime 타이머 설정: Lifetime 후에 DestroySkill 호출
     FTimerHandle LifetimeHandle;
     GetWorld()->GetTimerManager().SetTimer(
