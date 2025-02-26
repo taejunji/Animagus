@@ -89,6 +89,9 @@ public:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Skills")
     TSubclassOf<class UFireball> FireballBPClass;
 
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Skills")
+    TSubclassOf<class UMagicMissile> MagicMissileBPClass;
+
     // 지정 슬롯에 스킬을 장착하는 함수
     UFUNCTION(BlueprintCallable, Category="Skills")
     void EquipSkill(int32 SlotIndex, UBaseSkill* NewSkill);

@@ -40,6 +40,13 @@ private:
     void Input_Attack(const FInputActionValue& InputValue);
     void Input_Ready(const FInputActionValue& InputValue);
 
+   // void Input_Skill1(const FInputActionValue& InputValue);
+   // void Input_Skill2(const FInputActionValue& InputValue);
+   // void Input_Skill3(const FInputActionValue& InputValue);
+   // void Input_Skill4(const FInputActionValue& InputValue);
+
+
+    
     void Input_ControlToggle_Pressed();     // 키가 눌렸을 때 -> 잠시동안 RPG 모드
     void Input_ControlToggle_Released();    // 키가 떼질 때   -> 잠시동안 TPS 모드
 

@@ -9,8 +9,8 @@
 UFireball::UFireball()
 {
     SkillName = "Fireball";
-    CooldownTime = 0.1f;
-    FireballDamage = 50.0f;
+    CooldownTime = 1.f;
+    FireballDamage = 5.0f;
     FireballSpeed = 1500.f;
     static ConstructorHelpers::FClassFinder<AProjectile_FireBall> FireballBPFinder(TEXT("/Game/WorkFolder/Bluprints/Projectiles/MyProjectile_FireBall"));
     if (FireballBPFinder.Succeeded())
@@ -25,6 +25,8 @@ UFireball::UFireball()
 
 void UFireball::ActiveSkill_Implementation()
 {
+    UE_LOG(LogTemp, Log, TEXT("UFireball::ActiveSkill_Implementation() called on %s"), *GetName());
+    
     if (!Owner || IsOnCooldown())
     {
         return;
@@ -50,7 +52,7 @@ void UFireball::ActiveSkill_Implementation()
     }
 
     // 스폰 위치: 캐릭터의 전면 (예: 캐릭터 위치에서 전방으로 100cm)
-    FVector SpawnLocation = Owner->GetActorLocation() + Owner->GetActorForwardVector() * 100.f  + FVector(0.f, 0.f, 50.f);
+    FVector SpawnLocation = Owner->GetActorLocation() + Owner->GetActorForwardVector() * 80.f  + FVector(0.f, 0.f, 20.f);
     // 진행 방향: 카메라 뷰 방향 사용
     FRotator SpawnRotation = CameraRotation;
     

@@ -9,11 +9,7 @@ UBaseSkill::UBaseSkill()
     // 기본값 초기화 (필요에 따라 값을 수정하세요)
     SkillName = "DefaultSkill";
     SkillDescription = "This is a default skill.";
-
-    CooldownTime = 0.1f;
-
-    CooldownTime = 5.0f;
-
+    
     CooldownTime = 5.0f;
 
     bIsCooldown = false;
@@ -24,6 +20,8 @@ UBaseSkill::UBaseSkill()
 void UBaseSkill::ActiveSkill_Implementation()
 
 {
+    UE_LOG(LogTemp, Log, TEXT("UBaseSkill::ActiveSkill_Implementation() called on %s"), *GetName());
+    
     // 기본 스킬 활성화 로직: 서브 클래스에서 오버라이드 하세요.
     if (!bIsCooldown)
     {
