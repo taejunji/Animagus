@@ -7,12 +7,14 @@
 
 #include "../Skill/BaseSkill.h"
 #include "../Skill/Fireball.h"
-
+#include "../Skill/MagicMissile.h"
 
 ABaseCharacter::ABaseCharacter()
 {
 	PrimaryActorTick.bCanEverTick = true;
-    
+
+    Skills.SetNum(4); 
+
     // 애님 인스턴스 설정
     static ConstructorHelpers::FClassFinder<UAnimInstance> AnimBP(TEXT("/Game/WorkFolder/Animation/AnimSystem/ABP_TEST2.ABP_TEST2_C"));
     if (AnimBP.Succeeded())
@@ -21,7 +23,7 @@ ABaseCharacter::ABaseCharacter()
     }
 
 
-    Skills.SetNum(4);
+
 
     // ConstructorHelpers를 사용하여 UFireball 블루프린트 클래스 로드
     static ConstructorHelpers::FClassFinder<UFireball> FireballBPClassFinder(TEXT("/Game/WorkFolder/Bluprints/Skills/MyFireball"));
@@ -35,7 +37,17 @@ ABaseCharacter::ABaseCharacter()
         UE_LOG(LogTemp, Warning, TEXT("BaseCharacter: Failed to load FireballBPClass!"));
     }
     
-
+    // ConstructorHelpers를 사용하여 MagicMissile 블루프린트 클래스 로드
+    static ConstructorHelpers::FClassFinder<UMagicMissile> MagicMissileBPClassFinder(TEXT("/Game/WorkFolder/Bluprints/Skills/MyMagicMissile"));
+    if (MagicMissileBPClassFinder.Succeeded())
+    {
+        MagicMissileBPClass = MagicMissileBPClassFinder.Class;
+        UE_LOG(LogTemp, Log, TEXT("BaseCharacter: Successfully loaded MagicMissileBPClassFinder: %s"), *MagicMissileBPClass->GetName());
+    }
+    else
+    {
+        UE_LOG(LogTemp, Warning, TEXT("BaseCharacter: Failed to load MagicMissileBPClassFinder!"));
+    }
 
 }
 
@@ -147,17 +159,49 @@ void ABaseCharacter::EquipSkill(int32 SlotIndex, UBaseSkill* NewSkill)
 
 void ABaseCharacter::InitializeSkills()
 {
+
     for (int32 i = 0; i < Skills.Num(); i++)
     {
-        // UFireballSkill은 UBaseSkill을 상속받은 파이어볼 스킬 클래스입니다.
-        UBaseSkill* NewSkill = NewObject<UFireball>(this, UFireball::StaticClass());
-        if (NewSkill)
+        if (FireballBPClass)  // UFireball 블루프린트 클래스가 할당되어 있어야 함
         {
-            // 스킬의 소유자(Owner) 설정
-            NewSkill->Owner = this;
-            Skills[i] = NewSkill;
+            UBaseSkill* NewSkill = NewObject<UFireball>(this, FireballBPClass);
+            if (NewSkill)
+            {
+                NewSkill->Owner = this;
+                Skills[i] = NewSkill;
+                UE_LOG(LogTemp, Log, TEXT("InitializeSkills: Successfully created skill for slot %d: %s"), i, *NewSkill->GetName());
+            }
+            else
+            {
+                UE_LOG(LogTemp, Warning, TEXT("InitializeSkills: Failed to create skill for slot %d"), i);
+            }
+        }
+        else
+        {
+            UE_LOG(LogTemp, Warning, TEXT("InitializeSkills: FireballBPClass is not assigned."));
         }
     }
+
+    // 예시로 슬롯 1에 UMagicMissile 스킬 생성
+    if (MagicMissileBPClass)
+    {
+        UBaseSkill* NewSkill = NewObject<UMagicMissile>(this, MagicMissileBPClass);
+        if (NewSkill)
+        {
+            NewSkill->Owner = this;
+            Skills[1] = NewSkill;
+            UE_LOG(LogTemp, Log, TEXT("InitializeSkills: Successfully created MagicMissile skill for slot 1: %s"), *NewSkill->GetName());
+        }
+        else
+        {
+            UE_LOG(LogTemp, Warning, TEXT("InitializeSkills: Failed to create MagicMissile skill for slot 1"));
+        }
+    }
+    else
+    {
+        UE_LOG(LogTemp, Warning, TEXT("InitializeSkills: MagicMissileBPClass is not assigned."));
+    }
+
     
 }
 
