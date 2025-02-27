@@ -14,7 +14,7 @@ enum class EventType : uint8
 };
 
 
-class IocpEvent
+class IocpEvent : public OVERLAPPED
 {
 public:
     IocpEvent(EventType type);

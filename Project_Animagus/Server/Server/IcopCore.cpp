@@ -17,6 +17,10 @@ IocpCore::~IocpCore()
     ::CloseHandle(_iocpHandle);
 }
 
+void IocpCore::RegisterAccept()
+{
+}
+
 bool IocpCore::Register(IocpObjectRef iocpObject)
 {
     return ::CreateIoCompletionPort(iocpObject->GetHandle(), _iocpHandle, /*key*/0, 0);
