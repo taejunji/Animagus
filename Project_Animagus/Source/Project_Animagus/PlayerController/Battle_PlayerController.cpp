@@ -45,6 +45,9 @@ void ABattle_PlayerController::SetupInputComponent()
 {
     Super::SetupInputComponent();
 
+    // Triggered : 입력 키를 누르고 있는 동안 지속적으로 발생
+    // Started : 키를 누르는 순간 단 한 번 발생
+    // Completed : 키를 놓는 순간 한 번 발생
     if (auto* EnhancedInputComponent = Cast<UEnhancedInputComponent>(InputComponent))
     {
         // "W,A,S,D", "Mouse", "Space"
@@ -62,6 +65,12 @@ void ABattle_PlayerController::SetupInputComponent()
         // "Shift"
         EnhancedInputComponent->BindAction(run_toggle_action, ETriggerEvent::Started, this, &ThisClass::Input_RunToggle_Pressed);
         EnhancedInputComponent->BindAction(run_toggle_action, ETriggerEvent::Completed, this, &ThisClass::Input_RunToggle_Released);
+
+        // "Skill - 1,2,3,4"
+        EnhancedInputComponent->BindAction(skill_1_action, ETriggerEvent::Started, this, &ThisClass::Input_Skill_1);
+        EnhancedInputComponent->BindAction(skill_2_action, ETriggerEvent::Started, this, &ThisClass::Input_Skill_2);
+        EnhancedInputComponent->BindAction(skill_3_action, ETriggerEvent::Started, this, &ThisClass::Input_Skill_3);
+        EnhancedInputComponent->BindAction(skill_4_action, ETriggerEvent::Started, this, &ThisClass::Input_Skill_4);
     }
 }
 
@@ -139,7 +148,6 @@ void ABattle_PlayerController::Input_Attack(const FInputActionValue& InputValue)
 {
     GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Blue, TEXT("Left Mouse Attack!"));
 
-
     if (APawn* MyPawn  = GetPawn())
     {
         ABaseCharacter* MyCharacter = Cast<ABaseCharacter>(MyPawn );
@@ -169,11 +177,6 @@ void ABattle_PlayerController::Input_Attack(const FInputActionValue& InputValue)
     //         MyPlayer->SetHP(MyPlayer->GetHP() - 25.f);
     // }
 
- 
-
-
-
-
 }
 
 void ABattle_PlayerController::Input_Ready(const FInputActionValue& InputValue)
@@ -185,6 +188,26 @@ void ABattle_PlayerController::Input_Ready(const FInputActionValue& InputValue)
     if (MyPlayer) MyPlayer->PlayAnimMontageByType(MontageType::Hit);
 
 
+}
+
+void ABattle_PlayerController::Input_Skill_1(const FInputActionValue& InputValue)
+{
+    UE_LOG(LogTemp, Display, TEXT("Skill_1_Pressed"));
+}
+
+void ABattle_PlayerController::Input_Skill_2(const FInputActionValue& InputValue)
+{
+    UE_LOG(LogTemp, Display, TEXT("Skill_2_Pressed"));
+}
+
+void ABattle_PlayerController::Input_Skill_3(const FInputActionValue& InputValue)
+{
+    UE_LOG(LogTemp, Display, TEXT("Skill_3_Pressed"));
+}
+
+void ABattle_PlayerController::Input_Skill_4(const FInputActionValue& InputValue)
+{
+    UE_LOG(LogTemp, Display, TEXT("Skill_4_Pressed"));
 }
 
 void ABattle_PlayerController::Input_ControlToggle_Pressed()
