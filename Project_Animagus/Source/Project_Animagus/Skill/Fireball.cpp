@@ -52,7 +52,8 @@ void UFireball::ActiveSkill_Implementation()
     }
 
     // 스폰 위치: 캐릭터의 전면 (예: 캐릭터 위치에서 전방으로 100cm)
-    FVector SpawnLocation = Owner->GetActorLocation() + Owner->GetActorForwardVector() * 80.f  + FVector(0.f, 0.f, 20.f);
+    FVector SpawnLocation = Owner->GetActorLocation() + Owner->GetActorForwardVector() * 70.f + Owner->GetActorRightVector() * 30.f;
+
     // 진행 방향: 카메라 뷰 방향 사용
     FRotator SpawnRotation = CameraRotation;
     
@@ -64,6 +65,8 @@ void UFireball::ActiveSkill_Implementation()
     // ProjectileBPClass가 유효한 경우, 블루프린트로 만든 투사체 액터를 스폰
     if (ProjectileBPClass)
     {
+        Owner->PlayAnimMontageByType(MontageType::DefaultAttack);
+
         AProjectile_FireBall* FireballProj = World->SpawnActor<AProjectile_FireBall>(ProjectileBPClass, SpawnLocation, SpawnRotation);
         if (FireballProj)
         {

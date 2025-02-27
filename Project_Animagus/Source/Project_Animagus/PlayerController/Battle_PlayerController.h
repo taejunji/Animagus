@@ -31,14 +31,17 @@ protected:
     virtual void BeginPlay() override;
     virtual void SetupInputComponent() override;
 
-
-
 private:
     void Input_Move(const FInputActionValue& InputValue);
     void Input_Rotate(const FInputActionValue& InputValue);
     void Input_Jump(const FInputActionValue& InputValue);
     void Input_Attack(const FInputActionValue& InputValue);
     void Input_Ready(const FInputActionValue& InputValue);
+    
+    void Input_Skill_1(const FInputActionValue& InputValue);
+    void Input_Skill_2(const FInputActionValue& InputValue);
+    void Input_Skill_3(const FInputActionValue& InputValue);
+    void Input_Skill_4(const FInputActionValue& InputValue);
 
    // void Input_Skill1(const FInputActionValue& InputValue);
    // void Input_Skill2(const FInputActionValue& InputValue);
@@ -79,4 +82,17 @@ protected:
 
     UPROPERTY(EditAnywhere, Category = "Input")
     TObjectPtr<class UInputAction> run_toggle_action;
+
+
+    UPROPERTY(EditAnywhere, Category = "Input")
+    TObjectPtr<class UInputAction> skill_1_action;
+
+    UPROPERTY(EditAnywhere, Category = "Input")
+    TObjectPtr<class UInputAction> skill_2_action;
+
+    UPROPERTY(EditAnywhere, Category = "Input")
+    TObjectPtr<class UInputAction> skill_3_action;
+
+    UPROPERTY(EditAnywhere, Category = "Input")
+    TObjectPtr<class UInputAction> skill_4_action;
 };
