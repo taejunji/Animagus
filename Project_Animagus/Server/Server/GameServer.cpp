@@ -78,7 +78,8 @@ void GameServer::Run()  // 메인 스레드도 이 함수 돌리는게 나을듯
     std::cout << "[GameServer] Running..." << std::endl;
 
     // 각 스레드가 IOCP 큐에서 이벤트를 처리하는 루프 실행
-    for (unsigned int i = 0; i < workerCount; ++i) {
+    for (unsigned int i = 0; i < workerCount; ++i)
+    {
         m_workerThreads.emplace_back([this]() {
             while (m_running.load())
             {
