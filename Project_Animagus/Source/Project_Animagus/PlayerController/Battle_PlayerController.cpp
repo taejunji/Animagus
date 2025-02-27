@@ -150,13 +150,17 @@ void ABattle_PlayerController::Input_Attack(const FInputActionValue& InputValue)
 
     if (APawn* MyPawn  = GetPawn())
     {
-        ABaseCharacter* MyCharacter = Cast<ABaseCharacter>(MyPawn );
+        
+        ABaseCharacter* MyCharacter = Cast<ABaseCharacter>(MyPawn);
+
+        MyCharacter->PlayAnimMontageByType(MontageType::DefaultAttack);
+        
         if (MyCharacter && MyCharacter->Skills.IsValidIndex(0) && MyCharacter->Skills[0])
         {
             MyCharacter->Skills[0]->ActiveSkill();
         }
     }
-    
+
     // auto* MyPlayer = Cast<ABaseCharacter>(GetPawn());
     //
     // if (MyPlayer) MyPlayer->PlayAnimMontageByType(MontageType::DefaultAttack);
@@ -182,10 +186,20 @@ void ABattle_PlayerController::Input_Attack(const FInputActionValue& InputValue)
 void ABattle_PlayerController::Input_Ready(const FInputActionValue& InputValue)
 {
     GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Blue, TEXT("Right Mouse Attack!"));
-    auto* MyPlayer = Cast<ABaseCharacter>(GetPawn());
-    
+    if (APawn* MyPawn  = GetPawn())
+    {
+        
+        ABaseCharacter* MyCharacter = Cast<ABaseCharacter>(MyPawn);
+        if (MyCharacter) MyCharacter->PlayAnimMontageByType(MontageType::Hit);
+        MyCharacter->PlayAnimMontageByType(MontageType::DefaultAttack);
+        
+        if (MyCharacter && MyCharacter->Skills.IsValidIndex(1) && MyCharacter->Skills[1])
+        {
+            MyCharacter->Skills[1]->ActiveSkill();
+        }
+    }
     // 제거 - 마우스 우클릭으로 애니메이션 테스트용 
-    if (MyPlayer) MyPlayer->PlayAnimMontageByType(MontageType::Hit);
+  
 
 
 }

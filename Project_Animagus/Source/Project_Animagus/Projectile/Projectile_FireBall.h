@@ -19,13 +19,6 @@ public:
 
 protected:
     // 화상 데미지 같은 기능은 추후 추가
-    // 현재는 Knockback 효과를 위한 변수 추가
-
-    /** 충돌 시 상대 플레이어에게 적용할 Knockback Force (충돌 방향 반대 방향으로 밀어내는 힘) */
-    UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Fireball")
-    float KnockbackForce;
-
-    virtual void BeginPlay() override;
     
     // (추후 화상 효과 관련 변수 추가 가능)
     
