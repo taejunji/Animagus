@@ -63,6 +63,14 @@ void AProjectile_MagicMissile::OnHit(UPrimitiveComponent* OverlappedComponent, A
                                       UPrimitiveComponent* OtherComp, FVector NormalImpulse,
                                       const FHitResult& Hit)
 {
+
+    if (OtherActor == Shooter )
+    {
+        ProjectileLight->SetIntensity(0.0f);
+        DestroySkill();
+        
+    }
+    
     if (OtherActor && OtherActor != this && OtherActor != Shooter)
     {
         // 적용할 데미지: UGameplayStatics::ApplyDamage

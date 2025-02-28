@@ -9,6 +9,7 @@
 UFireball::UFireball()
 {
     SkillName = "Fireball";
+    SkillDescription = "가장 기본적인 스킬";
     CooldownTime = 1.f;
     FireballDamage = 5.0f;
     FireballSpeed = 1500.f;

@@ -48,7 +48,7 @@ protected:
                        const FHitResult& Hit);
 
     /** 충돌 시 상대 플레이어에게 적용할 Knockback Force (충돌 방향 반대 방향으로 밀어내는 힘) */
-    UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Fireball")
+    UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Knockback")
     float KnockbackForce;
 
 
