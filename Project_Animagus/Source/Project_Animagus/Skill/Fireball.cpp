@@ -52,7 +52,7 @@ void UFireball::ActiveSkill_Implementation()
         CameraRotation = Owner->GetActorRotation();
     }
 
-    // 스폰 위치: 캐릭터의 전면 (예: 캐릭터 위치에서 전방으로 100cm)
+    // 스폰 위치: 캐릭터의 전면 (예: 캐릭터 위치에서 전방으로 70cm)
     FVector SpawnLocation = Owner->GetActorLocation() + Owner->GetActorForwardVector() * 70.f + Owner->GetActorRightVector() * 30.f;
 
     // 진행 방향: 카메라 뷰 방향 사용

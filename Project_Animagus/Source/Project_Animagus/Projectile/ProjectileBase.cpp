@@ -15,7 +15,7 @@ AProjectileBase::AProjectileBase()
     CollisionSphere = CreateDefaultSubobject<USphereComponent>(TEXT("CollisionSphere"));
     CollisionSphere->InitSphereRadius(10.0f);
    // 추후에 Projectile로 설정 후 충돌채널 설정 
-    //CollisionSphere->SetCollisionProfileName(TEXT("BlockAll"));
+    CollisionSphere->SetCollisionProfileName(TEXT("BlockAll"));
     RootComponent = CollisionSphere;
    // CollisionSphere->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
     
@@ -116,15 +116,19 @@ void AProjectileBase::OnHit(UPrimitiveComponent* OverlappedComponent, AActor* Ot
             ProjectileLight->SetIntensity(0.0f);
         }
 
+        DestroySkill();
+        
         // 충돌 후 1초 후 DestroySkill 호출 (혹은 즉시 Destroy()를 호출할 수도 있음)
-        FTimerHandle DestroyHandle;
-        GetWorld()->GetTimerManager().SetTimer(
-            DestroyHandle,
-            this,
-            &AProjectileBase::DestroySkill,
-            1.0f,
-            false
-        );
+        // FTimerHandle DestroyHandle;
+        // GetWorld()->GetTimerManager().SetTimer(
+        //     DestroyHandle,
+        //     this,
+        //     &AProjectileBase::DestroySkill,
+        //     1.0f,
+        //     false
+        // );
+
+        
     }
 }
 
