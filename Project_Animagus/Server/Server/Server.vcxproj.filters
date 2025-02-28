@@ -21,14 +21,17 @@
     <ClCompile Include="pch.cpp">
       <Filter>Utils</Filter>
     </ClCompile>
-    <ClCompile Include="IcopCore.cpp">
+    <ClCompile Include="IocpCore.cpp">
       <Filter>IOCP</Filter>
     </ClCompile>
-    <ClCompile Include="IcopEvent.cpp">
+    <ClCompile Include="IocpEvent.cpp">
       <Filter>IOCP</Filter>
     </ClCompile>
     <ClCompile Include="GameServer.cpp">
       <Filter>ServerMain</Filter>
+    </ClCompile>
+    <ClCompile Include="Session.cpp">
+      <Filter>IOCP</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -49,6 +52,9 @@
     </ClInclude>
     <ClInclude Include="GameServer.h">
       <Filter>ServerMain</Filter>
+    </ClInclude>
+    <ClInclude Include="Session.h">
+      <Filter>IOCP</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

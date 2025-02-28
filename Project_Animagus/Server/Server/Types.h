@@ -1,4 +1,5 @@
 #pragma once
+#include <iostream>
 
 using BYTE = unsigned char;
 using int8 = __int8;
