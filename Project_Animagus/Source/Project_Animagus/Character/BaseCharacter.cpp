@@ -100,6 +100,7 @@ void ABaseCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+    // 임시 캐릭터 죽음 테스트
     if (hp <= 0.f) {        
         if (is_dead == false) is_dead = true;
         if (GetCharacterMovement()->IsFalling() == false) {
@@ -111,16 +112,18 @@ void ABaseCharacter::Tick(float DeltaTime)
     }
     else {
         is_dead = false;
+    } 
 
+    // 스턴 + 지상에 위치 = 멈추고 스턴 애니메이션 재생
+    if(is_stun && GetCharacterMovement()->IsFalling() == false) 
+        GetCharacterMovement()->SetMovementMode(MOVE_None); // 이동 불가 
 
-    }// 제거 
 }
 
 void ABaseCharacter::SetWalkSpeed(float fValue)
 {
     GetCharacterMovement()->MaxWalkSpeed = fValue;
 }
-
 
 float ABaseCharacter::TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent,
     AController* EventInstigator, AActor* DamageCauser)
