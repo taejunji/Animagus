@@ -8,6 +8,8 @@
 #include "../Skill/BaseSkill.h"
 #include "../Skill/Fireball.h"
 #include "../Skill/MagicMissile.h"
+#include "Project_Animagus/Skill/Bounce.h"
+#include "Project_Animagus/Skill/Stun.h"
 
 ABaseCharacter::ABaseCharacter()
 {
@@ -49,6 +51,30 @@ ABaseCharacter::ABaseCharacter()
         UE_LOG(LogTemp, Warning, TEXT("BaseCharacter: Failed to load MagicMissileBPClassFinder!"));
     }
 
+    static ConstructorHelpers::FClassFinder<UBounce> BounceBPClassFinder(TEXT("/Game/WorkFolder/Bluprints/Skills/MyBounce"));
+    if (BounceBPClassFinder.Succeeded())
+    {
+        BounceBPClass = BounceBPClassFinder.Class;
+        UE_LOG(LogTemp, Log, TEXT("BaseCharacter: Successfully loaded BounceBPClassFinder: %s"), *BounceBPClass -> GetName());
+    }
+    else
+    {
+        UE_LOG(LogTemp, Warning, TEXT("BaseCharacter: Failed to load BounceBPClassFinder!"));
+    } 
+
+    static ConstructorHelpers::FClassFinder<UStun> StunBPClassFinder(TEXT("/Game/WorkFolder/Bluprints/Skills/MyStun"));
+    if (StunBPClassFinder.Succeeded())
+    {
+        StunBPClass = StunBPClassFinder.Class;
+        UE_LOG(LogTemp, Log, TEXT("BaseCharacter: Successfully loaded StunBPClassFinder: %s"), *StunBPClass -> GetName());
+    }
+    else
+    {
+        UE_LOG(LogTemp, Warning, TEXT("BaseCharacter: Failed to load StunBPClassFinder!"));
+    } 
+    
+    bIsStunned = false;
+    
 }
 
 void ABaseCharacter::BeginPlay()
@@ -128,7 +154,8 @@ float ABaseCharacter::TakeDamage(float DamageAmount, struct FDamageEvent const& 
     float ActualDamage = Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
 
     hp -= ActualDamage;
-    
+    // 나중에 패킷관리 할 예시 코드 ㅇㅇ
+
     // FDamagePacket DamagePacket;
     // DamagePacket.CharacterID = this->GetUniqueID(); // 예시로 캐릭터의 고유 ID 사용
     // DamagePacket.DamageAmount = ActualDamage;
@@ -159,30 +186,29 @@ void ABaseCharacter::EquipSkill(int32 SlotIndex, UBaseSkill* NewSkill)
 
 void ABaseCharacter::InitializeSkills()
 {
-
-    for (int32 i = 0; i < Skills.Num(); i++)
+ // 여기는 스킬 고르는 거 넣기 전에 테스트용임 ㅇㅇ
+    
+    // 0번슬롯 ㅇㅇ
+    if (FireballBPClass)
     {
-        if (FireballBPClass)  // UFireball 블루프린트 클래스가 할당되어 있어야 함
+        UBaseSkill* NewSkill = NewObject<UFireball>(this, FireballBPClass);
+        if (NewSkill)
         {
-            UBaseSkill* NewSkill = NewObject<UFireball>(this, FireballBPClass);
-            if (NewSkill)
-            {
-                NewSkill->Owner = this;
-                Skills[i] = NewSkill;
-                UE_LOG(LogTemp, Log, TEXT("InitializeSkills: Successfully created skill for slot %d: %s"), i, *NewSkill->GetName());
-            }
-            else
-            {
-                UE_LOG(LogTemp, Warning, TEXT("InitializeSkills: Failed to create skill for slot %d"), i);
-            }
+            NewSkill->Owner = this;
+            Skills[0] = NewSkill;
+            UE_LOG(LogTemp, Log, TEXT("InitializeSkills: Successfully created MagicMissile skill for slot 0: %s"), *NewSkill->GetName());
         }
         else
         {
-            UE_LOG(LogTemp, Warning, TEXT("InitializeSkills: FireballBPClass is not assigned."));
+            UE_LOG(LogTemp, Warning, TEXT("InitializeSkills: Failed to create MagicMissile skill for slot 0"));
         }
     }
-
-    // 예시로 슬롯 1에 UMagicMissile 스킬 생성
+    else
+    {
+        UE_LOG(LogTemp, Warning, TEXT("InitializeSkills: FireballBPClass is not assigned."));
+    }
+    
+    // 슬롯 1에 UMagicMissile 스킬 생성 ㅇㅇ
     if (MagicMissileBPClass)
     {
         UBaseSkill* NewSkill = NewObject<UMagicMissile>(this, MagicMissileBPClass);
@@ -201,12 +227,82 @@ void ABaseCharacter::InitializeSkills()
     {
         UE_LOG(LogTemp, Warning, TEXT("InitializeSkills: MagicMissileBPClass is not assigned."));
     }
-
     
+    // 2번슬롯 
+    if (BounceBPClass)
+    {
+        UBaseSkill* NewSkill = NewObject<UBounce>(this, BounceBPClass);
+        if (NewSkill)
+        {
+            NewSkill->Owner = this;
+            Skills[2] = NewSkill;
+            UE_LOG(LogTemp, Log, TEXT("InitializeSkills: Successfully created Bounce skill for slot 2: %s"), *NewSkill->GetName());
+        }
+        else
+        {
+            UE_LOG(LogTemp, Warning, TEXT("InitializeSkills: Failed to create Bounce skill for slot 2"));
+        }
+    }
+    else
+    {
+        UE_LOG(LogTemp, Warning, TEXT("InitializeSkills: BounceBPClass is not assigned."));
+    }
+
+    // 3번슬롯 
+    if (StunBPClass)
+    {
+        UBaseSkill* NewSkill = NewObject<UStun>(this, StunBPClass);
+        if (NewSkill)
+        {
+            NewSkill->Owner = this;
+            Skills[3] = NewSkill;
+            UE_LOG(LogTemp, Log, TEXT("InitializeSkills: Successfully created Stun skill for slot 3: %s"), *NewSkill->GetName());
+        }
+        else
+        {
+            UE_LOG(LogTemp, Warning, TEXT("InitializeSkills: Failed to create Stun skill for slot 3"));
+        }
+    }
+    else
+    {
+        UE_LOG(LogTemp, Warning, TEXT("InitializeSkills: StunBPClass is not assigned."));
+    } 
 }
 
+void ABaseCharacter::ApplyStun(float Duration)
+{
+    // 이미 스턴 중이면 무시
+    if (bIsStunned)
+    {
+        return;
+    }
 
+    bIsStunned = true;
+    UE_LOG(LogTemp, Log, TEXT("%s is stunned for %f seconds"), *GetName(), Duration);
 
+    // 플레이어 입력 차단 (플레이어 컨트롤러가 있다면)
+    if (APlayerController* PC = Cast<APlayerController>(GetController()))
+    {
+        PC->SetIgnoreMoveInput(true);
+        PC->SetIgnoreLookInput(true);
+    }
 
+    // 타이머 설정: Duration 이후에 RemoveStun() 호출
+    FTimerHandle StunTimerHandle;
+    GetWorld()->GetTimerManager().SetTimer(StunTimerHandle, this, &ABaseCharacter::RemoveStun, Duration, false);
+}
+
+void ABaseCharacter::RemoveStun()
+{
+    bIsStunned = false;
+    UE_LOG(LogTemp, Log, TEXT("%s is no longer stunned"), *GetName());
+
+    // 입력 복구
+    if (APlayerController* PC = Cast<APlayerController>(GetController()))
+    {
+        PC->SetIgnoreMoveInput(false);
+        PC->SetIgnoreLookInput(false);
+    }
+}
 
 

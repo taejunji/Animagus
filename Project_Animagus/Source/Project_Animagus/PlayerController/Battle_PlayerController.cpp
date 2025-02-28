@@ -207,21 +207,73 @@ void ABattle_PlayerController::Input_Ready(const FInputActionValue& InputValue)
 void ABattle_PlayerController::Input_Skill_1(const FInputActionValue& InputValue)
 {
     UE_LOG(LogTemp, Display, TEXT("Skill_1_Pressed"));
+    
+    if (APawn* MyPawn  = GetPawn())
+    {
+        
+        ABaseCharacter* MyCharacter = Cast<ABaseCharacter>(MyPawn);
+        if (MyCharacter) MyCharacter->PlayAnimMontageByType(MontageType::Hit);
+        MyCharacter->PlayAnimMontageByType(MontageType::DefaultAttack);
+        
+        if (MyCharacter && MyCharacter->Skills.IsValidIndex(0) && MyCharacter->Skills[0])
+        {
+            MyCharacter->Skills[0]->ActiveSkill();
+        }
+    }
 }
 
 void ABattle_PlayerController::Input_Skill_2(const FInputActionValue& InputValue)
 {
     UE_LOG(LogTemp, Display, TEXT("Skill_2_Pressed"));
+    
+    if (APawn* MyPawn  = GetPawn())
+    {
+        
+        ABaseCharacter* MyCharacter = Cast<ABaseCharacter>(MyPawn);
+        if (MyCharacter) MyCharacter->PlayAnimMontageByType(MontageType::Hit);
+        MyCharacter->PlayAnimMontageByType(MontageType::DefaultAttack);
+        
+        if (MyCharacter && MyCharacter->Skills.IsValidIndex(1) && MyCharacter->Skills[1])
+        {
+            MyCharacter->Skills[1]->ActiveSkill();
+        }
+    }
 }
 
 void ABattle_PlayerController::Input_Skill_3(const FInputActionValue& InputValue)
 {
     UE_LOG(LogTemp, Display, TEXT("Skill_3_Pressed"));
+
+    if (APawn* MyPawn  = GetPawn())
+    {
+        
+        ABaseCharacter* MyCharacter = Cast<ABaseCharacter>(MyPawn);
+        if (MyCharacter) MyCharacter->PlayAnimMontageByType(MontageType::Hit);
+        MyCharacter->PlayAnimMontageByType(MontageType::DefaultAttack);
+        
+        if (MyCharacter && MyCharacter->Skills.IsValidIndex(2) && MyCharacter->Skills[2])
+        {
+            MyCharacter->Skills[2]->ActiveSkill();
+        }
+    }
 }
 
 void ABattle_PlayerController::Input_Skill_4(const FInputActionValue& InputValue)
 {
     UE_LOG(LogTemp, Display, TEXT("Skill_4_Pressed"));
+
+    if (APawn* MyPawn  = GetPawn())
+    {
+        
+        ABaseCharacter* MyCharacter = Cast<ABaseCharacter>(MyPawn);
+        if (MyCharacter) MyCharacter->PlayAnimMontageByType(MontageType::Hit);
+        MyCharacter->PlayAnimMontageByType(MontageType::DefaultAttack);
+        
+        if (MyCharacter && MyCharacter->Skills.IsValidIndex(3) && MyCharacter->Skills[3])
+        {
+            MyCharacter->Skills[3]->ActiveSkill();
+        }
+    }
 }
 
 void ABattle_PlayerController::Input_ControlToggle_Pressed()

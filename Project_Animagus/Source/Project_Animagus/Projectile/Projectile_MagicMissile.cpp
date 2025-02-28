@@ -64,6 +64,8 @@ void AProjectile_MagicMissile::OnHit(UPrimitiveComponent* OverlappedComponent, A
                                       const FHitResult& Hit)
 {
 
+
+    
     if (OtherActor == Shooter )
     {
         ProjectileLight->SetIntensity(0.0f);
@@ -90,7 +92,9 @@ void AProjectile_MagicMissile::OnHit(UPrimitiveComponent* OverlappedComponent, A
             // 여기서는 충돌 표면의 외부 방향으로 밀어내는 효과를 줍니다.
             FVector LaunchVelocity = ImpulseDirection * KnockbackForce;
             HitCharacter->LaunchCharacter(LaunchVelocity, true, true);
+            
         }
+        
         
         //  추가 이펙트: 예를 들어 HitEffect를 스폰
         if (HitEffect)
