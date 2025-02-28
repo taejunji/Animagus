@@ -14,7 +14,7 @@ UStun::UStun()
     CooldownTime = 8.0f; // 예시 쿨타임
     StunDamage = 30.0f;  // 예시 데미지
     StunSpeed = 1400.f;  // 예시 이동 속도
-    StunDuration = 2.5f; // 예시 스턴 지속 시간
+    StunDuration = 1.67f; // 예시 스턴 지속 시간
 
     // ProjectileBPClass는 에디터에서 할당 (예: MyProjectile_Stun_BP)
     ProjectileBPClass = nullptr;
@@ -35,6 +35,9 @@ void UStun::ActiveSkill_Implementation()
         return;
     }
 
+    // 공격 애니메이션
+    Owner->PlayAnimMontageByType(MontageType::DefaultAttack);
+
     FVector CameraLocation;
     FRotator CameraRotation;
 
@@ -52,6 +55,8 @@ void UStun::ActiveSkill_Implementation()
     FVector SpawnLocation = Owner->GetActorLocation() 
                             + Owner->GetActorForwardVector() * 80.f 
                             + FVector(0.f, 0.f, 30.f);
+    // FVector SpawnLocation = Owner->GetActorLocation() + Owner->GetActorForwardVector() * 200.f + Owner->GetActorRightVector() * 30.f;
+
 
     // 진행 방향: 캐릭터의 회전을 사용 (또는 필요시 카메라 뷰 방향)
     FRotator SpawnRotation = CameraRotation;
