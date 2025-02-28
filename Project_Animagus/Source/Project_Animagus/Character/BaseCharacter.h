@@ -45,8 +45,6 @@ protected:
     float max_hp; // MaxHP 체력
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stat")
     bool is_dead; // 죽었는지
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stat")
-    bool is_stun; // 스턴 상태인지
 
 protected:
     UPROPERTY(EditAnywhere, Category = "AnimationMontage")
@@ -66,11 +64,11 @@ public:
 
     void SetWalkSpeed(float fValue);
     void SetHP(float fValue) { hp = fValue; }
-    void SetIsHardHit(bool bValue) { is_stun = bValue; }
+    void SetIsHardHit(bool bValue) { bIsStunned = bValue; }
 
     float GetHP() const { return hp; }
     bool GetIsDead() const { return is_dead; }
-    bool GetIsHardHit() const { return is_stun; }
+    bool GetIsHardHit() const { return bIsStunned; }
 
 
     virtual float TakeDamage(

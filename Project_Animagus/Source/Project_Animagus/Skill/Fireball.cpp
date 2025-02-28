@@ -38,6 +38,9 @@ void UFireball::ActiveSkill_Implementation()
     {
         return;
     }
+    
+    // 공격 애니메이션
+    Owner->PlayAnimMontageByType(MontageType::DefaultAttack);
 
     // 플레이어 컨트롤러를 통해 카메라 뷰포인트를 가져옵니다.
     FVector CameraLocation;
@@ -53,7 +56,7 @@ void UFireball::ActiveSkill_Implementation()
     }
 
     // 스폰 위치: 캐릭터의 전면 (예: 캐릭터 위치에서 전방으로 70cm)
-    FVector SpawnLocation = Owner->GetActorLocation() + Owner->GetActorForwardVector() * 70.f + Owner->GetActorRightVector() * 30.f;
+    FVector SpawnLocation = Owner->GetActorLocation() + Owner->GetActorForwardVector() * 80.f + Owner->GetActorRightVector() * 30.f;
 
     // 진행 방향: 카메라 뷰 방향 사용
     FRotator SpawnRotation = CameraRotation;
