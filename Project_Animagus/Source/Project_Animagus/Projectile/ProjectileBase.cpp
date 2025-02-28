@@ -130,5 +130,9 @@ void AProjectileBase::OnHit(UPrimitiveComponent* OverlappedComponent, AActor* Ot
 
 void AProjectileBase::DestroySkill()
 {
+    if (ProjectileLight)
+    {
+        ProjectileLight->SetIntensity(0.0f);
+    }
     Destroy();
 }

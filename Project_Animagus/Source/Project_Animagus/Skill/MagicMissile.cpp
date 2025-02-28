@@ -12,6 +12,7 @@
 UMagicMissile::UMagicMissile()
 {
     SkillName = "MagicMissile";
+    SkillDescription = "유도 기능이 있고 데미지가 높지만 쿨타임이 긴 스킬";
     CooldownTime = 5.0f; // 
     MissileDamage = 10.0f;
     MissileSpeed = 1800.f;
