@@ -7,6 +7,7 @@
 #include "Kismet/KismetMathLibrary.h" // 이동 구현할 때 유틸리티 많은 애 
 
 #include "../Character/PlayerCharacter.h" 
+#include "GameFramework/CharacterMovementComponent.h" 
 #include "Project_Animagus/Skill/BaseSkill.h"
 
 ABattle_PlayerController::ABattle_PlayerController(const FObjectInitializer& ObjectInitializer)
@@ -169,18 +170,6 @@ void ABattle_PlayerController::Input_Attack(const FInputActionValue& InputValue)
     // {
     //     MyPlayer->Skills[0]->ActiveSkill();
     // }
-
-    
-    // 제거 - 마우스 좌클릭으로 애니메이션 테스트용 
-    // if (MyPlayer)
-    // {
-    //     float current_hp = MyPlayer->GetHP();
-    //     if(current_hp <= 0.f ) 
-    //         MyPlayer->SetHP(MyPlayer->GetHP() + 25.f);
-    //     else 
-    //         MyPlayer->SetHP(MyPlayer->GetHP() - 25.f);
-    // }
-
 }
 
 void ABattle_PlayerController::Input_Ready(const FInputActionValue& InputValue)
@@ -190,7 +179,6 @@ void ABattle_PlayerController::Input_Ready(const FInputActionValue& InputValue)
     {
         
         ABaseCharacter* MyCharacter = Cast<ABaseCharacter>(MyPawn);
-        if (MyCharacter) MyCharacter->PlayAnimMontageByType(MontageType::Hit);
         MyCharacter->PlayAnimMontageByType(MontageType::DefaultAttack);
         
         if (MyCharacter && MyCharacter->Skills.IsValidIndex(1) && MyCharacter->Skills[1])
@@ -198,25 +186,53 @@ void ABattle_PlayerController::Input_Ready(const FInputActionValue& InputValue)
             MyCharacter->Skills[1]->ActiveSkill();
         }
     }
-    // 제거 - 마우스 우클릭으로 애니메이션 테스트용 
   
-
-
 }
 
 void ABattle_PlayerController::Input_Skill_1(const FInputActionValue& InputValue)
 {
     UE_LOG(LogTemp, Display, TEXT("Skill_1_Pressed"));
+
+    if (auto* MyCharacter = Cast<ABaseCharacter>(GetPawn()))
+    {
+        // BaseCharacter의 is_stun의 (true/false)를 설정하고 AnimInstance에서 b_is_stun(애니메이션 조건 변수)를 업데이트해서 애니메이션 블루프린트 ABP_TEST_2에 설정된 변수 조건에 의해 애니메이션이 재생될 것
+        // HardHit 애니메이션에 Notify( 이벤트 알림 )을 설정해서 애니메이션 종료 구간에 is_stun을 false로 수정하는 방식
+
+            // 스턴 상태인지 - 나중에 궁극기 생기면 타이머를 통해 캐릭터를 정지 시킬 것
+            // 점프가 아닌 땅인 상태에서 맞으면 스턴에 걸리고 애니메이션이 끝날 동안 "공격, 점프, 움직임" 금지하게 될 것
+
+        // BaseCharacter의 stun이 false + 캐릭터가 지상에 있을 때 = "스턴"
+        if (MyCharacter->GetIsHardHit() == false && MyCharacter->GetCharacterMovement()->IsFalling() == false) {
+            MyCharacter->SetIsHardHit(true);
+        }
+    }
 }
 
 void ABattle_PlayerController::Input_Skill_2(const FInputActionValue& InputValue)
 {
     UE_LOG(LogTemp, Display, TEXT("Skill_2_Pressed"));
+
+    // 제거 - 마우스 우클릭으로 애니메이션 테스트용 
+    if (auto* MyCharacter = Cast<ABaseCharacter>(GetPawn()))
+    {
+        MyCharacter->PlayAnimMontageByType(MontageType::Hit);
+    }
+
 }
 
 void ABattle_PlayerController::Input_Skill_3(const FInputActionValue& InputValue)
 {
     UE_LOG(LogTemp, Display, TEXT("Skill_3_Pressed"));
+
+    // 제거 - 마우스 좌클릭으로 애니메이션 테스트용 
+    if (auto* MyPlayer = Cast<ABaseCharacter>(GetPawn()))
+    {  
+         float current_hp = MyPlayer->GetHP();
+        if(current_hp <= 0.f ) 
+            MyPlayer->SetHP(MyPlayer->GetHP() + 25.f); 
+        else 
+            MyPlayer->SetHP(MyPlayer->GetHP() - 25.f);
+    }
 }
 
 void ABattle_PlayerController::Input_Skill_4(const FInputActionValue& InputValue)
