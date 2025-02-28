@@ -15,7 +15,7 @@ AProjectileBase::AProjectileBase()
     CollisionSphere = CreateDefaultSubobject<USphereComponent>(TEXT("CollisionSphere"));
     CollisionSphere->InitSphereRadius(10.0f);
    // 추후에 Projectile로 설정 후 충돌채널 설정 
-    CollisionSphere->SetCollisionProfileName(TEXT("BlockAll"));
+    //CollisionSphere->SetCollisionProfileName(TEXT("BlockAll"));
     RootComponent = CollisionSphere;
    // CollisionSphere->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
     
