@@ -172,6 +172,7 @@ void ABattle_PlayerController::Input_Attack(const FInputActionValue& InputValue)
 void ABattle_PlayerController::Input_Ready(const FInputActionValue& InputValue)
 {
     GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Blue, TEXT("Right Mouse Attack!"));
+
     if (APawn* MyPawn  = GetPawn())
     {
         ABaseCharacter* MyCharacter = Cast<ABaseCharacter>(MyPawn);
@@ -202,37 +203,65 @@ void ABattle_PlayerController::Input_Skill_1(const FInputActionValue& InputValue
             MyCharacter->SetIsHardHit(true);
         }
     }
+    if (APawn* MyPawn  = GetPawn())
+    {
+        
+        ABaseCharacter* MyCharacter = Cast<ABaseCharacter>(MyPawn);
+        MyCharacter->PlayAnimMontageByType(MontageType::DefaultAttack);
+        
+        if (MyCharacter && MyCharacter->Skills.IsValidIndex(4) && MyCharacter->Skills[4])
+        {
+            MyCharacter->Skills[4]->ActiveSkill();
+        }
+    }
 }
 
 void ABattle_PlayerController::Input_Skill_2(const FInputActionValue& InputValue)
 {
     UE_LOG(LogTemp, Display, TEXT("Skill_2_Pressed"));
 
-    // 제거 - 마우스 우클릭으로 애니메이션 테스트용 
-    if (auto* MyCharacter = Cast<ABaseCharacter>(GetPawn()))
+    if (APawn* MyPawn  = GetPawn())
     {
-        MyCharacter->PlayAnimMontageByType(MontageType::Hit);
+        
+        ABaseCharacter* MyCharacter = Cast<ABaseCharacter>(MyPawn);
+        MyCharacter->PlayAnimMontageByType(MontageType::DefaultAttack);
+        
+        if (MyCharacter && MyCharacter->Skills.IsValidIndex(1) && MyCharacter->Skills[1])
+        {
+            MyCharacter->Skills[1]->ActiveSkill();
+        }
     }
 
 }
 
 void ABattle_PlayerController::Input_Skill_3(const FInputActionValue& InputValue)
 {
-    UE_LOG(LogTemp, Display, TEXT("Skill_3_Pressed"));
-
-    // 제거 - 마우스 좌클릭으로 애니메이션 테스트용 
-    if (auto* MyPlayer = Cast<ABaseCharacter>(GetPawn()))
-    {  
-         float current_hp = MyPlayer->GetHP();
-        if(current_hp <= 0.f ) 
-            MyPlayer->SetHP(MyPlayer->GetHP() + 25.f); 
-        else 
-            MyPlayer->SetHP(MyPlayer->GetHP() - 25.f);
+    if (APawn* MyPawn  = GetPawn())
+    {
+        
+        ABaseCharacter* MyCharacter = Cast<ABaseCharacter>(MyPawn);
+        MyCharacter->PlayAnimMontageByType(MontageType::DefaultAttack);
+        
+        if (MyCharacter && MyCharacter->Skills.IsValidIndex(2) && MyCharacter->Skills[2])
+        {
+            MyCharacter->Skills[2]->ActiveSkill();
+        }
     }
 }
 
 void ABattle_PlayerController::Input_Skill_4(const FInputActionValue& InputValue)
 {
+    if (APawn* MyPawn  = GetPawn())
+    {
+        
+        ABaseCharacter* MyCharacter = Cast<ABaseCharacter>(MyPawn);
+        MyCharacter->PlayAnimMontageByType(MontageType::DefaultAttack);
+        
+        if (MyCharacter && MyCharacter->Skills.IsValidIndex(3) && MyCharacter->Skills[3])
+        {
+            MyCharacter->Skills[3]->ActiveSkill();
+        }
+    }
     UE_LOG(LogTemp, Display, TEXT("Skill_4_Pressed"));
 }
 

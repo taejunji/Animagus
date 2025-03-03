@@ -95,6 +95,12 @@ public:
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Skills")
     TSubclassOf<class UStun> StunBPClass;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Skills")
+    TSubclassOf<class URadialSkill> RadialBPClass;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Skills")
+    TSubclassOf<class UChangeSkill> ChangeBPClass;
     
     // 지정 슬롯에 스킬을 장착하는 함수
     UFUNCTION(BlueprintCallable, Category="Skills")
