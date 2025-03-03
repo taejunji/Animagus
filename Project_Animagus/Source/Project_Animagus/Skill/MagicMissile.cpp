@@ -43,6 +43,9 @@ void UMagicMissile::ActiveSkill_Implementation()
         UE_LOG(LogTemp, Warning, TEXT("MagicMissile: World is null."));
         return;
     }
+    
+    // 공격 애니메이션
+    Owner->PlayAnimMontageByType(MontageType::DefaultAttack);
 
     // TPS 기준: 스폰 위치는 캐릭터 전면(약간 위쪽)에서 생성하고,
     // 진행 방향은 플레이어 컨트롤러의 카메라 뷰포인트 방향을 사용합니다.
@@ -59,9 +62,8 @@ void UMagicMissile::ActiveSkill_Implementation()
     }
 
     // 스폰 위치: 캐릭터 위치에서 전방 100cm, 동시에 Z축으로 50cm 올림
-    FVector SpawnLocation = Owner->GetActorLocation() 
-                            + Owner->GetActorForwardVector() * 80.f 
-                            + FVector(0.f, 0.f, 20.f);
+    FVector SpawnLocation = Owner->GetActorLocation() + Owner->GetActorForwardVector() * 100.f + Owner->GetActorRightVector() * 30.f;
+
     // 진행 방향: 카메라 뷰 방향 사용
     FRotator SpawnRotation = CameraRotation;
 

@@ -117,7 +117,7 @@ void ABaseCharacter::BeginPlay()
     max_hp = 100.f;
     hp = max_hp;
     is_dead = false;
-    is_stun = false;
+    bIsStunned = false;
 
     SetWalkSpeed(default_walk_speed);
 
@@ -163,10 +163,6 @@ void ABaseCharacter::Tick(float DeltaTime)
     else {
         is_dead = false;
     } 
-
-    // 스턴 + 지상에 위치 = 멈추고 스턴 애니메이션 재생
-    if(is_stun && GetCharacterMovement()->IsFalling() == false) 
-        GetCharacterMovement()->SetMovementMode(MOVE_None); // 이동 불가 
 
 }
 

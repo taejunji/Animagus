@@ -151,10 +151,7 @@ void ABattle_PlayerController::Input_Attack(const FInputActionValue& InputValue)
 
     if (APawn* MyPawn  = GetPawn())
     {
-        
         ABaseCharacter* MyCharacter = Cast<ABaseCharacter>(MyPawn);
-
-        MyCharacter->PlayAnimMontageByType(MontageType::DefaultAttack);
         
         if (MyCharacter && MyCharacter->Skills.IsValidIndex(0) && MyCharacter->Skills[0])
         {
@@ -178,9 +175,7 @@ void ABattle_PlayerController::Input_Ready(const FInputActionValue& InputValue)
 
     if (APawn* MyPawn  = GetPawn())
     {
-        
         ABaseCharacter* MyCharacter = Cast<ABaseCharacter>(MyPawn);
-        MyCharacter->PlayAnimMontageByType(MontageType::DefaultAttack);
         
         if (MyCharacter && MyCharacter->Skills.IsValidIndex(1) && MyCharacter->Skills[1])
         {
@@ -203,7 +198,8 @@ void ABattle_PlayerController::Input_Skill_1(const FInputActionValue& InputValue
             // 점프가 아닌 땅인 상태에서 맞으면 스턴에 걸리고 애니메이션이 끝날 동안 "공격, 점프, 움직임" 금지하게 될 것
 
         // BaseCharacter의 stun이 false + 캐릭터가 지상에 있을 때 = "스턴"
-        if (MyCharacter->GetIsHardHit() == false && MyCharacter->GetCharacterMovement()->IsFalling() == false) {
+        // if (MyCharacter->GetIsHardHit() == false && MyCharacter->GetCharacterMovement()->IsFalling() == false) {
+        if (MyCharacter->GetIsHardHit() == false) {
             MyCharacter->SetIsHardHit(true);
         }
     }
