@@ -14,16 +14,37 @@
   <component name="ChangeListManager">
     <list default="true" id="c94fed68-4612-47ce-94ff-3d688b636d7a" name="변경" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.Project_Animagus/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Project_Animagus/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Location_4_Temple/Maps/Demonstration.umap" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Location_4_Temple/Maps/Demonstration.umap" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Location_4_Temple/Meshes/SM_stairs_001.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Location_4_Temple/Meshes/SM_stairs_001.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/WorkFolder/Assets/Map/Meshes/ground02_low.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/WorkFolder/Assets/Map/Meshes/ground02_low.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/WorkFolder/Levels/L_Map.umap" beforeDir="false" afterPath="$PROJECT_DIR$/Content/WorkFolder/Levels/L_Map.umap" afterDir="false" />
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
       <change beforePath="$PROJECT_DIR$/Intermediate/Build/BuildRules/Project_AnimagusModuleRules.pdb" beforeDir="false" afterPath="$PROJECT_DIR$/Intermediate/Build/BuildRules/Project_AnimagusModuleRules.pdb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Intermediate/Build/BuildRules/Project_AnimagusModuleRulesManifest.json" beforeDir="false" afterPath="$PROJECT_DIR$/Intermediate/Build/BuildRules/Project_AnimagusModuleRulesManifest.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Intermediate/Build/BuildRulesProjects/Project_AnimagusModuleRules/Project_AnimagusModuleRules.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/Intermediate/Build/BuildRulesProjects/Project_AnimagusModuleRules/Project_AnimagusModuleRules.csproj" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Intermediate/Build/Win64/x64/Project_AnimagusEditor/Development/UnrealEd/SharedPCH.UnrealEd.Project.ValApi.Cpp20.h" beforeDir="false" afterPath="$PROJECT_DIR$/Intermediate/Build/Win64/x64/Project_AnimagusEditor/Development/UnrealEd/SharedPCH.UnrealEd.Project.ValApi.Cpp20.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Intermediate/Build/Win64/x64/UnrealEditor/Development/Project_Animagus/Definitions.Project_Animagus.h" beforeDir="false" afterPath="$PROJECT_DIR$/Intermediate/Build/Win64/x64/UnrealEditor/Development/Project_Animagus/Definitions.Project_Animagus.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Intermediate/Build/XmlConfigCache.bin" beforeDir="false" afterPath="$PROJECT_DIR$/Intermediate/Build/XmlConfigCache.bin" afterDir="false" />
+=======
+=======
+>>>>>>> Stashed changes
+=======
+>>>>>>> Stashed changes
+=======
+>>>>>>> Stashed changes
+      <change beforePath="$PROJECT_DIR$/Content/ToonProjectiles/Blueprints/BP_Projectile.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/ToonProjectiles/Blueprints/BP_Projectile.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/ToonProjectiles/Blueprints/BP_Projectile_2.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/ToonProjectiles/Blueprints/BP_Projectile_2.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/WorkFolder/Levels/L_Map.umap" beforeDir="false" afterPath="$PROJECT_DIR$/Content/WorkFolder/Levels/L_Map.umap" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/Project_Animagus/Actor/ShrinkingZone.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Project_Animagus/Actor/ShrinkingZone.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/Project_Animagus/Character/BaseCharacter.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Project_Animagus/Character/BaseCharacter.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/Project_Animagus/Character/BaseCharacter.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Project_Animagus/Character/BaseCharacter.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/Project_Animagus/PlayerController/Battle_PlayerController.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Project_Animagus/PlayerController/Battle_PlayerController.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/Project_Animagus/Skill/BaseSkill.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Project_Animagus/Skill/BaseSkill.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/Project_Animagus/Skill/BaseSkill.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Project_Animagus/Skill/BaseSkill.h" afterDir="false" />
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
+>>>>>>> Stashed changes
+=======
+>>>>>>> Stashed changes
+=======
+>>>>>>> Stashed changes
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -36,6 +57,25 @@
   <component name="HighlightingSettingsPerFile">
     <setting file="file://$PROJECT_DIR$/../../../../../../Program Files/Epic Games/UE_5.4/Engine/Source/Developer/AITestSuite/Public/AITestsCommon.h" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/../../../../../../Program Files/Epic Games/UE_5.4/Engine/Source/Programs/Shared/EpicGames.Redis/RedisSerializer.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Source/Project_Animagus/Actor/ShrinkingZone.cpp" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Source/Project_Animagus/Actor/ShrinkingZone.h" root0="FORCE_HIGHLIGHTING" />
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+    <setting file="file://$PROJECT_DIR$/Source/Project_Animagus/Skill/BaseSkill.h" root0="SKIP_HIGHLIGHTING" />
+=======
+    <setting file="file://$PROJECT_DIR$/Source/Project_Animagus/Character/BaseCharacter.cpp" root0="FORCE_HIGHLIGHTING" />
+>>>>>>> Stashed changes
+=======
+    <setting file="file://$PROJECT_DIR$/Source/Project_Animagus/Character/BaseCharacter.cpp" root0="FORCE_HIGHLIGHTING" />
+>>>>>>> Stashed changes
+=======
+    <setting file="file://$PROJECT_DIR$/Source/Project_Animagus/Character/BaseCharacter.cpp" root0="FORCE_HIGHLIGHTING" />
+>>>>>>> Stashed changes
+=======
+    <setting file="file://$PROJECT_DIR$/Source/Project_Animagus/Character/BaseCharacter.cpp" root0="FORCE_HIGHLIGHTING" />
+>>>>>>> Stashed changes
   </component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 4
@@ -45,19 +85,20 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;skill&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "git-widget-placeholder": "jitae",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "settings.editor.selected.configurable": "com.maddyhome.idea.vim.ui.VimEmulationConfigurable",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="RunManager" selected="C/C++ 프로젝트.Project_Animagus">
     <configuration name="Project_Animagus" type="CppProject" factoryName="C++ Project">
       <configuration_1 setup="1">
@@ -170,6 +211,28 @@
       <workItem from="1739170703821" duration="3786000" />
       <workItem from="1739217753309" duration="391000" />
       <workItem from="1739218194787" duration="84000" />
+      <workItem from="1739276868749" duration="3091000" />
+      <workItem from="1739378522093" duration="6196000" />
+      <workItem from="1739643260016" duration="11170000" />
+      <workItem from="1739933544009" duration="1197000" />
+      <workItem from="1740189194882" duration="6175000" />
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+      <workItem from="1740292734488" duration="1013000" />
+=======
+      <workItem from="1740210410365" duration="13680000" />
+>>>>>>> Stashed changes
+=======
+      <workItem from="1740210410365" duration="13680000" />
+>>>>>>> Stashed changes
+=======
+      <workItem from="1740210410365" duration="13680000" />
+>>>>>>> Stashed changes
+=======
+      <workItem from="1740210410365" duration="13680000" />
+>>>>>>> Stashed changes
     </task>
     <servers />
   </component>

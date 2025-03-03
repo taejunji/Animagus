@@ -23,12 +23,12 @@ enum class MontageType { DefaultAttack, Hit };
 UCLASS()
 class PROJECT_ANIMAGUS_API ABaseCharacter : public ACharacter
 {
-	GENERATED_BODY()
+    GENERATED_BODY()
 
 public:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement")
     float default_walk_speed; // 기본 걷기 속도
-    
+
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement")
     float default_run_speed; // 최대 달리기 속도
 
@@ -36,15 +36,15 @@ public:
     float current_speed; // 현재 속도
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement")
-    float speed_change_rete; // 속도 변화 비율 ( 30.f면 1초에 30씩 변화 )
+    float speed_change_rate; // 속도 변화 비율 ( 30.f면 1초에 30씩 변화 )
 
 protected:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stat")
-    float hp;   // HP 체력
+    float hp; // HP 체력
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stat")
+    float max_hp; // MaxHP 체력
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stat")
     bool is_dead; // 죽었는지
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stat")
-    bool is_stun; // 스턴 상태인지
 
 protected:
     UPROPERTY(EditAnywhere, Category = "AnimationMontage")
@@ -53,22 +53,71 @@ protected:
     TObjectPtr<class UAnimMontage> hit_montage;
 
 public:
-	ABaseCharacter();
+    ABaseCharacter();
 
 protected:
-	virtual void BeginPlay() override;
+    virtual void BeginPlay() override;
 
-public:	
-	virtual void Tick(float DeltaTime) override;
+public:
+    virtual void Tick(float DeltaTime) override;
     virtual void PlayAnimMontageByType(MontageType montage_type);
 
     void SetWalkSpeed(float fValue);
     void SetHP(float fValue) { hp = fValue; }
-    void SetIsHardHit(bool bValue) { is_stun = bValue; }
+    void SetIsHardHit(bool bValue) { bIsStunned = bValue; }
 
     float GetHP() const { return hp; }
     bool GetIsDead() const { return is_dead; }
-    bool GetIsHardHit() const { return is_stun; }
+    bool GetIsHardHit() const { return bIsStunned; }
+
+
+    virtual float TakeDamage(
+        float DamageAmount,
+        struct FDamageEvent const& DamageEvent,
+        AController* EventInstigator,
+        AActor* DamageCauser
+    ) override;
+
+
+    // 4개의 스킬 슬롯 (TArray를 사용)
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Skills")
+    TArray<UBaseSkill*> Skills;
+
+    // UFireball 스킬 블루프린트 클래스를 할당할 변수 (에디터에서 선택)
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Skills")
+    TSubclassOf<class UFireball> FireballBPClass;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Skills")
+    TSubclassOf<class UMagicMissile> MagicMissileBPClass;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Skills")
+    TSubclassOf<class UBounce> BounceBPClass;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Skills")
+    TSubclassOf<class UStun> StunBPClass;
+    
+    // 지정 슬롯에 스킬을 장착하는 함수
+    UFUNCTION(BlueprintCallable, Category="Skills")
+    void EquipSkill(int32 SlotIndex, UBaseSkill* NewSkill);
+
+    // 스킬 초기화 함수 (예: BeginPlay에서 호출)
+    UFUNCTION(BlueprintCallable, Category="Skills")
+    void InitializeSkills();
+
+    // 스턴 상태 변수: 스턴 중이면 true
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Status")
+    bool bIsStunned;
+
+    // 스턴 효과를 적용하는 함수
+    UFUNCTION(BlueprintCallable, Category = "Status")
+    void ApplyStun(float Duration);
+
+    // 스턴 상태 해제를 위한 함수 (내부적으로 타이머에서 호출)
+    UFUNCTION()
+    void RemoveStun();
+    
+public:
+   
 };
 
 // Called to bind functionality to input

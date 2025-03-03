@@ -35,6 +35,9 @@ public:
     UFUNCTION()
     void AnimNotify_GetUpEnd();
 
+    UFUNCTION()
+    void AnimNotify_StunHardHit();
+
 protected:
     // 일단 플레이어 캐릭터로 -> 나중에 BaseCharacter로 바꿔야할듯
     UPROPERTY(BlueprintReadOnly)
@@ -50,6 +53,9 @@ protected:
 
     UPROPERTY(BlueprintReadOnly)
     float ground_speed = 0.f;  // X,Y만 포함한 지면 속도
+
+    UPROPERTY(BlueprintReadOnly)
+    float movement_offset_yaw;  // 캐릭터 이동방향 - 캐릭터가 바라보는 방향 
 
     UPROPERTY(BlueprintReadOnly)
     bool b_is_moving = false; // 움직이는지

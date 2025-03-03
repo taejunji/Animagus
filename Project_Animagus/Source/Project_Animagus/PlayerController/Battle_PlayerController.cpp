@@ -7,6 +7,8 @@
 #include "Kismet/KismetMathLibrary.h" // 이동 구현할 때 유틸리티 많은 애 
 
 #include "../Character/PlayerCharacter.h" 
+#include "GameFramework/CharacterMovementComponent.h" 
+#include "Project_Animagus/Skill/BaseSkill.h"
 
 ABattle_PlayerController::ABattle_PlayerController(const FObjectInitializer& ObjectInitializer)
     : Super(ObjectInitializer)
@@ -44,6 +46,9 @@ void ABattle_PlayerController::SetupInputComponent()
 {
     Super::SetupInputComponent();
 
+    // Triggered : 입력 키를 누르고 있는 동안 지속적으로 발생
+    // Started : 키를 누르는 순간 단 한 번 발생
+    // Completed : 키를 놓는 순간 한 번 발생
     if (auto* EnhancedInputComponent = Cast<UEnhancedInputComponent>(InputComponent))
     {
         // "W,A,S,D", "Mouse", "Space"
@@ -61,6 +66,12 @@ void ABattle_PlayerController::SetupInputComponent()
         // "Shift"
         EnhancedInputComponent->BindAction(run_toggle_action, ETriggerEvent::Started, this, &ThisClass::Input_RunToggle_Pressed);
         EnhancedInputComponent->BindAction(run_toggle_action, ETriggerEvent::Completed, this, &ThisClass::Input_RunToggle_Released);
+
+        // "Skill - 1,2,3,4"
+        EnhancedInputComponent->BindAction(skill_1_action, ETriggerEvent::Started, this, &ThisClass::Input_Skill_1);
+        EnhancedInputComponent->BindAction(skill_2_action, ETriggerEvent::Started, this, &ThisClass::Input_Skill_2);
+        EnhancedInputComponent->BindAction(skill_3_action, ETriggerEvent::Started, this, &ThisClass::Input_Skill_3);
+        EnhancedInputComponent->BindAction(skill_4_action, ETriggerEvent::Started, this, &ThisClass::Input_Skill_4);
     }
 }
 
@@ -75,11 +86,14 @@ void ABattle_PlayerController::Tick(float DeltaTime)
 
         // 현재 속도를 목표 속도로 점진적으로 변경 
 		// 내부적으로 DeltaTime * speed_change_rete라서 1초에 5.f의 속도가 변하길 기대했는데 디버깅 해보니 이론과 다름
-        MyPlayer->current_speed = FMath::FInterpTo(MyPlayer->current_speed, TargetSpeed, DeltaTime, MyPlayer->speed_change_rete);  
-
+        MyPlayer->current_speed = FMath::FInterpTo(MyPlayer->current_speed, TargetSpeed, DeltaTime, MyPlayer->speed_change_rate);
+        
         FString CurrentSpeedString = FString::Printf(TEXT("Current Speed: %.2f"), MyPlayer->current_speed);
         GEngine->AddOnScreenDebugMessage(-1, 0.01f, FColor::Green, CurrentSpeedString);
-
+        
+        FString CurrentHp = FString::Printf(TEXT("Current Hp: %.2f"), MyPlayer->GetHP());
+        GEngine->AddOnScreenDebugMessage( -1, 0.01f, FColor::Green, CurrentHp); 
+        
         // 캐릭터의 이동 속도 업데이트
         MyPlayer->SetWalkSpeed(MyPlayer->current_speed); 
     }
@@ -135,29 +149,91 @@ void ABattle_PlayerController::Input_Attack(const FInputActionValue& InputValue)
 {
     GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Blue, TEXT("Left Mouse Attack!"));
 
-    auto* MyPlayer = Cast<ABaseCharacter>(GetPawn());
-    if (MyPlayer) MyPlayer->PlayAnimMontageByType(MontageType::DefaultAttack);
-
-    // 제거 - 마우스 좌클릭으로 애니메이션 테스트용 
-    if (MyPlayer)
+    if (APawn* MyPawn  = GetPawn())
     {
-        float current_hp = MyPlayer->GetHP();
-        if(current_hp <= 0.f ) 
-            MyPlayer->SetHP(MyPlayer->GetHP() + 25.f);
-        else 
-            MyPlayer->SetHP(MyPlayer->GetHP() - 25.f);
+        ABaseCharacter* MyCharacter = Cast<ABaseCharacter>(MyPawn);
+        
+        if (MyCharacter && MyCharacter->Skills.IsValidIndex(0) && MyCharacter->Skills[0])
+        {
+            MyCharacter->Skills[0]->ActiveSkill();
+        }
     }
+
+    // auto* MyPlayer = Cast<ABaseCharacter>(GetPawn());
+    //
+    // if (MyPlayer) MyPlayer->PlayAnimMontageByType(MontageType::DefaultAttack);
+    //
+    // if (MyPlayer && MyPlayer->Skills.IsValidIndex(0) && MyPlayer->Skills[0])
+    // {
+    //     MyPlayer->Skills[0]->ActiveSkill();
+    // }
 }
 
 void ABattle_PlayerController::Input_Ready(const FInputActionValue& InputValue)
 {
     GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Blue, TEXT("Right Mouse Attack!"));
-    auto* MyPlayer = Cast<ABaseCharacter>(GetPawn());
-    
+    if (APawn* MyPawn  = GetPawn())
+    {
+        ABaseCharacter* MyCharacter = Cast<ABaseCharacter>(MyPawn);
+        
+        if (MyCharacter && MyCharacter->Skills.IsValidIndex(1) && MyCharacter->Skills[1])
+        {
+            MyCharacter->Skills[1]->ActiveSkill();
+        }
+    }
+  
+}
+
+void ABattle_PlayerController::Input_Skill_1(const FInputActionValue& InputValue)
+{
+    UE_LOG(LogTemp, Display, TEXT("Skill_1_Pressed"));
+
+    if (auto* MyCharacter = Cast<ABaseCharacter>(GetPawn()))
+    {
+        // BaseCharacter의 is_stun의 (true/false)를 설정하고 AnimInstance에서 b_is_stun(애니메이션 조건 변수)를 업데이트해서 애니메이션 블루프린트 ABP_TEST_2에 설정된 변수 조건에 의해 애니메이션이 재생될 것
+        // HardHit 애니메이션에 Notify( 이벤트 알림 )을 설정해서 애니메이션 종료 구간에 is_stun을 false로 수정하는 방식
+
+            // 스턴 상태인지 - 나중에 궁극기 생기면 타이머를 통해 캐릭터를 정지 시킬 것
+            // 점프가 아닌 땅인 상태에서 맞으면 스턴에 걸리고 애니메이션이 끝날 동안 "공격, 점프, 움직임" 금지하게 될 것
+
+        // BaseCharacter의 stun이 false + 캐릭터가 지상에 있을 때 = "스턴"
+        // if (MyCharacter->GetIsHardHit() == false && MyCharacter->GetCharacterMovement()->IsFalling() == false) {
+        if (MyCharacter->GetIsHardHit() == false) {
+            MyCharacter->SetIsHardHit(true);
+        }
+    }
+}
+
+void ABattle_PlayerController::Input_Skill_2(const FInputActionValue& InputValue)
+{
+    UE_LOG(LogTemp, Display, TEXT("Skill_2_Pressed"));
+
     // 제거 - 마우스 우클릭으로 애니메이션 테스트용 
-    if (MyPlayer) MyPlayer->PlayAnimMontageByType(MontageType::Hit);
+    if (auto* MyCharacter = Cast<ABaseCharacter>(GetPawn()))
+    {
+        MyCharacter->PlayAnimMontageByType(MontageType::Hit);
+    }
 
+}
 
+void ABattle_PlayerController::Input_Skill_3(const FInputActionValue& InputValue)
+{
+    UE_LOG(LogTemp, Display, TEXT("Skill_3_Pressed"));
+
+    // 제거 - 마우스 좌클릭으로 애니메이션 테스트용 
+    if (auto* MyPlayer = Cast<ABaseCharacter>(GetPawn()))
+    {  
+         float current_hp = MyPlayer->GetHP();
+        if(current_hp <= 0.f ) 
+            MyPlayer->SetHP(MyPlayer->GetHP() + 25.f); 
+        else 
+            MyPlayer->SetHP(MyPlayer->GetHP() - 25.f);
+    }
+}
+
+void ABattle_PlayerController::Input_Skill_4(const FInputActionValue& InputValue)
+{
+    UE_LOG(LogTemp, Display, TEXT("Skill_4_Pressed"));
 }
 
 void ABattle_PlayerController::Input_ControlToggle_Pressed()
