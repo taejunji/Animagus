@@ -25,6 +25,10 @@ bool IocpCore::Register(IocpObjectRef iocpObject)
 {
     return ::CreateIoCompletionPort(iocpObject->GetHandle(), _iocpHandle, /*key*/0, 0);
 }
+bool IocpCore::Register(SOCKET socket)
+{
+    return ::CreateIoCompletionPort(socket, _iocpHandle, /*key*/0, 0);
+}
 
 bool IocpCore::Dispatch(uint32 timeoutMs)
 {

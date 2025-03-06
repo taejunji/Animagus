@@ -47,19 +47,20 @@ bool GameServer::Initialize()
     }
 
     // 리슨소켓 CP등록
-    //if (m_iocpCore->Register(m_listenSocket))
-    //{
-    //    std::cerr << "리슨 소켓 IOCP 등록 실패." << std::endl;
-    //    return false;
-    //}
-
-    HANDLE iocpHandle = m_iocpCore->GetHandle();
-    if (CreateIoCompletionPort(reinterpret_cast<HANDLE>(m_listenSocket), iocpHandle, 0, 0) == nullptr) {
+    if (m_iocpCore->Register(m_listenSocket))
+    {
         std::cerr << "리슨 소켓 IOCP 등록 실패." << std::endl;
         return false;
     }
 
+    //HANDLE iocpHandle = m_iocpCore->GetHandle();
+    //if (CreateIoCompletionPort(reinterpret_cast<HANDLE>(m_listenSocket), iocpHandle, 0, 0) == nullptr) {
+    //    std::cerr << "리슨 소켓 IOCP 등록 실패." << std::endl;
+    //    return false;
+    //}
+
     // TODO : AcceptEx 등록
+
 
     std::cout << "[GameServer] Network and IOCP initialization complete." << std::endl;
     return true;
