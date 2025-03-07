@@ -1,5 +1,6 @@
 #include "GameServer.h"
 #include "IocpCore.h"
+#include "Session.h"
 
 GameServer::GameServer() : m_running(false) 
 {
@@ -47,7 +48,7 @@ bool GameServer::Initialize()
     }
 
     // 리슨소켓 CP등록
-    if (m_iocpCore->Register(m_listenSocket))
+    if (m_iocpCore->Register(m_listener))
     {
         std::cerr << "리슨 소켓 IOCP 등록 실패." << std::endl;
         return false;

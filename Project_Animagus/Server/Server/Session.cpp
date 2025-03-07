@@ -1,4 +1,12 @@
+#include "pch.h"
+#include "IocpEvent.h"
+#include "IocpCore.h"
 #include "Session.h"
+#include "SocketUtils.h"
+
+/*--------------
+	Session
+---------------*/
 
 Session::Session() : m_socket(INVALID_SOCKET) , m_connected(false) , m_buffer(nullptr)
 {
@@ -13,7 +21,7 @@ Session::~Session()
 {
     if (m_socket != INVALID_SOCKET)
     {
-        closesocket(m_socket);
+        SocketUtils::Close(m_socket);
     }
     delete[] m_buffer;
 }
@@ -62,4 +70,133 @@ void Session::ProcessAccept(int32_t numOfBytes)
     m_connected.store(true);
     std::cout << "Accept completed. Client connected." << std::endl;
     // 추가적으로 클라이언트 접속 후 초기화 작업 등을 수행
+}
+
+
+/*--------------
+    Listener
+---------------*/
+
+Listener::~Listener()
+{
+    ::closesocket(_socket);
+
+    for (IocpEvent* acceptEvent : _acceptEvents)
+    {
+        // TODO : 이벤트들 메모리 해제
+
+    }
+}
+
+bool Listener::StartAccept()
+{
+    _service = service;
+    if (_service == nullptr)
+        return false;
+
+    _socket = SocketUtils::CreateSocket();
+    if (_socket == INVALID_SOCKET)
+        return false;
+
+    if (_service->GetIocpCore()->Register(shared_from_this()) == false)
+        return false;
+
+    if (SocketUtils::SetReuseAddress(_socket, true) == false)
+        return false;
+
+    if (SocketUtils::SetLinger(_socket, 0, 0) == false)
+        return false;
+
+    if (SocketUtils::Bind(_socket, _service->GetNetAddress()) == false)
+        return false;
+
+    if (SocketUtils::Listen(_socket) == false)
+        return false;
+
+    const int32 acceptCount = _service->GetMaxSessionCount();
+    for (int32 i = 0; i < acceptCount; i++)
+    {
+        IocpEvent* acceptEvent = xnew<AcceptEvent>();
+        acceptEvent->owner = shared_from_this();
+        _acceptEvents.push_back(acceptEvent);
+        RegisterAccept(acceptEvent);
+    }
+
+    return true;
+}
+
+void Listener::CloseSocket()
+{
+    SocketUtils::Close(_socket);
+}
+
+bool Listener::BindAnyAddess()
+{
+    SOCKADDR_IN myAddress;
+    myAddress.sin_family = AF_INET;
+    myAddress.sin_addr.s_addr = ::htonl(INADDR_ANY);
+    myAddress.sin_port = ::htons(SERVER_PORT);
+
+    return SOCKET_ERROR != ::bind(_socket, reinterpret_cast<const SOCKADDR*>(&myAddress), sizeof(myAddress));
+}
+
+bool Listener::Listen(int32 backlog)
+{
+    return SOCKET_ERROR != ::listen(_socket, backlog);
+}
+
+
+
+HANDLE Listener::GetHandle()
+{
+    return reinterpret_cast<HANDLE>(_socket);
+}
+
+void Listener::Dispatch(IocpEvent* iocpEvent, int32 numOfBytes)
+{
+    ASSERT_CRASH(iocpEvent->eventType == EventType::Accept);
+    AcceptEvent* acceptEvent = static_cast<AcceptEvent*>(iocpEvent);
+    ProcessAccept(acceptEvent);
+}
+
+void Listener::RegisterAccept(AcceptEvent* acceptEvent)
+{
+    SessionRef session = _service->CreateSession(); // Register IOCP
+
+    acceptEvent->Init();
+    acceptEvent->session = session;
+
+    DWORD bytesReceived = 0;
+    if (false == SocketUtils::AcceptEx(_socket, session->GetSocket(), session->_recvBuffer.WritePos(), 0, sizeof(SOCKADDR_IN) + 16, sizeof(SOCKADDR_IN) + 16, OUT & bytesReceived, static_cast<LPOVERLAPPED>(acceptEvent)))
+    {
+        const int32 errorCode = ::WSAGetLastError();
+        if (errorCode != WSA_IO_PENDING)
+        {
+            // 일단 다시 Accept 걸어준다
+            RegisterAccept(acceptEvent);
+        }
+    }
+}
+
+void Listener::ProcessAccept(AcceptEvent* acceptEvent)
+{
+    SessionRef session = acceptEvent->session;
+
+    if (false == SocketUtils::SetUpdateAcceptSocket(session->GetSocket(), _socket))
+    {
+        RegisterAccept(acceptEvent);
+        return;
+    }
+
+    SOCKADDR_IN sockAddress;
+    int32 sizeOfSockAddr = sizeof(sockAddress);
+    if (SOCKET_ERROR == ::getpeername(session->GetSocket(), OUT reinterpret_cast<SOCKADDR*>(&sockAddress), &sizeOfSockAddr))
+    {
+        RegisterAccept(acceptEvent);
+        return;
+    }
+
+    session->SetNetAddress(NetAddress(sockAddress));
+    session->ProcessConnect();
+    RegisterAccept(acceptEvent);
 }

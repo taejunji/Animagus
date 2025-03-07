@@ -14,7 +14,7 @@ public:
     // TODO : 클라이언트 패킷 관리 시스템 추가
 
 private:
-    SOCKET                      m_listenSocket;
+    Listener                    m_listener;
     IocpCoreRef                 m_iocpCore;         // IOCP 관련 기능 담당
     std::vector<std::thread>    m_workerThreads;    // IOCP 작업 스레드 풀
     std::atomic<bool>           m_running;          // 서버 실행 상태 플래그
