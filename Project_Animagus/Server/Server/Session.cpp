@@ -146,7 +146,6 @@ bool Listener::Listen(int32 backlog)
 }
 
 
-
 HANDLE Listener::GetHandle()
 {
     return reinterpret_cast<HANDLE>(_socket);

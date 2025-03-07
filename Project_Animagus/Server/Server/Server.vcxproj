@@ -138,6 +138,7 @@
     <ClCompile Include="ServerMain.cpp" />
     <ClCompile Include="ServerPacketHandler.cpp" />
     <ClCompile Include="Session.cpp" />
+    <ClCompile Include="SocketUtils.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GameServer.h" />
@@ -146,6 +147,7 @@
     <ClInclude Include="pch.h" />
     <ClInclude Include="protocol.h" />
     <ClInclude Include="Session.h" />
+    <ClInclude Include="SocketUtils.h" />
     <ClInclude Include="Types.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

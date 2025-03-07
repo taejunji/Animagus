@@ -4,11 +4,11 @@
     <Filter Include="ServerMain">
       <UniqueIdentifier>{1827c34b-4bed-4bbc-b912-6cd22e34690f}</UniqueIdentifier>
     </Filter>
-    <Filter Include="IOCP">
-      <UniqueIdentifier>{5352ebb5-a0b9-4635-a9a5-b63c193e19f5}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Utils">
       <UniqueIdentifier>{a43081cc-a6a8-4318-bd54-c69d3a070306}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Network">
+      <UniqueIdentifier>{5352ebb5-a0b9-4635-a9a5-b63c193e19f5}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -22,16 +22,19 @@
       <Filter>Utils</Filter>
     </ClCompile>
     <ClCompile Include="IocpCore.cpp">
-      <Filter>IOCP</Filter>
+      <Filter>Network</Filter>
     </ClCompile>
     <ClCompile Include="IocpEvent.cpp">
-      <Filter>IOCP</Filter>
+      <Filter>Network</Filter>
     </ClCompile>
     <ClCompile Include="GameServer.cpp">
       <Filter>ServerMain</Filter>
     </ClCompile>
     <ClCompile Include="Session.cpp">
-      <Filter>IOCP</Filter>
+      <Filter>Network</Filter>
+    </ClCompile>
+    <ClCompile Include="SocketUtils.cpp">
+      <Filter>Network</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -45,16 +48,19 @@
       <Filter>Utils</Filter>
     </ClInclude>
     <ClInclude Include="IocpCore.h">
-      <Filter>IOCP</Filter>
+      <Filter>Network</Filter>
     </ClInclude>
     <ClInclude Include="IocpEvent.h">
-      <Filter>IOCP</Filter>
+      <Filter>Network</Filter>
     </ClInclude>
     <ClInclude Include="GameServer.h">
       <Filter>ServerMain</Filter>
     </ClInclude>
     <ClInclude Include="Session.h">
-      <Filter>IOCP</Filter>
+      <Filter>Network</Filter>
+    </ClInclude>
+    <ClInclude Include="SocketUtils.h">
+      <Filter>Network</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
