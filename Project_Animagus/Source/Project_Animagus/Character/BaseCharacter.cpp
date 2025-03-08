@@ -176,6 +176,7 @@ float ABaseCharacter::TakeDamage(float DamageAmount, struct FDamageEvent const& 
 {
     float ActualDamage = Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
 
+    PlayAnimMontageByType(MontageType::Hit);
     hp -= ActualDamage;
 
     // 나중에 패킷관리 할 예시 코드 ㅇㅇ

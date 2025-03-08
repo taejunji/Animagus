@@ -50,7 +50,7 @@ void ABattleGameMode::InitBattleMode()
     if (MyGameInstance)
     {
         // 1초마다 경과시간 호출 함수 타이머 설정
-        GetWorld()->GetTimerManager().SetTimer(battle_timer_handle, this, &ABattleGameMode::PrintElapsedtime, 1.0f, true); 
+        // GetWorld()->GetTimerManager().SetTimer(battle_timer_handle, this, &ABattleGameMode::PrintElapsedtime, 1.0f, true); 
     }
 }
 
