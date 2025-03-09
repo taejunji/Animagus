@@ -1,4 +1,6 @@
+#include "Types.h"
 #include "IocpEvent.h"
+#include "IocpCore.h"
 
 
 IocpEvent::IocpEvent(EventType type) : eventType(type)

@@ -1,10 +1,11 @@
 #pragma once
-#include "IocpCore.h"
-#include "IocpEvent.h"
 
 
 class Session : public IocpObject
 {
+    friend class Listener;
+    friend class IocpCore;
+
 public:
     static constexpr size_t BUFFER_SIZE = 0x1'0000; // 64KB
 
@@ -16,10 +17,30 @@ public:
     virtual HANDLE GetHandle() override;
     virtual void Dispatch(IocpEvent* iocpEvent, int32_t numOfBytes = 0) override;
 
-    // 각 이벤트 타입에 따른 처리 함수
-    void ProcessRecv(int32_t numOfBytes);
-    void ProcessSend(int32_t numOfBytes);
-    void ProcessAccept(int32_t numOfBytes);
+public:
+    // 외부에서 사용 //
+    void				Send(BYTE* buffer, int32 len);
+    bool				Connect();
+    void				Disconnect(const WCHAR* cause);
+
+public:
+    // 정보 관련 //
+    SOCKET				GetSocket() { return m_socket; }
+    bool				IsConnected() { return m_connected; }
+    SessionRef			GetSessionRef() { return std::static_pointer_cast<Session>(shared_from_this()); }
+
+private:
+    // 전송 관련 //
+    bool				RegisterConnect();
+    bool				RegisterDisconnect();
+    void				RegisterRecv();
+    void				RegisterSend();
+
+    void				ProcessConnect();
+    void				ProcessDisconnect();
+    void                ProcessRecv(int32_t numOfBytes);
+    void                ProcessSend(int32_t numOfBytes);
+    void                ProcessAccept(int32_t numOfBytes);
 
 public:
     SOCKET              m_socket;      // 클라이언트 소켓
@@ -44,12 +65,8 @@ public:
 
 public:
     /* 외부에서 사용 */
-    bool StartAccept();
+    bool StartAccept(IocpCoreRef iocpCore);
     void CloseSocket();
-
-    //bool Bind();
-    bool BindAnyAddess();
-    bool Listen(int32 backlog = SOMAXCONN);
 
 public:
     /* 인터페이스 구현 */
@@ -58,11 +75,13 @@ public:
 
 private:
     /* 수신 관련 */
-    void RegisterAccept(IocpEvent* acceptEvent);
-    void ProcessAccept(IocpEvent* acceptEvent);
+    void RegisterAccept(AcceptEvent* acceptEvent);
+    void ProcessAccept(AcceptEvent* acceptEvent);
 
 protected:
     SOCKET _socket = INVALID_SOCKET;
-    std::vector<IocpEvent*> _acceptEvents;
+    std::vector<AcceptEvent*> _acceptEvents;
+
+    IocpCoreRef _iocpCore;      // Listener 가 멤버로 있는 Server 의 IocpCore
 };
 

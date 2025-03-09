@@ -14,10 +14,11 @@ public:
     // TODO : 클라이언트 패킷 관리 시스템 추가
 
 private:
-    Listener                    m_listener;
     IocpCoreRef                 m_iocpCore;         // IOCP 관련 기능 담당
     std::vector<std::thread>    m_workerThreads;    // IOCP 작업 스레드 풀
     std::atomic<bool>           m_running;          // 서버 실행 상태 플래그
+
+    ListenerRef                 m_listener;
 
     // TODO : 게임 로직 및 클라이언트 관리 관련 멤버 추가
 };

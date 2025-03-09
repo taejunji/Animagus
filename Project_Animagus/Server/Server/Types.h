@@ -1,5 +1,4 @@
 #pragma once
-#include <iostream>
 
 using BYTE = unsigned char;
 using int8 = __int8;
@@ -16,6 +15,8 @@ using uint64 = unsigned __int64;
 
 USING_SHARED_PTR(IocpCore);
 USING_SHARED_PTR(IocpObject);
+USING_SHARED_PTR(Session);
+USING_SHARED_PTR(Listener);
 
 
 #define size16(val) static_cast<int16>(sizeof(val))
