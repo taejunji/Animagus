@@ -60,7 +60,7 @@ void UMyGameInstance::SwitchLevel(LevelType level)
         break;
 
     case LevelType::Battle:
-        UGameplayStatics::OpenLevel(GetWorld(), FName("InGameBattle"));
+        UGameplayStatics::OpenLevel(GetWorld(), FName("L_Map"));
         break;
     }
 }

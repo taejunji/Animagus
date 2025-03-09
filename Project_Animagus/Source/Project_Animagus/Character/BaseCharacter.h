@@ -116,11 +116,11 @@ public:
 
     // 스턴 효과를 적용하는 함수
     UFUNCTION(BlueprintCallable, Category = "Status")
-    void ApplyStun(float Duration);
+    virtual void ApplyStun(float Duration);
 
     // 스턴 상태 해제를 위한 함수 (내부적으로 타이머에서 호출)
     UFUNCTION()
-    void RemoveStun();
+    virtual void RemoveStun();
     
 public:
    
