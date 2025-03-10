@@ -9,13 +9,15 @@
 #include "../Skill/Fireball.h"
 #include "../Skill/MagicMissile.h"
 #include "Project_Animagus/Skill/Bounce.h"
+#include "Project_Animagus/Skill/ChangeSkill.h"
+#include "Project_Animagus/Skill/RadialSkill.h"
 #include "Project_Animagus/Skill/Stun.h"
 
 ABaseCharacter::ABaseCharacter()
 {
 	PrimaryActorTick.bCanEverTick = true;
 
-    Skills.SetNum(4); 
+    Skills.SetNum(5); 
 
     // 애님 인스턴스 설정
     static ConstructorHelpers::FClassFinder<UAnimInstance> AnimBP(TEXT("/Game/WorkFolder/Animation/AnimSystem/ABP_TEST2.ABP_TEST2_C"));
@@ -72,9 +74,31 @@ ABaseCharacter::ABaseCharacter()
     {
         UE_LOG(LogTemp, Warning, TEXT("BaseCharacter: Failed to load StunBPClassFinder!"));
     } 
+
+static ConstructorHelpers::FClassFinder<URadialSkill> RadialBPClassFinder(TEXT("/Game/WorkFolder/Bluprints/Skills/MyRadialSkill"));
+    if (RadialBPClassFinder.Succeeded())
+    {
+        RadialBPClass = RadialBPClassFinder.Class;
+        UE_LOG(LogTemp, Log, TEXT("BaseCharacter: Successfully loaded RadialBPClassFinder: %s"), *RadialBPClass -> GetName());
+    }
+    else
+    {
+        UE_LOG(LogTemp, Warning, TEXT("BaseCharacter: Failed to load RadialBPClassFinder!"));
+    }
+
+    static ConstructorHelpers::FClassFinder<UChangeSkill> ChangeBPClassFinder(TEXT("/Game/WorkFolder/Bluprints/Skills/MyChangeSkill"));
+    if (ChangeBPClassFinder.Succeeded())
+    {
+        ChangeBPClass = ChangeBPClassFinder.Class;
+        UE_LOG(LogTemp, Log, TEXT("BaseCharacter: Successfully loaded ChangeBPClassFinder: %s"), *ChangeBPClass -> GetName());
+    }
+    else
+    {
+        UE_LOG(LogTemp, Warning, TEXT("BaseCharacter: Failed to load ChangeBPClassFinder!"));
+    }
+
     
     bIsStunned = false;
-    
 }
 
 void ABaseCharacter::BeginPlay()
@@ -97,6 +121,10 @@ void ABaseCharacter::BeginPlay()
 
     SetWalkSpeed(default_walk_speed);
 
+    // 공중 제어 능력 높임. 기본값이 낮으면 공중에서 이동키가 약하게 반응함.
+    GetCharacterMovement()->AirControl = 0.8f; // 기본 AirControl은 보통 0.2 ~ 0.3 정도임. 높이면 공중 이동이 민감해짐.
+
+    
     InitializeSkills();
 }
 
@@ -152,7 +180,9 @@ float ABaseCharacter::TakeDamage(float DamageAmount, struct FDamageEvent const& 
 {
     float ActualDamage = Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
 
+    PlayAnimMontageByType(MontageType::Hit);
     hp -= ActualDamage;
+
     // 나중에 패킷관리 할 예시 코드 ㅇㅇ
 
     // FDamagePacket DamagePacket;
@@ -228,23 +258,23 @@ void ABaseCharacter::InitializeSkills()
     }
     
     // 2번슬롯 
-    if (BounceBPClass)
+    if (RadialBPClass)
     {
-        UBaseSkill* NewSkill = NewObject<UBounce>(this, BounceBPClass);
+        UBaseSkill* NewSkill = NewObject<URadialSkill>(this, RadialBPClass);
         if (NewSkill)
         {
             NewSkill->Owner = this;
             Skills[2] = NewSkill;
-            UE_LOG(LogTemp, Log, TEXT("InitializeSkills: Successfully created Bounce skill for slot 2: %s"), *NewSkill->GetName());
+            UE_LOG(LogTemp, Log, TEXT("InitializeSkills: Successfully created Radial skill for slot 2: %s"), *NewSkill->GetName());
         }
         else
         {
-            UE_LOG(LogTemp, Warning, TEXT("InitializeSkills: Failed to create Bounce skill for slot 2"));
+            UE_LOG(LogTemp, Warning, TEXT("InitializeSkills: Failed to create Radial skill for slot 2"));
         }
     }
     else
     {
-        UE_LOG(LogTemp, Warning, TEXT("InitializeSkills: BounceBPClass is not assigned."));
+        UE_LOG(LogTemp, Warning, TEXT("InitializeSkills: RadialBPClass is not assigned."));
     }
 
     // 3번슬롯 
@@ -265,7 +295,28 @@ void ABaseCharacter::InitializeSkills()
     else
     {
         UE_LOG(LogTemp, Warning, TEXT("InitializeSkills: StunBPClass is not assigned."));
+    }
+
+    // 4번 슬롯 테스트용임
+    if (ChangeBPClass)
+    {
+        UBaseSkill* NewSkill = NewObject<UChangeSkill>(this, ChangeBPClass);
+        if (NewSkill)
+        {
+            NewSkill->Owner = this;
+            Skills[4] = NewSkill;
+            UE_LOG(LogTemp, Log, TEXT("InitializeSkills: Successfully created Change skill for slot 4: %s"), *NewSkill->GetName());
+        }
+        else
+        {
+            UE_LOG(LogTemp, Warning, TEXT("InitializeSkills: Failed to create Change skill for slot 4"));
+        }
+    }
+    else
+    {
+        UE_LOG(LogTemp, Warning, TEXT("InitializeSkills: ChangeBPClass is not assigned."));
     } 
+    
 }
 
 void ABaseCharacter::ApplyStun(float Duration)
