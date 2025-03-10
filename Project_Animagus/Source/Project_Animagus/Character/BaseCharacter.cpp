@@ -121,6 +121,10 @@ void ABaseCharacter::BeginPlay()
 
     SetWalkSpeed(default_walk_speed);
 
+    // 공중 제어 능력 높임. 기본값이 낮으면 공중에서 이동키가 약하게 반응함.
+    GetCharacterMovement()->AirControl = 0.8f; // 기본 AirControl은 보통 0.2 ~ 0.3 정도임. 높이면 공중 이동이 민감해짐.
+
+    
     InitializeSkills();
 }
 
