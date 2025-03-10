@@ -134,6 +134,7 @@
     <ClCompile Include="GameServer.cpp" />
     <ClCompile Include="IocpCore.cpp" />
     <ClCompile Include="IocpEvent.cpp" />
+    <ClCompile Include="Listener.cpp" />
     <ClCompile Include="pch.cpp" />
     <ClCompile Include="ServerMain.cpp" />
     <ClCompile Include="ServerPacketHandler.cpp" />
@@ -144,6 +145,7 @@
     <ClInclude Include="GameServer.h" />
     <ClInclude Include="IocpCore.h" />
     <ClInclude Include="IocpEvent.h" />
+    <ClInclude Include="Listener.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="protocol.h" />
     <ClInclude Include="Session.h" />
