@@ -16,7 +16,7 @@ public:
 
 public:
     /* 외부에서 사용 */
-    bool StartAccept(IocpCoreRef iocpCore);
+    bool StartAccept(GameServerRef server);
     void CloseSocket();
 
 public:
@@ -33,6 +33,6 @@ protected:
     SOCKET _socket = INVALID_SOCKET;
     std::vector<AcceptEvent*> _acceptEvents;
 
-    IocpCoreRef _iocpCore;      // Listener 가 멤버로 있는 Server 의 IocpCore
+    GameServerRef _server;      // Listener 가 멤버로 있는 Server
 
 };

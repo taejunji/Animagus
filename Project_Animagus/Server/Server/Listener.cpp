@@ -4,6 +4,7 @@
 #include "Session.h"
 #include "Listener.h"
 #include "SocketUtils.h"
+#include "GameServer.h"
 
 /*--------------
     Listener
@@ -20,15 +21,17 @@ Listener::~Listener()
     }
 }
 
-bool Listener::StartAccept(IocpCoreRef iocpCore)
+bool Listener::StartAccept(GameServerRef server)
 {
-    _iocpCore = iocpCore;
+    _server = server;
+    if (_server == nullptr)
+        return false;
 
     _socket = SocketUtils::CreateSocket();
     if (_socket == INVALID_SOCKET)
         return false;
 
-    if (_iocpCore->Register(shared_from_this()) == false)
+    if (_server->GetIocpCore()->Register(shared_from_this()) == false)
         return false;
 
     if (SocketUtils::SetReuseAddress(_socket, true) == false)
@@ -74,8 +77,10 @@ void Listener::Dispatch(IocpEvent* iocpEvent, int32 numOfBytes)
 
 void Listener::RegisterAccept(AcceptEvent* acceptEvent)
 {
+    // Session 생성, CP에 등록 및 서버에 해당 세션 추가
     SessionRef session = std::make_shared<Session>();
-    _iocpCore->Register(session);
+    session->SetService(_server);
+    _server->GetIocpCore()->Register(session);
 
     acceptEvent->Init();
     acceptEvent->session = session;

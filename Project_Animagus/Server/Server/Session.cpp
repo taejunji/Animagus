@@ -3,6 +3,8 @@
 #include "IocpEvent.h"
 #include "Session.h"
 #include "SocketUtils.h"
+#include "GameServer.h"
+
 
 /*--------------
 	Session
@@ -50,12 +52,6 @@ void Session::Dispatch(IocpEvent* iocpEvent, int32_t numOfBytes)
         break;
     default: break;
     }
-}
-
-void Session::Send(BYTE* buffer, int32 len)
-{
-
-    RegisterSend();
 }
 
 bool Session::Connect()
@@ -121,6 +117,21 @@ bool Session::RegisterDisconnect()
     return true;
 }
 
+// TODO: sendbuffer를 모아서 보내는 형식으로 함 도전?
+void Session::Send(BYTE* buffer, int32 len)
+{
+    SendEvent* sendEvent = new SendEvent();
+	sendEvent->owner = shared_from_this();	// ADD_REF
+	sendEvent->buffer.resize(len);
+	::memcpy(sendEvent->buffer.data(), buffer, len);
+
+    {
+        std::lock_guard(m_mutex);
+        RegisterSend();
+    }
+}
+
+
 void Session::RegisterRecv()
 {
     if (IsConnected() == false)
@@ -130,9 +141,9 @@ void Session::RegisterRecv()
     _recvEvent.owner = shared_from_this(); // ADD_REF
 
     // TODO : wsabuf 관련 설정
-    //WSABUF wsaBuf;
-    //wsaBuf.buf = reinterpret_cast<char*>(m_buffer);
-    //wsaBuf.len = m_buffer.FreeSize();
+    WSABUF wsaBuf;
+    wsaBuf.buf = reinterpret_cast<char*>(m_buffer);
+    wsaBuf.len = m_buffer.FreeSize();
 
     DWORD numOfBytes = 0;
     DWORD flags = 0;
@@ -148,10 +159,43 @@ void Session::RegisterRecv()
 }
 
 
+void Session::ProcessConnect()
+{
+    _connectEvent.owner = nullptr;		// RELEASE_REF
+
+    m_connected.store(true);
+
+    // 세션 등록
+    GetService()->AddSession(GetSessionRef());
+
+    // 컨텐츠 코드에서 재정의
+    OnConnected();
+
+    // 수신 등록
+    RegisterRecv();
+}
+
+void Session::ProcessDisconnect()
+{
+    _disconnectEvent.owner = nullptr;	// RELEASE_REF
+
+    OnDisconnected();		// 컨텐츠 코드에서 재정의
+    //SocketUtils::Close(_socket);
+    GetService()->ReleaseSession(GetSessionRef());
+}
+
 void Session::ProcessRecv(int32 numOfBytes)
 {
-    std::wcout << "Recv: " << numOfBytes << " bytes received." << std::endl;
-    // m_buffer 또는 m_wsaBuf.buf 에 채워진 데이터를 파싱/처리하는 로직 구현
+    _recvEvent.owner = nullptr;		// RELEASE_REF
+
+    if (numOfBytes == 0)
+    {
+        // 연결이 끊긴 상황
+        Disconnect(L"Recv 0");
+        return;
+    }
+
+    // recv 버퍼에 쓰기
 }
 
 // 전송 이벤트 처리: 전송 완료 후 후속 작업 수행
@@ -172,7 +216,7 @@ void Session::HandleError(int32 errorCode)
         break;
     default:
         // TODO : Log
-        cout << "Handle Error : " << errorCode << endl;
+        std::wcout << "Handle Error : " << errorCode << std::endl;
         break;
     }
 }

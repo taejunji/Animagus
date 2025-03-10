@@ -1,3 +1,4 @@
+#include "pch.h"
 #include "GameServer.h"
 #include "IocpCore.h"
 #include "Session.h"
@@ -70,7 +71,8 @@ bool GameServer::Initialize()
     if (m_listener == nullptr)
         return false;
 
-    if (m_listener->StartAccept(m_iocpCore) == false)
+    GameServerRef server = std::static_pointer_cast<GameServer>(shared_from_this());
+    if (m_listener->StartAccept(server) == false)
         return false;
 
     std::cout << "[GameServer] Network and IOCP initialization complete." << std::endl;
@@ -123,4 +125,20 @@ void GameServer::Shutdown() {
 
 
     std::cout << "[GameServer] Shutdown complete." << std::endl;
+}
+
+void GameServer::AddSession(SessionRef session)
+{
+    std::lock_guard(m_mutex);
+
+    m_sessionCount++;
+    m_sessions.insert(session);
+}
+
+void GameServer::ReleaseSession(SessionRef session)
+{
+    std::lock_guard(m_mutex);
+
+    if (m_sessions.erase(session) != 0);
+    m_sessionCount--;
 }

@@ -83,5 +83,6 @@ class SendEvent : public IocpEvent
 public:
     SendEvent() : IocpEvent(EventType::Send) {}
 
-    std::vector<char*> sendBuffers;
+    std::string buffer;
+    //std::vector<BYTE*> sendBuffers;     // WSASend 는 여러개 모아서 한 번에 보내는게 좋은 효율
 };
