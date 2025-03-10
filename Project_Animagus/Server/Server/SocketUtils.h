@@ -17,6 +17,16 @@ namespace SocketUtils
             ::closesocket(socket);
         socket = INVALID_SOCKET;
     }
+    void Init()
+    {
+        /* 런타임에 주소 얻어오는 API */
+        SOCKET dummySocket = CreateSocket();
+        BindWindowsFunction(dummySocket, WSAID_CONNECTEX, reinterpret_cast<LPVOID*>(&ConnectEx));
+        BindWindowsFunction(dummySocket, WSAID_DISCONNECTEX, reinterpret_cast<LPVOID*>(&DisconnectEx));
+        BindWindowsFunction(dummySocket, WSAID_ACCEPTEX, reinterpret_cast<LPVOID*>(&AcceptEx));
+        Close(dummySocket);
+    }
+
     
     //bool Bind(SOCKET socket);
     bool BindAnyAddress(SOCKET socket)
@@ -34,6 +44,12 @@ namespace SocketUtils
         return SOCKET_ERROR != ::listen(socket, backlog);
     }
 
+
+    bool BindWindowsFunction(SOCKET socket, GUID guid, LPVOID* fn)
+    {
+        DWORD bytes = 0;
+        return SOCKET_ERROR != ::WSAIoctl(socket, SIO_GET_EXTENSION_FUNCTION_POINTER, &guid, sizeof(guid), fn, sizeof(*fn), OUT & bytes, NULL, NULL);
+    }
 
 
     template<typename T>

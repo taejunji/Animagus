@@ -27,6 +27,31 @@ public:
     IocpObjectRef	owner;
 };
 
+
+/*----------------
+    ConnectEvent
+-----------------*/
+
+class ConnectEvent : public IocpEvent
+{
+public:
+    ConnectEvent() : IocpEvent(EventType::Connect) {}
+};
+
+/*--------------------
+    DisconnectEvent
+----------------------*/
+
+class DisconnectEvent : public IocpEvent
+{
+public:
+    DisconnectEvent() : IocpEvent(EventType::Disconnect) {}
+};
+
+/*----------------
+    AcceptEvent
+-----------------*/
+
 class AcceptEvent : public IocpEvent
 {
 public:
@@ -39,3 +64,24 @@ public:
     SessionRef	session = nullptr;		// 클라세션
 };
 
+/*----------------
+    RecvEvent
+-----------------*/
+
+class RecvEvent : public IocpEvent
+{
+public:
+    RecvEvent() : IocpEvent(EventType::Recv) {}
+};
+
+/*----------------
+    SendEvent
+-----------------*/
+
+class SendEvent : public IocpEvent
+{
+public:
+    SendEvent() : IocpEvent(EventType::Send) {}
+
+    std::vector<char*> sendBuffers;
+};

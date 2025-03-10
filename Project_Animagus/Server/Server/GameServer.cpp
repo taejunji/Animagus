@@ -1,6 +1,9 @@
 #include "GameServer.h"
 #include "IocpCore.h"
 #include "Session.h"
+#include "Listener.h"
+#include "SocketUtils.h"
+
 
 GameServer::GameServer() : m_running(false) 
 {
@@ -23,6 +26,7 @@ bool GameServer::Initialize()
         std::cerr << "WSAStartup failed." << std::endl;
         return false;
     }
+    SocketUtils::Init();
 
     //// 리슨 소켓 생성
     //m_listenSocket = WSASocket(AF_INET, SOCK_STREAM, IPPROTO_TCP, 0, 0, WSA_FLAG_OVERLAPPED);
@@ -112,10 +116,10 @@ void GameServer::Shutdown() {
         }
     }
 
-    m_workerThreads.clear();
-
     // TODO : IOCP 및 기타 자원 해제
-    ::closesocket(m_listenSocket);
+    m_workerThreads.clear();
+    m_listener->CloseSocket();
+
 
 
     std::cout << "[GameServer] Shutdown complete." << std::endl;

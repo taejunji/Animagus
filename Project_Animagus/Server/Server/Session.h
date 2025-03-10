@@ -26,6 +26,7 @@ public:
 public:
     // 정보 관련 //
     SOCKET				GetSocket() { return m_socket; }
+    void                SetNetAddress(SOCKADDR_IN sockAddress) { m_sockAddress = sockAddress; }
     bool				IsConnected() { return m_connected; }
     SessionRef			GetSessionRef() { return std::static_pointer_cast<Session>(shared_from_this()); }
 
@@ -38,50 +39,26 @@ private:
 
     void				ProcessConnect();
     void				ProcessDisconnect();
-    void                ProcessRecv(int32_t numOfBytes);
-    void                ProcessSend(int32_t numOfBytes);
-    void                ProcessAccept(int32_t numOfBytes);
+    void                ProcessRecv(int32 numOfBytes);
+    void                ProcessSend(int32 numOfBytes);
 
-public:
+    void				HandleError(int32 errorCode);
+
+private:
+    std::mutex          m_mutex;
+
     SOCKET              m_socket;      // 클라이언트 소켓
-    //NetAddress        m_netAddress;  // 접속 주소
+    SOCKADDR_IN         m_sockAddress;  // 접속 주소
     std::atomic<bool>   m_connected;  // 접속 여부
 
     // 버퍼 관리 관련 멤버: 내부 데이터 버퍼와 WSABUF
     char*               m_buffer;
     WSABUF              m_wsaBuf;
-};
-
-
-/*--------------
-    Listener
----------------*/
-
-class Listener : public IocpObject
-{
-public:
-    Listener() = default;
-    ~Listener();
-
-public:
-    /* 외부에서 사용 */
-    bool StartAccept(IocpCoreRef iocpCore);
-    void CloseSocket();
-
-public:
-    /* 인터페이스 구현 */
-    virtual HANDLE GetHandle() override;
-    virtual void Dispatch(class IocpEvent* iocpEvent, int32 numOfBytes = 0) override;
 
 private:
-    /* 수신 관련 */
-    void RegisterAccept(AcceptEvent* acceptEvent);
-    void ProcessAccept(AcceptEvent* acceptEvent);
-
-protected:
-    SOCKET _socket = INVALID_SOCKET;
-    std::vector<AcceptEvent*> _acceptEvents;
-
-    IocpCoreRef _iocpCore;      // Listener 가 멤버로 있는 Server 의 IocpCore
+    /* IocpEvent 재사용 */
+    ConnectEvent		_connectEvent;
+    DisconnectEvent		_disconnectEvent;
+    RecvEvent			_recvEvent;
+    SendEvent			_sendEvent;
 };
-

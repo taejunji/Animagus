@@ -36,6 +36,12 @@ constexpr int BUFSIZE = 1048;
 const int  MAX_NAME_SIZE = 20;
 const int  MAX_USER = 5000;
 
-void error_display(int err_no);
+struct PacketHeader
+{
+    uint16 size;
+    uint16 id; // 프로토콜ID
+};
 
+
+void error_display(int err_no);
 

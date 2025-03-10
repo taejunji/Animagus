@@ -8,7 +8,7 @@ int main()
 {
     GameServer gameserver;
 
-    if (!gameserver.Initialize()) {
+    if (false == gameserver.Initialize()) {
         std::cerr << "[GameServer] Initialization failed." << std::endl;
         return -1;
     }

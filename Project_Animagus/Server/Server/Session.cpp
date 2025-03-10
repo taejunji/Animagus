@@ -1,6 +1,6 @@
 #include "pch.h"
-#include "IocpEvent.h"
 #include "IocpCore.h"
+#include "IocpEvent.h"
 #include "Session.h"
 #include "SocketUtils.h"
 
@@ -36,149 +36,143 @@ void Session::Dispatch(IocpEvent* iocpEvent, int32_t numOfBytes)
 {
     switch (iocpEvent->eventType)
     {
+    case EventType::Connect:
+        ProcessConnect();
+        break;
+    case EventType::Disconnect:
+        ProcessDisconnect();
+        break;
     case EventType::Recv:
         ProcessRecv(numOfBytes);
         break;
     case EventType::Send:
         ProcessSend(numOfBytes);
         break;
-    case EventType::Accept:
-        ProcessAccept(numOfBytes);
-        break;
-    default:
-        // 필요한 경우 다른 이벤트에 대한 처리 추가
-        break;
+    default: break;
     }
 }
 
-void Session::ProcessRecv(int32_t numOfBytes)
+void Session::Send(BYTE* buffer, int32 len)
 {
-    std::cout << "Recv: " << numOfBytes << " bytes received." << std::endl;
-    // m_buffer 또는 m_wsaBuf.buf 에 채워진 데이터를 파싱/처리하는 로직 구현
+
+    RegisterSend();
 }
 
-// 전송 이벤트 처리: 전송 완료 후 후속 작업 수행
-void Session::ProcessSend(int32_t numOfBytes)
+bool Session::Connect()
 {
-    std::cout << "Send: " << numOfBytes << " bytes sent." << std::endl;
-    // 전송 완료 후 필요한 로직 구현
+    return RegisterConnect();
 }
 
-// Accept 이벤트 처리: 클라이언트 연결 수락 후 처리
-void Session::ProcessAccept(int32_t numOfBytes)
+void Session::Disconnect(const WCHAR* cause)
 {
-    m_connected.store(true);
-    std::cout << "Accept completed. Client connected." << std::endl;
-    // 추가적으로 클라이언트 접속 후 초기화 작업 등을 수행
+    if (m_connected.exchange(false) == false)
+        return;
+
+    // TEMP
+    std::wcout << "Disconnect : " << cause << std::endl;
+
+    RegisterDisconnect();
 }
 
-
-/*--------------
-    Listener
----------------*/
-
-Listener::~Listener()
+bool Session::RegisterConnect()
 {
-    ::closesocket(_socket);
+    if (IsConnected())
+        return false;
 
-    for (IocpEvent* acceptEvent : _acceptEvents)
+    if (SocketUtils::SetReuseAddress(m_socket, true) == false)
+        return false;
+
+    if (SocketUtils::BindAnyAddress(m_socket/*남는거*/) == false)
+        return false;
+
+    _connectEvent.Init();
+    _connectEvent.owner = shared_from_this(); // ADD_REF
+
+    DWORD numOfBytes = 0;
+    SOCKADDR_IN sockAddr = m_sockAddress;
+    if (false == SocketUtils::ConnectEx(m_socket, reinterpret_cast<SOCKADDR*>(&sockAddr), sizeof(sockAddr), nullptr, 0, &numOfBytes, &_connectEvent))
     {
-        // TODO : 이벤트들 메모리 해제
-
-    }
-}
-
-bool Listener::StartAccept(IocpCoreRef iocpCore)
-{
-    _iocpCore = iocpCore;
-
-    _socket = SocketUtils::CreateSocket();
-    if (_socket == INVALID_SOCKET)
-        return false;
-
-    if (_iocpCore->Register(shared_from_this()) == false)
-        return false;
-
-    if (SocketUtils::SetReuseAddress(_socket, true) == false)
-        return false;
-
-    if (SocketUtils::SetLinger(_socket, 0, 0) == false)
-        return false;
-
-    if (SocketUtils::BindAnyAddress(_socket) == false)
-        return false;
-
-    if (SocketUtils::Listen(_socket) == false)
-        return false;
-
-    const int32 acceptCount = MAX_USER;
-    for (int32 i = 0; i < acceptCount; i++)
-    {
-        AcceptEvent* acceptEvent = new AcceptEvent();
-        acceptEvent->owner = shared_from_this();
-        _acceptEvents.push_back(acceptEvent);
-        RegisterAccept(acceptEvent);
+        int32 errorCode = ::WSAGetLastError();
+        if (errorCode != WSA_IO_PENDING)
+        {
+            _connectEvent.owner = nullptr; // RELEASE_REF
+            return false;
+        }
     }
 
     return true;
 }
 
-void Listener::CloseSocket()
+bool Session::RegisterDisconnect()
 {
-    SocketUtils::Close(_socket);
-}
+    _disconnectEvent.Init();
+    _disconnectEvent.owner = shared_from_this(); // ADD_REF
 
-HANDLE Listener::GetHandle()
-{
-    return reinterpret_cast<HANDLE>(_socket);
-}
-
-void Listener::Dispatch(IocpEvent* iocpEvent, int32 numOfBytes)
-{
-    if (iocpEvent->eventType != EventType::Accept) return;
-    AcceptEvent* acceptEvent = static_cast<AcceptEvent*>(iocpEvent);
-    ProcessAccept(acceptEvent);
-}
-
-void Listener::RegisterAccept(AcceptEvent* acceptEvent)
-{
-    SessionRef session = std::make_shared<Session>();
-    _iocpCore->Register(session);
-
-    acceptEvent->Init();
-    acceptEvent->session = session;
-
-    DWORD bytesReceived = 0;
-    if (false == SocketUtils::AcceptEx(_socket, session->GetSocket(), session->m_buffer, 0, sizeof(SOCKADDR_IN) + 16, sizeof(SOCKADDR_IN) + 16, OUT & bytesReceived, static_cast<LPOVERLAPPED>(acceptEvent)))
+    if (false == SocketUtils::DisconnectEx(m_socket, &_disconnectEvent, TF_REUSE_SOCKET, 0))
     {
-        const int32 errorCode = ::WSAGetLastError();
+        int32 errorCode = ::WSAGetLastError();
         if (errorCode != WSA_IO_PENDING)
         {
-            // 일단 다시 Accept 걸어준다
-            RegisterAccept(acceptEvent);
+            _disconnectEvent.owner = nullptr; // RELEASE_REF
+            return false;
+        }
+    }
+
+    return true;
+}
+
+void Session::RegisterRecv()
+{
+    if (IsConnected() == false)
+        return;
+
+    _recvEvent.Init();
+    _recvEvent.owner = shared_from_this(); // ADD_REF
+
+    // TODO : wsabuf 관련 설정
+    //WSABUF wsaBuf;
+    //wsaBuf.buf = reinterpret_cast<char*>(m_buffer);
+    //wsaBuf.len = m_buffer.FreeSize();
+
+    DWORD numOfBytes = 0;
+    DWORD flags = 0;
+    if (SOCKET_ERROR == ::WSARecv(m_socket, &wsaBuf, 1, OUT & numOfBytes, OUT & flags, &_recvEvent, nullptr))
+    {
+        int32 errorCode = ::WSAGetLastError();
+        if (errorCode != WSA_IO_PENDING)
+        {
+            HandleError(errorCode);
+            _recvEvent.owner = nullptr; // RELEASE_REF
         }
     }
 }
 
-void Listener::ProcessAccept(AcceptEvent* acceptEvent)
+
+void Session::ProcessRecv(int32 numOfBytes)
 {
-    SessionRef session = acceptEvent->session;
+    std::wcout << "Recv: " << numOfBytes << " bytes received." << std::endl;
+    // m_buffer 또는 m_wsaBuf.buf 에 채워진 데이터를 파싱/처리하는 로직 구현
+}
 
-    if (false == SocketUtils::SetUpdateAcceptSocket(session->GetSocket(), _socket))
+// 전송 이벤트 처리: 전송 완료 후 후속 작업 수행
+void Session::ProcessSend(int32 numOfBytes)
+{
+    std::wcout << "Send: " << numOfBytes << " bytes sent." << std::endl;
+    // 전송 완료 후 필요한 로직 구현
+}
+
+
+void Session::HandleError(int32 errorCode)
+{
+    switch (errorCode)
     {
-        RegisterAccept(acceptEvent);
-        return;
+    case WSAECONNRESET:
+    case WSAECONNABORTED:
+        Disconnect(L"HandleError");
+        break;
+    default:
+        // TODO : Log
+        cout << "Handle Error : " << errorCode << endl;
+        break;
     }
-
-    SOCKADDR_IN sockAddress;
-    int32 sizeOfSockAddr = sizeof(sockAddress);
-    if (SOCKET_ERROR == ::getpeername(session->GetSocket(), OUT reinterpret_cast<SOCKADDR*>(&sockAddress), &sizeOfSockAddr))
-    {
-        RegisterAccept(acceptEvent);
-        return;
-    }
-
-    //session->SetNetAddress(NetAddress(sockAddress));
-    session->ProcessConnect();
-    RegisterAccept(acceptEvent);    // 물고기 어망에 담고 다시 낚싯대 던지기
 }

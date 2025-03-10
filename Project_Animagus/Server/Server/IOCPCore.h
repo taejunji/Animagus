@@ -27,7 +27,6 @@ public:
 
     HANDLE		GetHandle() { return _iocpHandle; }
 
-    void        RegisterAccept();
     bool		Register(IocpObjectRef iocpObject);		// 소켓을 CP에 등록하는 함수
     bool		Register(SOCKET socket);
     bool		Dispatch(uint32 timeoutMs = INFINITE);	// CP를 감시하면서 대기하는 함수, 작업스레드 원청느낌
