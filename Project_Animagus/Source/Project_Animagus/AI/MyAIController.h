@@ -22,6 +22,9 @@
  * 2. BTService : 반복 노드 -> "근처 적 탐색해서 블랙보드에 저장"
  * 3. BTDecorator : 실행 조건 -> "체력이 50% 이하일 때 실행"
  */
+
+enum class AIControlMode { AIController, BehaviorTree };
+
 UCLASS()
 class PROJECT_ANIMAGUS_API AMyAIController : public AAIController
 {
@@ -39,5 +42,11 @@ private:
     UPROPERTY(EditAnywhere)
     TObjectPtr<class UBehaviorTree> AIBehavior;
 
+public:
+    AIControlMode ControlMode;
 
+    void SetControlMode(AIControlMode mode);
+
+    UFUNCTION(BlueprintCallable)
+    void ResumeBehaviorTree(); // BT 재개
 };
