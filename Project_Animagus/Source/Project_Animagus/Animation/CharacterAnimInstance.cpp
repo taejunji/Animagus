@@ -69,7 +69,7 @@ void UCharacterAnimInstance::AnimNotify_GetUpEnd()
 void UCharacterAnimInstance::AnimNotify_StunHardHit()
 {
     // HardHit 애니메이션에 Notify(노티파이)를 설정해서 애니메이션이 끝날 때 stun 상태를 변경하도록 이벤트 함수 설정
-    UE_LOG(LogTemp, Display, TEXT("Studn Hard Hit Notify End"));
+    // BaseCharacter의 is_stun의 (true/false)를 설정하고 AnimInstance에서 b_is_stun(애니메이션 조건 변수)를 업데이트해서 애니메이션 블루프린트 ABP_TEST_2에 설정된 변수 조건에 의해 애니메이션이 재생될 것
 
     character->SetIsHardHit(false);
     character->GetCharacterMovement()->SetMovementMode(MOVE_Walking); // 다시 이동 가능

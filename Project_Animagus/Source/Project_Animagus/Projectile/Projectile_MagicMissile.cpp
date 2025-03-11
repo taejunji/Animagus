@@ -84,6 +84,21 @@ void AProjectile_MagicMissile::OnHit(UPrimitiveComponent* OverlappedComponent, A
             ProjectileLight->SetIntensity(0.0f);
         }
 
+        // 카메라 쉐이크, 플레이어와 거리가 멀면 쉐이크 안되도록
+        APlayerController* PlayerController = GetWorld()->GetFirstPlayerController();
+        if (PlayerController && HitCameraShakeClass)
+        {
+            if (ACharacter* Player = Cast<ACharacter>(PlayerController->GetPawn()))
+            {
+                // 플레이어와 투사체 거리 계산
+                float DistanceToPlayer = FVector::Dist(Player->GetActorLocation(), GetActorLocation());
+                if (DistanceToPlayer < MaxShakeDistance) // ex) 10m 안에서만 쉐이크
+                {
+                    PlayerController->ClientStartCameraShake(HitCameraShakeClass);
+                }
+            }
+        }
+
         if (ACharacter* HitCharacter = Cast<ACharacter>(OtherActor))
         {
             // 충돌 표면의 법선이 대상에게 밀리는 방향이므로 이를 이용
