@@ -53,7 +53,23 @@ protected:
 
 
     
-    public:
+public:
+    /** 타이머 핸들->LifeTime 시간을 계산해서 카메라 쉐이크 적용 안되도록 함 */
+    struct FTimerHandle LifetimeHandle;
+    
+    // ** 카메라 쉐이크
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Effects")
+    TSubclassOf<class UCameraShakeBase> HitCameraShakeClass;
+
+    /**투사체 생존 시간이 Limt을 넘어가면 쉐이크 안되도록 설정->거리가 멀어진 투사체는 카메라 흔들림 없도록 */ 
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Effects")
+    float CameraShakeDurationLimit;
+    
+    /** 플레이어와 발사체 간의 최대 거리를 제한해서 멀리 존재하는 투사체는 플레이어 카메라에 영향 안받도록*/
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Effects")
+    float MaxShakeDistance;
+
+
     /** Shooter actor (투사체를 발사한 플레이어) */
     UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Projectile")
     AActor* Shooter;
