@@ -11,6 +11,7 @@
 #include "TimerManager.h"
 #include "Components/PointLightComponent.h"
 
+
 AProjectile_FireBall::AProjectile_FireBall()
 {
     // KnockbackForce 기본값 설정 (필요에 따라 조정)
@@ -51,6 +52,23 @@ void AProjectile_FireBall::OnHit(UPrimitiveComponent* OverlappedComponent, AActo
         if (ProjectileLight)
         {
             ProjectileLight->SetIntensity(0.0f);
+        }
+
+        // 카메라 쉐이크, FireBall은 생존시간이 길어지면 쉐이크 안되도록, 플레이어와 거리가 멀면 쉐이크 안되도록
+        APlayerController* PlayerController = GetWorld()->GetFirstPlayerController(); 
+        float ElapsedTime = GetWorld()->GetTimerManager().GetTimerElapsed(LifetimeHandle); 
+
+        if (PlayerController && HitCameraShakeClass && ElapsedTime < CameraShakeDurationLimit) 
+        {
+            if (ACharacter* Player = Cast<ACharacter>(PlayerController->GetPawn()))
+            {
+                // 플레이어와 투사체 거리 계산
+                float DistanceToPlayer = FVector::Dist(Player->GetActorLocation(), GetActorLocation());
+                if (DistanceToPlayer < MaxShakeDistance) // ex) 10m 안에서만 쉐이크
+                {
+                    PlayerController->ClientStartCameraShake(HitCameraShakeClass);
+                }
+            }
         }
 
         // Knockback 효과 적용 (상대가 ACharacter인 경우)

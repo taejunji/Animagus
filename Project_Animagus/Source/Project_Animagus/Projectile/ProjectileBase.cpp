@@ -74,7 +74,7 @@ void AProjectileBase::BeginPlay()
     }
     
     // Lifetime 타이머 설정: Lifetime 후에 DestroySkill 호출
-    FTimerHandle LifetimeHandle;
+    //FTimerHandle LifetimeHandle;
     GetWorld()->GetTimerManager().SetTimer(
         LifetimeHandle,
         this,

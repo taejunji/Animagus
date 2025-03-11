@@ -35,6 +35,10 @@ void UChangeSkill::ActiveSkill_Implementation()
         return;
     }
 
+    // 공격 애니메이션
+    Owner->PlayAnimMontageByType(MontageType::DefaultAttack);
+
+
     // 스폰 위치: 캐릭터 위치에서 전방 80cm, 위로 20cm 오프셋
     FVector SpawnLocation = Owner->GetActorLocation() 
                             + Owner->GetActorForwardVector() * 80.f 

@@ -181,33 +181,16 @@ void ABattle_PlayerController::Input_Ready(const FInputActionValue& InputValue)
         {
             MyCharacter->Skills[1]->ActiveSkill();
         }
-    }
-  
+    } 
 }
 
 void ABattle_PlayerController::Input_Skill_1(const FInputActionValue& InputValue)
 {
     UE_LOG(LogTemp, Display, TEXT("Skill_1_Pressed"));
 
-    if (auto* MyCharacter = Cast<ABaseCharacter>(GetPawn()))
-    {
-        // BaseCharacter의 is_stun의 (true/false)를 설정하고 AnimInstance에서 b_is_stun(애니메이션 조건 변수)를 업데이트해서 애니메이션 블루프린트 ABP_TEST_2에 설정된 변수 조건에 의해 애니메이션이 재생될 것
-        // HardHit 애니메이션에 Notify( 이벤트 알림 )을 설정해서 애니메이션 종료 구간에 is_stun을 false로 수정하는 방식
-
-            // 스턴 상태인지 - 나중에 궁극기 생기면 타이머를 통해 캐릭터를 정지 시킬 것
-            // 점프가 아닌 땅인 상태에서 맞으면 스턴에 걸리고 애니메이션이 끝날 동안 "공격, 점프, 움직임" 금지하게 될 것
-
-        // BaseCharacter의 stun이 false + 캐릭터가 지상에 있을 때 = "스턴"
-        // if (MyCharacter->GetIsHardHit() == false && MyCharacter->GetCharacterMovement()->IsFalling() == false) {
-        if (MyCharacter->GetIsHardHit() == false) {
-            MyCharacter->SetIsHardHit(true);
-        }
-    }
     if (APawn* MyPawn  = GetPawn())
-    {
-        
+    {        
         ABaseCharacter* MyCharacter = Cast<ABaseCharacter>(MyPawn);
-        MyCharacter->PlayAnimMontageByType(MontageType::DefaultAttack);
         
         if (MyCharacter && MyCharacter->Skills.IsValidIndex(4) && MyCharacter->Skills[4])
         {
@@ -222,9 +205,7 @@ void ABattle_PlayerController::Input_Skill_2(const FInputActionValue& InputValue
 
     if (APawn* MyPawn  = GetPawn())
     {
-        
         ABaseCharacter* MyCharacter = Cast<ABaseCharacter>(MyPawn);
-        MyCharacter->PlayAnimMontageByType(MontageType::DefaultAttack);
         
         if (MyCharacter && MyCharacter->Skills.IsValidIndex(1) && MyCharacter->Skills[1])
         {
@@ -238,9 +219,7 @@ void ABattle_PlayerController::Input_Skill_3(const FInputActionValue& InputValue
 {
     if (APawn* MyPawn  = GetPawn())
     {
-        
         ABaseCharacter* MyCharacter = Cast<ABaseCharacter>(MyPawn);
-        MyCharacter->PlayAnimMontageByType(MontageType::DefaultAttack);
         
         if (MyCharacter && MyCharacter->Skills.IsValidIndex(2) && MyCharacter->Skills[2])
         {
@@ -253,9 +232,7 @@ void ABattle_PlayerController::Input_Skill_4(const FInputActionValue& InputValue
 {
     if (APawn* MyPawn  = GetPawn())
     {
-        
         ABaseCharacter* MyCharacter = Cast<ABaseCharacter>(MyPawn);
-        MyCharacter->PlayAnimMontageByType(MontageType::DefaultAttack);
         
         if (MyCharacter && MyCharacter->Skills.IsValidIndex(3) && MyCharacter->Skills[3])
         {

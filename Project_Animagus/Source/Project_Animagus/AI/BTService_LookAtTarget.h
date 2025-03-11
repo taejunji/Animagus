@@ -7,7 +7,7 @@
 #include "BTService_LookAtTarget.generated.h"
 
 /**
- * 
+ *  타겟을 향해 Focus하는 노드
  */
 UCLASS()
 class PROJECT_ANIMAGUS_API UBTService_LookAtTarget : public UBTService
