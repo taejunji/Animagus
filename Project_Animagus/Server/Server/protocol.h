@@ -50,7 +50,7 @@ namespace Protocol {
 #pragma pack(pop)
 
 
-/* 패킷이름 뒤에 _PKT 붙이고 반드시 패킷ID 넣어주기 */
+    /* 패킷이름 뒤에 _PKT 붙이고 반드시 패킷ID 넣어주기 */
 #pragma pack (push, 1)
     struct CS_MOVE_PKT
     {
@@ -58,11 +58,12 @@ namespace Protocol {
 
         unsigned char size;
         unsigned char type;
+
         int64	p_id;
         float Max_speed;
         float x, y, z;
         float vx, vy, vz;
-        float yaw, pitch;
+//        float yaw, pitch;
     };
     struct CS_SELECT_CHARACTER_PKT
     {
@@ -75,6 +76,9 @@ namespace Protocol {
         PlayerType p_type;
     };
     struct CS_USING_SKILL_PKT
+    {
+
+    };
 #pragma pack(pop)
 
 }
