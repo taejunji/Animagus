@@ -136,6 +136,7 @@
     <ClCompile Include="IocpEvent.cpp" />
     <ClCompile Include="Listener.cpp" />
     <ClCompile Include="pch.cpp" />
+    <ClCompile Include="Player.cpp" />
     <ClCompile Include="ServerMain.cpp" />
     <ClCompile Include="ServerPacketHandler.cpp" />
     <ClCompile Include="Session.cpp" />
@@ -147,6 +148,7 @@
     <ClInclude Include="IocpEvent.h" />
     <ClInclude Include="Listener.h" />
     <ClInclude Include="pch.h" />
+    <ClInclude Include="Player.h" />
     <ClInclude Include="protocol.h" />
     <ClInclude Include="Session.h" />
     <ClInclude Include="SocketUtils.h" />

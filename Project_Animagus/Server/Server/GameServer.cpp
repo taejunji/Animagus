@@ -129,7 +129,7 @@ void GameServer::Shutdown() {
 
 void GameServer::AddSession(SessionRef session)
 {
-    std::lock_guard(m_mutex);
+    std::lock_guard lock(m_mutex);
 
     m_sessionCount++;
     m_sessions.insert(session);
@@ -137,7 +137,7 @@ void GameServer::AddSession(SessionRef session)
 
 void GameServer::ReleaseSession(SessionRef session)
 {
-    std::lock_guard(m_mutex);
+    std::lock_guard lock(m_mutex);
 
     if (m_sessions.erase(session) != 0);
     m_sessionCount--;

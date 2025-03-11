@@ -1,6 +1,5 @@
 #include "pch.h"
 #include "IocpCore.h"
-#include "IocpEvent.h"
 #include "Session.h"
 #include "SocketUtils.h"
 #include "GameServer.h"
@@ -126,7 +125,7 @@ void Session::Send(BYTE* buffer, int32 len)
 	::memcpy(sendEvent->buffer.data(), buffer, len);
 
     {
-        std::lock_guard(m_mutex);
+        std::lock_guard lock(m_mutex);
         RegisterSend();
     }
 }
