@@ -31,6 +31,10 @@ void AProjectile_Stun::OnHit(UPrimitiveComponent* OverlappedComponent, AActor* O
             if (ABaseCharacter* BaseChar = Cast<ABaseCharacter>(HitCharacter))
             {
                 BaseChar->ApplyStun(StunDuration);
+                if (BaseChar->GetIsHardHit() == false) { 
+                    BaseChar->SetIsHardHit(true); 
+                }
+
                 UE_LOG(LogTemp, Log, TEXT("AProjectile_Stun: Applied stun to %s for %f seconds."), *OtherActor->GetName(), StunDuration);
             }
             else

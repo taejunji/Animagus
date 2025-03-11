@@ -37,6 +37,9 @@ void URadialSkill::ActiveSkill_Implementation()
         return;
     }
     
+    // 공격 애니메이션
+    Owner->PlayAnimMontageByType(MontageType::DefaultAttack);
+
     // 진행 방향: 카메라가 바라보는 중심 방향을 사용
     FVector CameraLocation;
     FRotator CameraRotation;
