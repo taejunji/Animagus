@@ -63,7 +63,7 @@ namespace Protocol {
         float Max_speed;
         float x, y, z;
         float vx, vy, vz;
-//        float yaw, pitch;
+        //float yaw, pitch;
     };
     struct CS_SELECT_CHARACTER_PKT
     {

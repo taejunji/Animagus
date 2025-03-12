@@ -49,7 +49,6 @@ private:
     void				HandleError(int32 errorCode);
 
 protected:
-    // 컨텐츠 코드에서 오버로딩 //
     virtual void		OnConnected() {}
     virtual int32		OnRecv(BYTE* buffer, int32 len) { return len; }
     virtual void		OnSend(int32 len) {}
@@ -57,12 +56,12 @@ protected:
 
 
 private:
-    std::mutex          m_mutex;
+    std::mutex                  m_mutex;
 
-    SOCKET              m_socket;               // 클라이언트 소켓
-    SOCKADDR_IN         m_sockAddress;          // 접속 주소
-    std::atomic<bool>   m_connected;            // 접속 여부
-    std::weak_ptr<GameServer>   m_server;       // 이 Session이 연결된 서버
+    SOCKET                      m_socket = INVALID_SOCKET;// 클라이언트 소켓
+    SOCKADDR_IN                 m_sockAddress;          // 접속 주소
+    std::atomic<bool>           m_connected;            // 접속 여부
+    std::weak_ptr<GameServer>   m_server;               // 이 Session이 연결된 서버
 
 
     // 버퍼 관리 관련 멤버: 내부 데이터 버퍼와 WSABUF
@@ -76,3 +75,5 @@ private:
     RecvEvent			_recvEvent;
     SendEvent			_sendEvent;
 };
+
+

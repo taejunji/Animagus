@@ -39,7 +39,9 @@
     <ClCompile Include="Listener.cpp">
       <Filter>Network</Filter>
     </ClCompile>
-    <ClCompile Include="Player.cpp" />
+    <ClCompile Include="Player.cpp">
+      <Filter>ServerMain</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -69,6 +71,8 @@
     <ClInclude Include="Listener.h">
       <Filter>Network</Filter>
     </ClInclude>
-    <ClInclude Include="Player.h" />
+    <ClInclude Include="Player.h">
+      <Filter>ServerMain</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

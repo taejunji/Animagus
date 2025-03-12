@@ -103,7 +103,7 @@ bool Session::RegisterDisconnect()
     _disconnectEvent.Init();
     _disconnectEvent.owner = shared_from_this(); // ADD_REF
 
-    if (false == SocketUtils::DisconnectEx(m_socket, &_disconnectEvent, TF_REUSE_SOCKET, 0))
+    if (false == SocketUtils::DisconnectEx(m_socket, &_disconnectEvent, TF_REUSE_SOCKET, 0))    // 소켓 재샤용
     {
         int32 errorCode = ::WSAGetLastError();
         if (errorCode != WSA_IO_PENDING)
@@ -157,6 +157,57 @@ void Session::RegisterRecv()
     }
 }
 
+void Session::RegisterSend()
+{
+    if (IsConnected() == false)
+        return;
+
+    _sendEvent.Init();
+    _sendEvent.owner = shared_from_this();	// ADD_REF
+
+    // 보낼 데이터를 sendEvent에 등록
+    {
+        std::lock_guard lock(m_mutex);
+
+        int32 writeSize = 0;
+        while (_sendQueue.empty() == false)
+        {
+            SendBufferRef sendBuffer = _sendQueue.front();
+
+            writeSize += sendBuffer->WriteSize();
+            // TODO : Check Exception
+
+            _sendQueue.pop();
+            _sendEvent.sendBuffers.push_back(sendBuffer);
+        }
+    }
+
+    // Scatter-Gather (흩어져 있는 데이터들을 모아서 한번에 보냄)
+    std::vector<WSABUF> wsaBufs;
+    wsaBufs.reserve(_sendEvent.sendBuffers.size());
+    for (SendBufferRef sendBuffer : _sendEvent.buffer)
+    {
+        WSABUF wsaBuf;
+        wsaBuf.buf = reinterpret_cast<char*>(sendBuffer->Buffer());
+        wsaBuf.len = static_cast<LONG>(sendBuffer->WriteSize());
+        wsaBufs.push_back(wsaBuf);
+    }
+
+    DWORD numOfBytes = 0;
+    if (SOCKET_ERROR == ::WSASend(m_socket, wsaBufs.data(), static_cast<DWORD>(wsaBufs.size()), OUT & numOfBytes, 0, &_sendEvent, nullptr))
+    {
+        int32 errorCode = ::WSAGetLastError();
+        if (errorCode != WSA_IO_PENDING)
+        {
+            HandleError(errorCode);
+            _sendEvent.owner = nullptr;		// RELEASE_REF
+            _sendEvent.sendBuffers.clear();	// RELEASE_REF
+            _sendRegistered.store(false);
+        }
+    }
+
+}
+
 
 void Session::ProcessConnect()
 {
@@ -195,13 +246,28 @@ void Session::ProcessRecv(int32 numOfBytes)
     }
 
     // recv 버퍼에 쓰기
+
+    // 다시 수신 등록
+    RegisterRecv();
 }
 
 // 전송 이벤트 처리: 전송 완료 후 후속 작업 수행
 void Session::ProcessSend(int32 numOfBytes)
 {
-    std::wcout << "Send: " << numOfBytes << " bytes sent." << std::endl;
-    // 전송 완료 후 필요한 로직 구현
+
+
+
+
+    OnSend(numOfBytes);
+
+    {
+        std::lock_guard lock(m_mutex);
+
+        if (_sendQueue.empty())
+            _sendRegistered.store(false);
+        else
+            RegisterSend();
+    }
 }
 
 
