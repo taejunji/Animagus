@@ -1,6 +1,7 @@
 #pragma once
 #include "IocpEvent.h"
 
+class IocpObject;
 
 class Session : public IocpObject
 {
@@ -65,8 +66,7 @@ private:
 
 
     // 버퍼 관리 관련 멤버: 내부 데이터 버퍼와 WSABUF
-    BYTE*               m_buffer;
-    WSABUF              m_wsaBuf;
+    std::vector<BYTE*>          m_sendBuffer;
 
 private:
     /* IocpEvent 재사용 */

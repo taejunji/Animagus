@@ -1,6 +1,6 @@
 #include "pch.h"
-#include "IocpCore.h"
 #include "Session.h"
+#include "IocpCore.h"
 #include "SocketUtils.h"
 #include "GameServer.h"
 
@@ -9,12 +9,12 @@
 	Session
 ---------------*/
 
-Session::Session() : m_socket(INVALID_SOCKET) , m_connected(false) , m_buffer(nullptr)
+Session::Session() : m_socket(INVALID_SOCKET) , m_connected(false)// , m_sendBuffer(nullptr)
 {
     // 64KB 크기의 버퍼 할당
-    m_buffer = new char[BUFFER_SIZE];
-    m_wsaBuf.buf = m_buffer;
-    m_wsaBuf.len = static_cast<ULONG>(BUFFER_SIZE);
+    //m_sendBuffer = new char[BUFFER_SIZE];
+    //m_wsaBuf.buf = m_buffer;
+    //m_wsaBuf.len = static_cast<ULONG>(BUFFER_SIZE);
 }
 
 // 소멸자: 소켓 닫기 및 버퍼 해제
@@ -24,7 +24,7 @@ Session::~Session()
     {
         SocketUtils::Close(m_socket);
     }
-    delete[] m_buffer;
+    //delete[] m_sendBuffer;
 }
 
 HANDLE Session::GetHandle()
@@ -119,10 +119,11 @@ bool Session::RegisterDisconnect()
 // TODO: sendbuffer를 모아서 보내는 형식으로 함 도전?
 void Session::Send(BYTE* buffer, int32 len)
 {
-    SendEvent* sendEvent = new SendEvent();
+    SendEvent* sendEvent = new SendEvent(); // TODO : 메모리 풀을 이용해서 new/delete 최소화하기
 	sendEvent->owner = shared_from_this();	// ADD_REF
-	sendEvent->buffer.resize(len);
-	::memcpy(sendEvent->buffer.data(), buffer, len);
+	//sendEvent->buffer.resize(len);
+	//::memcpy(sendEvent->buffer.data(), buffer, len);
+    sendEvent->sendBuffers.emplace_back(buffer);    // TODO : 패킷 헤더에 len 기록하기
 
     {
         std::lock_guard lock(m_mutex);
@@ -185,11 +186,11 @@ void Session::RegisterSend()
     // Scatter-Gather (흩어져 있는 데이터들을 모아서 한번에 보냄)
     std::vector<WSABUF> wsaBufs;
     wsaBufs.reserve(_sendEvent.sendBuffers.size());
-    for (SendBufferRef sendBuffer : _sendEvent.buffer)
+    for (BYTE* sendBuffer : _sendEvent.sendBuffers)
     {
         WSABUF wsaBuf;
-        wsaBuf.buf = reinterpret_cast<char*>(sendBuffer->Buffer());
-        wsaBuf.len = static_cast<LONG>(sendBuffer->WriteSize());
+        wsaBuf.buf = reinterpret_cast<char*>(sendBuffer[1]);
+        wsaBuf.len = static_cast<LONG>(sendBuffer[0]);  // pkt_size
         wsaBufs.push_back(wsaBuf);
     }
 
