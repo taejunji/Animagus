@@ -18,6 +18,7 @@ USING_SHARED_PTR(IocpObject);
 USING_SHARED_PTR(Session);
 USING_SHARED_PTR(Listener);
 USING_SHARED_PTR(GameServer);
+USING_SHARED_PTR(SendBuffer);
 
 
 #define size16(val) static_cast<int16>(sizeof(val))

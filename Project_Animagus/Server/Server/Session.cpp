@@ -1,20 +1,20 @@
 #include "pch.h"
 #include "Session.h"
+#include "SendBuffer.h"
+#include "IocpEvent.h"
 #include "IocpCore.h"
 #include "SocketUtils.h"
 #include "GameServer.h"
+#include "ServerPacketHandler.h"
 
 
 /*--------------
 	Session
 ---------------*/
 
-Session::Session() : m_socket(INVALID_SOCKET) , m_connected(false)// , m_sendBuffer(nullptr)
+Session::Session(ServiceType type) : m_serviceType(type)//, m_buffer(BUFFER_SIZE)
 {
-    // 64KB 크기의 버퍼 할당
-    //m_sendBuffer = new char[BUFFER_SIZE];
-    //m_wsaBuf.buf = m_buffer;
-    //m_wsaBuf.len = static_cast<ULONG>(BUFFER_SIZE);
+    m_socket = SocketUtils::CreateSocket();
 }
 
 // 소멸자: 소켓 닫기 및 버퍼 해제
@@ -117,18 +117,25 @@ bool Session::RegisterDisconnect()
 }
 
 // TODO: sendbuffer를 모아서 보내는 형식으로 함 도전?
-void Session::Send(BYTE* buffer, int32 len)
+void Session::Send(SendBufferRef sendBuffer)
 {
-    SendEvent* sendEvent = new SendEvent(); // TODO : 메모리 풀을 이용해서 new/delete 최소화하기
-	sendEvent->owner = shared_from_this();	// ADD_REF
-	//sendEvent->buffer.resize(len);
-	//::memcpy(sendEvent->buffer.data(), buffer, len);
-    sendEvent->sendBuffers.emplace_back(buffer);    // TODO : 패킷 헤더에 len 기록하기
+    if (IsConnected() == false)
+        return;
 
+    bool registerSend = false;
+
+    // 현재 RegisterSend가 걸리지 않은 상태라면, 걸어준다
     {
         std::lock_guard lock(m_mutex);
-        RegisterSend();
+
+        m_sendBuffers.push(sendBuffer);
+
+        if (m_sendRegistered.exchange(true) == false)
+            registerSend = true;
     }
+
+    if (registerSend)
+        RegisterSend();
 }
 
 
@@ -171,14 +178,14 @@ void Session::RegisterSend()
         std::lock_guard lock(m_mutex);
 
         int32 writeSize = 0;
-        while (_sendQueue.empty() == false)
+        while (m_sendBuffers.empty() == false)
         {
-            SendBufferRef sendBuffer = _sendQueue.front();
+            SendBufferRef sendBuffer = m_sendBuffers.front();
 
             writeSize += sendBuffer->WriteSize();
             // TODO : Check Exception
 
-            _sendQueue.pop();
+            m_sendBuffers.pop();
             _sendEvent.sendBuffers.push_back(sendBuffer);
         }
     }
@@ -186,11 +193,11 @@ void Session::RegisterSend()
     // Scatter-Gather (흩어져 있는 데이터들을 모아서 한번에 보냄)
     std::vector<WSABUF> wsaBufs;
     wsaBufs.reserve(_sendEvent.sendBuffers.size());
-    for (BYTE* sendBuffer : _sendEvent.sendBuffers)
+    for (SendBufferRef sendBuffer : _sendEvent.sendBuffers)
     {
         WSABUF wsaBuf;
-        wsaBuf.buf = reinterpret_cast<char*>(sendBuffer[1]);
-        wsaBuf.len = static_cast<LONG>(sendBuffer[0]);  // pkt_size
+        wsaBuf.buf = reinterpret_cast<char*>(sendBuffer->Buffer());
+        wsaBuf.len = static_cast<LONG>(sendBuffer->WriteSize());  // pkt_size
         wsaBufs.push_back(wsaBuf);
     }
 
@@ -203,7 +210,7 @@ void Session::RegisterSend()
             HandleError(errorCode);
             _sendEvent.owner = nullptr;		// RELEASE_REF
             _sendEvent.sendBuffers.clear();	// RELEASE_REF
-            _sendRegistered.store(false);
+            m_sendRegistered.store(false);
         }
     }
 
@@ -255,17 +262,22 @@ void Session::ProcessRecv(int32 numOfBytes)
 // 전송 이벤트 처리: 전송 완료 후 후속 작업 수행
 void Session::ProcessSend(int32 numOfBytes)
 {
+    _sendEvent.owner = nullptr;		// RELEASE_REF
+    _sendEvent.sendBuffers.clear();	// RELEASE_REF
 
-
-
+    if (numOfBytes == 0)
+    {
+        Disconnect(L"Send 0");
+        return;
+    }
 
     OnSend(numOfBytes);
 
     {
         std::lock_guard lock(m_mutex);
 
-        if (_sendQueue.empty())
-            _sendRegistered.store(false);
+        if (m_sendBuffers.empty())
+            m_sendRegistered.store(false);
         else
             RegisterSend();
     }
@@ -285,4 +297,45 @@ void Session::HandleError(int32 errorCode)
         std::wcout << "Handle Error : " << errorCode << std::endl;
         break;
     }
+}
+
+int32 Session::OnRecv(BYTE* buffer, int32 len)
+{
+    int32 processLen = 0;
+
+    while (true)
+    {
+        int32 dataSize = len - processLen;
+        // 헤더 파싱
+        if (dataSize < sizeof(PacketHeader))
+            break;
+
+        PacketHeader header = *(reinterpret_cast<PacketHeader*>(&buffer[processLen]));
+        // 헤더에 기록된 패킷 크기 파싱
+        if (dataSize < header.size)
+            break;
+
+        // 패킷  조립 성공
+        OnRecvPacket(&buffer[processLen], header.size);
+
+        processLen += header.size;
+    }
+
+    return processLen;
+
+}
+
+void Session::OnRecvPacket(BYTE* buffer, int32 len)
+{
+    SessionRef session = std::static_pointer_cast<Session>(shared_from_this());
+    PacketHeader* header = reinterpret_cast<PacketHeader*>(buffer);
+
+    if (m_serviceType == ServiceType::CLIENT) {
+
+    }
+    else if (m_serviceType == ServiceType::SERVER) {
+        ServerPacketHandler::HandlePacket(session, buffer, len);
+    }
+
+
 }

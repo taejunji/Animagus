@@ -1,5 +1,6 @@
 #pragma once
 #include "IocpEvent.h"
+#include "IocpCore.h"
 
 class IocpObject;
 
@@ -8,11 +9,17 @@ class Session : public IocpObject
     friend class Listener;
     friend class IocpCore;
 
+
 public:
     static constexpr size_t BUFFER_SIZE = 0x1'0000; // 64KB
 
+    enum ServiceType {
+        CLIENT,
+        SERVER,
+    };
+
 public:
-    Session();
+    Session(ServiceType type = SERVER);
     virtual ~Session();
 
     // IocpObject 인터페이스 구현
@@ -21,7 +28,7 @@ public:
 
 public:
     // 외부에서 사용 //
-    void				Send(BYTE* buffer, int32 len);
+    void				Send(SendBufferRef sendBuffer);
     bool				Connect();
     void				Disconnect(const WCHAR* cause);
 
@@ -50,11 +57,13 @@ private:
     void				HandleError(int32 errorCode);
 
 protected:
+    int32		        OnRecv(BYTE* buffer, int32 len);
+    
     virtual void		OnConnected() {}
-    virtual int32		OnRecv(BYTE* buffer, int32 len) { return len; }
     virtual void		OnSend(int32 len) {}
     virtual void		OnDisconnected() {}
 
+    void                OnRecvPacket(BYTE* buffer, int32 len);
 
 private:
     std::mutex                  m_mutex;
@@ -63,10 +72,12 @@ private:
     SOCKADDR_IN                 m_sockAddress;          // 접속 주소
     std::atomic<bool>           m_connected;            // 접속 여부
     std::weak_ptr<GameServer>   m_server;               // 이 Session이 연결된 서버
+    ServiceType                 m_serviceType;
 
 
     // 버퍼 관리 관련 멤버: 내부 데이터 버퍼와 WSABUF
-    std::vector<BYTE*>          m_sendBuffer;
+    std::atomic<bool>			m_sendRegistered = false;
+    std::queue<SendBufferRef>   m_sendBuffers;
 
 private:
     /* IocpEvent 재사용 */
