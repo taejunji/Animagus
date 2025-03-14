@@ -39,8 +39,13 @@
     <ClCompile Include="Player.cpp">
       <Filter>ServerMain</Filter>
     </ClCompile>
-    <ClCompile Include="Buffers.cpp" />
     <ClCompile Include="ServerPacketHandler.cpp">
+      <Filter>ServerMain</Filter>
+    </ClCompile>
+    <ClCompile Include="Buffers.cpp">
+      <Filter>Network</Filter>
+    </ClCompile>
+    <ClCompile Include="Room.cpp">
       <Filter>ServerMain</Filter>
     </ClCompile>
   </ItemGroup>
@@ -75,8 +80,13 @@
     <ClInclude Include="Player.h">
       <Filter>ServerMain</Filter>
     </ClInclude>
-    <ClInclude Include="Buffers.h" />
     <ClInclude Include="ServerPacketHandler.h">
+      <Filter>ServerMain</Filter>
+    </ClInclude>
+    <ClInclude Include="Buffers.h">
+      <Filter>Network</Filter>
+    </ClInclude>
+    <ClInclude Include="Room.h">
       <Filter>ServerMain</Filter>
     </ClInclude>
   </ItemGroup>

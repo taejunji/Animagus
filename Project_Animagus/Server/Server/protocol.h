@@ -37,6 +37,7 @@ namespace Protocol {
 
     enum class PacketID : uint16
     {
+        DCS_TEST,
         CS_MOVE,
         CS_SELECT,
         CS_LOGIN,
@@ -46,20 +47,26 @@ namespace Protocol {
     struct PacketHeader {
         PacketID id;
         uint16 len;
+
+        PacketHeader(PacketID pktID) : id(pktID) {}
     };
 #pragma pack(pop)
 
 
     /* 패킷이름 뒤에 _PKT 붙이고 반드시 패킷ID 넣어주기 */
 #pragma pack (push, 1)
+    struct DCS_TEST_PKT
+    {
+        PacketHeader pkt_header{ PacketID::DCS_TEST };
+
+        int16 player_id;
+        std::string msg;
+    };
     struct CS_MOVE_PKT
     {
-        static constexpr PacketID pkt_id = PacketID::CS_MOVE;
+        PacketHeader pkt_header{ PacketID::CS_MOVE };
 
-        unsigned char size;
-        unsigned char type;
-
-        int64	p_id;
+        int16 player_id;
         float Max_speed;
         float x, y, z;
         float vx, vy, vz;
@@ -67,12 +74,9 @@ namespace Protocol {
     };
     struct CS_SELECT_CHARACTER_PKT
     {
-        static constexpr PacketID pkt_id = PacketID::CS_SELECT;
+        PacketHeader pkt_header{ PacketID::CS_SELECT };
 
-        BYTE size;
-        BYTE type;
-        int id;
-        float x, y, z;
+        int16 player_id;
         PlayerType p_type;
     };
     struct CS_USING_SKILL_PKT
