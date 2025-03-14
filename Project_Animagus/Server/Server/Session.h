@@ -35,8 +35,9 @@ public:
     bool				Connect();
     void				Disconnect(const WCHAR* cause);
 
-    std::shared_ptr<GameServer>	GetService() { return m_server.lock(); }
-    void				SetService(std::shared_ptr<GameServer> server) { m_server = server; }
+    GameServerRef	GetService() { return m_server.lock(); }
+    void				SetService(GameServerRef server) { m_server = server; }
+
 
 public:
     // 정보 관련 //

@@ -21,7 +21,7 @@ Listener::~Listener()
     }
 }
 
-bool Listener::StartAccept(GameServerRef server)
+bool Listener::StartAccept(std::shared_ptr<GameServer> server)
 {
     _server = server;
     if (_server == nullptr)
@@ -117,5 +117,8 @@ void Listener::ProcessAccept(AcceptEvent* acceptEvent)
 
     session->SetNetAddress(sockAddress);
     session->ProcessConnect();
+
+    std::cout << "Client Connected" << std::endl;
+
     RegisterAccept(acceptEvent);    // 물고기 어망에 담고 다시 낚싯대 던지기
 }

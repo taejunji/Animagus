@@ -11,12 +11,12 @@ class AcceptEvent;
 class Listener : public IocpObject
 {
 public:
-    Listener() = default;
+    Listener() : _server(nullptr) {};
     ~Listener();
 
 public:
     /* 외부에서 사용 */
-    bool StartAccept(GameServerRef server);
+    bool StartAccept(std::shared_ptr<GameServer> server);
     void CloseSocket();
 
 public:
@@ -33,6 +33,5 @@ protected:
     SOCKET _socket = INVALID_SOCKET;
     std::vector<AcceptEvent*> _acceptEvents;
 
-    GameServerRef _server;      // Listener 가 멤버로 있는 Server
-
+    std::shared_ptr<GameServer> _server;      // Listener 가 멤버로 있는 Server
 };

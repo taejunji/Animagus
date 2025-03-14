@@ -5,7 +5,7 @@
 IocpCore::IocpCore()
 {
     _iocpHandle = ::CreateIoCompletionPort(INVALID_HANDLE_VALUE, 0, 0, 0);
-    if (_iocpHandle != INVALID_HANDLE_VALUE)
+    if (_iocpHandle == INVALID_HANDLE_VALUE)
     {
         error_display(::GetLastError());
         exit(-1);

@@ -29,6 +29,13 @@ bool GameServer::Initialize()
     }
     SocketUtils::Init();
 
+    m_iocpCore = std::make_shared<IocpCore>();
+    if (!m_iocpCore || m_iocpCore->GetHandle() == nullptr)
+    {
+        std::cerr << "Failed to create IOCP handle." << std::endl;
+        return false;
+    }
+
     //// 리슨 소켓 생성
     //m_listenSocket = WSASocket(AF_INET, SOCK_STREAM, IPPROTO_TCP, 0, 0, WSA_FLAG_OVERLAPPED);
     //if (m_listenSocket == INVALID_SOCKET) {
@@ -66,7 +73,6 @@ bool GameServer::Initialize()
     //}
 
     // TODO : AcceptEx 등록
-
     m_listener = std::make_shared<Listener>();
     if (m_listener == nullptr)
         return false;
@@ -74,6 +80,7 @@ bool GameServer::Initialize()
     GameServerRef server = std::static_pointer_cast<GameServer>(shared_from_this());
     if (m_listener->StartAccept(server) == false)
         return false;
+
 
     std::cout << "[GameServer] Network and IOCP initialization complete." << std::endl;
     return true;
@@ -88,6 +95,7 @@ void GameServer::Run()  // 메인 스레드도 이 함수 돌리는게 나을듯
     {
         workerCount = 4; // 기본값
     }
+    m_workerThreads.resize(workerCount);
 
     std::cout << "[GameServer] Running..." << std::endl;
 
@@ -105,6 +113,14 @@ void GameServer::Run()  // 메인 스레드도 이 함수 돌리는게 나을듯
             });
     }
 
+    // 메인 스레드
+    while (m_running.load())
+    {
+        if (m_iocpCore->Dispatch(10))
+        {
+            // TODO : error log
+        }
+    }
 }
 
 void GameServer::Shutdown() {

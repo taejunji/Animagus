@@ -6,16 +6,15 @@ using namespace std;
 
 int main()
 {
-    GameServer gameserver;
+    GameServerRef gameserver = std::make_shared<GameServer>();
 
-    if (false == gameserver.Initialize()) {
+    if (false == gameserver->Initialize()) {
         std::cerr << "[GameServer] Initialization failed." << std::endl;
         return -1;
     }
 
-    gameserver.Run();
+    gameserver->Run();
 
-
-    gameserver.Shutdown();
+    gameserver->Shutdown();
     return 0;
 }

@@ -28,8 +28,8 @@
 #pragma comment (lib, "WS2_32.lib")
 #pragma comment (lib, "MSWSock.lib")
 
-#define SERVER_PORT		7777
-#define SERVER_IP		"127.0.0.1"
+//const char* SERVER_IP = "127.0.0.1";
+#define SERVER_PORT  7777
 
 //using namespace std;
 //using namespace chrono;

@@ -82,9 +82,14 @@ bool Session::RegisterConnect()
     _connectEvent.Init();
     _connectEvent.owner = shared_from_this(); // ADD_REF
 
+    const char* SERVER_IP = "127.0.0.1";
+
+    ZeroMemory(&m_sockAddress, sizeof(m_sockAddress));
+    m_sockAddress.sin_family = AF_INET;
+    m_sockAddress.sin_port = htons(SERVER_PORT);
+    inet_pton(m_socket, (const char*)(SERVER_IP), &m_sockAddress.sin_addr);
     DWORD numOfBytes = 0;
-    SOCKADDR_IN sockAddr = m_sockAddress;
-    if (false == SocketUtils::ConnectEx(m_socket, reinterpret_cast<SOCKADDR*>(&sockAddr), sizeof(sockAddr), nullptr, 0, &numOfBytes, &_connectEvent))
+    if (false == SocketUtils::ConnectEx(m_socket, reinterpret_cast<SOCKADDR*>(&m_sockAddress), sizeof(m_sockAddress), nullptr, 0, &numOfBytes, &_connectEvent))
     {
         int32 errorCode = ::WSAGetLastError();
         if (errorCode != WSA_IO_PENDING)
@@ -352,7 +357,5 @@ void Session::OnRecvPacket(BYTE* buffer, int32 len)
     else if (m_serviceType == ServiceType::SERVER) {
         ServerPacketHandler::HandlePacket(session, buffer, len);
     }
-
-
 }
 
