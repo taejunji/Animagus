@@ -21,8 +21,23 @@ public:
 
 public:
 	ABattleGameMode();
+
+    void SpawnPlayers();
+    void ActivateInput();
 	
+protected:
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Battle Settings")
+    float start_time; // ex) 5초 후에 입력 활성화
+
+    // 플레이어 ID를 (Key)로 스폰위치(Location, Rotation)를 (Value)로 갖음
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Battle Settings")
+    TMap<int32, FTransform> spawn_transform;
+
 private:
+    // BP_AI 애셋
+    TSubclassOf<class AAIController> AIControllerClass;
+    TSubclassOf<class APawn> AIPlayerClass;
+
     // 라운드 경과 시간 출력
     FTimerHandle battle_timer_handle;
     float elasped_time;

@@ -43,6 +43,8 @@ private:
     TObjectPtr<class UBehaviorTree> AIBehavior;
 
 public:
+    void StartBehaviorTree();
+
     AIControlMode ControlMode;
 
     void SetControlMode(AIControlMode mode);
