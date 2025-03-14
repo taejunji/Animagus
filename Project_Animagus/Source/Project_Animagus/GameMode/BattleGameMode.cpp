@@ -132,8 +132,14 @@ void ABattleGameMode::SpawnPlayers()
         if (PC)
         {
             PC->Possess(SpawnedPlayers[PossessIndex]);
-            // 입력 비활성화
-            // PC->DisableInput(PC);
+            PC->DisableInput(PC); // 입력 비활성화
+
+            //if (UCharacterMovementComponent* MovementComp = SpawnedPlayers[PossessIndex]->GetCharacterMovement())
+            //{
+            //    MovementComp->SetMovementMode(EMovementMode::MOVE_None);   // 공중에서 멈춰서 5초 
+            //    MovementComp->SetMovementMode(EMovementMode::MOVE_Falling);// 시작하자마자 낙하하고 5초 
+            //}
+
             UE_LOG(LogTemp, Log, TEXT("BattleGameMode: PlayerController가 인덱스 %d의 캐릭터를 소유함."), PossessIndex);
         }
     }
@@ -155,11 +161,6 @@ void ABattleGameMode::SpawnPlayers()
         AAICharacter* AIChar = GetWorld()->SpawnActor<AAICharacter>(AIPlayerClass, AI_SpawnLocation, AI_SpawnRotation);
         if (!AIChar) continue;
 
-        //if (UCharacterMovementComponent* MovementComp = AIChar->GetCharacterMovement())
-        //{
-        //    MovementComp->SetMovementMode(EMovementMode::MOVE_Flying);
-        //}
-
         // AI 컨트롤러 생성 및 연결
         AMyAIController* AICtrl = GetWorld()->SpawnActor<AMyAIController>(AIControllerClass, AI_SpawnLocation, AI_SpawnRotation);
         if (AICtrl)
@@ -178,9 +179,6 @@ void ABattleGameMode::SpawnPlayers()
 
 void ABattleGameMode::ActivateInput()
 {
-//    SpawnedPlayers[PossessIndex]->GetController()
-
-//    ABattle_PlayerController* PlayerController = Cast<ABattle_PlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0)); // 첫 번째 플레이어 컨트롤러 가져오기
     ABattle_PlayerController* PlayerController = Cast<ABattle_PlayerController>(SpawnedPlayers[PossessIndex]->GetController()); // 첫 번째 플레이어 컨트롤러 가져오기
     if (PlayerController)
     {
@@ -191,12 +189,10 @@ void ABattleGameMode::ActivateInput()
         {
             CharacterMovement->SetMovementMode(EMovementMode::MOVE_Walking); // 다시 걷기 모드로 전환
         }
-
-        // "0"번 플레이어가 아닌 경우 AI 생성하지 않고 나가기
-        //auto* Player = Cast<ABaseCharacter>(PlayerController->GetPawn());
-        //if (Player->player_number != 0) return;
-        if (PossessIndex != 0) return;
     }
+
+    // "0"번 플레이어가 아닌 경우 AI 생성하지 않고 나가기
+    if (PossessIndex != 0) return;
 
     // **AI들의 Behavior Tree 실행**
     UMyGameInstance* MyGameInstance = Cast<UMyGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
@@ -247,8 +243,8 @@ void ABattleGameMode::InitBattleMode()
         SpawnPlayers(); 
 
         // 5초 후에 플레이어 입력 활성화
-        // FTimerHandle GameStartTimerHandle; 
-        // GetWorld()->GetTimerManager().SetTimer(GameStartTimerHandle, this, &ABattleGameMode::ActivateInput, start_time, false); 
+        FTimerHandle GameStartTimerHandle; 
+        GetWorld()->GetTimerManager().SetTimer(GameStartTimerHandle, this, &ABattleGameMode::ActivateInput, start_time, false); 
 
         // 1초마다 경과시간 호출 함수 타이머 설정
         GetWorld()->GetTimerManager().SetTimer(battle_timer_handle, this, &ABattleGameMode::PrintElapsedtime, 1.0f, true); 
