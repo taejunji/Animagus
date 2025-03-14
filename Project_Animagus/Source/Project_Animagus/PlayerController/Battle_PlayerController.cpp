@@ -9,6 +9,7 @@
 #include "../Character/PlayerCharacter.h" 
 #include "GameFramework/CharacterMovementComponent.h" 
 #include "Project_Animagus/Skill/BaseSkill.h"
+#include "../UI/MyPlayerHUDWidget.h"
 
 ABattle_PlayerController::ABattle_PlayerController(const FObjectInitializer& ObjectInitializer)
     : Super(ObjectInitializer)
@@ -39,6 +40,15 @@ void ABattle_PlayerController::BeginPlay()
     {
         // TPS 설정을 위한 변수 설정 [ 컨트롤러 회전 Yaw 끄기, Spring Arm 폰 제어 회전 켜기, Character Movement 컨트롤러 선호 회전 켜기 ]
         MyPlayer->Initialize_TPS_Settings(); 
+    }
+
+    if (PlayerHUDClass)
+    {
+        PlayerHUD = CreateWidget<UMyPlayerHUDWidget>(this, PlayerHUDClass);
+        if (PlayerHUD)
+        {
+            PlayerHUD->AddToViewport();
+        }
     }
 }
 
@@ -95,7 +105,14 @@ void ABattle_PlayerController::Tick(float DeltaTime)
         GEngine->AddOnScreenDebugMessage( -1, 0.01f, FColor::Green, CurrentHp); 
         
         // 캐릭터의 이동 속도 업데이트
-        MyPlayer->SetWalkSpeed(MyPlayer->current_speed); 
+        MyPlayer->SetWalkSpeed(MyPlayer->current_speed);
+
+        // HUD 업데이트: MyPlayerHUDWidget에서 캐릭터의 HP 비율을 업데이트 (hp / max_hp)
+        if (PlayerHUD)
+        {
+            float HPPercent = MyPlayer->GetHP() / MyPlayer->GetMax_Hp();
+            PlayerHUD->UpdateHP(HPPercent);
+        }
     }
 }
 

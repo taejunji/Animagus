@@ -3,7 +3,7 @@
 
 #include "MyGameInstance.h"
 #include "Kismet/GameplayStatics.h"
-
+#include "../Character/AICharacter.h"
 
 UMyGameInstance::UMyGameInstance(const FObjectInitializer& ObjectInitializer)
     : Super(ObjectInitializer)
@@ -62,6 +62,14 @@ void UMyGameInstance::SwitchLevel(LevelType level)
     case LevelType::Battle:
         UGameplayStatics::OpenLevel(GetWorld(), FName("L_Map"));
         break;
+    }
+}
+
+void UMyGameInstance::AddAICharacter(AAICharacter* AICharacter)
+{
+    if (AICharacter)
+    {
+        AIPlayers.Add(AICharacter);
     }
 }
 

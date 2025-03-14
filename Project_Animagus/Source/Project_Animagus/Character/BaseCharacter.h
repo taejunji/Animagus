@@ -26,6 +26,9 @@ class PROJECT_ANIMAGUS_API ABaseCharacter : public ACharacter
     GENERATED_BODY()
 
 public:
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Character Settings")
+    int32 player_number;
+
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement")
     float default_walk_speed; // 기본 걷기 속도
 
@@ -69,7 +72,7 @@ public:
     float GetHP() const { return hp; }
     bool GetIsDead() const { return is_dead; }
     bool GetIsHardHit() const { return bIsStunned; }
-
+    float GetMax_Hp() const { return max_hp; }
 
     virtual float TakeDamage(
         float DamageAmount,
