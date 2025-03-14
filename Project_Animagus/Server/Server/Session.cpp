@@ -1,6 +1,6 @@
 #include "pch.h"
 #include "Session.h"
-#include "SendBuffer.h"
+#include "Buffers.h"
 #include "IocpEvent.h"
 #include "IocpCore.h"
 #include "SocketUtils.h"
@@ -12,12 +12,11 @@
 	Session
 ---------------*/
 
-Session::Session(ServiceType type) : m_serviceType(type)//, m_buffer(BUFFER_SIZE)
+Session::Session(ServiceType type) : m_serviceType(type), m_recvBuffer(BUFFER_SIZE)
 {
     m_socket = SocketUtils::CreateSocket();
 }
 
-// 소멸자: 소켓 닫기 및 버퍼 해제
 Session::~Session()
 {
     if (m_socket != INVALID_SOCKET)
@@ -77,7 +76,7 @@ bool Session::RegisterConnect()
     if (SocketUtils::SetReuseAddress(m_socket, true) == false)
         return false;
 
-    if (SocketUtils::BindAnyAddress(m_socket/*남는거*/) == false)
+    if (SocketUtils::BindAnyAddress(m_socket) == false)
         return false;
 
     _connectEvent.Init();
@@ -149,8 +148,8 @@ void Session::RegisterRecv()
 
     // TODO : wsabuf 관련 설정
     WSABUF wsaBuf;
-    wsaBuf.buf = reinterpret_cast<char*>(m_buffer);
-    wsaBuf.len = m_buffer.FreeSize();
+    wsaBuf.buf = reinterpret_cast<char*>(m_recvBuffer.WritePos());
+    wsaBuf.len = m_recvBuffer.FreeSize();
 
     DWORD numOfBytes = 0;
     DWORD flags = 0;
@@ -163,6 +162,8 @@ void Session::RegisterRecv()
             _recvEvent.owner = nullptr; // RELEASE_REF
         }
     }
+
+
 }
 
 void Session::RegisterSend()
@@ -198,7 +199,7 @@ void Session::RegisterSend()
         WSABUF wsaBuf;
         wsaBuf.buf = reinterpret_cast<char*>(sendBuffer->Buffer());
         wsaBuf.len = static_cast<LONG>(sendBuffer->WriteSize());  // pkt_size
-        wsaBufs.push_back(wsaBuf);
+        wsaBufs.emplace_back(wsaBuf);
     }
 
     DWORD numOfBytes = 0;
@@ -253,7 +254,22 @@ void Session::ProcessRecv(int32 numOfBytes)
         return;
     }
 
-    // recv 버퍼에 쓰기
+    if (m_recvBuffer.OnWrite(numOfBytes) == false)
+    {
+        Disconnect(L"OnWrite Overflow");
+        return;
+    }
+
+    int32 dataSize = m_recvBuffer.DataSize();
+    int32 processLen = OnRecv(m_recvBuffer.ReadPos(), dataSize); // 컨텐츠 코드에서 재정의
+    if (processLen < 0 || dataSize < processLen || m_recvBuffer.OnRead(processLen) == false)
+    {
+        Disconnect(L"OnRead Overflow");
+        return;
+    }
+
+    // 커서 정리
+    m_recvBuffer.Clean();
 
     // 다시 수신 등록
     RegisterRecv();
@@ -331,7 +347,7 @@ void Session::OnRecvPacket(BYTE* buffer, int32 len)
     PacketHeader* header = reinterpret_cast<PacketHeader*>(buffer);
 
     if (m_serviceType == ServiceType::CLIENT) {
-
+        //ClientPacketHandler::HandlePacket(session, buffer, len);
     }
     else if (m_serviceType == ServiceType::SERVER) {
         ServerPacketHandler::HandlePacket(session, buffer, len);
@@ -339,3 +355,4 @@ void Session::OnRecvPacket(BYTE* buffer, int32 len)
 
 
 }
+

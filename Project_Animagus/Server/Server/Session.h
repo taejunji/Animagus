@@ -1,8 +1,11 @@
 #pragma once
 #include "IocpEvent.h"
 #include "IocpCore.h"
+#include "Buffers.h"
 
 class IocpObject;
+class SendBuffer;
+class RecvBuffer;
 
 class Session : public IocpObject
 {
@@ -78,6 +81,7 @@ private:
     // 버퍼 관리 관련 멤버: 내부 데이터 버퍼와 WSABUF
     std::atomic<bool>			m_sendRegistered = false;
     std::queue<SendBufferRef>   m_sendBuffers;
+    RecvBuffer                  m_recvBuffer;
 
 private:
     /* IocpEvent 재사용 */

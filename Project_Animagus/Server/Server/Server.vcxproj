@@ -137,7 +137,7 @@
     <ClCompile Include="Listener.cpp" />
     <ClCompile Include="pch.cpp" />
     <ClCompile Include="Player.cpp" />
-    <ClCompile Include="SendBuffer.cpp" />
+    <ClCompile Include="Buffers.cpp" />
     <ClCompile Include="ServerMain.cpp" />
     <ClCompile Include="ServerPacketHandler.cpp" />
     <ClCompile Include="Session.cpp" />
@@ -151,7 +151,7 @@
     <ClInclude Include="pch.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="protocol.h" />
-    <ClInclude Include="SendBuffer.h" />
+    <ClInclude Include="Buffers.h" />
     <ClInclude Include="ServerPacketHandler.h" />
     <ClInclude Include="Session.h" />
     <ClInclude Include="SocketUtils.h" />
