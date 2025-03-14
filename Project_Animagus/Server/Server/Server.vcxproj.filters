@@ -39,10 +39,10 @@
     <ClCompile Include="Player.cpp">
       <Filter>ServerMain</Filter>
     </ClCompile>
-    <ClCompile Include="SendBuffer.cpp">
-      <Filter>Network</Filter>
+    <ClCompile Include="Buffers.cpp" />
+    <ClCompile Include="ServerPacketHandler.cpp">
+      <Filter>ServerMain</Filter>
     </ClCompile>
-    <ClCompile Include="ServerPacketHandler.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -75,9 +75,9 @@
     <ClInclude Include="Player.h">
       <Filter>ServerMain</Filter>
     </ClInclude>
-    <ClInclude Include="SendBuffer.h">
-      <Filter>Network</Filter>
+    <ClInclude Include="Buffers.h" />
+    <ClInclude Include="ServerPacketHandler.h">
+      <Filter>ServerMain</Filter>
     </ClInclude>
-    <ClInclude Include="ServerPacketHandler.h" />
   </ItemGroup>
 </Project>
