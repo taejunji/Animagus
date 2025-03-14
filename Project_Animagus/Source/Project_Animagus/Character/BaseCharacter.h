@@ -72,7 +72,7 @@ public:
     float GetHP() const { return hp; }
     bool GetIsDead() const { return is_dead; }
     bool GetIsHardHit() const { return bIsStunned; }
-
+    float GetMax_Hp() const { return max_hp; }
 
     virtual float TakeDamage(
         float DamageAmount,
