@@ -26,6 +26,9 @@ class PROJECT_ANIMAGUS_API ABaseCharacter : public ACharacter
     GENERATED_BODY()
 
 public:
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Character Settings")
+    int32 player_number;
+
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement")
     float default_walk_speed; // 기본 걷기 속도
 
