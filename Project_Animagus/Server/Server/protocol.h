@@ -38,33 +38,42 @@ namespace Protocol {
     enum class PacketID : uint16
     {
         DCS_TEST,
+        CS_LOGIN,
         CS_MOVE,
         CS_SELECT,
-        CS_LOGIN,
+        CS_USING_SKILL,
+
     };
 
-#pragma pack(push, 1)
-    struct PacketHeader {
-        PacketID id;
-        uint16 len;
-
-        PacketHeader(PacketID pktID) : id(pktID) {}
-    };
-#pragma pack(pop)
+//#pragma pack(push, 1)
+//    struct PacketHeader {
+//        PacketID id;
+//        uint16 size;
+//
+//        PacketHeader(PacketID pktID) : id(pktID), size(0) {}
+//    };
+//#pragma pack(pop)
 
 
     /* 패킷이름 뒤에 _PKT 붙이고 반드시 패킷ID 넣어주기 */
 #pragma pack (push, 1)
     struct DCS_TEST_PKT
     {
-        PacketHeader pkt_header{ PacketID::DCS_TEST };
+        PacketHeader pkt_header;
 
         int16 player_id;
         std::string msg;
     };
+    struct CS_LOGIN_PKT
+    {
+        PacketHeader pkt_header;
+
+        int16 player_id;
+        std::string name;
+    };
     struct CS_MOVE_PKT
     {
-        PacketHeader pkt_header{ PacketID::CS_MOVE };
+        PacketHeader pkt_header;
 
         int16 player_id;
         float Max_speed;
@@ -74,14 +83,20 @@ namespace Protocol {
     };
     struct CS_SELECT_CHARACTER_PKT
     {
-        PacketHeader pkt_header{ PacketID::CS_SELECT };
+        PacketHeader pkt_header;
 
         int16 player_id;
         PlayerType p_type;
     };
     struct CS_USING_SKILL_PKT
     {
+        PacketHeader pkt_header;
 
+        int16 player_id;
+        SkillType s_type;
+        float x, y, z;      // 위치
+        float vx, vy, vz;   // 방향 벡터
+        
     };
 #pragma pack(pop)
 
