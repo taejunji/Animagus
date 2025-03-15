@@ -56,25 +56,22 @@ namespace Protocol {
 
 
     /* 패킷이름 뒤에 _PKT 붙이고 반드시 패킷ID 넣어주기 */
+    /* 패킷 헤더는 PacketHandler::MakeSendBuffer 에서 버퍼 앞에 붙여서 나감*/
+    /* 가변 길이 데이터는 담지 않기 (ex: vector, string) */
 #pragma pack (push, 1)
     struct DCS_TEST_PKT
     {
-        PacketHeader pkt_header;
-
         int16 player_id;
-        std::string msg;
+        //std::string msg;
+        char msg[128];
     };
     struct CS_LOGIN_PKT
     {
-        PacketHeader pkt_header;
-
         int16 player_id;
-        std::string name;
+        //std::string name;
     };
     struct CS_MOVE_PKT
     {
-        PacketHeader pkt_header;
-
         int16 player_id;
         float Max_speed;
         float x, y, z;
@@ -83,15 +80,11 @@ namespace Protocol {
     };
     struct CS_SELECT_CHARACTER_PKT
     {
-        PacketHeader pkt_header;
-
         int16 player_id;
         PlayerType p_type;
     };
     struct CS_USING_SKILL_PKT
     {
-        PacketHeader pkt_header;
-
         int16 player_id;
         SkillType s_type;
         float x, y, z;      // 위치
