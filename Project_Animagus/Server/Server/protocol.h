@@ -64,6 +64,7 @@ namespace Protocol {
         int16 player_id;
         //std::string msg;
         char msg[128];
+        int8 len;
     };
     struct CS_LOGIN_PKT
     {

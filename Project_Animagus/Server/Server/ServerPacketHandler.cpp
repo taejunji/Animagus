@@ -15,5 +15,6 @@ bool Handle_INVALID(SessionRef& session, BYTE* buffer, int32 len)
 
 bool Handle_DCS_TEST(SessionRef& session, DCS_TEST_PKT& pkt)
 {
-
+    std::cout << std::string(pkt.msg, pkt.len) << std::endl;
+    return true;
 }
