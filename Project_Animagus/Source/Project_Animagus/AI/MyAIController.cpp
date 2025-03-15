@@ -21,7 +21,7 @@ void AMyAIController::BeginPlay()
     Super::BeginPlay();
 
     // 시작하자마자 Behavior Tree 활성화 -> 레벨에 배치하자마자 실행됨
-#if 1
+#if 0
     if (AIBehavior != nullptr)
     {
         ControlMode = AIControlMode::BehaviorTree;
