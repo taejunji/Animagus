@@ -49,10 +49,10 @@ ABattleGameMode::ABattleGameMode()
     spawn_transform.Add(3, FTransform(FRotator(0, 270, 0), FVector(0.0f, 13500.0f, 800.f))); // Spawn4
     
     // SpawnLocations 기본값 설정 (에디터에서 재조정 가능)
-    SpawnLocations.Add(FVector(0.f, 0.f, 2000.f));
-    SpawnLocations.Add(FVector(500.f, 0.f, 2000.f));
-    SpawnLocations.Add(FVector(0.f, 500.f, 2000.f));
-    SpawnLocations.Add(FVector(500.f, 500.f, 2000.f));
+    SpawnLocations.Add(FVector(-13500.0f, 0.0f, 800.f));
+    SpawnLocations.Add(FVector(0.0f, -13500.0f, 800.f));
+    SpawnLocations.Add(FVector(13500.0f, 0.0f, 800.f));
+    SpawnLocations.Add(FVector(0.0f, 13500.0f, 800.f));
 
     SpawnRotations.Add(FRotator(0.f, 0.f, 0.f));
     SpawnRotations.Add(FRotator(0.f, 90.f, 0.f));
@@ -99,7 +99,7 @@ void ABattleGameMode::SpawnPlayers()
         return;
     }
 
-    for (int32 i = 0; i < 4; i++)
+    for (int32 i = 0; i < 1; i++)
     {
         FTransform SpawnTransform;
         SpawnTransform.SetLocation(SpawnLocations[i]);
@@ -171,9 +171,14 @@ void ABattleGameMode::SpawnPlayers()
             AICtrl->SetIgnoreLookInput(true);
         }
 
+        
+        
         // 게임 인스턴스에 AI 캐릭터 저장
         UMyGameInstance* MyGameInstance = Cast<UMyGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
         MyGameInstance->AddAICharacter(AIChar);
+
+        //SpawnedPlayers.Add(AIChar);
+        
     }
 }
 
