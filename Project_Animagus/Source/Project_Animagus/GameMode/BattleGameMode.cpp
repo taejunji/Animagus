@@ -39,6 +39,7 @@ ABattleGameMode::ABattleGameMode()
     SpawnRotations.Add(FRotator(0.f, 270.f, 0.f));
     
     PossessIndex = 0; // 기본적으로 0번 플레이어를 소유하도록 설정
+    
 }
 
 void ABattleGameMode::StartPlay()
@@ -68,14 +69,14 @@ void ABattleGameMode::InitBattleMode()
     }
     
     APlayerController* PC = UGameplayStatics::GetPlayerController(World, 0);
-    if (PC)
+     if (PC)
     {
         APawn* AutoPawn = PC->GetPawn();
         if (AutoPawn)
         {
             UE_LOG(LogTemp, Log, TEXT("BattleGameMode: 자동 생성된 Pawn %s 제거함."), *AutoPawn->GetName());
-            AutoPawn->Destroy();
-        }
+             AutoPawn->Destroy();
+         }
     }
     
     // 플레이어 캐릭터들을 SpawnLocations 배열에 따라 스폰함
