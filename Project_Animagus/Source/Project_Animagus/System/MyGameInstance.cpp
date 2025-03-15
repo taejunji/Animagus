@@ -65,13 +65,13 @@ void UMyGameInstance::SwitchLevel(LevelType level)
     }
 }
 
-void UMyGameInstance::AddAICharacter(AAICharacter* AICharacter)
-{
-    if (AICharacter)
-    {
-        AIPlayers.Add(AICharacter);
-    }
-}
+//void UMyGameInstance::AddAICharacter(AAICharacter* AICharacter)
+//{
+//    if (AICharacter)
+//    {
+//        AIPlayers.Add(AICharacter);
+//    }
+//}
 
 void UMyGameInstance::PrintGameInstanceData()
 {

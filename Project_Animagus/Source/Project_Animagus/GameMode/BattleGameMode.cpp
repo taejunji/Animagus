@@ -171,14 +171,11 @@ void ABattleGameMode::SpawnPlayers()
             AICtrl->SetIgnoreLookInput(true);
         }
 
-        
-        
         // 게임 인스턴스에 AI 캐릭터 저장
-        UMyGameInstance* MyGameInstance = Cast<UMyGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
-        MyGameInstance->AddAICharacter(AIChar);
+        // UMyGameInstance* MyGameInstance = Cast<UMyGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
+        // MyGameInstance->AddAICharacter(AIChar);
 
-        //SpawnedPlayers.Add(AIChar);
-        
+        SpawnedPlayers.Add(AIChar);
     }
 }
 
@@ -200,15 +197,15 @@ void ABattleGameMode::ActivateInput()
     if (PossessIndex != 0) return;
 
     // **AI들의 Behavior Tree 실행**
-    UMyGameInstance* MyGameInstance = Cast<UMyGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
-    if (!MyGameInstance) return;
+    //UMyGameInstance* MyGameInstance = Cast<UMyGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
+    //if (!MyGameInstance) return;
 
     // **AI들의 Behavior Tree 실행**
-    for (AAICharacter* AIChar : MyGameInstance->AIPlayers)
+    for (ABaseCharacter* Players : SpawnedPlayers)
     {
-        if (AIChar)
+        if (AAICharacter* AICastedChar = Cast<AAICharacter>(Players))
         {
-            AMyAIController* AICtrl = Cast<AMyAIController>(AIChar->GetController());
+            AMyAIController* AICtrl = Cast<AMyAIController>(AICastedChar->GetController());
             if (AICtrl)
             {
                 AICtrl->StartBehaviorTree();
