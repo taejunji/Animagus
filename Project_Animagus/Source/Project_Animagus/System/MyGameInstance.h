@@ -71,8 +71,8 @@ public:
 
 public:
     // AI 캐릭터
-    TArray<class AAICharacter*> AIPlayers;
+    // TArray<class AAICharacter*> AIPlayers;
 
     // AI 추가 함수
-    void AddAICharacter(AAICharacter* AICharacter);
+    // void AddAICharacter(AAICharacter* AICharacter);
 };
