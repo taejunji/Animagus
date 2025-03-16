@@ -40,7 +40,7 @@ void AShrinkingZone::Tick(float DeltaTime)
 	{
 		CurrentRadius = 1500.0f;
 	}
-	UE_LOG(LogTemp, Log, TEXT("Tick: CurrentRadius = %f"), CurrentRadius);
+	// UE_LOG(LogTemp, Log, TEXT("Tick: CurrentRadius = %f"), CurrentRadius);
 
 	// 액터의 스케일을 업데이트 (LargeRadius 기준, Z는 1)
 	float NewScale = CurrentRadius / InitialRadius;

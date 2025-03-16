@@ -21,24 +21,19 @@ void AMyAIController::BeginPlay()
     Super::BeginPlay();
 
     // 시작하자마자 Behavior Tree 활성화 -> 레벨에 배치하자마자 실행됨
-#if 0
-    if (AIBehavior != nullptr)
-    {
-        ControlMode = AIControlMode::BehaviorTree;
-        RunBehaviorTree(AIBehavior);
+#if 1
+    StartBehaviorTree();
+#endif
 
-        // BB 에디터에 키가 추가되어야 한다.
-        /*APawn* PlayerPawn = UGameplayStatics::GetPlayerPawn(GetWorld(), 0);
-        GetBlackboardComponent()->SetValueAsVector(TEXT("PlayerLocation"), PlayerPawn->GetActorLocation() );
-        GetBlackboardComponent()->SetValueAsVector(TEXT("StartLocation"), GetPawn()->GetActorLocation());*/
-
-    }
+    // BB 에디터에 키가 추가되어야 한다.
+    /*APawn* PlayerPawn = UGameplayStatics::GetPlayerPawn(GetWorld(), 0);
+    GetBlackboardComponent()->SetValueAsVector(TEXT("PlayerLocation"), PlayerPawn->GetActorLocation() );
+    GetBlackboardComponent()->SetValueAsVector(TEXT("StartLocation"), GetPawn()->GetActorLocation());*/
 
     // -> 경로 출력
     //FAIMoveRequest MoveRequest;
     //MoveRequest.SetGoalLocation(FVector(0, 0, 0));
     //MoveRequest.SetAcceptanceRadius(15.f);
-
     //FNavPathSharedPtr NavPath;
     //MoveTo(MoveRequest, OUT& NavPath);
     //if (NavPath.IsValid())
@@ -50,7 +45,6 @@ void AMyAIController::BeginPlay()
     //        DrawDebugSphere(GetWorld(), Location, 12.f, 12, FColor::Red, false, 10.0f);
     //    }
     //}
-#endif
 }
 
 void AMyAIController::StartBehaviorTree()
