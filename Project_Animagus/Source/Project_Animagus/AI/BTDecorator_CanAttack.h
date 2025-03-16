@@ -7,7 +7,7 @@
 #include "BTDecorator_CanAttack.generated.h"
 
 /**
- *  사정거리 안에 있는지 검사해서 Bool 리턴
+ *  공격 사정거리 안에 있는지 검사해서 Bool 리턴
  */
 UCLASS()
 class PROJECT_ANIMAGUS_API UBTDecorator_CanAttack : public UBTDecorator

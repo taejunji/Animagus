@@ -9,9 +9,9 @@
 /*
     Behavior Tree Node 
     1. Composite(복합) : 여러 개의 자식 노드 가짐
-        - Selector : 자식 노드 중 하나라도 성공하면 전체 성공
-        - Sequence : 모든 자식이 성공해야 전체 성공
-        - Simple Parallel : 동시에 실행 가능( 이동 & 공격 같이 수행 )
+        - Selector : 자식 노드 중 하나라도 성공하면 전체 성공 [ Action 1 또는 Action 2 ]
+        - Sequence : 모든 자식이 성공해야 전체 성공          [ Action 1 -> Action 2 ]
+        - Simple Parallel : 동시에 실행 가능( 이동 & 공격 같이 수행 ) [ Action 1 + Action 2 ]
 
     2. Task(작업) : 실제 행동 수행
     3. Decorator & Service(추가기능) : 실행 조건 & 지속적 업데이트
@@ -21,6 +21,12 @@
  * 1. BTTask : 일 노드 -> 실패, 성공, 진행 등의 반환값 
  * 2. BTService : 반복 노드 -> "근처 적 탐색해서 블랙보드에 저장"
  * 3. BTDecorator : 실행 조건 -> "체력이 50% 이하일 때 실행"
+
+    - Succeeded : 성공
+    - Failed : 실패
+    - Aborted : 중지 
+    - InProgress : 진행 중 
+
  */
 
 enum class AIControlMode { AIController, BehaviorTree };

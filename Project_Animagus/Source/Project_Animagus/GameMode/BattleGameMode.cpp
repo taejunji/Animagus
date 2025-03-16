@@ -43,10 +43,10 @@ ABattleGameMode::ABattleGameMode()
     }
 
     // 플레이어 ID(0~3)와 스폰 위치를 매핑
-    spawn_transform.Add(0, FTransform(FRotator(0, 0, 0), FVector(-13500.0f, 0.0f, 800.f))); // Spawn1
-    spawn_transform.Add(1, FTransform(FRotator(0, 90, 0), FVector(0.0f, -13500.0f, 800.f))); // Spawn2
-    spawn_transform.Add(2, FTransform(FRotator(0, 180, 0), FVector(13500.0f, 0.0f, 800.f))); // Spawn3
-    spawn_transform.Add(3, FTransform(FRotator(0, 270, 0), FVector(0.0f, 13500.0f, 800.f))); // Spawn4
+    spawn_transform.Add(0, FTransform(FRotator(0, 0, 0), FVector(-13500.0f, 0.0f, 800.f))); // Spawn_0
+    spawn_transform.Add(1, FTransform(FRotator(0, 90, 0), FVector(0.0f, -13500.0f, 800.f))); // Spawn_1
+    spawn_transform.Add(2, FTransform(FRotator(0, 180, 0), FVector(13500.0f, 0.0f, 800.f))); // Spawn_2
+    spawn_transform.Add(3, FTransform(FRotator(0, 270, 0), FVector(0.0f, 13500.0f, 800.f))); // Spawn_3
     
     // SpawnLocations 기본값 설정 (에디터에서 재조정 가능)
     SpawnLocations.Add(FVector(-13500.0f, 0.0f, 800.f));
@@ -63,6 +63,38 @@ ABattleGameMode::ABattleGameMode()
 
 }
 
+void ABattleGameMode::StartPlay()
+{
+    Super::StartPlay();
+
+    InitBattleMode();
+}
+
+void ABattleGameMode::Tick(float DeltaTime)
+{
+    Super::Tick(DeltaTime);
+ 
+}
+
+void ABattleGameMode::InitBattleMode()
+{
+    UMyGameInstance* MyGameInstance = Cast<UMyGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));  
+    if (MyGameInstance)
+    {
+        elasped_time = 0.0f; 
+        GetWorld()->GetTimerManager().ClearTimer(battle_timer_handle); // 타이머가 중지됨 
+
+        SpawnPlayers(); 
+
+        // 5초 후에 플레이어 입력 활성화
+        FTimerHandle GameStartTimerHandle; 
+        GetWorld()->GetTimerManager().SetTimer(GameStartTimerHandle, this, &ABattleGameMode::ActivateInput, start_time, false); 
+
+        // 1초마다 경과시간 호출 함수 타이머 설정
+        // GetWorld()->GetTimerManager().SetTimer(battle_timer_handle, this, &ABattleGameMode::PrintElapsedtime, 1.0f, true); 
+    }
+}
+
 void ABattleGameMode::SpawnPlayers()
 {
     // 먼저 자동으로 생성된 Pawn이 있다면 제거함
@@ -72,7 +104,8 @@ void ABattleGameMode::SpawnPlayers()
         UE_LOG(LogTemp, Warning, TEXT("BattleGameMode: World가 null임."));
         return;
     }
-
+    
+#if 0
     APlayerController* PC = UGameplayStatics::GetPlayerController(World, 0);
     if (PC)
     {
@@ -147,7 +180,9 @@ void ABattleGameMode::SpawnPlayers()
     {
         UE_LOG(LogTemp, Warning, TEXT("BattleGameMode: PossessIndex %d가 유효하지 않음."), PossessIndex);
     }
+#endif
 
+    // "0"번 플레이어가 아닌 경우 AI 생성하지 않고 나가기
     if (PossessIndex != 0) return;
 
     // ** AI를 추가할 경우 -> 0번 플레이어만 만들 것임 ** AI 플레이어 수 설정
@@ -171,10 +206,6 @@ void ABattleGameMode::SpawnPlayers()
             AICtrl->SetIgnoreLookInput(true);
         }
 
-        // 게임 인스턴스에 AI 캐릭터 저장
-        // UMyGameInstance* MyGameInstance = Cast<UMyGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
-        // MyGameInstance->AddAICharacter(AIChar);
-
         SpawnedPlayers.Add(AIChar);
     }
 }
@@ -197,10 +228,6 @@ void ABattleGameMode::ActivateInput()
     if (PossessIndex != 0) return;
 
     // **AI들의 Behavior Tree 실행**
-    //UMyGameInstance* MyGameInstance = Cast<UMyGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
-    //if (!MyGameInstance) return;
-
-    // **AI들의 Behavior Tree 실행**
     for (ABaseCharacter* Players : SpawnedPlayers)
     {
         if (AAICharacter* AICastedChar = Cast<AAICharacter>(Players))
@@ -218,38 +245,6 @@ void ABattleGameMode::ActivateInput()
             //    MovementComp->SetMovementMode(EMovementMode::MOVE_Walking);
             //}
         }
-    }
-}
-
-void ABattleGameMode::StartPlay()
-{
-    Super::StartPlay();
-
-    InitBattleMode();
-}
-
-void ABattleGameMode::Tick(float DeltaTime)
-{
-    Super::Tick(DeltaTime);
- 
-}
-
-void ABattleGameMode::InitBattleMode()
-{
-    UMyGameInstance* MyGameInstance = Cast<UMyGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));  
-    if (MyGameInstance)
-    {
-        elasped_time = 0.0f; 
-        GetWorld()->GetTimerManager().ClearTimer(battle_timer_handle); // 타이머가 중지됨 
-
-        SpawnPlayers(); 
-
-        // 5초 후에 플레이어 입력 활성화
-        FTimerHandle GameStartTimerHandle; 
-        GetWorld()->GetTimerManager().SetTimer(GameStartTimerHandle, this, &ABattleGameMode::ActivateInput, start_time, false); 
-
-        // 1초마다 경과시간 호출 함수 타이머 설정
-        GetWorld()->GetTimerManager().SetTimer(battle_timer_handle, this, &ABattleGameMode::PrintElapsedtime, 1.0f, true); 
     }
 }
 
