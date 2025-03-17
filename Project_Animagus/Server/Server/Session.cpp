@@ -37,15 +37,19 @@ void Session::Dispatch(IocpEvent* iocpEvent, int32_t numOfBytes)
     switch (iocpEvent->eventType)
     {
     case EventType::Connect:
+        std::cout << "Connect" << std::endl;
         ProcessConnect();
         break;
     case EventType::Disconnect:
+        std::cout << "Disconnect" << std::endl;
         ProcessDisconnect();
         break;
     case EventType::Recv:
+        std::cout << "Recv" << std::endl;
         ProcessRecv(numOfBytes);
         break;
     case EventType::Send:
+        std::cout << "Send" << std::endl;
         ProcessSend(numOfBytes);
         break;
     default: break;
@@ -130,7 +134,7 @@ void Session::Send(SendBufferRef sendBuffer)
 
     // 현재 RegisterSend가 걸리지 않은 상태라면, 걸어준다
     {
-        std::lock_guard lock(m_mutex);
+        std::lock_guard<std::mutex> lock(m_mutex);
 
         m_sendBuffers.push(sendBuffer);
 
@@ -181,7 +185,7 @@ void Session::RegisterSend()
 
     // 보낼 데이터를 sendEvent에 등록
     {
-        std::lock_guard lock(m_mutex);
+        std::lock_guard<std::mutex> lock(m_mutex);
 
         int32 writeSize = 0;
         while (m_sendBuffers.empty() == false)
@@ -295,7 +299,7 @@ void Session::ProcessSend(int32 numOfBytes)
     OnSend(numOfBytes);
 
     {
-        std::lock_guard lock(m_mutex);
+        std::lock_guard<std::mutex> lock(m_mutex);
 
         if (m_sendBuffers.empty())
             m_sendRegistered.store(false);

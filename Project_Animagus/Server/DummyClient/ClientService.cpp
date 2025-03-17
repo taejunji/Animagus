@@ -1,5 +1,9 @@
 #include "pch.h"
 #include "ClientService.h"
+#include "SocketUtils.h"
+#include "IOCPCore.h"
+#include "Session.h"
+
 
 ClientService::ClientService()
 {
@@ -28,8 +32,8 @@ bool ClientService::Initialize()
     m_session = std::make_shared<Session>(Session::ServiceType::CLIENT);
     if (m_session == nullptr)
         return false;
+    m_session->SetService(shared_from_this());
 
-    ClientServiceRef client = std::static_pointer_cast<ClientService>(shared_from_this());
     m_iocpCore->Register(m_session);
 
 }
@@ -39,11 +43,11 @@ bool ClientService::Start()
     if (m_session->Connect() == false)
         return false;
 
-    while (true) 
+    while (true)
     {
         if (false == m_iocpCore->Dispatch(10))
         {
-
+            return false;
         }
     }
 

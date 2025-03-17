@@ -8,7 +8,7 @@ int main()
     ClientServiceRef client = std::make_shared<ClientService>();
 
     if (false == client->Initialize()) {
-        std::cerr << "[GameServer] Initialization failed." << std::endl;
+        std::cerr << "[Client] Initialization failed." << std::endl;
         return -1;
     }
 

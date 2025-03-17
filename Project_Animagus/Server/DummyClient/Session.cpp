@@ -86,8 +86,8 @@ bool Session::RegisterConnect()
 
     ZeroMemory(&m_sockAddress, sizeof(m_sockAddress));
     m_sockAddress.sin_family = AF_INET;
-    m_sockAddress.sin_port = htons(SERVER_PORT);
-    inet_pton(m_socket, (const char*)(SERVER_IP), &m_sockAddress.sin_addr);
+    m_sockAddress.sin_port = ::htons(SERVER_PORT);
+    ::inet_pton(AF_INET, SERVER_IP, &m_sockAddress.sin_addr);
     DWORD numOfBytes = 0;
     if (false == SocketUtils::ConnectEx(m_socket, reinterpret_cast<SOCKADDR*>(&m_sockAddress), sizeof(m_sockAddress), nullptr, 0, &numOfBytes, &_connectEvent))
     {
@@ -130,7 +130,7 @@ void Session::Send(SendBufferRef sendBuffer)
 
     // 현재 RegisterSend가 걸리지 않은 상태라면, 걸어준다
     {
-        std::lock_guard lock(m_mutex);
+        std::lock_guard<std::mutex> lock(m_mutex);
 
         m_sendBuffers.push(sendBuffer);
 
@@ -181,7 +181,7 @@ void Session::RegisterSend()
 
     // 보낼 데이터를 sendEvent에 등록
     {
-        std::lock_guard lock(m_mutex);
+        std::lock_guard<std::mutex> lock(m_mutex);
 
         int32 writeSize = 0;
         while (m_sendBuffers.empty() == false)
@@ -230,7 +230,8 @@ void Session::ProcessConnect()
     m_connected.store(true);
 
     // 세션 등록
-    //GetService()->AddSession(GetSessionRef());
+    //GetService()->GetIocpCore()->Register(GetSessionRef());
+    GetService()->SetSession(GetSessionRef());
 
     // 컨텐츠 코드에서 재정의
     OnConnected();
@@ -295,7 +296,7 @@ void Session::ProcessSend(int32 numOfBytes)
     OnSend(numOfBytes);
 
     {
-        std::lock_guard lock(m_mutex);
+        std::lock_guard<std::mutex> lock(m_mutex);
 
         if (m_sendBuffers.empty())
             m_sendRegistered.store(false);
@@ -359,3 +360,15 @@ void Session::OnRecvPacket(BYTE* buffer, int32 len)
     }
 }
 
+void Session::OnConnected()
+{
+    std::cout << "Server Connected" << std::endl;
+
+    DCS_TEST_PKT pkt;
+    std::string msg = "Hello";
+    ::memcpy(pkt.msg, msg.c_str(), msg.size());
+    pkt.len = 5;
+    
+    SendBufferRef sendBuffer = ClientPacketHandler::MakeSendBuffer(pkt);
+    Send(sendBuffer);
+}

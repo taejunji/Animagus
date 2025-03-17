@@ -49,7 +49,7 @@ bool Listener::StartAccept(std::shared_ptr<GameServer> server)
     const int32 acceptCount = MAX_USER;
     for (int32 i = 0; i < acceptCount; i++)
     {
-        AcceptEvent* acceptEvent = new AcceptEvent();
+        AcceptEvent* acceptEvent = new AcceptEvent();   // TODO : delete 해줘야 함
         acceptEvent->owner = shared_from_this();
         _acceptEvents.push_back(acceptEvent);
         RegisterAccept(acceptEvent);
@@ -70,6 +70,7 @@ HANDLE Listener::GetHandle()
 
 void Listener::Dispatch(IocpEvent* iocpEvent, int32 numOfBytes)
 {
+    std::cout << "Accept" << std::endl;
     if (iocpEvent->eventType != EventType::Accept) return;
     AcceptEvent* acceptEvent = static_cast<AcceptEvent*>(iocpEvent);
     ProcessAccept(acceptEvent);
@@ -86,7 +87,8 @@ void Listener::RegisterAccept(AcceptEvent* acceptEvent)
     acceptEvent->session = session;
 
     DWORD bytesReceived = 0;
-    if (false == SocketUtils::AcceptEx(_socket, session->GetSocket(), session->m_recvBuffer.WritePos(), 0, sizeof(SOCKADDR_IN) + 16, sizeof(SOCKADDR_IN) + 16, OUT & bytesReceived, static_cast<LPOVERLAPPED>(acceptEvent)))
+    if (false == SocketUtils::AcceptEx(_socket, session->GetSocket(), session->m_recvBuffer.WritePos(), 0, 
+                sizeof(SOCKADDR_IN) + 16, sizeof(SOCKADDR_IN) + 16, OUT & bytesReceived, static_cast<LPOVERLAPPED>(acceptEvent)))
     {
         const int32 errorCode = ::WSAGetLastError();
         if (errorCode != WSA_IO_PENDING)

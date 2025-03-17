@@ -53,7 +53,7 @@ private:
         header->size = packetSize;
         header->id = pktId;
         std::memcpy(&header[1], &pkt, dataSize);    // 헤더 바로 뒤에 패킷 데이터 복사
-        sendBuffer->Close(packetSize);
+        sendBuffer->Close(packetSize);              // 버퍼 사용량 설정 (_writeSize)
 
         return sendBuffer;
     }
