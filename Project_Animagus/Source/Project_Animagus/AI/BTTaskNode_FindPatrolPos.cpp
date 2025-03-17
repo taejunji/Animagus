@@ -27,10 +27,11 @@ EBTNodeResult::Type UBTTaskNode_FindPatrolPos::ExecuteTask(UBehaviorTreeComponen
         return EBTNodeResult::Failed;
     }
 
+    FVector OriginVector = FVector(0.0f, 0.0f, 0.0f);
     FNavLocation NextPatrol;
     // 1. OriginVector, Radius, ResultVector
     if (NavSystem->GetRandomPointInNavigableRadius(
-        ControllingPawn->GetActorLocation(),
+        OriginVector, //ControllingPawn->GetActorLocation(),
         search_radius,
         NextPatrol))
     {
