@@ -49,7 +49,7 @@ private:
     void PrintElapsedtime();
  
 
-    
+public:   
     // 스폰된 플레이어 캐릭터들을 저장할 배열
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Spawning", meta = (AllowPrivateAccess = "true"))
     TArray<ABaseCharacter*> SpawnedPlayers;
