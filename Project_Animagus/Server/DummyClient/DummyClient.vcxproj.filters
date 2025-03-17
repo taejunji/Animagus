@@ -4,10 +4,33 @@
     <Filter Include="ClientMain">
       <UniqueIdentifier>{58564a0d-b283-4c09-b62b-9a37710b100b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Network">
+      <UniqueIdentifier>{e0cceac7-628f-4f3d-9783-af8f8bbda647}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="pch.h" />
     <ClInclude Include="ClientService.h">
+      <Filter>ClientMain</Filter>
+    </ClInclude>
+    <ClInclude Include="Buffers.h">
+      <Filter>Network</Filter>
+    </ClInclude>
+    <ClInclude Include="IOCPCore.h">
+      <Filter>Network</Filter>
+    </ClInclude>
+    <ClInclude Include="IocpEvent.h">
+      <Filter>Network</Filter>
+    </ClInclude>
+    <ClInclude Include="Session.h">
+      <Filter>Network</Filter>
+    </ClInclude>
+    <ClInclude Include="SocketUtils.h">
+      <Filter>Network</Filter>
+    </ClInclude>
+    <ClInclude Include="pch.h" />
+    <ClInclude Include="protocol.h" />
+    <ClInclude Include="Types.h" />
+    <ClInclude Include="ClientPacketHandler.h">
       <Filter>ClientMain</Filter>
     </ClInclude>
   </ItemGroup>
@@ -16,6 +39,25 @@
       <Filter>ClientMain</Filter>
     </ClCompile>
     <ClCompile Include="ClientMain.cpp">
+      <Filter>ClientMain</Filter>
+    </ClCompile>
+    <ClCompile Include="Buffers.cpp">
+      <Filter>Network</Filter>
+    </ClCompile>
+    <ClCompile Include="IocpCore.cpp">
+      <Filter>Network</Filter>
+    </ClCompile>
+    <ClCompile Include="IocpEvent.cpp">
+      <Filter>Network</Filter>
+    </ClCompile>
+    <ClCompile Include="Session.cpp">
+      <Filter>Network</Filter>
+    </ClCompile>
+    <ClCompile Include="SocketUtils.cpp">
+      <Filter>Network</Filter>
+    </ClCompile>
+    <ClCompile Include="pch.cpp" />
+    <ClCompile Include="ClientPacketHandler.cpp">
       <Filter>ClientMain</Filter>
     </ClCompile>
   </ItemGroup>

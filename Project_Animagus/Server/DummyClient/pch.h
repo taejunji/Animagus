@@ -13,6 +13,7 @@
 #include <unordered_map>
 #include <unordered_set>
 #include <concurrent_priority_queue.h>
+#include <concurrent_queue.h>
 
 #include <thread>
 #include <chrono>

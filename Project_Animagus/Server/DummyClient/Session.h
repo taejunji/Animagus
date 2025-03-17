@@ -35,8 +35,8 @@ public:
     bool				Connect();
     void				Disconnect(const WCHAR* cause);
 
-    GameServerRef	GetService() { return m_server.lock(); }
-    void				SetService(GameServerRef server) { m_server = server; }
+    ClientServiceRef	GetService() { return m_client.lock(); }
+    void				SetService(ClientServiceRef client) { m_client = client; }
 
 
 public:
@@ -75,7 +75,7 @@ private:
     SOCKET                      m_socket = INVALID_SOCKET;// 클라이언트 소켓
     SOCKADDR_IN                 m_sockAddress;          // 접속 주소
     std::atomic<bool>           m_connected;            // 접속 여부
-    std::weak_ptr<GameServer>   m_server;               // 이 Session이 연결된 서버
+    std::weak_ptr<ClientService>   m_client;               // 이 Session이 연결된 클라
     ServiceType                 m_serviceType;
 
 

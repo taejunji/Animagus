@@ -4,8 +4,8 @@
 #include "IocpEvent.h"
 #include "IocpCore.h"
 #include "SocketUtils.h"
-#include "GameServer.h"
-#include "ServerPacketHandler.h"
+#include "ClientService.h"
+#include "ClientPacketHandler.h"
 
 
 /*--------------
@@ -230,7 +230,7 @@ void Session::ProcessConnect()
     m_connected.store(true);
 
     // 세션 등록
-    GetService()->AddSession(GetSessionRef());
+    //GetService()->AddSession(GetSessionRef());
 
     // 컨텐츠 코드에서 재정의
     OnConnected();
@@ -245,7 +245,7 @@ void Session::ProcessDisconnect()
 
     OnDisconnected();		// 컨텐츠 코드에서 재정의
     //SocketUtils::Close(_socket);
-    GetService()->ReleaseSession(GetSessionRef());
+    //GetService()->ReleaseSession(GetSessionRef());
 }
 
 void Session::ProcessRecv(int32 numOfBytes)
@@ -352,10 +352,10 @@ void Session::OnRecvPacket(BYTE* buffer, int32 len)
     PacketHeader* header = reinterpret_cast<PacketHeader*>(buffer);
 
     if (m_serviceType == ServiceType::CLIENT) {
-        //ClientPacketHandler::HandlePacket(session, buffer, len);
+        ClientPacketHandler::HandlePacket(session, buffer, len);
     }
     else if (m_serviceType == ServiceType::SERVER) {
-        ServerPacketHandler::HandlePacket(session, buffer, len);
+        //ServerPacketHandler::HandlePacket(session, buffer, len);
     }
 }
 
