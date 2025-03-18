@@ -73,7 +73,7 @@ bool SocketUtils::SetUpdateAcceptSocket(SOCKET socket, SOCKET listenSocket)
 
 bool SocketUtils::SetUpdateConnectContext(SOCKET socket)
 {
-    return SetSockOpt(socket, SOL_SOCKET, SO_UPDATE_CONNECT_CONTEXT, NULL);
+    return SetSockOpt(socket, SOL_SOCKET, SO_UPDATE_CONNECT_CONTEXT, nullptr);
 }
 
 

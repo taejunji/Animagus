@@ -70,7 +70,7 @@ HANDLE Listener::GetHandle()
 
 void Listener::Dispatch(IocpEvent* iocpEvent, int32 numOfBytes)
 {
-    std::cout << "Accept" << std::endl;
+    std::cout << "Accept Dispatch" << std::endl;
     if (iocpEvent->eventType != EventType::Accept) return;
     AcceptEvent* acceptEvent = static_cast<AcceptEvent*>(iocpEvent);
     ProcessAccept(acceptEvent);

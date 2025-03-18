@@ -36,43 +36,6 @@ bool GameServer::Initialize()
         return false;
     }
 
-    //// 리슨 소켓 생성
-    //m_listenSocket = WSASocket(AF_INET, SOCK_STREAM, IPPROTO_TCP, 0, 0, WSA_FLAG_OVERLAPPED);
-    //if (m_listenSocket == INVALID_SOCKET) {
-    //    std::cerr << "Failed to create listen socket." << std::endl;
-    //    return false;
-    //}
-
-    //SOCKADDR_IN serverAddr;
-    //ZeroMemory(&serverAddr, sizeof(serverAddr));
-    //serverAddr.sin_family = AF_INET;
-    //serverAddr.sin_port = htons(SERVER_PORT);           // 포트 번호
-    //serverAddr.sin_addr.s_addr = htonl(INADDR_ANY); // 모든 인터페이스
-    //if (bind(m_listenSocket, reinterpret_cast<sockaddr*>(&serverAddr), sizeof(serverAddr)) == SOCKET_ERROR) {
-    //    std::cerr << "Bind failed." << std::endl;
-    //    closesocket(m_listenSocket);
-    //    return false;
-    //}
-    //if (listen(m_listenSocket, SOMAXCONN) == SOCKET_ERROR) {
-    //    std::cerr << "Listen failed." << std::endl;
-    //    closesocket(m_listenSocket);
-    //    return false;
-    //}
-
-    //// 리슨소켓 CP등록
-    //if (m_iocpCore->Register(&m_listener))
-    //{
-    //    std::cerr << "리슨 소켓 IOCP 등록 실패." << std::endl;
-    //    return false;
-    //}
-
-    //HANDLE iocpHandle = m_iocpCore->GetHandle();
-    //if (CreateIoCompletionPort(reinterpret_cast<HANDLE>(m_listenSocket), iocpHandle, 0, 0) == nullptr) {
-    //    std::cerr << "리슨 소켓 IOCP 등록 실패." << std::endl;
-    //    return false;
-    //}
-
-    // TODO : AcceptEx 등록
     m_listener = std::make_shared<Listener>();
     if (m_listener == nullptr)
         return false;
@@ -105,10 +68,7 @@ void GameServer::Run()  // 메인 스레드도 이 함수 돌리는게 나을듯
         m_workerThreads.emplace_back([this]() {
             while (m_running.load())
             {
-                if (m_iocpCore->Dispatch(10))
-                {
-                    // TODO : error log
-                }
+                m_iocpCore->Dispatch(10);
             }
             });
     }
@@ -116,10 +76,7 @@ void GameServer::Run()  // 메인 스레드도 이 함수 돌리는게 나을듯
     // 메인 스레드
     while (m_running.load())
     {
-        if (m_iocpCore->Dispatch(10))
-        {
-            // TODO : error log
-        }
+        m_iocpCore->Dispatch(10);
     }
 }
 

@@ -21,7 +21,7 @@ bool IocpCore::Register(IocpObjectRef iocpObject)
 {
     return ::CreateIoCompletionPort(iocpObject->GetHandle(), _iocpHandle, /*key*/0, 0);
 }
-bool IocpCore::Register(SOCKET socket)
+HANDLE IocpCore::Register(SOCKET socket)
 {
     return ::CreateIoCompletionPort(reinterpret_cast<HANDLE>(socket), _iocpHandle, /*key*/0, 0);
 }

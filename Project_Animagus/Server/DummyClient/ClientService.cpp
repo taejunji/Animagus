@@ -32,20 +32,25 @@ bool ClientService::Initialize()
     m_session = std::make_shared<Session>(Session::ServiceType::CLIENT);
     if (m_session == nullptr)
         return false;
+
     m_session->SetService(shared_from_this());
 
-    m_iocpCore->Register(m_session);
+    if (false == m_iocpCore->Register(m_session))
+        return false;
 
+    return true;
 }
 
 bool ClientService::Start()
 {
-    if (m_session->Connect() == false)
+    if (m_session->Connect() == false) {
+        std::cout << "Connect Fail" << std::endl;
         return false;
+    }
 
     while (true)
     {
-        if (false == m_iocpCore->Dispatch(10))
+        if (false == m_iocpCore->Dispatch(50))
         {
             return false;
         }

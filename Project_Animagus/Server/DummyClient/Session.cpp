@@ -70,7 +70,7 @@ void Session::Disconnect(const WCHAR* cause)
 
 bool Session::RegisterConnect()
 {
-    if (IsConnected())
+    if (IsConnected() == true)
         return false;
 
     if (SocketUtils::SetReuseAddress(m_socket, true) == false)
@@ -92,6 +92,7 @@ bool Session::RegisterConnect()
     if (false == SocketUtils::ConnectEx(m_socket, reinterpret_cast<SOCKADDR*>(&m_sockAddress), sizeof(m_sockAddress), nullptr, 0, &numOfBytes, &_connectEvent))
     {
         int32 errorCode = ::WSAGetLastError();
+        error_display(::GetLastError());
         if (errorCode != WSA_IO_PENDING)
         {
             _connectEvent.owner = nullptr; // RELEASE_REF
@@ -227,9 +228,27 @@ void Session::ProcessConnect()
 {
     _connectEvent.owner = nullptr;		// RELEASE_REF
 
-    m_connected.store(true);
+    if (SocketUtils::SetUpdateConnectContext(m_socket) == false) {
+        std::cout << "ConnectContext Error" << std::endl;
+        return;
+    }
 
-    SocketUtils::SetUpdateConnectContext(m_socket);
+    int error = 0;
+    int len = sizeof(error);
+    if (::getsockopt(m_socket, SOL_SOCKET, SO_ERROR, reinterpret_cast<char*>(&error), &len) == SOCKET_ERROR)
+    {
+        std::cout << "getsockopt failed" << std::endl;
+        Disconnect(L"getsockopt Failed");
+        return;
+    }
+    if (error != 0)
+    {
+        std::cout << "Connection error: " << error << std::endl;
+        Disconnect(L"ConnectEx Error");
+        return;
+    }
+
+    m_connected.store(true);
 
     // 세션 등록
     //GetService()->GetIocpCore()->Register(GetSessionRef());
