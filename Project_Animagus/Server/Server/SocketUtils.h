@@ -21,6 +21,7 @@ public:
     static bool     SetReuseAddress(SOCKET socket, bool flag);
     static bool     SetTcpNoDelay(SOCKET socket, bool flag);
     static bool     SetUpdateAcceptSocket(SOCKET socket, SOCKET listenSocket);    // ListenSocket의 특성을 ClientSocket에 그대로 적용
+    static bool     SetUpdateConnectContext(SOCKET socket);
 };
 
 template<typename T>

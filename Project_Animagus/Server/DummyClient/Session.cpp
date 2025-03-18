@@ -229,6 +229,8 @@ void Session::ProcessConnect()
 
     m_connected.store(true);
 
+    SocketUtils::SetUpdateConnectContext(m_socket);
+
     // 세션 등록
     //GetService()->GetIocpCore()->Register(GetSessionRef());
     GetService()->SetSession(GetSessionRef());

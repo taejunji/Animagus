@@ -71,4 +71,9 @@ bool SocketUtils::SetUpdateAcceptSocket(SOCKET socket, SOCKET listenSocket)
     return SetSockOpt(socket, SOL_SOCKET, SO_UPDATE_ACCEPT_CONTEXT, listenSocket);
 }
 
+bool SocketUtils::SetUpdateConnectContext(SOCKET socket)
+{
+    return SetSockOpt(socket, SOL_SOCKET, SO_UPDATE_CONNECT_CONTEXT, NULL);
+}
+
 
