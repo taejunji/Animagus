@@ -12,7 +12,7 @@
 	Session
 ---------------*/
 
-Session::Session(ServiceType type) : m_serviceType(type), m_recvBuffer(BUFFER_SIZE)
+Session::Session(ServiceType type) : m_serviceType(type), m_recvBuffer(BUFFER_SIZE), m_connected(false)
 {
     m_socket = SocketUtils::CreateSocket();
 }
@@ -68,16 +68,17 @@ void Session::Disconnect(const WCHAR* cause)
     RegisterDisconnect();
 }
 
+using namespace std;
 bool Session::RegisterConnect()
 {
     if (IsConnected() == true)
         return false;
 
-    if (SocketUtils::SetReuseAddress(m_socket, true) == false)
+    if (SocketUtils::BindAnyAddress(m_socket) == false) {
+        auto ret = ::WSAGetLastError();
+        HandleError(ret);
         return false;
-
-    if (SocketUtils::BindAnyAddress(m_socket) == false)
-        return false;
+    }
 
     _connectEvent.Init();
     _connectEvent.owner = shared_from_this(); // ADD_REF

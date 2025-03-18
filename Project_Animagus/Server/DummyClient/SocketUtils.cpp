@@ -25,7 +25,7 @@ bool SocketUtils::BindAnyAddress(SOCKET socket)
     SOCKADDR_IN myAddress;
     myAddress.sin_family = AF_INET;
     myAddress.sin_addr.s_addr = ::htonl(INADDR_ANY);
-    myAddress.sin_port = ::htons(SERVER_PORT);
+    myAddress.sin_port = 0;
 
     return SOCKET_ERROR != ::bind(socket, reinterpret_cast<const SOCKADDR*>(&myAddress), sizeof(myAddress));
 }
