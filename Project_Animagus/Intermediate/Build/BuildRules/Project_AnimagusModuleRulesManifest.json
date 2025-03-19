@@ -1,8 +1,0 @@
-{
-	"SourceFiles": [
-		"C:\\MyUnreal\\Animagus\\Project_Animagus\\Source\\Project_Animagus\\Project_Animagus.Build.cs",
-		"C:\\MyUnreal\\Animagus\\Project_Animagus\\Source\\Project_Animagus.Target.cs",
-		"C:\\MyUnreal\\Animagus\\Project_Animagus\\Source\\Project_AnimagusEditor.Target.cs"
-	],
-	"EngineVersion": "5.4.4"
-}

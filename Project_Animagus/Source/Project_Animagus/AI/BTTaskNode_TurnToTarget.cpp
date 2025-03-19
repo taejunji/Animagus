@@ -41,7 +41,9 @@ void UBTTaskNode_TurnToTarget::TickTask(UBehaviorTreeComponent& OwnerComp, uint8
     if (!Target) return;
 
     FRotator TargetRotation = (Target->GetActorLocation() - Character->GetActorLocation()).Rotation(); 
-    FRotator NewRotation = FMath::RInterpTo(Character->GetActorRotation(), TargetRotation, DeltaSeconds, 5.0f); 
+    TargetRotation.Pitch = 0.0f; // Y 축 회전(상하 방향) 무시 - Y축을 기준으로 앞뒤로 고개를 흔드는(상하로 기울어지는) 회전
+
+    FRotator NewRotation = FMath::RInterpTo(Character->GetActorRotation(), TargetRotation, DeltaSeconds, 10.f); 
 
     Character->SetActorRotation(NewRotation);
 

@@ -11,7 +11,8 @@
 			"AdditionalDependencies": [
 				"Engine",
 				"CoreUObject",
-				"AIModule"
+				"AIModule",
+				"UMG"
 			]
 		}
 	],
@@ -22,6 +23,10 @@
 			"TargetAllowList": [
 				"Editor"
 			]
+		},
+		{
+			"Name": "NiagaraFluids",
+			"Enabled": true
 		}
 	]
 }

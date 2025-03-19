@@ -95,4 +95,12 @@ protected:
 
     UPROPERTY(EditAnywhere, Category = "Input")
     TObjectPtr<class UInputAction> skill_4_action;
+
+    // HUD 위젯 클래스를 에디터에서 지정할 수 있도록 함
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UI")
+    TSubclassOf<class UMyPlayerHUDWidget> PlayerHUDClass;
+    
+    // 생성된 HUD 위젯 인스턴스
+    UPROPERTY()
+    class UMyPlayerHUDWidget* PlayerHUD;
 };

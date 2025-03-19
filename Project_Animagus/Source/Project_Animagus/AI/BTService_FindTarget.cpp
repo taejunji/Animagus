@@ -69,7 +69,7 @@ void UBTService_FindTarget::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* N
         }
     }
 
-    OwnerComp.GetAIOwner()->ClearFocus(EAIFocusPriority::Gameplay);
+    // OwnerComp.GetAIOwner()->ClearFocus(EAIFocusPriority::Gameplay);
     OwnerComp.GetBlackboardComponent()->SetValueAsObject(target_key.SelectedKeyName, nullptr);
     DrawDebugSphere(World, Location, search_radius, 16, FColor::Blue, false, 0.2f);
 }
