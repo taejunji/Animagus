@@ -38,21 +38,19 @@ void AMyAIController::BeginPlay()
     Super::BeginPlay();
 
     // 시작하자마자 Behavior Tree 활성화 -> 레벨에 배치하자마자 실행됨
-#if 1
     if (AIBehavior && BlackboardData)
     {
         UBlackboardComponent* BlackboardPtr = Blackboard.Get();
 
         if (UseBlackboard(BlackboardData, BlackboardPtr))
         {
-            SetControlMode(AIControlMode::BehaviorTree);
-            RunBehaviorTree(AIBehavior);
-
             // 실제 Blackboard Asset에 IsRunning이라는 키가 있어야 한다.
             IsRunningKey.SelectedKeyName = FName(TEXT("IsRunning"));
             BlackboardPtr->SetValueAsBool(IsRunningKey.SelectedKeyName, true);
         }
     }
+#if 0
+    StartBehaviorTree();
 #endif
 
     // BB 에디터에 키가 추가되어야 한다.
