@@ -5,8 +5,9 @@
 #include "Kismet/GameplayStatics.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "BehaviorTree/BehaviorTreeComponent.h"
+#include "BehaviorTree/BehaviorTree.h"
 #include "Navigation/PathFollowingComponent.h"
-
+#include "../Character/AICharacter.h"
 #include "TimerManager.h"
 
 AMyAIController::AMyAIController(const FObjectInitializer& ObjectInitializer)
@@ -86,6 +87,18 @@ void AMyAIController::Tick(float DeltaTime)
 {
     Super::Tick(DeltaTime);
 
+    AAICharacter* AI = Cast<AAICharacter>(GetPawn());
+    if (AI && AI->GetIsDead())
+    {
+        // AI가 죽었으면 Behavior Tree를 멈춤
+        if (UBehaviorTreeComponent* BehaviorTreeComponent = Cast<UBehaviorTreeComponent>(BrainComponent))
+        {
+            SetControlMode(AIControlMode::AIController);
+            BehaviorTreeComponent->StopTree(); 
+        }
+    }
+    
+    
     if (ControlMode != AIControlMode::AIController) return;
 
 #if 0
