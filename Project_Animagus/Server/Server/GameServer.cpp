@@ -4,6 +4,7 @@
 #include "Session.h"
 #include "Listener.h"
 #include "SocketUtils.h"
+#include "ServerPacketHandler.h"
 
 
 GameServer::GameServer() : m_running(false) 
@@ -28,6 +29,7 @@ bool GameServer::Initialize()
         return false;
     }
     SocketUtils::Init();
+    ServerPacketHandler::Init();
 
     m_iocpCore = std::make_shared<IocpCore>();
     if (!m_iocpCore || m_iocpCore->GetHandle() == nullptr)

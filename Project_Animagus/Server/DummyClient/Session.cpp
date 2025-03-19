@@ -391,6 +391,8 @@ void Session::OnConnected()
     ::memcpy(pkt.msg, msg.c_str(), msg.size());
     pkt.len = 5;
     
+    std::cout << std::string(pkt.msg, pkt.len) << std::endl;
+
     SendBufferRef sendBuffer = ClientPacketHandler::MakeSendBuffer(pkt);
     Send(sendBuffer);
 }
