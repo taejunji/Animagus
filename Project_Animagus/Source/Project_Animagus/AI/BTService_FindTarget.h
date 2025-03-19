@@ -25,6 +25,9 @@ protected:
     float search_radius = 500.f;
     
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
+    float max_z_difference = 500.f; // 이 Z크기 만큼 차이 나면 타겟으로 인식X 
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite)
     FBlackboardKeySelector target_key;
 
 };
