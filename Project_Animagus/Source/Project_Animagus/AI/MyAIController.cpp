@@ -49,7 +49,7 @@ void AMyAIController::BeginPlay()
             BlackboardPtr->SetValueAsBool(IsRunningKey.SelectedKeyName, true);
         }
     }
-#if 0
+#if 1
     StartBehaviorTree();
 #endif
 
