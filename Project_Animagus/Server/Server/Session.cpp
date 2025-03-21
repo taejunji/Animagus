@@ -37,19 +37,19 @@ void Session::Dispatch(IocpEvent* iocpEvent, int32_t numOfBytes)
     switch (iocpEvent->eventType)
     {
     case EventType::Connect:
-        std::cout << "Connect" << std::endl;
+        //std::cout << "Connect" << std::endl;
         ProcessConnect();
         break;
     case EventType::Disconnect:
-        std::cout << "Disconnect" << std::endl;
+        //std::cout << "Disconnect" << std::endl;
         ProcessDisconnect();
         break;
     case EventType::Recv:
-        std::cout << "Recv" << std::endl;
+        //std::cout << "Recv" << std::endl;
         ProcessRecv(numOfBytes);
         break;
     case EventType::Send:
-        std::cout << "Send" << std::endl;
+        //std::cout << "Send" << std::endl;
         ProcessSend(numOfBytes);
         break;
     default: break;
