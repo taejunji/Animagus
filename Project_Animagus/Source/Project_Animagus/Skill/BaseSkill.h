@@ -67,6 +67,13 @@ public:
     UFUNCTION(BlueprintCallable, Category = "Skill")
     bool IsOnCooldown() const;
 
+    UFUNCTION(BlueprintCallable, Category = "Skill")
+    float GetCooldownPercent() const;
 
-
+    UFUNCTION(BlueprintCallable, Category = "Skill")
+    bool CanActivateSkill() const;
+    
+    // 첫 사용 여부 플래그 (처음 사용 시에는 무조건 사용되게 하기 위함)
+    UPROPERTY(BlueprintReadOnly, Category="Skill")
+    bool bFirstUse;
 };

@@ -112,6 +112,15 @@ void ABattle_PlayerController::Tick(float DeltaTime)
         {
             float HPPercent = MyPlayer->GetHP() / MyPlayer->GetMax_Hp();
             PlayerHUD->UpdateHP(HPPercent);
+            
+            for (int32 i = 0; i < MyPlayer->Skills.Num(); i++)
+            {
+                if (MyPlayer->Skills.IsValidIndex(i) && MyPlayer->Skills[i] != nullptr)
+                {
+                    float CooldownPercent = MyPlayer->Skills[i]->GetCooldownPercent();
+                    PlayerHUD->UpdateSkillCooldown(i, CooldownPercent);
+                }
+            }
         }
     }
 }

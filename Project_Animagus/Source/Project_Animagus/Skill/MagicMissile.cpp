@@ -31,9 +31,9 @@ UMagicMissile::UMagicMissile()
 
 void UMagicMissile::ActiveSkill_Implementation()
 {
-    if (!Owner || IsOnCooldown())
+    if (!CanActivateSkill())
     {
-        UE_LOG(LogTemp, Warning, TEXT("MagicMissile: Owner is null or skill is on cooldown."));
+        UE_LOG(LogTemp, Warning, TEXT("ShieldSkill: Cannot activate - Owner is null or skill is on cooldown. CurrentCooldown: %f"), GetCooldownPercent());
         return;
     }
 
@@ -72,9 +72,21 @@ void UMagicMissile::ActiveSkill_Implementation()
     UE_LOG(LogTemp, Log, TEXT("MagicMissile: SpawnLocation = %s"), *SpawnLocation.ToString());
     UE_LOG(LogTemp, Log, TEXT("MagicMissile: SpawnRotation = %s"), *SpawnRotation.ToString());
 
+    FActorSpawnParameters SpawnParams;
+    SpawnParams.Owner = Owner;
+    SpawnParams.Instigator = Owner->GetInstigator();
+    
+    // 투사체 액터 스폰: 이때 SpawnParams를 전달하면, 액터가 생성되는 순간부터 Owner와 Instigator 값이 설정됨
+    AProjectile_MagicMissile* MissileProj = World->SpawnActor<AProjectile_MagicMissile>(
+        ProjectileBPClass,
+        SpawnLocation,
+        SpawnRotation,
+        SpawnParams
+    );
+    
     if (ProjectileBPClass)
     {
-        AProjectile_MagicMissile* MissileProj = World->SpawnActor<AProjectile_MagicMissile>(ProjectileBPClass, SpawnLocation, SpawnRotation);
+       
         if (MissileProj)
         {
             MissileProj->Shooter = Owner;
@@ -102,5 +114,11 @@ void UMagicMissile::ActiveSkill_Implementation()
         UE_LOG(LogTemp, Warning, TEXT("UMagicMissile::ActiveSkill_Implementation() - ProjectileBPClass is not assigned!"));
     }
 
+    // 첫 사용이면 플래그 변경
+    if (bFirstUse)
+    {
+        bFirstUse = false;
+    }
+    
     StartCooldown();
 }
