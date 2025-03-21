@@ -80,6 +80,7 @@ void GameServer::Run()  // 메인 스레드도 이 함수 돌리는게 나을듯
     {
         //m_iocpCore->Dispatch(10);
 
+        // TEMP : test 용
         if (m_sessionCount == 0) continue;
         DCS_TEST_PKT pkt;
         std::string msg = "Hello";
