@@ -26,10 +26,11 @@ UFireball::UFireball()
 
 void UFireball::ActiveSkill_Implementation()
 {
-    UE_LOG(LogTemp, Log, TEXT("UFireball::ActiveSkill_Implementation() called on %s"), *GetName());
+    // UE_LOG(LogTemp, Log, TEXT("UFireball::ActiveSkill_Implementation() called on %s"), *GetName());
     
-    if (!Owner || IsOnCooldown())
+    if (!CanActivateSkill())
     {
+        UE_LOG(LogTemp, Warning, TEXT("ShieldSkill: Cannot activate - Owner is null or skill is on cooldown. CurrentCooldown: %f"), GetCooldownPercent());
         return;
     }
 
@@ -66,15 +67,27 @@ void UFireball::ActiveSkill_Implementation()
     UE_LOG(LogTemp, Log, TEXT("Fireball Skill: SpawnLocation = %s"), *SpawnLocation.ToString());
     UE_LOG(LogTemp, Log, TEXT("Fireball Skill: SpawnRotation = %s"), *SpawnRotation.ToString());
 
+    // FActorSpawnParameters 설정: Owner와 Instigator 미리 지정
+    FActorSpawnParameters SpawnParams;
+    SpawnParams.Owner = Owner;
+    SpawnParams.Instigator = Owner->GetInstigator();
+    
+    // 투사체 액터 스폰: 이때 SpawnParams를 전달하면, 액터가 생성되는 순간부터 Owner와 Instigator 값이 설정됨
+    AProjectile_FireBall* FireballProj = World->SpawnActor<AProjectile_FireBall>(
+        ProjectileBPClass,
+        SpawnLocation,
+        SpawnRotation,
+        SpawnParams
+    );
+    
     // ProjectileBPClass가 유효한 경우, 블루프린트로 만든 투사체 액터를 스폰
     if (ProjectileBPClass)
     {
         Owner->PlayAnimMontageByType(MontageType::DefaultAttack);
-
-        AProjectile_FireBall* FireballProj = World->SpawnActor<AProjectile_FireBall>(ProjectileBPClass, SpawnLocation, SpawnRotation);
+        
         if (FireballProj)
         {
-            FireballProj->Shooter = Owner;
+            FireballProj->Shooter = Owner;    
             FireballProj->DamageValue = FireballDamage;
             
             if (FireballProj->ProjectileMovement)
@@ -83,6 +96,8 @@ void UFireball::ActiveSkill_Implementation()
                 FireballProj->ProjectileMovement->MaxSpeed = FireballSpeed;
             }
             UE_LOG(LogTemp, Log, TEXT("Fireball Skill: Projectile spawned successfully."));
+            UE_LOG(LogTemp, Log, TEXT("FireballProj->Shooter set to: %s"), 
+          FireballProj->Shooter ? *FireballProj->Shooter->GetName() : TEXT("NULL"));
         }
         else
         {
@@ -94,5 +109,10 @@ void UFireball::ActiveSkill_Implementation()
         UE_LOG(LogTemp, Warning, TEXT("UFireball::ActiveSkill_Implementation() - ProjectileBPClass is not assigned!"));
     }
 
+    // 첫 사용이면 플래그 변경
+    if (bFirstUse)
+    {
+        bFirstUse = false;
+    } 
     StartCooldown();
 }

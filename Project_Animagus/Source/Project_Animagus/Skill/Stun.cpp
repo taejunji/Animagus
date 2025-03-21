@@ -22,9 +22,9 @@ UStun::UStun()
 
 void UStun::ActiveSkill_Implementation()
 {
-    if (!Owner || IsOnCooldown())
+    if (!CanActivateSkill())
     {
-        UE_LOG(LogTemp, Warning, TEXT("UStunSkill: Owner is null or skill is on cooldown."));
+        UE_LOG(LogTemp, Warning, TEXT("ShieldSkill: Cannot activate - Owner is null or skill is on cooldown. CurrentCooldown: %f"), GetCooldownPercent());
         return;
     }
 
@@ -54,7 +54,7 @@ void UStun::ActiveSkill_Implementation()
     // 스폰 위치: 캐릭터의 위치에서 전방으로 100cm, 추가로 Z축 50cm 올림 (예시)
     FVector SpawnLocation = Owner->GetActorLocation() 
                             + Owner->GetActorForwardVector() * 80.f 
-                            + FVector(0.f, 0.f, 30.f);
+                            + Owner->GetActorRightVector() * 30.f;
     // FVector SpawnLocation = Owner->GetActorLocation() + Owner->GetActorForwardVector() * 200.f + Owner->GetActorRightVector() * 30.f;
 
 
@@ -63,9 +63,19 @@ void UStun::ActiveSkill_Implementation()
 
     UE_LOG(LogTemp, Log, TEXT("UStunSkill: SpawnLocation = %s, SpawnRotation = %s"), *SpawnLocation.ToString(), *SpawnRotation.ToString());
 
+    FActorSpawnParameters SpawnParams;
+    SpawnParams.Owner = Owner;
+    SpawnParams.Instigator = Owner->GetInstigator();
+    
+    // 투사체 액터 스폰: 이때 SpawnParams를 전달하면, 액터가 생성되는 순간부터 Owner와 Instigator 값이 설정됨
+    AProjectile_Stun* StunProj = World->SpawnActor<AProjectile_Stun>(
+        ProjectileBPClass,
+        SpawnLocation,
+        SpawnRotation,
+        SpawnParams
+    );
     if (ProjectileBPClass)
     {
-        AProjectile_Stun* StunProj = World->SpawnActor<AProjectile_Stun>(ProjectileBPClass, SpawnLocation, SpawnRotation);
         if (StunProj)
         {
             StunProj->Shooter = Owner;
@@ -87,6 +97,12 @@ void UStun::ActiveSkill_Implementation()
     {
         UE_LOG(LogTemp, Warning, TEXT("UStunSkill::ActiveSkill_Implementation() - ProjectileBPClass is not assigned!"));
     }
-
+    
+    // 첫 사용이면 플래그 변경
+    if (bFirstUse)
+    {
+        bFirstUse = false;
+    }
+    
     StartCooldown();
 }

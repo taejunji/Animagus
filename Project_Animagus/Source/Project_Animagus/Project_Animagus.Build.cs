@@ -18,6 +18,9 @@ public class Project_Animagus : ModuleRules
             "AIModule",
             "Niagara",
             "NavigationSystem",
+            "Slate",
+            "SlateCore", 
+            "UMG"
         });
 
 		PrivateDependencyModuleNames.AddRange(new string[] {  });

@@ -24,9 +24,9 @@ void URadialSkill::ActiveSkill_Implementation()
 {
     UE_LOG(LogTemp, Log, TEXT("URadialSkill::ActiveSkill_Implementation() 호출됨."));
 
-    if (!Owner || IsOnCooldown())
+    if (!CanActivateSkill())
     {
-        UE_LOG(LogTemp, Warning, TEXT("URadialSkill: Owner가 null이거나 스킬이 쿨타임 중임."));
+        UE_LOG(LogTemp, Warning, TEXT("ShieldSkill: Cannot activate - Owner is null or skill is on cooldown. CurrentCooldown: %f"), GetCooldownPercent());
         return;
     }
     
@@ -74,10 +74,21 @@ void URadialSkill::ActiveSkill_Implementation()
         FRotator SpawnRotation = FRotator(CameraRotation.Pitch, CurrentYaw, CameraRotation.Roll);
         
         UE_LOG(LogTemp, Log, TEXT("URadialSkill: %d번째 투사체 스폰, SpawnLocation = %s, SpawnRotation = %s"), i, *SpawnLocation.ToString(), *SpawnRotation.ToString());
+
+        FActorSpawnParameters SpawnParams;
+        SpawnParams.Owner = Owner;
+        SpawnParams.Instigator = Owner->GetInstigator();
+    
+        // 투사체 액터 스폰: 이때 SpawnParams를 전달하면, 액터가 생성되는 순간부터 Owner와 Instigator 값이 설정됨
+        AProjectileBase* Projectile = World->SpawnActor<AProjectileBase>(
+            ProjectileBPClass,
+            SpawnLocation,
+            SpawnRotation,
+            SpawnParams
+        );
         
         if (ProjectileBPClass)
         {
-            AProjectileBase* Projectile = World->SpawnActor<AProjectileBase>(ProjectileBPClass, SpawnLocation, SpawnRotation);
             if (Projectile)
             {
                 Projectile->Shooter = Owner;
@@ -99,6 +110,12 @@ void URadialSkill::ActiveSkill_Implementation()
             UE_LOG(LogTemp, Warning, TEXT("URadialSkill: ProjectileBPClass 할당되지 않음."));
             break;
         }
+    }
+    
+    // 첫 사용이면 플래그 변경
+    if (bFirstUse)
+    {
+        bFirstUse = false;
     }
     
     StartCooldown();
