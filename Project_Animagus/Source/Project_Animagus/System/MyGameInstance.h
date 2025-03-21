@@ -69,10 +69,23 @@ public:
     LevelType GetLevelType() const { return current_level; }
     int32 GetRoundCount() const { return round_count; }
 
+
+    UFUNCTION(BlueprintCallable)
+    void ConnectToGameServer();
+
+    UFUNCTION(BlueprintCallable)
+    void DisconnectFromGameServer();
+
+
 public:
     // AI 캐릭터
     // TArray<class AAICharacter*> AIPlayers;
 
     // AI 추가 함수
     // void AddAICharacter(AAICharacter* AICharacter);
+
+    class FSocket* Socket;
+    FString IpAddress = TEXT("127.0.0.1");
+    int16 Port = 7777;
+    TSharedPtr<class Session> ClientSession;
 };

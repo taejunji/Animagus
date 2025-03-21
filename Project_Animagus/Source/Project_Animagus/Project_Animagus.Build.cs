@@ -18,6 +18,8 @@ public class Project_Animagus : ModuleRules
             "AIModule",
             "Niagara",
             "NavigationSystem",
+            "Sockets", 
+            "Networking"
         });
 
 		PrivateDependencyModuleNames.AddRange(new string[] {  });

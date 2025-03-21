@@ -30,7 +30,7 @@
 #pragma comment (lib, "MSWSock.lib")
 
 //const char* SERVER_IP = "127.0.0.1";
-#define SERVER_PORT  7777
+#define SERVER_PORT  8000
 
 //using namespace std;
 //using namespace chrono;

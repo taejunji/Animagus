@@ -5,6 +5,13 @@
 #include "Kismet/GameplayStatics.h"
 #include "../Character/AICharacter.h"
 
+#include "Sockets.h"
+#include "Common/TcpSocketBuilder.h"
+#include "Serialization/ArrayWriter.h"
+#include "SocketSubsystem.h"
+#include "../Network/Session.h"
+
+
 UMyGameInstance::UMyGameInstance(const FObjectInitializer& ObjectInitializer)
     : Super(ObjectInitializer)
 {
@@ -63,6 +70,52 @@ void UMyGameInstance::SwitchLevel(LevelType level)
         UGameplayStatics::OpenLevel(GetWorld(), FName("L_Map"));
         break;
     }
+}
+
+void UMyGameInstance::ConnectToGameServer()
+{
+    // TCP 소켓 생성
+    Socket = ISocketSubsystem::Get(PLATFORM_SOCKETSUBSYSTEM)->CreateSocket(TEXT("Stream"), TEXT("Client Socket"));
+
+    FIPv4Address Ip;
+    FIPv4Address::Parse(IpAddress, Ip);
+
+    TSharedRef<FInternetAddr> InternetAddr = ISocketSubsystem::Get(PLATFORM_SOCKETSUBSYSTEM)->CreateInternetAddr();
+    InternetAddr->SetIp(Ip.Value);
+    InternetAddr->SetPort(Port);
+
+    // Log
+    GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Connecting To Server...")));
+
+    bool Connected = Socket->Connect(*InternetAddr);	// Blocking 방식 Connect
+
+    if (Connected)
+    {
+        // Log
+        GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Connection Success")));
+
+        // Session
+        ClientSession = MakeShared<Session>(Socket);
+        ClientSession->Run();
+
+        {
+
+
+        }
+    }
+    else
+    {
+        GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Connection Failed")));
+    }
+}
+
+void UMyGameInstance::DisconnectFromGameServer()
+{
+    if (Socket == nullptr || ClientSession == nullptr)
+        return;
+
+    Protocol::C_LEAVE_GAME LeavePkt;
+    SEND_PACKET(LeavePkt);
 }
 
 //void UMyGameInstance::AddAICharacter(AAICharacter* AICharacter)
