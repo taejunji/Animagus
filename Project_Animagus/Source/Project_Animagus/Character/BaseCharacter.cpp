@@ -23,7 +23,7 @@ ABaseCharacter::ABaseCharacter()
     Skills.SetNum(5); 
 
     // 애님 인스턴스 설정
-    static ConstructorHelpers::FClassFinder<UAnimInstance> AnimBP(TEXT("/Game/WorkFolder/Animation/AnimSystem/ABP_TEST2.ABP_TEST2_C"));
+    static ConstructorHelpers::FClassFinder<UAnimInstance> AnimBP(TEXT("/Game/WorkFolder/Animation/AnimSystem/ABP_AnimationSystem.ABP_AnimationSystem_C"));
     if (AnimBP.Succeeded())
     {
         GetMesh()->SetAnimInstanceClass(AnimBP.Class);

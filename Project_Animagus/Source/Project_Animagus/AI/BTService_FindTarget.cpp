@@ -54,22 +54,21 @@ void UBTService_FindTarget::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* N
         for (FOverlapResult& OverlapResult : OverlapResults)
         {
             ABaseCharacter* character = Cast<ABaseCharacter>(OverlapResult.GetActor());
-            if (character)
+            if (character && character->GetIsDead() == false)
             {
-                DrawDebugSphere(World, Location, search_radius, 16, FColor::Red, false, 0.2f);
-                OwnerComp.GetBlackboardComponent()->SetValueAsObject(target_key.SelectedKeyName, character);
+                FVector ActorLocation = character->GetActorLocation(); 
 
-                // 플레이어 중앙(50cm 위)을 바라보도록 설정
-                //if (APawn* PlayerPawn = OwnerComp.GetAIOwner()->GetPawn())
-                //{
-                //    OwnerComp.GetAIOwner()->SetFocalPoint(character->GetActorLocation() + FVector(0, 0, 50));
-                //}
-                return;
+                // Z값이 특정 범위를 벗어나면 타겟 설정하지 않음
+                if (FMath::Abs(ActorLocation.Z - Location.Z) <= max_z_difference) // maxZDifference는 허용하는 Z 범위
+                {
+                    DrawDebugSphere(World, Location, search_radius, 16, FColor::Red, false, 0.2f);
+                    OwnerComp.GetBlackboardComponent()->SetValueAsObject(target_key.SelectedKeyName, character);
+                    return;
+                }
             }
         }
     }
 
-    // OwnerComp.GetAIOwner()->ClearFocus(EAIFocusPriority::Gameplay);
     OwnerComp.GetBlackboardComponent()->SetValueAsObject(target_key.SelectedKeyName, nullptr);
     DrawDebugSphere(World, Location, search_radius, 16, FColor::Blue, false, 0.2f);
 }
