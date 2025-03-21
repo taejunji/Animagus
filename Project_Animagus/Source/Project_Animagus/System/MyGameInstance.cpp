@@ -1,15 +1,18 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-
 #include "MyGameInstance.h"
 #include "Kismet/GameplayStatics.h"
 #include "../Character/AICharacter.h"
+#include "../Project_Animagus.h"
 
 #include "Sockets.h"
 #include "Common/TcpSocketBuilder.h"
 #include "Serialization/ArrayWriter.h"
 #include "SocketSubsystem.h"
 #include "../Network/Session.h"
+#include "../Network/ClientPacketHandler.h"
+
+#include "../Server/Server/protocol.h"
 
 
 UMyGameInstance::UMyGameInstance(const FObjectInitializer& ObjectInitializer)
@@ -36,6 +39,8 @@ void UMyGameInstance::Init()
 {
     Super::Init();
 
+    ConnectToGameServer();
+
     // 데이터 불러왔을 때 mesh 타입 설정하기 => ( 임시로 양 디폴트 )
     player_data.stored_mesh = CharacterMesh::Sheep; 
 
@@ -45,6 +50,9 @@ void UMyGameInstance::Init()
 void UMyGameInstance::Shutdown()
 {
     Super::Shutdown();
+
+    DisconnectFromGameServer();
+    ClientSession->Disconnect();
 }
 
 void UMyGameInstance::InitGameInstance()
@@ -99,7 +107,7 @@ void UMyGameInstance::ConnectToGameServer()
         ClientSession->Run();
 
         {
-
+            // TODO : 뭐할라고 했드라
 
         }
     }
@@ -114,8 +122,25 @@ void UMyGameInstance::DisconnectFromGameServer()
     if (Socket == nullptr || ClientSession == nullptr)
         return;
 
-    Protocol::C_LEAVE_GAME LeavePkt;
-    SEND_PACKET(LeavePkt);
+    Protocol::CS_LEAVE_PKT LeavePkt;
+    SendBufferRef SendBuffer = ClientPacketHandler::MakeSendBuffer(LeavePkt);
+    Cast<UMyGameInstance>(GWorld->GetGameInstance())->SendPacket(SendBuffer);
+}
+
+void UMyGameInstance::HandleRecvPackets()
+{
+    if (Socket == nullptr || ClientSession == nullptr)
+        return;
+
+    ClientSession->HandleRecvPackets();
+}
+
+void UMyGameInstance::SendPacket(SendBufferRef SendBuffer)
+{
+    if (Socket == nullptr || ClientSession == nullptr)
+        return;
+
+    ClientSession->SendPacket(SendBuffer);
 }
 
 //void UMyGameInstance::AddAICharacter(AAICharacter* AICharacter)

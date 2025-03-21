@@ -78,8 +78,12 @@ private:
     std::weak_ptr<GameServer>   m_server;               // 이 Session이 연결된 서버
     ServiceType                 m_serviceType;
 
+public:
+    std::atomic<PlayerRef>      m_player;               // 이 Session을 소유중인 플레이어
 
-    // 버퍼 관리 관련 멤버: 내부 데이터 버퍼와 WSABUF
+
+private:
+    // 버퍼 관리 관련 멤버
     std::atomic<bool>			m_sendRegistered = false;
     std::queue<SendBufferRef>   m_sendBuffers;
     RecvBuffer                  m_recvBuffer;

@@ -74,6 +74,7 @@ void ABattleGameMode::Tick(float DeltaTime)
 {
     Super::Tick(DeltaTime);
  
+    Cast<UMyGameInstance>(GWorld->GetGameInstance())->HandleRecvPackets();
 }
 
 void ABattleGameMode::InitBattleMode()

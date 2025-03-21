@@ -5,13 +5,13 @@
 #include "Serialization/ArrayWriter.h"	
 #include "SocketSubsystem.h"
 
-//#include "ClientPacketHandler.h"
+#include "ClientPacketHandler.h"
 #include "NetworkWorker.h"
 
 
 Session::Session(class FSocket* Socket) : Socket(Socket)
 {
-    //ClientPacketHandler::Init();
+    ClientPacketHandler::Init();
 }
 
 Session::~Session()
@@ -37,7 +37,7 @@ void Session::HandleRecvPackets()
 
         // 패킷 처리
         SessionRef ThisPtr = AsShared();
-        //ClientPacketHandler::HandlePacket(ThisPtr, Packet.GetData(), Packet.Num());
+        ClientPacketHandler::HandlePacket(ThisPtr, Packet.GetData(), Packet.Num());
     }
 }
 

@@ -39,10 +39,12 @@ namespace Protocol {
     {
         DCS_TEST,
         CS_LOGIN,
+        CS_ENTER_GAME,
+        CS_LEAVE,
+        SC_LEAVE,
         CS_MOVE,
         CS_SELECT,
         CS_USING_SKILL,
-
     };
 
 //#pragma pack(push, 1)
@@ -61,7 +63,7 @@ namespace Protocol {
 #pragma pack (push, 1)
     struct DCS_TEST_PKT
     {
-        int16 player_id;
+        uint16 player_id;
         //std::string msg;
         char msg[128];
         int8 len;
@@ -70,6 +72,19 @@ namespace Protocol {
     {
         int16 player_id;
         //std::string name;
+    };
+    struct CS_ENTER_GAME_PKT
+    {
+        uint16 player_id;
+        uint16 room_id;
+    };
+    struct CS_LEAVE_PKT
+    {
+        uint16 player_id;
+        uint16 room_id;
+    };
+    struct SC_LEAVE_PKT
+    {   // 로비로 보내기
     };
     struct CS_MOVE_PKT
     {

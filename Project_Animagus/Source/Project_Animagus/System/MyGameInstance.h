@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Engine/GameInstance.h"
+#include "../Project_Animagus.h"
 #include "MyGameInstance.generated.h"
 
 
@@ -75,6 +76,11 @@ public:
 
     UFUNCTION(BlueprintCallable)
     void DisconnectFromGameServer();
+
+    UFUNCTION(BlueprintCallable)
+    void HandleRecvPackets();
+
+    void SendPacket(SendBufferRef SendBuffer);
 
 
 public:

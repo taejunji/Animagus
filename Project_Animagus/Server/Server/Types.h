@@ -22,6 +22,7 @@ USING_SHARED_PTR(GameServer);
 USING_SHARED_PTR(SendBuffer);
 USING_SHARED_PTR(RecvBuffer);
 USING_SHARED_PTR(Player);
+USING_SHARED_PTR(Room);
 
 
 #define size16(val) static_cast<int16>(sizeof(val))

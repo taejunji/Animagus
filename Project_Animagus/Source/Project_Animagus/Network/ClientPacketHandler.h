@@ -1,36 +1,41 @@
 #pragma once
-#include "pch.h"
-#include "protocol.h"
+#include <functional>
+#include "Types.h"
+#include "../../../Server/Server/protocol.h"
+
+
+#if UE_BUILD_DEBUG + UE_BUILD_DEVELOPMENT + UE_BUILD_TEST + UE_BUILD_SHIPPING >= 1
+#include "../Project_Animagus.h"
+#endif
 
 using namespace Protocol;
 
 using PacketHandlerFunc = std::function<bool(SessionRef&, BYTE*, int32)>;
-extern PacketHandlerFunc GServerPacketHandler[UINT16_MAX];
+extern PacketHandlerFunc GClientPacketHandler[UINT16_MAX];
 
 bool Handle_INVALID(SessionRef& session, BYTE* buffer, int32 len);
 bool Handle_DCS_TEST(SessionRef& session, DCS_TEST_PKT& pkt);
-bool Handle_CS_ENTER_GAME(SessionRef& session, CS_ENTER_GAME_PKT& pkt);
-bool Handle_CS_LEAVE(SessionRef& session, CS_LEAVE_PKT& pkt);
 
-
-class ServerPacketHandler
+class ClientPacketHandler
 {
 public:
     static void Init()
     {
-        for (uint16 i = 0; i < UINT16_MAX; ++i) GServerPacketHandler[i] = Handle_INVALID;
-        GServerPacketHandler[(int32)PacketID::DCS_TEST] = [](SessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<DCS_TEST_PKT>(Handle_DCS_TEST, session, buffer, len); };
-        GServerPacketHandler[(int32)PacketID::CS_ENTER_GAME] = [](SessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<CS_ENTER_GAME_PKT>(Handle_CS_ENTER_GAME, session, buffer, len); };
-        GServerPacketHandler[(int32)PacketID::CS_LEAVE] = [](SessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<CS_LEAVE_PKT>(Handle_CS_LEAVE, session, buffer, len); };
+        for (uint16 i = 0; i < UINT16_MAX; ++i) GClientPacketHandler[i] = Handle_INVALID;
+        GClientPacketHandler[(int32)PacketID::DCS_TEST] = [](SessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<DCS_TEST_PKT>(Handle_DCS_TEST, session, buffer, len); };
+
     }
+
 
     static bool HandlePacket(SessionRef& session, BYTE* buffer, int32 len)
     {
         PacketHeader* header = reinterpret_cast<PacketHeader*>(buffer);
-        return GServerPacketHandler[(int32)header->id](session, buffer, len);
+        return GClientPacketHandler[(int32)header->id](session, buffer, len);
     }
 
     static SendBufferRef MakeSendBuffer(DCS_TEST_PKT& pkt) { return MakeSendBuffer(pkt, (uint16)PacketID::DCS_TEST); }
+    static SendBufferRef MakeSendBuffer(CS_LEAVE_PKT& pkt) { return MakeSendBuffer(pkt, (uint16)PacketID::CS_LEAVE); }
+
 
 private:
     template<typename PacketType, typename ProcessFunc>
@@ -54,7 +59,7 @@ private:
         const uint16 dataSize = static_cast<uint16>(sizeof(pkt));
         const uint16 packetSize = dataSize + sizeof(PacketHeader);
 
-        SendBufferRef sendBuffer = std::make_shared<SendBuffer>(new BYTE[packetSize], packetSize);
+        SendBufferRef sendBuffer = MakeShared<SendBuffer>(packetSize);
         PacketHeader* header = reinterpret_cast<PacketHeader*>(sendBuffer->Buffer());
         header->size = packetSize;
         header->id = pktId;

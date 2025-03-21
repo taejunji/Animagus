@@ -185,7 +185,7 @@ void Session::RegisterSend()
 
     // 보낼 데이터를 sendEvent에 등록
     {
-        std::lock_guard<std::mutex> lock(m_mutex);
+        //std::lock_guard<std::mutex> lock(m_mutex);
 
         int32 writeSize = 0;
         while (m_sendBuffers.empty() == false)

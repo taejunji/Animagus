@@ -78,7 +78,19 @@ void GameServer::Run()  // 메인 스레드도 이 함수 돌리는게 나을듯
     // 메인 스레드
     while (m_running.load())
     {
-        m_iocpCore->Dispatch(10);
+        //m_iocpCore->Dispatch(10);
+
+        if (m_sessionCount == 0) continue;
+        DCS_TEST_PKT pkt;
+        std::string msg = "Hello";
+        ::memcpy(pkt.msg, msg.c_str(), msg.size());
+        pkt.len = 5;
+
+        SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(pkt);
+        for (auto& session : m_sessions)
+            session->Send(sendBuffer);
+
+        std::this_thread::sleep_for(std::chrono::seconds(1));
     }
 }
 
