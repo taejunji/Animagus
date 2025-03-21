@@ -64,13 +64,13 @@ void AAttractionZone::UpdateAttractionParameters(float DeltaTime)
 	ABattleGameMode* BM = Cast<ABattleGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
 	if (!BM)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("AttractionZone: GameMode is not ABattleGameMode."));
+		 UE_LOG(LogTemp, Warning, TEXT("AttractionZone: GameMode is not ABattleGameMode."));
 		return;
 	}
 
 	if (!BM->SpawnedPlayers.IsValidIndex(ControlledPlayerIndex))
 	{
-		UE_LOG(LogTemp, Warning, TEXT("AttractionZone: Invalid ControlledPlayerIndex %d"), ControlledPlayerIndex);
+		// UE_LOG(LogTemp, Warning, TEXT("AttractionZone: Invalid ControlledPlayerIndex %d"), ControlledPlayerIndex);
 		return;
 	}
 

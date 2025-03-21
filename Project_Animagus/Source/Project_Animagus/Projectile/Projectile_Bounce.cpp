@@ -34,9 +34,8 @@ void AProjectile_Bounce::OnHit(UPrimitiveComponent* OverlappedComponent, AActor*
 
     if (OtherActor == Shooter )
     {
-        ProjectileLight->SetIntensity(0.0f);
-        DestroySkill();
-        
+        return;
+
     }
     
     // 충돌 대상이 유효하고, 자기 자신 및 발사자(Shooter)는 제외합니다.
