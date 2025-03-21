@@ -3,6 +3,7 @@
 #include "SocketUtils.h"
 #include "IOCPCore.h"
 #include "Session.h"
+#include "ClientPacketHandler.h"
 
 
 ClientService::ClientService()
@@ -21,6 +22,7 @@ bool ClientService::Initialize()
         return false;
     }
     SocketUtils::Init();
+    ClientPacketHandler::Init();
 
     m_iocpCore = std::make_shared<IocpCore>();
     if (!m_iocpCore || m_iocpCore->GetHandle() == nullptr)
@@ -52,7 +54,7 @@ bool ClientService::Start()
     {
         if (false == m_iocpCore->Dispatch(50))
         {
-            return false;
+
         }
     }
 
