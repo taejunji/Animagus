@@ -93,6 +93,9 @@ void ABattleGameMode::InitBattleMode()
 
         // 1초마다 경과시간 호출 함수 타이머 설정
         // GetWorld()->GetTimerManager().SetTimer(battle_timer_handle, this, &ABattleGameMode::PrintElapsedtime, 1.0f, true); 
+
+        // 서버에 배틀모드 입장 알림
+
     }
 }
 

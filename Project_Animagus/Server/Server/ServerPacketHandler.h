@@ -31,6 +31,7 @@ public:
     }
 
     static SendBufferRef MakeSendBuffer(DCS_TEST_PKT& pkt) { return MakeSendBuffer(pkt, (uint16)PacketID::DCS_TEST); }
+    static SendBufferRef MakeSendBuffer(SC_SPAWN_PKT& pkt) { return MakeSendBuffer(pkt, (uint16)PacketID::SC_SPAWN); }
 
 private:
     template<typename PacketType, typename ProcessFunc>

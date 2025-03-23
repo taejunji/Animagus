@@ -31,6 +31,8 @@ void Session::HandleRecvPackets()
     // 조립완료된 패킷들 큐에서 패킷 꺼내서 처리 반복
     while (true)
     {
+        //UE_LOG(LogTemp, Log, TEXT("Handle Recv"));
+
         TArray<uint8> Packet;
         if (RecvPacketQueue.Dequeue(OUT Packet) == false)
             break;
@@ -59,4 +61,7 @@ void Session::Disconnect()
         SendWorkerThread->Destroy();
         SendWorkerThread = nullptr;
     }
+
+    if (Socket)
+        Socket->Close();
 }

@@ -8,6 +8,11 @@ public:
     bool Leave(uint16 playerID);
     void Broadcast(SendBufferRef sendBuffer, uint16 execptID);
 
+public:
+    bool HandleEnterPlayer(PlayerRef player);
+
+
+public:
     uint16 GetPlayerCount() { return m_playerCount; }   // 사람 수 받을 때 동기화 작업 필요
 
 private:

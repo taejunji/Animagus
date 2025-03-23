@@ -34,6 +34,10 @@ uint32 RecvWorker::Run()
                 Session->RecvPacketQueue.Enqueue(Packet);
             }
         }
+        else 
+        {
+            FPlatformProcess::Sleep(0.01f);
+        }
     }
 
     return 0;

@@ -11,6 +11,7 @@
 #include "SocketSubsystem.h"
 #include "../Network/Session.h"
 #include "../Network/ClientPacketHandler.h"
+#include "../Character/NetworkCharacter.h"
 
 #include "../Server/Server/protocol.h"
 
@@ -107,8 +108,11 @@ void UMyGameInstance::ConnectToGameServer()
         ClientSession->Run();
 
         {
-            // TODO : 뭐할라고 했드라
-
+            // TODO : 일단 인스턴스 시작하자마자 게임 입장 패킷 보냄. 로그인 패킷으로 변경 필요
+            Protocol::CS_ENTER_GAME_PKT pkt;
+            pkt.room_id = 0;
+            SendBufferRef sendBuffer = ClientPacketHandler::MakeSendBuffer(pkt);
+            SendPacket(sendBuffer);
         }
     }
     else
@@ -141,6 +145,26 @@ void UMyGameInstance::SendPacket(SendBufferRef SendBuffer)
         return;
 
     ClientSession->SendPacket(SendBuffer);
+}
+
+void UMyGameInstance::HandleSpawn(Protocol::SC_SPAWN_PKT& pkt)
+{
+    if (Socket == nullptr || ClientSession == nullptr)
+        return;
+
+    auto* World = GetWorld();
+    if (World == nullptr)
+        return;
+
+    // 플레이어 ID 중복체크
+    uint16 p_id = pkt.player_id;
+    //if (p_id == my_p_id) return;
+
+    // 플레이어 스폰
+    FVector SpawnLocation(pkt.x, pkt.y, pkt.z);
+    FRotator SpawnRotation(0.0f, pkt.rotation, 0.0f);
+    // player->playerID = p_id;
+    // 어쩌구->Spawn(player);
 }
 
 //void UMyGameInstance::AddAICharacter(AAICharacter* AICharacter)

@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "Engine/GameInstance.h"
 #include "../Project_Animagus.h"
+#include "../Server/Server/protocol.h"
 #include "MyGameInstance.generated.h"
 
 
@@ -70,7 +71,7 @@ public:
     LevelType GetLevelType() const { return current_level; }
     int32 GetRoundCount() const { return round_count; }
 
-
+public:
     UFUNCTION(BlueprintCallable)
     void ConnectToGameServer();
 
@@ -82,6 +83,9 @@ public:
 
     void SendPacket(SendBufferRef SendBuffer);
 
+
+public:
+    void HandleSpawn(Protocol::SC_SPAWN_PKT& pkt);
 
 public:
     // AI 캐릭터

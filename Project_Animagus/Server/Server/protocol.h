@@ -41,7 +41,10 @@ namespace Protocol {
         CS_LOGIN,
         CS_ENTER_GAME,
         CS_LEAVE,
+        SC_ENTER_GAME,
         SC_LEAVE,
+        CS_SPAWN,
+        SC_SPAWN,
         CS_MOVE,
         CS_SELECT,
         CS_USING_SKILL,
@@ -75,7 +78,6 @@ namespace Protocol {
     };
     struct CS_ENTER_GAME_PKT
     {
-        uint16 player_id;
         uint16 room_id;
     };
     struct CS_LEAVE_PKT
@@ -83,8 +85,20 @@ namespace Protocol {
         uint16 player_id;
         uint16 room_id;
     };
+    struct SC_ENTER_GAME_PKT
+    {
+        uint16 player_id;
+        PlayerType p_type;
+    };
     struct SC_LEAVE_PKT
     {   // 로비로 보내기
+    };
+    struct SC_SPAWN_PKT
+    {
+        uint16 player_id;
+        PlayerType p_type;
+        float x, y, z;
+        float rotation;
     };
     struct CS_MOVE_PKT
     {
