@@ -13,6 +13,13 @@
 #include "../Character/AICharacter.h"
 #include "TimerManager.h"
 
+#include "Perception/AIPerceptionComponent.h"
+#include "Perception/AISense.h"
+#include "Perception/AISense_Sight.h"  // 시각 센서 추가
+#include "Perception/AISense_Hearing.h"
+#include "Perception/AISense_Damage.h"
+#include "Perception/AIPerceptionSystem.h"
+
 AMyAIController::AMyAIController(const FObjectInitializer& ObjectInitializer)
     : Super(ObjectInitializer)
 {
@@ -31,6 +38,9 @@ AMyAIController::AMyAIController(const FObjectInitializer& ObjectInitializer)
     {
         BlackboardData = BBAsset.Object;
     }
+
+    // Perception Component 생성 및 초기화
+    AIPerceptionComponent = CreateDefaultSubobject<UAIPerceptionComponent>(TEXT("AIPerceptionComponent"));
 }
 
 void AMyAIController::BeginPlay()
@@ -47,10 +57,22 @@ void AMyAIController::BeginPlay()
             // 실제 Blackboard Asset에 IsRunning이라는 키가 있어야 한다.
             IsRunningKey.SelectedKeyName = FName(TEXT("IsRunning"));
             BlackboardPtr->SetValueAsBool(IsRunningKey.SelectedKeyName, true);
+
+            // "AIState" 설정
+            // AIStateKey.SelectedKeyName = FName(TEXT("AIState"));
+            // BlackboardPtr->SetValueAsEnum(AIStateKey.SelectedKeyName, static_cast<uint8>(EAIState::Patrol));
+        }
+
+        if (AIPerceptionComponent) 
+        {
+            TargetKey.SelectedKeyName = FName(TEXT("Target"));
+            BlackboardPtr->SetValueAsObject(TargetKey.SelectedKeyName, nullptr);
+
+            AIPerceptionComponent->OnPerceptionUpdated.AddDynamic(this, &AMyAIController::OnPerceptionUpdated);
         }
     }
 #if 1
-    StartBehaviorTree();
+    StartBehaviorTree(); 
 #endif
 
     // BB 에디터에 키가 추가되어야 한다.
@@ -130,6 +152,9 @@ void AMyAIController::Tick(float DeltaTime)
         }
     }
 
+    // 타겟이 죽었는지 확인
+    CheckAndDisableTargetIfDead();
+
     // Blackboard에서 키의 FKey를 가져옴
     FBlackboard::FKey IsRunningKeyID = BlackboardComponent->GetKeyID(IsRunningKey.SelectedKeyName); 
 
@@ -178,4 +203,138 @@ void AMyAIController::Tick(float DeltaTime)
     }
 #endif
 
+}
+
+void AMyAIController::CheckAndDisableTargetIfDead()
+{
+    // Blackboard에서 TargetKey에 해당하는 타겟 객체를 가져옵니다
+    ABaseCharacter* TargetCharacter = Cast<ABaseCharacter>(GetBlackboardComponent()->GetValueAsObject(TargetKey.SelectedKeyName));
+    if (TargetCharacter == nullptr)
+    {
+        // 타겟이 없다면 아무것도 하지 않음
+        return;
+    }
+
+    // 타겟이 죽었는지 확인
+    if (TargetCharacter->GetIsDead())
+    {
+        // 포커스를 해제하는데, 현재 타겟과만 관련된 포커스 해제
+        ClearFocus(EAIFocusPriority::Gameplay);  // Focus 해제
+        GetBlackboardComponent()->ClearValue(TargetKey.SelectedKeyName);  // Blackboard에서 타겟 제거
+    }
+}
+
+void AMyAIController::OnPerceptionUpdated(const TArray<AActor*>& UpdatedActors)
+{
+    TSet<AActor*> NewlySensedActors; 
+
+    for (AActor* UpdatedActor : UpdatedActors)
+    {
+        FAIStimulus AIStimulus;
+        
+        // 시각 감지
+        AIStimulus = CanSenseActor(UpdatedActor, EAIPerceptionSense::EPS_Sight);
+        bool bSensed = AIStimulus.WasSuccessfullySensed();
+
+        if (bSensed) 
+        {
+            NewlySensedActors.Add(UpdatedActor); 
+            HandleSensedSight(UpdatedActor, bSensed);
+        }
+
+        // 청각 감지
+        AIStimulus = CanSenseActor(UpdatedActor, EAIPerceptionSense::EPS_Hearing);
+        if (AIStimulus.WasSuccessfullySensed())
+        {
+            // HandleSensedHearing(AIStimulus.StimulusLocation);
+        }
+
+        // 피해 감지
+        AIStimulus = CanSenseActor(UpdatedActor, EAIPerceptionSense::EPS_Damage);
+        if (AIStimulus.WasSuccessfullySensed())
+        {
+            // HandleSensedDamage(UpdatedActor);
+        }
+    }
+
+    // 기존에 감지된 액터 중에서 더 이상 감지되지 않는 액터 찾기
+    for (AActor* PreviouslySensedActor : SensedActors)
+    {
+        if (!NewlySensedActors.Contains(PreviouslySensedActor))
+        {
+            HandleSensedSight(PreviouslySensedActor, false);
+        }
+    }
+
+    // 현재 감지된 액터 목록 업데이트
+    SensedActors = NewlySensedActors;
+}
+
+FAIStimulus AMyAIController::CanSenseActor(AActor* Actor, EAIPerceptionSense AIPerceptionSense)
+{
+    // 특정 액터가 어떤 감각을 통해 감지되었는지 확인하는 함수입니다. 
+    // 주어진 액터가 시각, 청각, 피해 등 특정 감각에 의해 감지되었는지 확인하고, 감지된 자극(Stimulus)을 반환
+
+    FActorPerceptionBlueprintInfo ActorPerceptionBlueprintInfo;
+	FAIStimulus ResultStimulus;
+
+    // 액터의 인식 정보를 가져옵니다
+    AIPerceptionComponent->GetActorsPerception(Actor, ActorPerceptionBlueprintInfo); 
+
+	TSubclassOf<UAISense> QuerySenseClass;
+    // 감각 종류에 따라 감지 클래스를 설정합니다.
+	switch (AIPerceptionSense)
+	{
+	//case EAIPerceptionSense::EPS_None:
+	//	break;
+	case EAIPerceptionSense::EPS_Sight:
+		QuerySenseClass = UAISense_Sight::StaticClass();
+		break;
+	//case EAIPerceptionSense::EPS_Hearing:
+	//	QuerySenseClass = UAISense_Hearing::StaticClass();
+	//	break;
+	//case EAIPerceptionSense::EPS_Damage:
+	//	QuerySenseClass = UAISense_Damage::StaticClass();
+		break;
+	//case EAIPerceptionSense::EPS_MAX:
+	//	break;
+	default:
+		break;
+	}
+
+	TSubclassOf<UAISense> LastSensedStimulusClass;
+
+    // 감지된 자극 리스트에서 해당 감각의 자극을 찾습니다.
+	for (const FAIStimulus& AIStimulus : ActorPerceptionBlueprintInfo.LastSensedStimuli)
+	{
+		LastSensedStimulusClass = UAIPerceptionSystem::GetSenseClassForStimulus(this, AIStimulus);
+
+        // 요청된 감각과 일치하는 자극을 찾으면 그 자극을 반환합니다.
+		if (QuerySenseClass == LastSensedStimulusClass)
+		{
+			ResultStimulus = AIStimulus;
+			return ResultStimulus;
+		}
+
+	}
+	return ResultStimulus; // 감지되지 않으면 기본 자극 반환
+}
+
+void AMyAIController::HandleSensedSight(AActor* Actor, bool bSensed)
+{
+    ABaseCharacter* TargetCharacter = Cast<ABaseCharacter>(Actor);
+    if (TargetCharacter == nullptr) return;
+
+    if (TargetCharacter->GetIsDead() || bSensed == false)
+    {         
+        ClearFocus(EAIFocusPriority::Gameplay); 
+        GetBlackboardComponent()->ClearValue(TargetKey.SelectedKeyName); 
+    }
+    else if (bSensed)
+    {
+        GetBlackboardComponent()->SetValueAsObject(TargetKey.SelectedKeyName, TargetCharacter);
+    }
+
+    FString DebugMessage = FString::Printf(TEXT("Target %s"), bSensed ? TEXT("시야에 포착됐다") : TEXT("시야에 없어졌다"));
+    GEngine->AddOnScreenDebugMessage(-1, 1.0f, bSensed ? FColor::Purple : FColor::Red, DebugMessage);
 }

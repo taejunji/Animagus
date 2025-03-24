@@ -32,6 +32,23 @@
 
 enum class AIControlMode { AIController, BehaviorTree };
 
+//UENUM(BlueprintType) 
+//enum class EAIState : uint8 
+//{
+//    Patrol     UMETA(DisplayName = "Patrol"),
+//    Attacking  UMETA(DisplayName = "Attacking"),
+//    Stun       UMETA(DisplayName = "Stun"),
+//    Dead       UMETA(DisplayName = "Dead")
+//};
+
+UENUM(BlueprintType)
+enum class EAIPerceptionSense : uint8
+{
+    EPS_Sight     UMETA(DisplayName = "Sight"),
+    EPS_Hearing  UMETA(DisplayName = "Hearing"),
+    EPS_Damage       UMETA(DisplayName = "Damage"),
+};
+
 UCLASS()
 class PROJECT_ANIMAGUS_API AMyAIController : public AAIController
 {
@@ -65,4 +82,25 @@ public:
 
     UPROPERTY(EditAnywhere, Category = "Blackboard")
     FBlackboardKeySelector IsRunningKey;
+
+    // AI State를 저장할 Blackboard Key
+    //UPROPERTY(EditAnywhere, Category = "Blackboard")
+    //FBlackboardKeySelector AIStateKey;
+
+    UPROPERTY(EditAnywhere, Category = "Blackboard")
+    FBlackboardKeySelector TargetKey;
+
+    void CheckAndDisableTargetIfDead();
+
+    // AI Perception Component
+    UPROPERTY(VisibleAnywhere)
+    class UAIPerceptionComponent* AIPerceptionComponent;
+
+    UFUNCTION()
+    void OnPerceptionUpdated(const TArray<AActor*>& UpdatedActors);
+
+    struct FAIStimulus CanSenseActor(AActor* Actor, EAIPerceptionSense AIPerceptionSense);
+    void HandleSensedSight(AActor* Actor, bool bSensed);
+
+    TSet<AActor*> SensedActors; // 현재 감지된 액터 목록
 };
