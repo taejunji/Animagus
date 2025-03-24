@@ -24,6 +24,12 @@ public:
     UPROPERTY(EditAnywhere, Category = "Blackboard")
     FBlackboardKeySelector patrol_pos_key;
 
+    //UPROPERTY(EditAnywhere, Category = "Blackboard")
+    //float search_radius = 1000.f;
+
     UPROPERTY(EditAnywhere, Category = "Blackboard")
-    float search_radius = 1000.f;
+    FBlackboardKeySelector random_patrol_pos_key;
+
+    UPROPERTY(EditAnywhere, Category = "Blackboard")
+    FBlackboardKeySelector random_patrol_radius_key;
 };

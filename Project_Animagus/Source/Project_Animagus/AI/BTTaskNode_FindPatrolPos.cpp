@@ -27,14 +27,21 @@ EBTNodeResult::Type UBTTaskNode_FindPatrolPos::ExecuteTask(UBehaviorTreeComponen
         return EBTNodeResult::Failed;
     }
 
-    FVector OriginVector = FVector(0.0f, 0.0f, 0.0f);
+    //FVector OriginVector = FVector(0.0f, 0.0f, 0.0f);
     FNavLocation NextPatrol;
+
+    // 1. BB에서 Origin과 Radius 가져오기
+    FVector OriginVector = OwnerComp.GetBlackboardComponent()->GetValueAsVector(random_patrol_pos_key.SelectedKeyName);
+    float SearchRadius = OwnerComp.GetBlackboardComponent()->GetValueAsFloat(random_patrol_radius_key.SelectedKeyName);
+
     // 1. OriginVector, Radius, ResultVector
     if (NavSystem->GetRandomPointInNavigableRadius(
         OriginVector, //ControllingPawn->GetActorLocation(),
-        search_radius,
+        SearchRadius,
         NextPatrol))
     {
+        DrawDebugSphere(GetWorld(), NextPatrol, 100, 16, FColor::Emerald, false, 0.2f);
+
         OwnerComp.GetBlackboardComponent()->SetValueAsVector(patrol_pos_key.SelectedKeyName, NextPatrol);
         return EBTNodeResult::Succeeded;
     }
