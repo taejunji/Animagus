@@ -24,7 +24,7 @@ public:
     {
         for (uint16 i = 0; i < UINT16_MAX; ++i) GClientPacketHandler[i] = Handle_INVALID;
         GClientPacketHandler[(int32)PacketID::DCS_TEST] = [](SessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<DCS_TEST_PKT>(Handle_DCS_TEST, session, buffer, len); };
-        GClientPacketHandler[(int32)PacketID::SC_SPAWN] = [](SessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<SC_SPAWN_PKT>(Handle_DCS_TEST, session, buffer, len); };
+        GClientPacketHandler[(int32)PacketID::SC_SPAWN] = [](SessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<SC_SPAWN_PKT>(Handle_SC_SPAWN_PKT, session, buffer, len); };
 
     }
 

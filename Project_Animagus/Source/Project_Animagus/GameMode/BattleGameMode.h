@@ -4,6 +4,9 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/GameModeBase.h"
+
+#include "../Server/Server/protocol.h"
+
 #include "BattleGameMode.generated.h"
 
 /**
@@ -26,6 +29,7 @@ public:
 	ABattleGameMode();
 
     void SpawnPlayers();
+    void SpawnPlayer(Protocol::SC_SPAWN_PKT& pkt);
     void ActivateInput();
 	
 protected:

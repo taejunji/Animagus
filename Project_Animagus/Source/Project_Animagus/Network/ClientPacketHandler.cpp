@@ -32,4 +32,5 @@ bool Handle_SC_SPAWN_PKT(SessionRef& session, SC_SPAWN_PKT& pkt)
         GameInstance->HandleSpawn(pkt);
     }
 
+    return true;
 }

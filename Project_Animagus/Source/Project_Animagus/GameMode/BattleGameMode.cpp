@@ -10,6 +10,7 @@
 #include "../Character/AICharacter.h"
 #include "../PlayerController/Battle_PlayerController.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "../Character/NetworkCharacter.h"
 
 
 ABattleGameMode::ABattleGameMode()
@@ -215,6 +216,42 @@ void ABattleGameMode::SpawnPlayers()
         }
 
         SpawnedPlayers.Add(AIChar);
+    }
+}
+
+void ABattleGameMode::SpawnPlayer(Protocol::SC_SPAWN_PKT& pkt)
+{
+    UWorld* World = GetWorld();
+    if (!World)
+    {
+        UE_LOG(LogTemp, Error, TEXT("SpawnPlayer: World is null"));
+        return;
+    }
+
+    // TODO : 플레이어 ID 중복체크
+    uint16 p_id = pkt.player_id;
+    Protocol::PlayerType type = pkt.p_type;
+
+    // 플레이어 스폰 데이터
+    FVector SpawnLocation(pkt.x, pkt.y, pkt.z);
+    FRotator SpawnRotation(0.0f, pkt.rotation, 0.0f);
+    FTransform SpawnTransform(SpawnRotation, SpawnLocation);
+
+    ANetworkCharacter* NewPlayer = World->SpawnActor<ANetworkCharacter>(ABaseCharacter::StaticClass(), SpawnTransform);
+    if (NewPlayer)
+    {
+        // TODO
+        NewPlayer->SetPlayerID(p_id);
+        NewPlayer->SetPlayerType(type);
+
+        SpawnedPlayers.Add(NewPlayer);
+
+        UE_LOG(LogTemp, Log, TEXT("SpawnPlayer: Spawned player %d at (%f, %f, %f)"),
+            pkt.player_id, SpawnLocation.X, SpawnLocation.Y, SpawnLocation.Z);
+    }
+    else
+    {
+        UE_LOG(LogTemp, Error, TEXT("SpawnPlayer: Failed to spawn player actor"));
     }
 }
 

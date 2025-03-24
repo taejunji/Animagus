@@ -12,6 +12,7 @@
 #include "../Network/Session.h"
 #include "../Network/ClientPacketHandler.h"
 #include "../Character/NetworkCharacter.h"
+#include "../GameMode/BattleGameMode.h"
 
 #include "../Server/Server/protocol.h"
 
@@ -147,26 +148,6 @@ void UMyGameInstance::SendPacket(SendBufferRef SendBuffer)
     ClientSession->SendPacket(SendBuffer);
 }
 
-void UMyGameInstance::HandleSpawn(Protocol::SC_SPAWN_PKT& pkt)
-{
-    if (Socket == nullptr || ClientSession == nullptr)
-        return;
-
-    auto* World = GetWorld();
-    if (World == nullptr)
-        return;
-
-    // 플레이어 ID 중복체크
-    uint16 p_id = pkt.player_id;
-    //if (p_id == my_p_id) return;
-
-    // 플레이어 스폰
-    FVector SpawnLocation(pkt.x, pkt.y, pkt.z);
-    FRotator SpawnRotation(0.0f, pkt.rotation, 0.0f);
-    // player->playerID = p_id;
-    // 어쩌구->Spawn(player);
-}
-
 //void UMyGameInstance::AddAICharacter(AAICharacter* AICharacter)
 //{
 //    if (AICharacter)
@@ -179,4 +160,26 @@ void UMyGameInstance::PrintGameInstanceData()
 {
     FString DebugMessage = FString::Printf(TEXT("게임 인스턴스 - 배틀 라운드 수: %d"), round_count);
     GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Red, DebugMessage);
+}
+
+
+// InstanceHandlePacket
+void UMyGameInstance::HandleSpawn(Protocol::SC_SPAWN_PKT& pkt)
+{
+    if (Socket == nullptr || ClientSession == nullptr)
+        return;
+
+    auto* World = GetWorld();
+    if (World == nullptr)
+        return;
+
+    AGameModeBase* BaseGameMode = UGameplayStatics::GetGameMode(World);
+    if (BaseGameMode)
+    {
+        ABattleGameMode* GameMode = Cast<ABattleGameMode>(BaseGameMode);
+        if (GameMode)
+        {
+            GameMode->SpawnPlayer(pkt);
+        }
+    }
 }
