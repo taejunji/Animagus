@@ -13,7 +13,7 @@
 class UProgressBar;
 class UImage;
 class UHorizontalBox;
-
+class UTextBlock;
 
 UCLASS()
 class PROJECT_ANIMAGUS_API UMyPlayerHUDWidget : public UUserWidget
@@ -31,6 +31,12 @@ public:
     // 스킬 쿨타임 진행률 업데이트 함수 (0~1 사이의 값)
     UFUNCTION(BlueprintCallable, Category="UI")
     void UpdateSkillCooldown(int32 SkillIndex, float CooldownPercent);
+
+    UFUNCTION(BlueprintCallable, Category="UI")
+    void UpdateCountdown(float CountdownValue);
+
+    UFUNCTION(BlueprintCallable, Category="UI")
+    void UpdateRoundTime(float RoundTimeValue);
     
 protected:
     // 화면 중앙에 고정될 에임 이미지
@@ -70,4 +76,12 @@ protected:
 
     UPROPERTY(meta = (BindWidget))
     UProgressBar* SkillCooldownProgressBar3;
+
+    // 라운드 카운트다운을 표시할 텍스트 블록
+    UPROPERTY(meta = (BindWidget))
+    UTextBlock* CountdownText;
+
+    // 라운드 진행 시간을 표시할 텍스트 블록
+    UPROPERTY(meta = (BindWidget))
+    UTextBlock* RoundTimeText;
 };

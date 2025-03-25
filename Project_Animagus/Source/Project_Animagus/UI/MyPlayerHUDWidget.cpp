@@ -5,6 +5,7 @@
 #include "Components/ProgressBar.h"
 #include "Components/Image.h"
 #include "Components/HorizontalBox.h" // 나중에 스킬 목록 추가 시 사용
+#include "Components/TextBlock.h"
 
 void UMyPlayerHUDWidget::UpdateHP(float HPPercent)
 {
@@ -51,5 +52,36 @@ void UMyPlayerHUDWidget::UpdateSkillCooldown(int32 SkillIndex, float CooldownPer
     if (TargetBar)
     {
         TargetBar->SetPercent(CooldownPercent);
+    }
+}
+
+void UMyPlayerHUDWidget::UpdateCountdown(float CountdownValue)
+{
+    if (CountdownText)
+    {
+        // CountdownValue가 1초 이상이면 (즉, ceil값이 1보다 크면) 표시하고, 
+        // 그렇지 않으면(1초 이하) 빈 텍스트로 처리.
+        float DisplayTime = FMath::CeilToFloat(CountdownValue);
+        if (DisplayTime > 0)
+        {
+            FString NewText = FString::Printf(TEXT("%.0f"), DisplayTime);
+            CountdownText->SetText(FText::FromString(NewText));
+        }
+        else
+        {
+            CountdownText->SetText(FText::GetEmpty());
+        }
+    }
+}
+
+void UMyPlayerHUDWidget::UpdateRoundTime(float RoundTimeValue)
+{
+    if (RoundTimeText)
+    {
+        int32 TotalSeconds = FMath::FloorToInt(RoundTimeValue);
+        int32 Minutes = TotalSeconds / 60;
+        int32 Seconds = TotalSeconds % 60;
+        FString NewText = FString::Printf(TEXT("%d : %02d"), Minutes, Seconds);
+        RoundTimeText->SetText(FText::FromString(NewText));
     }
 }
