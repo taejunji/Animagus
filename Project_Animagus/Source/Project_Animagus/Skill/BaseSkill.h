@@ -42,6 +42,8 @@ public:
     UPROPERTY(BlueprintReadOnly, Category = "Skill")
     float LastUsedTime;
 
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Skill")
+    UTexture2D* SkillIcon;
 public:
     UBaseSkill();
 
