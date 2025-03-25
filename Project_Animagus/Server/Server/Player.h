@@ -4,6 +4,9 @@
 class Player
 {
 public:
+    Player() : x(0), y(1600), z(0), rotation(0) {}
+
+public:
     uint16  playerID = 0;
     int8    playerHP = 100;
     float   x, y, z;
