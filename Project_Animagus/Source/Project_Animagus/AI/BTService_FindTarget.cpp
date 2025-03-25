@@ -39,7 +39,7 @@ void UBTService_FindTarget::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* N
     FColor DebugColor = bHasTarget ? FColor::Red : FColor::Blue; 
 
     // 디버그 구체 그리기
-    // DrawDebugSphere(World, Location, search_radius, 16, DebugColor, false, 0.2f); 
+    DrawDebugSphere(World, Location, search_radius, 16, DebugColor, false, 0.2f); 
 #if 0
     TArray<FOverlapResult> OverlapResults; 
     // FOverlapResult는 하나의 오버랩 결과에 대한 정보
