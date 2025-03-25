@@ -8,9 +8,12 @@
 #include "../Skill/BaseSkill.h"
 #include "../Skill/Fireball.h"
 #include "../Skill/MagicMissile.h"
+#include "Components/CapsuleComponent.h"
 #include "Project_Animagus/Skill/Bounce.h"
 #include "Project_Animagus/Skill/ChangeSkill.h"
 #include "Project_Animagus/Skill/RadialSkill.h"
+#include "Project_Animagus/Skill/ShieldSkill.h"
+#include "Project_Animagus/Skill/SmokeSkill.h"
 #include "Project_Animagus/Skill/Stun.h"
 
 ABaseCharacter::ABaseCharacter()
@@ -20,7 +23,7 @@ ABaseCharacter::ABaseCharacter()
     Skills.SetNum(5); 
 
     // 애님 인스턴스 설정
-    static ConstructorHelpers::FClassFinder<UAnimInstance> AnimBP(TEXT("/Game/WorkFolder/Animation/AnimSystem/ABP_TEST2.ABP_TEST2_C"));
+    static ConstructorHelpers::FClassFinder<UAnimInstance> AnimBP(TEXT("/Game/WorkFolder/Animation/AnimSystem/ABP_AnimationSystem.ABP_AnimationSystem_C"));
     if (AnimBP.Succeeded())
     {
         GetMesh()->SetAnimInstanceClass(AnimBP.Class);
@@ -97,8 +100,30 @@ static ConstructorHelpers::FClassFinder<URadialSkill> RadialBPClassFinder(TEXT("
         UE_LOG(LogTemp, Warning, TEXT("BaseCharacter: Failed to load ChangeBPClassFinder!"));
     }
 
+    static ConstructorHelpers::FClassFinder<USmokeSkill> SmokeBPClassFinder(TEXT("/Game/WorkFolder/Bluprints/Skills/BP_SmokeSkill"));
+    if (SmokeBPClassFinder.Succeeded())
+    {
+        SmokeBPClass = SmokeBPClassFinder.Class;
+        UE_LOG(LogTemp, Log, TEXT("BaseCharacter: Successfully loaded SmokeBPClassFinder: %s"), *SmokeBPClass -> GetName());
+    }
+    else
+    {
+        UE_LOG(LogTemp, Warning, TEXT("BaseCharacter: Failed to load SmokeBPClassFinder!"));
+    }
+
+    static ConstructorHelpers::FClassFinder<UShieldSkill> ShieldBPClassFinder(TEXT("/Game/WorkFolder/Bluprints/Skills/MyShieldSkill"));
+    if (ShieldBPClassFinder.Succeeded())
+    {
+        ShieldBPClass = ShieldBPClassFinder.Class;
+        UE_LOG(LogTemp, Log, TEXT("BaseCharacter: Successfully loaded ShieldBPClassFinder: %s"), *ShieldBPClass -> GetName());
+    }
+    else
+    {
+        UE_LOG(LogTemp, Warning, TEXT("BaseCharacter: Failed to load ShieldBPClassFinder!"));
+    }
     
     bIsStunned = false;
+    GetCapsuleComponent()->SetCollisionResponseToChannel(ECollisionChannel::ECC_GameTraceChannel2, ECollisionResponse::ECR_Overlap);
 }
 
 void ABaseCharacter::BeginPlay()
@@ -124,6 +149,8 @@ void ABaseCharacter::BeginPlay()
     // 공중 제어 능력 높임. 기본값이 낮으면 공중에서 이동키가 약하게 반응함.
     GetCharacterMovement()->AirControl = 0.8f; // 기본 AirControl은 보통 0.2 ~ 0.3 정도임. 높이면 공중 이동이 민감해짐.
 
+    UE_LOG(LogTemp, Log, TEXT("BaseCharacter::BeginPlay() - Capsule Collision Response for Shockwave: %d"),
+    (int)GetCapsuleComponent()->GetCollisionResponseToChannel(ECollisionChannel::ECC_GameTraceChannel2));
     
     InitializeSkills();
 }
@@ -278,34 +305,34 @@ void ABaseCharacter::InitializeSkills()
     }
 
     // 3번슬롯 
-    if (StunBPClass)
+    if (ShieldBPClass)
     {
-        UBaseSkill* NewSkill = NewObject<UStun>(this, StunBPClass);
+        UBaseSkill* NewSkill = NewObject<UShieldSkill>(this, ShieldBPClass);
         if (NewSkill)
         {
             NewSkill->Owner = this;
             Skills[3] = NewSkill;
-            UE_LOG(LogTemp, Log, TEXT("InitializeSkills: Successfully created Stun skill for slot 3: %s"), *NewSkill->GetName());
+            UE_LOG(LogTemp, Log, TEXT("InitializeSkills: Successfully created Shield skill for slot 3: %s"), *NewSkill->GetName());
         }
         else
         {
-            UE_LOG(LogTemp, Warning, TEXT("InitializeSkills: Failed to create Stun skill for slot 3"));
+            UE_LOG(LogTemp, Warning, TEXT("InitializeSkills: Failed to create Shield skill for slot 3"));
         }
     }
     else
     {
-        UE_LOG(LogTemp, Warning, TEXT("InitializeSkills: StunBPClass is not assigned."));
+        UE_LOG(LogTemp, Warning, TEXT("InitializeSkills: ShieldBPClass is not assigned."));
     }
 
     // 4번 슬롯 테스트용임
-    if (ChangeBPClass)
+    if (SmokeBPClass)
     {
-        UBaseSkill* NewSkill = NewObject<UChangeSkill>(this, ChangeBPClass);
+        UBaseSkill* NewSkill = NewObject<USmokeSkill>(this, SmokeBPClass);
         if (NewSkill)
         {
             NewSkill->Owner = this;
             Skills[4] = NewSkill;
-            UE_LOG(LogTemp, Log, TEXT("InitializeSkills: Successfully created Change skill for slot 4: %s"), *NewSkill->GetName());
+            UE_LOG(LogTemp, Log, TEXT("InitializeSkills: Successfully created smoke skill for slot 4: %s"), *NewSkill->GetName());
         }
         else
         {
@@ -314,7 +341,7 @@ void ABaseCharacter::InitializeSkills()
     }
     else
     {
-        UE_LOG(LogTemp, Warning, TEXT("InitializeSkills: ChangeBPClass is not assigned."));
+        UE_LOG(LogTemp, Warning, TEXT("InitializeSkills: smokeBPClass is not assigned."));
     } 
     
 }

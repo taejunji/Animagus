@@ -22,9 +22,9 @@ void UChangeSkill::ActiveSkill_Implementation()
 {
     UE_LOG(LogTemp, Log, TEXT("UChangeSkill::ActiveSkill_Implementation() 호출됨."));
 
-    if (!Owner || IsOnCooldown())
+    if (!CanActivateSkill())
     {
-        UE_LOG(LogTemp, Warning, TEXT("UChangeSkill: Owner가 null이거나 스킬이 쿨타임 중임."));
+        UE_LOG(LogTemp, Warning, TEXT("ShieldSkill: Cannot activate - Owner is null or skill is on cooldown. CurrentCooldown: %f"), GetCooldownPercent());
         return;
     }
 
@@ -62,9 +62,20 @@ void UChangeSkill::ActiveSkill_Implementation()
 
     UE_LOG(LogTemp, Log, TEXT("UChangeSkill: SpawnLocation = %s, SpawnRotation = %s"), *SpawnLocation.ToString(), *SpawnRotation.ToString());
 
+    FActorSpawnParameters SpawnParams;
+    SpawnParams.Owner = Owner;
+    SpawnParams.Instigator = Owner->GetInstigator();
+    
+    // 투사체 액터 스폰: 이때 SpawnParams를 전달하면, 액터가 생성되는 순간부터 Owner와 Instigator 값이 설정됨
+    AProjectile_change* Projectile = World->SpawnActor<AProjectile_change>(
+        ProjectileBPClass,
+        SpawnLocation,
+        SpawnRotation,
+        SpawnParams
+    );
+    
     if (ProjectileBPClass)
     {
-        AProjectile_change* Projectile = World->SpawnActor<AProjectile_change>(ProjectileBPClass, SpawnLocation, SpawnRotation);
         if (Projectile)
         {
             Projectile->Shooter = Owner;
@@ -85,6 +96,13 @@ void UChangeSkill::ActiveSkill_Implementation()
     {
         UE_LOG(LogTemp, Warning, TEXT("UChangeSkill: ProjectileBPClass 할당되지 않음."));
     }
+
+        // 첫 사용이면 플래그 변경
+        if (bFirstUse)
+        {
+            bFirstUse = false;
+        }
+
     
     StartCooldown();
 }

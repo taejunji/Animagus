@@ -199,7 +199,7 @@ void ABattleGameMode::SpawnPlayers()
 
         FTransform SpawnTransform;
         SpawnTransform.SetLocation(SpawnLocations[i]);
-        SpawnTransform.SetLocation(SpawnLocations[i]);
+        SpawnTransform.SetRotation(FQuat(SpawnRotations[i]));
         
         // AI 캐릭터 스폰
         AAICharacter* AIChar = GetWorld()->SpawnActor<AAICharacter>(AIPlayerClass,SpawnTransform);

@@ -10,6 +10,8 @@
 #include "NiagaraFunctionLibrary.h"
 #include "TimerManager.h"
 #include "Components/PointLightComponent.h"
+#include "Components/SphereComponent.h"
+#include "Project_Animagus/Actor/Shield/ShieldActor.h"
 
 
 AProjectile_FireBall::AProjectile_FireBall()
@@ -26,11 +28,19 @@ void AProjectile_FireBall::OnHit(UPrimitiveComponent* OverlappedComponent, AActo
 
     if (OtherActor == Shooter )
     {
-        ProjectileLight->SetIntensity(0.0f);
-        DestroySkill();
+        return;
+       // ProjectileLight->SetIntensity(0.0f);
+       //  DestroySkill();
         
     }
     
+    AShieldActor* Shield = Cast<AShieldActor>(OtherActor);
+    if (Shield && Shield->ShieldOwner && Shield->ShieldOwner == Shooter)
+    {
+        UE_LOG(LogTemp, Warning, TEXT("AProjectileBase: Ignoring hit with owner's shield."));
+        CollisionSphere->IgnoreActorWhenMoving(OtherActor, true);
+        return;
+    }
     
     // 기본 AProjectileBase의 충돌 처리 전에, 충돌 대상이 유효하고, 자신과 발사자(Shooter)와 충돌하지 않을 때 처리
     if (OtherActor && OtherActor != this && OtherActor != Shooter)

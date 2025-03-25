@@ -20,6 +20,7 @@ public:
     AProjectileBase();
     
 protected:
+
     // Called when the game starts or when spawned
     virtual void BeginPlay() override;
 
@@ -47,6 +48,11 @@ protected:
                        UPrimitiveComponent* OtherComp, FVector NormalImpulse,
                        const FHitResult& Hit);
 
+    UFUNCTION()
+    void OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
+                        UPrimitiveComponent* OtherComp, int32 OtherBodyIndex,
+                        bool bFromSweep, const FHitResult & SweepResult);
+    
     /** 충돌 시 상대 플레이어에게 적용할 Knockback Force (충돌 방향 반대 방향으로 밀어내는 힘) */
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Knockback")
     float KnockbackForce;

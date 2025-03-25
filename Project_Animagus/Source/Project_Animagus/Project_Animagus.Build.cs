@@ -19,7 +19,10 @@ public class Project_Animagus : ModuleRules
             "Niagara",
             "NavigationSystem",
             "Sockets", 
-            "Networking"
+            "Networking",
+            "Slate",
+            "SlateCore",
+            "UMG"
         });
 
 		PrivateDependencyModuleNames.AddRange(new string[] {  });

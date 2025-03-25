@@ -15,9 +15,9 @@ UBounce::UBounce()
 
 void UBounce::ActiveSkill_Implementation()
 {
-    if (!Owner || IsOnCooldown())
+    if (!CanActivateSkill())
     {
-        UE_LOG(LogTemp, Warning, TEXT("UBounce: Owner is null or skill is on cooldown."));
+        UE_LOG(LogTemp, Warning, TEXT("ShieldSkill: Cannot activate - Owner is null or skill is on cooldown. CurrentCooldown: %f"), GetCooldownPercent());
         return;
     }
 
@@ -54,10 +54,22 @@ void UBounce::ActiveSkill_Implementation()
 
     UE_LOG(LogTemp, Log, TEXT("UBounce: OwnerLocation = %s"), *Owner->GetActorLocation().ToString());
     UE_LOG(LogTemp, Log, TEXT("UBounce: SpawnLocation = %s, SpawnRotation = %s"), *SpawnLocation.ToString(), *SpawnRotation.ToString());
-
+    
+    // FActorSpawnParameters 설정: Owner와 Instigator 미리 지정
+    FActorSpawnParameters SpawnParams;
+    SpawnParams.Owner = Owner;
+    SpawnParams.Instigator = Owner->GetInstigator();
+    
+    // 투사체 액터 스폰: 이때 SpawnParams를 전달하면, 액터가 생성되는 순간부터 Owner와 Instigator 값이 설정됨
+    AProjectile_Bounce* BounceProj = World->SpawnActor<AProjectile_Bounce>(
+        ProjectileBPClass,
+        SpawnLocation,
+        SpawnRotation,
+        SpawnParams
+    );
+    
     if (ProjectileBPClass)
     {
-        AProjectile_Bounce* BounceProj = World->SpawnActor<AProjectile_Bounce>(ProjectileBPClass, SpawnLocation, SpawnRotation);
         if (BounceProj)
         {
             BounceProj->Shooter = Owner;
@@ -79,5 +91,10 @@ void UBounce::ActiveSkill_Implementation()
         UE_LOG(LogTemp, Warning, TEXT("UBounce::ActiveSkill_Implementation() - ProjectileBPClass is not assigned!"));
     }
 
+    if (bFirstUse)
+    {
+        bFirstUse = false;
+    }
+    
     StartCooldown();
 }

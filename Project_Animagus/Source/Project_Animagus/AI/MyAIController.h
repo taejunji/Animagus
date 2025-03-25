@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "AIController.h"
+#include "BehaviorTree/BlackboardComponent.h" // 필요: Blackboard 컴포넌트를 포함
 #include "MyAIController.generated.h"
 
 /*
@@ -44,9 +45,13 @@ public:
 protected:
     virtual void BeginPlay() override;
 
-private:
-    UPROPERTY(EditAnywhere)
+public:
+    UPROPERTY(EditAnywhere, Category = "AI")
     TObjectPtr<class UBehaviorTree> AIBehavior;
+
+    UPROPERTY(EditAnywhere, Category = "AI")
+    TObjectPtr<class UBlackboardData> BlackboardData;
+    
 
 public:
     void StartBehaviorTree();
@@ -57,4 +62,7 @@ public:
 
     UFUNCTION(BlueprintCallable)
     void ResumeBehaviorTree(); // BT 재개
+
+    UPROPERTY(EditAnywhere, Category = "Blackboard")
+    FBlackboardKeySelector IsRunningKey;
 };
