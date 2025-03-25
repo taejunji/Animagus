@@ -31,6 +31,16 @@ void UBTService_FindTarget::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* N
     }
 
     FVector Location = LocalPawn->GetActorLocation();
+    // TargetKey가 있는지 확인
+    ABaseCharacter* TargetCharacter = Cast<ABaseCharacter>(OwnerComp.GetBlackboardComponent()->GetValueAsObject(target_key.SelectedKeyName));
+    bool bHasTarget = (TargetCharacter != nullptr);
+
+    // 색상 결정 (빨강: 타겟 있음, 파랑: 타겟 없음)
+    FColor DebugColor = bHasTarget ? FColor::Red : FColor::Blue; 
+
+    // 디버그 구체 그리기
+    // DrawDebugSphere(World, Location, search_radius, 16, DebugColor, false, 0.2f); 
+#if 0
     TArray<FOverlapResult> OverlapResults; 
     // FOverlapResult는 하나의 오버랩 결과에 대한 정보
     
@@ -71,6 +81,7 @@ void UBTService_FindTarget::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* N
 
     OwnerComp.GetBlackboardComponent()->SetValueAsObject(target_key.SelectedKeyName, nullptr);
     DrawDebugSphere(World, Location, search_radius, 16, FColor::Blue, false, 0.2f);
+#endif
 }
 
 

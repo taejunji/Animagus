@@ -52,7 +52,7 @@ void UBTTaskNode_TurnToTarget::TickTask(UBehaviorTreeComponent& OwnerComp, uint8
     float YawDifference = FMath::Abs(FMath::FindDeltaAngleDegrees(Character->GetActorRotation().Yaw, TargetRotation.Yaw));
     if (YawDifference < 3.0f)
     {
-        // AIController->SetFocalPoint(Target->GetActorLocation() + FVector(0, 0, 50)); // 플레이어 중앙(50cm 위)를 바라보게 하기
+        //AIController->SetFocalPoint(Target->GetActorLocation() + FVector(0, 0, 50)); // 플레이어 중앙(50cm 위)를 바라보게 하기
 
         b_is_turnning = false;
         FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded); // 회전이 끝나면 다음 Task 실행

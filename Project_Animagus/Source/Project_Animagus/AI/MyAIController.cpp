@@ -26,14 +26,14 @@ AMyAIController::AMyAIController(const FObjectInitializer& ObjectInitializer)
     PrimaryActorTick.bCanEverTick = true; // Tick 활성화
 
     // BehaviorTree 애셋 로드
-    static ConstructorHelpers::FObjectFinder<UBehaviorTree> BTAsset(TEXT("/Game/WorkFolder/Bluprints/AIPlayer/BT_AIPlayer.BT_AIPlayer"));
+    static ConstructorHelpers::FObjectFinder<UBehaviorTree> BTAsset(TEXT("/Game/WorkFolder/AI/AIPlayer/BT_AIPlayer.BT_AIPlayer"));
     if (BTAsset.Succeeded()) 
     {
         AIBehavior = BTAsset.Object; 
     }
 
     // Blackboard 애셋 로드
-    static ConstructorHelpers::FObjectFinder<UBlackboardData> BBAsset(TEXT("/Game/WorkFolder/Bluprints/AIPlayer/BB_AIPlayer.BB_AIPlayer"));
+    static ConstructorHelpers::FObjectFinder<UBlackboardData> BBAsset(TEXT("/Game/WorkFolder/AI/AIPlayer/BB_AIPlayer.BB_AIPlayer"));
     if (BBAsset.Succeeded()) 
     {
         BlackboardData = BBAsset.Object;
@@ -61,6 +61,9 @@ void AMyAIController::BeginPlay()
             // "AIState" 설정
             // AIStateKey.SelectedKeyName = FName(TEXT("AIState"));
             // BlackboardPtr->SetValueAsEnum(AIStateKey.SelectedKeyName, static_cast<uint8>(EAIState::Patrol));
+
+            DefendRadiusKey.SelectedKeyName = FName(TEXT("DefendRadius"));
+            BlackboardPtr->SetValueAsFloat(DefendRadiusKey.SelectedKeyName, 350.f);
         }
 
         if (AIPerceptionComponent) 
@@ -228,10 +231,10 @@ void AMyAIController::OnPerceptionUpdated(const TArray<AActor*>& UpdatedActors)
 {
     TSet<AActor*> NewlySensedActors; 
 
+    FAIStimulus AIStimulus;
+
     for (AActor* UpdatedActor : UpdatedActors)
-    {
-        FAIStimulus AIStimulus;
-        
+    {        
         // 시각 감지
         AIStimulus = CanSenseActor(UpdatedActor, EAIPerceptionSense::EPS_Sight);
         bool bSensed = AIStimulus.WasSuccessfullySensed();
@@ -239,7 +242,7 @@ void AMyAIController::OnPerceptionUpdated(const TArray<AActor*>& UpdatedActors)
         if (bSensed) 
         {
             NewlySensedActors.Add(UpdatedActor); 
-            HandleSensedSight(UpdatedActor, bSensed);
+            HandleSensedSight(UpdatedActor, bSensed, AIStimulus);
         }
 
         // 청각 감지
@@ -262,7 +265,7 @@ void AMyAIController::OnPerceptionUpdated(const TArray<AActor*>& UpdatedActors)
     {
         if (!NewlySensedActors.Contains(PreviouslySensedActor))
         {
-            HandleSensedSight(PreviouslySensedActor, false);
+            HandleSensedSight(PreviouslySensedActor, false, AIStimulus);
         }
     }
 
@@ -278,7 +281,7 @@ FAIStimulus AMyAIController::CanSenseActor(AActor* Actor, EAIPerceptionSense AIP
     FActorPerceptionBlueprintInfo ActorPerceptionBlueprintInfo;
 	FAIStimulus ResultStimulus;
 
-    // 액터의 인식 정보를 가져옵니다
+    // 액터의 인식 정보를 가져옵니다 특정 액터(Actor)에 대한 AI Perception 정보를 모두 가져오는 기능
     AIPerceptionComponent->GetActorsPerception(Actor, ActorPerceptionBlueprintInfo); 
 
 	TSubclassOf<UAISense> QuerySenseClass;
@@ -320,8 +323,10 @@ FAIStimulus AMyAIController::CanSenseActor(AActor* Actor, EAIPerceptionSense AIP
 	return ResultStimulus; // 감지되지 않으면 기본 자극 반환
 }
 
-void AMyAIController::HandleSensedSight(AActor* Actor, bool bSensed)
+void AMyAIController::HandleSensedSight(AActor* Actor, bool bSensed, FAIStimulus Stimulus)
 {
+    // 1. 시야에 들어올 때, 2. 시야에 안들어올 때
+
     ABaseCharacter* TargetCharacter = Cast<ABaseCharacter>(Actor);
     if (TargetCharacter == nullptr) return;
 
@@ -332,6 +337,8 @@ void AMyAIController::HandleSensedSight(AActor* Actor, bool bSensed)
     }
     else if (bSensed)
     {
+        //SetFocalPoint(TargetCharacter->GetActorLocation() + FVector(0, 0, 50));
+        //SetFocus(TargetCharacter);
         GetBlackboardComponent()->SetValueAsObject(TargetKey.SelectedKeyName, TargetCharacter);
     }
 

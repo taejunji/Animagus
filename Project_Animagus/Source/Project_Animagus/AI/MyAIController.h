@@ -69,16 +69,7 @@ public:
     UPROPERTY(EditAnywhere, Category = "AI")
     TObjectPtr<class UBlackboardData> BlackboardData;
     
-
-public:
-    void StartBehaviorTree();
-
     AIControlMode ControlMode;
-
-    void SetControlMode(AIControlMode mode);
-
-    UFUNCTION(BlueprintCallable)
-    void ResumeBehaviorTree(); // BT 재개
 
     UPROPERTY(EditAnywhere, Category = "Blackboard")
     FBlackboardKeySelector IsRunningKey;
@@ -90,17 +81,28 @@ public:
     UPROPERTY(EditAnywhere, Category = "Blackboard")
     FBlackboardKeySelector TargetKey;
 
-    void CheckAndDisableTargetIfDead();
+    UPROPERTY(EditAnywhere, Category = "Blackboard")
+    FBlackboardKeySelector DefendRadiusKey;
 
     // AI Perception Component
     UPROPERTY(VisibleAnywhere)
     class UAIPerceptionComponent* AIPerceptionComponent;
 
+    TSet<AActor*> SensedActors; // 현재 감지된 액터 목록
+
+public:
+    void StartBehaviorTree();
+
+    void SetControlMode(AIControlMode mode);
+
+    UFUNCTION(BlueprintCallable)
+    void ResumeBehaviorTree(); // BT 재개
+
+    void CheckAndDisableTargetIfDead();
+
     UFUNCTION()
     void OnPerceptionUpdated(const TArray<AActor*>& UpdatedActors);
 
     struct FAIStimulus CanSenseActor(AActor* Actor, EAIPerceptionSense AIPerceptionSense);
-    void HandleSensedSight(AActor* Actor, bool bSensed);
-
-    TSet<AActor*> SensedActors; // 현재 감지된 액터 목록
+    void HandleSensedSight(AActor* Actor, bool bSensed, FAIStimulus Stimulus);
 };
