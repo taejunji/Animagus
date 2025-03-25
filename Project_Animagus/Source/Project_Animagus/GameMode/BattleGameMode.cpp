@@ -15,7 +15,7 @@
 
 ABattleGameMode::ABattleGameMode()
 {
-    PrimaryActorTick.bCanEverTick = false;
+    PrimaryActorTick.bCanEverTick = true;
 
     // BluePirnt Class인 BP_Player, BP_PlayerController의 정보를 생성자에서 읽어서 게임모드에 설정한다.
     static ConstructorHelpers::FClassFinder<APawn> PlayerPawn(TEXT("/Game/WorkFolder/Bluprints/BP_Player.BP_Player_C"));
@@ -237,7 +237,7 @@ void ABattleGameMode::SpawnPlayer(Protocol::SC_SPAWN_PKT& pkt)
     FRotator SpawnRotation(0.0f, pkt.rotation, 0.0f);
     FTransform SpawnTransform(SpawnRotation, SpawnLocation);
 
-    ANetworkCharacter* NewPlayer = World->SpawnActor<ANetworkCharacter>(ABaseCharacter::StaticClass(), SpawnTransform);
+    ANetworkCharacter* NewPlayer = World->SpawnActor<ANetworkCharacter>(ANetworkCharacter::StaticClass(), SpawnTransform);
     if (NewPlayer)
     {
         // TODO
