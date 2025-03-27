@@ -4,7 +4,7 @@
 class Player
 {
 public:
-    Player() : x(0), y(1600), z(0), rotation(0) {}
+    Player() : x(0), y(0), z(1600), rotation(0) {}
 
 public:
     uint16  playerID = 0;
