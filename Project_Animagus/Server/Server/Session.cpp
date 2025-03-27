@@ -236,7 +236,7 @@ void Session::ProcessConnect()
     // 세션 등록
     GetService()->AddSession(GetSessionRef());
 
-    // 컨텐츠 코드에서 재정의
+    // 클라가 서버에 접속했을 떄 서버의 액션을 정의
     OnConnected();
 
     // 수신 등록
@@ -247,8 +247,8 @@ void Session::ProcessDisconnect()
 {
     _disconnectEvent.owner = nullptr;	// RELEASE_REF
 
-    OnDisconnected();		// 컨텐츠 코드에서 재정의
-    //SocketUtils::Close(_socket);
+    OnDisconnected();		// 클라가 서버에 접속해제했을 떄 서버의 액션을 정의
+    SocketUtils::Close(m_socket);
     GetService()->ReleaseSession(GetSessionRef());
 }
 

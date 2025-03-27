@@ -63,7 +63,7 @@ private:
 protected:
     int32		        OnRecv(BYTE* buffer, int32 len);
     
-    virtual void		OnConnected() {}
+    void		        OnConnected() {}
     virtual void		OnSend(int32 len) {}
     virtual void		OnDisconnected() {}
 

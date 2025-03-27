@@ -257,7 +257,7 @@ void Session::ProcessConnect()
     // 세션 등록
     GetService()->AddSession(GetSessionRef());
 
-    // 컨텐츠 코드에서 재정의
+    // 서버에 접속 성공했을 때 클라에서의 동작을 정의
     OnConnected();
 
     // 수신 등록
@@ -268,8 +268,8 @@ void Session::ProcessDisconnect()
 {
     _disconnectEvent.owner = nullptr;	// RELEASE_REF
 
-    OnDisconnected();		// 컨텐츠 코드에서 재정의
-    //SocketUtils::Close(_socket);
+    OnDisconnected();		// 접속 해제할 때 클라에서의 동작을 정의
+    SocketUtils::Close(m_socket);
     //GetService()->ReleaseSession(GetSessionRef());
 }
 
@@ -388,12 +388,15 @@ void Session::OnConnected()
 {
     //std::cout << "Server Connected" << std::endl;
 
-    DCS_TEST_PKT pkt;
-    std::string msg = "Hello";
-    ::memcpy(pkt.msg, msg.c_str(), msg.size());
-    pkt.len = 5;
+    //DCS_TEST_PKT pkt;
+    //std::string msg = "Hello";
+    //::memcpy(pkt.msg, msg.c_str(), msg.size());
+    //pkt.len = 5;
     
     //std::cout << std::string(pkt.msg, pkt.len) << std::endl;
+
+    CS_ENTER_GAME_PKT pkt;
+    pkt;
 
     SendBufferRef sendBuffer = ClientPacketHandler::MakeSendBuffer(pkt);
     Send(sendBuffer);

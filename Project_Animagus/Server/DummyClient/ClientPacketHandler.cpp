@@ -19,5 +19,12 @@ bool Handle_DCS_TEST(SessionRef& session, DCS_TEST_PKT& pkt)
     SendBufferRef sendBuffer = ClientPacketHandler::MakeSendBuffer(pkt);
     session->Send(sendBuffer);
 
+    //std::this_thread::sleep_for(std::chrono::seconds(1));
+
+    return true;
+}
+
+bool Handle_SC_SPAWN(SessionRef& session, SC_SPAWN_PKT& pkt)
+{
     return true;
 }

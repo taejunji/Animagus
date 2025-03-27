@@ -70,7 +70,7 @@ bool ClientService::Start()
 
     while (true)
     {
-        m_iocpCore->Dispatch(50);
+        m_iocpCore->Dispatch(10);
     }
 }
 

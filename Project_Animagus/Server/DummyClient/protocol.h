@@ -39,29 +39,34 @@ namespace Protocol {
     {
         DCS_TEST,
         CS_LOGIN,
+        CS_ENTER_GAME,
+        CS_LEAVE,
+        SC_ENTER_GAME,
+        SC_LEAVE,
+        CS_SPAWN,
+        SC_SPAWN,
         CS_MOVE,
         CS_SELECT,
         CS_USING_SKILL,
-
     };
 
-//#pragma pack(push, 1)
-//    struct PacketHeader {
-//        PacketID id;
-//        uint16 size;
-//
-//        PacketHeader(PacketID pktID) : id(pktID), size(0) {}
-//    };
-//#pragma pack(pop)
+    //#pragma pack(push, 1)
+    //    struct PacketHeader {
+    //        PacketID id;
+    //        uint16 size;
+    //
+    //        PacketHeader(PacketID pktID) : id(pktID), size(0) {}
+    //    };
+    //#pragma pack(pop)
 
 
-    /* 패킷이름 뒤에 _PKT 붙이고 반드시 패킷ID 넣어주기 */
-    /* 패킷 헤더는 PacketHandler::MakeSendBuffer 에서 버퍼 앞에 붙여서 나감*/
-    /* 가변 길이 데이터는 담지 않기 (ex: vector, string) */
+        /* 패킷이름 뒤에 _PKT 붙이고 반드시 패킷ID 넣어주기 */
+        /* 패킷 헤더는 PacketHandler::MakeSendBuffer 에서 버퍼 앞에 붙여서 나감*/
+        /* 가변 길이 데이터는 담지 않기 (ex: vector, string) */
 #pragma pack (push, 1)
     struct DCS_TEST_PKT
     {
-        int16 player_id;
+        uint16 player_id;
         //std::string msg;
         char msg[128];
         int8 len;
@@ -70,6 +75,30 @@ namespace Protocol {
     {
         int16 player_id;
         //std::string name;
+    };
+    struct CS_ENTER_GAME_PKT
+    {
+        uint16 room_id;
+    };
+    struct CS_LEAVE_PKT
+    {
+        uint16 player_id;
+        uint16 room_id;
+    };
+    struct SC_ENTER_GAME_PKT
+    {
+        uint16 player_id;
+        PlayerType p_type;
+    };
+    struct SC_LEAVE_PKT
+    {   // 로비로 보내기
+    };
+    struct SC_SPAWN_PKT
+    {
+        uint16 player_id;
+        PlayerType p_type;
+        float x, y, z;
+        float rotation;
     };
     struct CS_MOVE_PKT
     {
@@ -90,7 +119,7 @@ namespace Protocol {
         SkillType s_type;
         float x, y, z;      // 위치
         float vx, vy, vz;   // 방향 벡터
-        
+
     };
 #pragma pack(pop)
 
