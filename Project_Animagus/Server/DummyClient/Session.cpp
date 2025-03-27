@@ -74,6 +74,9 @@ bool Session::RegisterConnect()
     if (IsConnected() == true)
         return false;
 
+    if (SocketUtils::SetReuseAddress(m_socket, true) == false)
+        return false;
+
     if (SocketUtils::BindAnyAddress(m_socket) == false) {
         auto ret = ::WSAGetLastError();
         HandleError(ret);
@@ -229,30 +232,30 @@ void Session::ProcessConnect()
 {
     _connectEvent.owner = nullptr;		// RELEASE_REF
 
-    if (SocketUtils::SetUpdateConnectContext(m_socket) == false) {
-        std::cout << "ConnectContext Error" << std::endl;
-        return;
-    }
+    //if (SocketUtils::SetUpdateConnectContext(m_socket) == false) {
+    //    std::cout << "ConnectContext Error" << std::endl;
+    //    return;
+    //}
 
-    int error = 0;
-    int len = sizeof(error);
-    if (::getsockopt(m_socket, SOL_SOCKET, SO_ERROR, reinterpret_cast<char*>(&error), &len) == SOCKET_ERROR)
-    {
-        std::cout << "getsockopt failed" << std::endl;
-        Disconnect(L"getsockopt Failed");
-        return;
-    }
-    if (error != 0)
-    {
-        std::cout << "Connection error: " << error << std::endl;
-        Disconnect(L"ConnectEx Error");
-        return;
-    }
+    //int error = 0;
+    //int len = sizeof(error);
+    //if (::getsockopt(m_socket, SOL_SOCKET, SO_ERROR, reinterpret_cast<char*>(&error), &len) == SOCKET_ERROR)
+    //{
+    //    std::cout << "getsockopt failed" << std::endl;
+    //    Disconnect(L"getsockopt Failed");
+    //    return;
+    //}
+    //if (error != 0)
+    //{
+    //    std::cout << "Connection error: " << error << std::endl;
+    //    Disconnect(L"ConnectEx Error");
+    //    return;
+    //}
 
     m_connected.store(true);
 
     // 세션 등록
-    GetService()->GetIocpCore()->Register(GetSessionRef());
+    GetService()->AddSession(GetSessionRef());
 
     // 컨텐츠 코드에서 재정의
     OnConnected();

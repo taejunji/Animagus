@@ -32,6 +32,12 @@ bool ClientService::Initialize()
     }
 
     m_sessions.reserve(CLIENT_COUNT);
+
+    return true;
+}
+
+bool ClientService::Start()
+{
     for (int i = 0; i < CLIENT_COUNT; ++i)
     {
         SessionRef session = std::make_shared<Session>(Session::ServiceType::CLIENT);
@@ -43,21 +49,13 @@ bool ClientService::Initialize()
         if (false == m_iocpCore->Register(session))
             return false;
 
-        m_sessions.emplace_back(session);
-    }
-
-    return true;
-}
-
-bool ClientService::Start()
-{
-    for (auto& session : m_sessions)
-    {
         if (session->Connect() == false) {
             std::cout << "Connect Fail" << std::endl;
             return false;
         }
     }
+    std::cout << "Connect " << CLIENT_COUNT << std::endl;
+
 
     for (unsigned int i = 0; i < 2; ++i)
     {
@@ -73,5 +71,13 @@ bool ClientService::Start()
     while (true)
     {
         m_iocpCore->Dispatch(50);
+    }
+}
+
+void ClientService::ShutDown()
+{
+    for (auto& thread : m_thread)
+    {
+        thread.join();
     }
 }

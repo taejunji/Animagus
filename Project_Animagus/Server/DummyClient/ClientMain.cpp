@@ -5,7 +5,7 @@ using namespace std;
 
 int main()
 {
-    ClientServiceRef client = std::make_shared<ClientService>(1000);
+    ClientServiceRef client = std::make_shared<ClientService>(100);
 
     if (false == client->Initialize()) {
         std::cerr << "[Client] Initialization failed." << std::endl;
@@ -14,5 +14,6 @@ int main()
 
     client->Start();
 
+    client->ShutDown();
     return 0;
 }

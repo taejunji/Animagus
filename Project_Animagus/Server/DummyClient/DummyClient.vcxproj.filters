@@ -15,7 +15,7 @@
     <ClInclude Include="Buffers.h">
       <Filter>Network</Filter>
     </ClInclude>
-    <ClInclude Include="IOCPCore.h">
+    <ClInclude Include="IocpCore.h">
       <Filter>Network</Filter>
     </ClInclude>
     <ClInclude Include="IocpEvent.h">

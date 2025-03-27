@@ -130,7 +130,7 @@
     <ClInclude Include="Buffers.h" />
     <ClInclude Include="ClientPacketHandler.h" />
     <ClInclude Include="ClientService.h" />
-    <ClInclude Include="IOCPCore.h" />
+    <ClInclude Include="IocpCore.h" />
     <ClInclude Include="IocpEvent.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="protocol.h" />
