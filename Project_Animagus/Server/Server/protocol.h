@@ -35,6 +35,16 @@ namespace Protocol {
         AbilityHaste,   // 스킬가속
     };
 
+    enum class PlayerState
+    {
+        MOVE_STATE_NONE,
+        MOVE_STATE_IDLE,
+        MOVE_STATE_RUN,
+        MOVE_STATE_JUMP,
+        MOVE_STATE_STUN,
+        MOVE_STATE_SKILL,
+    };
+
     enum class PacketID : uint16
     {
         DCS_TEST,
@@ -48,6 +58,16 @@ namespace Protocol {
         CS_MOVE,
         CS_SELECT,
         CS_USING_SKILL,
+    };
+
+
+    struct PlayerInfo
+    {
+        uint16 player_id;
+        float x, y, z;
+        float rotation;
+        PlayerType player_type;
+        PlayerState player_state;
     };
 
 //#pragma pack(push, 1)
@@ -102,11 +122,7 @@ namespace Protocol {
     };
     struct CS_MOVE_PKT
     {
-        int16 player_id;
-        float Max_speed;
-        float x, y, z;
-        float vx, vy, vz;
-        //float yaw, pitch;
+        PlayerInfo player_info;
     };
     struct CS_SELECT_CHARACTER_PKT
     {

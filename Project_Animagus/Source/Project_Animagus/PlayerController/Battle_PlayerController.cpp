@@ -10,6 +10,12 @@
 #include "GameFramework/CharacterMovementComponent.h" 
 #include "Project_Animagus/Skill/BaseSkill.h"
 #include "../UI/MyPlayerHUDWidget.h"
+#include "../System/MyGameInstance.h"
+
+#include "../Server/Server/protocol.h"
+#include "../Network/Session.h"
+#include "../Network/ClientPacketHandler.h"
+
 
 ABattle_PlayerController::ABattle_PlayerController(const FObjectInitializer& ObjectInitializer)
     : Super(ObjectInitializer)
@@ -122,6 +128,50 @@ void ABattle_PlayerController::Tick(float DeltaTime)
                 }
             }
         }
+
+
+        // Send 판정
+        bool ForceSendPacket = false;
+
+        if (LastDesiredInput != DesiredInput)
+        {
+            ForceSendPacket = true;
+            LastDesiredInput = DesiredInput;
+        }
+
+        // State 정보
+        if (DesiredInput == FVector2D::Zero())
+            MyPlayer->SetMoveState(Protocol::PlayerState::MOVE_STATE_IDLE);
+        else
+            MyPlayer->SetMoveState(Protocol::PlayerState::MOVE_STATE_RUN);
+        // state 를 캐릭터 클래스에서 사용하나?
+        // 안하면 그냥 컨트롤러에 박아놓고 사용
+
+        MovePacketSendTimer -= DeltaTime;
+
+        if (MovePacketSendTimer <= 0 || ForceSendPacket)
+        {
+            MovePacketSendTimer = MOVE_PACKET_SEND_DELAY;
+
+            Protocol::CS_MOVE_PKT MovePkt;
+
+            // 현재 위치 정보
+            {
+                Protocol::PlayerInfo Info;
+                FVector Location = MyPlayer->GetActorLocation();
+                Info.x = Location.X; Info.y = Location.Y; Info.z = Location.Z;
+                Info.rotation = MyPlayer->GetActorRotation().Yaw;
+                Info.player_id = MyPlayer->GetPlayerId();
+                Info.player_type = MyPlayer->GetPlayerType();
+                Info.player_state = MyPlayer->GetMoveState();   
+
+                MovePkt.player_info = Info;
+            }
+
+            SendBufferRef SendBuffer = ClientPacketHandler::MakeSendBuffer(MovePkt);
+            Cast<UMyGameInstance>(GWorld->GetGameInstance())->SendPacket(SendBuffer);
+        }
+
     }
 }
 

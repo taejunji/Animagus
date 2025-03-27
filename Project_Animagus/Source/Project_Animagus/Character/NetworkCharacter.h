@@ -22,15 +22,11 @@ public:
     virtual void Tick(float DeltaTime) override;
 
     void SetPlayerID(uint16 p_id) { player_id = p_id; };
-    void SetPlayerType(Protocol::PlayerType type) { player_type = type; }
+    void SetPlayerType(Protocol::PlayerType type) { PlayerType = type; }
 
 protected:
     virtual void BeginPlay() override;
 
 private:
     void InitPlayerMesh();
-
-    uint16 player_id;
-    Protocol::PlayerType player_type = Protocol::PlayerType::RAM;
-
 };

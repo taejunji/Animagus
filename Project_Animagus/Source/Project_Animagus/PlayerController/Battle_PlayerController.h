@@ -103,4 +103,16 @@ protected:
     // 생성된 HUD 위젯 인스턴스
     UPROPERTY()
     class UMyPlayerHUDWidget* PlayerHUD;
+
+protected:
+    const float MOVE_PACKET_SEND_DELAY = 0.2f;
+    float MovePacketSendTimer = MOVE_PACKET_SEND_DELAY;
+
+    // Cache
+    FVector2D DesiredInput;
+    FVector DesiredMoveDirection;
+    float DesiredYaw;
+
+    // Dirty Flag Test
+    FVector2D LastDesiredInput;
 };

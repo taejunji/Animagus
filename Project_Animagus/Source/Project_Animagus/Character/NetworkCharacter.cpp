@@ -40,7 +40,7 @@ void ANetworkCharacter::InitPlayerMesh()
 {   // 메쉬 설정 어캐함요?
     if (auto* GameInstance = Cast<UMyGameInstance>(GetGameInstance()))
     {
-        switch (player_type)
+        switch (PlayerType)
         {
         case PlayerType::MONKEY:
             if (GameInstance->CharacterMeshes.Contains(TEXT("SM_Monkey"))) GetMesh()->SetSkeletalMesh(GameInstance->CharacterMeshes[TEXT("SM_Monkey")]);
