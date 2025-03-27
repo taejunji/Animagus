@@ -6,7 +6,7 @@
 #include "ClientPacketHandler.h"
 
 
-ClientService::ClientService()
+ClientService::ClientService(int client_count) : CLIENT_COUNT(client_count)
 {
 }
 
@@ -31,32 +31,47 @@ bool ClientService::Initialize()
         return false;
     }
 
-    m_session = std::make_shared<Session>(Session::ServiceType::CLIENT);
-    if (m_session == nullptr)
-        return false;
+    m_sessions.reserve(CLIENT_COUNT);
+    for (int i = 0; i < CLIENT_COUNT; ++i)
+    {
+        SessionRef session = std::make_shared<Session>(Session::ServiceType::CLIENT);
+        if (session == nullptr)
+            return false;
 
-    m_session->SetService(shared_from_this());
+        session->SetService(shared_from_this());
 
-    if (false == m_iocpCore->Register(m_session))
-        return false;
+        if (false == m_iocpCore->Register(session))
+            return false;
+
+        m_sessions.emplace_back(session);
+    }
 
     return true;
 }
 
 bool ClientService::Start()
 {
-    if (m_session->Connect() == false) {
-        std::cout << "Connect Fail" << std::endl;
-        return false;
-    }
-
-    while (true)
+    for (auto& session : m_sessions)
     {
-        if (false == m_iocpCore->Dispatch(50))
-        {
-
+        if (session->Connect() == false) {
+            std::cout << "Connect Fail" << std::endl;
+            return false;
         }
     }
 
+    for (unsigned int i = 0; i < 2; ++i)
+    {
+        m_thread.emplace_back([this]() {
+            while (true)
+            {
+                m_iocpCore->Dispatch(10);
+            }
+            });
+    }
 
+
+    while (true)
+    {
+        m_iocpCore->Dispatch(50);
+    }
 }
