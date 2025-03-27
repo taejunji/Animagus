@@ -95,3 +95,20 @@ bool Room::HandleEnterPlayer(PlayerRef player)
 
     return success;
 }
+
+bool Room::HandleLeavePlayer(PlayerRef player)
+{
+    std::lock_guard lock(m_mutex);
+
+    bool success = Leave(player->playerID);
+
+    // 다른 플레이어에게 해당 플레이어 퇴장 알림
+    {
+        //SC_LEAVE_PKT pkt;
+        //pkt.player_id = player->playerID;
+        //SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(pkt);
+        //Broadcast(sendBuffer, 0);
+    }
+
+    return success;
+}
