@@ -252,8 +252,7 @@ void Session::ProcessConnect()
     m_connected.store(true);
 
     // 세션 등록
-    //GetService()->GetIocpCore()->Register(GetSessionRef());
-    GetService()->SetSession(GetSessionRef());
+    GetService()->GetIocpCore()->Register(GetSessionRef());
 
     // 컨텐츠 코드에서 재정의
     OnConnected();
@@ -384,14 +383,14 @@ void Session::OnRecvPacket(BYTE* buffer, int32 len)
 
 void Session::OnConnected()
 {
-    std::cout << "Server Connected" << std::endl;
+    //std::cout << "Server Connected" << std::endl;
 
     DCS_TEST_PKT pkt;
     std::string msg = "Hello";
     ::memcpy(pkt.msg, msg.c_str(), msg.size());
     pkt.len = 5;
     
-    std::cout << std::string(pkt.msg, pkt.len) << std::endl;
+    //std::cout << std::string(pkt.msg, pkt.len) << std::endl;
 
     SendBufferRef sendBuffer = ClientPacketHandler::MakeSendBuffer(pkt);
     Send(sendBuffer);
