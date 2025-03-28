@@ -58,9 +58,17 @@ bool Room::HandleEnterPlayer(PlayerRef player)
     if (success == false)
         std::cout << "Error" << std::endl;
 
-    // TODO : 신입 플레이어 스폰 위치, 회전각 서버에서 지정해주고 해당 정보 플레이어에게 전송
+    // 신입 플레이어 스폰 위치, 회전각 서버에서 지정해주고 해당 정보 플레이어에게 전송
     {
-
+        SC_ENTER_GAME_PKT newPlayer;
+        newPlayer.player_id = player->playerID;
+        newPlayer.x = player->x;
+        newPlayer.y = player->y;
+        newPlayer.z = player->z;
+        newPlayer.rotation = player->rotation;
+        SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(newPlayer);
+        if (auto session = player->ownerSession.lock())
+            session->Send(sendBuffer);
     }
 
     // 기존 플레이어들에게 신입 플레이어 정보 전송

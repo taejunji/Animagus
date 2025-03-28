@@ -21,7 +21,7 @@ public:
     ANetworkCharacter();
     virtual void Tick(float DeltaTime) override;
 
-    void SetPlayerID(uint16 p_id) { player_id = p_id; };
+    void SetPlayerID(uint16 p_id) { PlayerId = p_id; };
     void SetPlayerType(Protocol::PlayerType type) { PlayerType = type; }
 
 protected:

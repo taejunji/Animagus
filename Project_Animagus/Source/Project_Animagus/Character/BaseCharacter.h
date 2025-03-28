@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "../Server/Server/protocol.h"
 #include "BaseCharacter.generated.h"
 
 /*

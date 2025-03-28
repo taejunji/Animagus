@@ -34,6 +34,7 @@ public:
 
     static SendBufferRef MakeSendBuffer(DCS_TEST_PKT& pkt) { return MakeSendBuffer(pkt, (uint16)PacketID::DCS_TEST); }
     static SendBufferRef MakeSendBuffer(SC_SPAWN_PKT& pkt) { return MakeSendBuffer(pkt, (uint16)PacketID::SC_SPAWN); }
+    static SendBufferRef MakeSendBuffer(SC_ENTER_GAME_PKT& pkt) { return MakeSendBuffer(pkt, (uint16)PacketID::SC_ENTER_GAME); }
     static SendBufferRef MakeSendBuffer(CS_MOVE_PKT& pkt) { return MakeSendBuffer(pkt, (uint16)PacketID::CS_MOVE); }
 
 private:

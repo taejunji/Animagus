@@ -163,6 +163,15 @@ void UMyGameInstance::PrintGameInstanceData()
 }
 
 
+void UMyGameInstance::HandleEnterGame(Protocol::SC_ENTER_GAME_PKT& pkt)
+{
+    if (Socket == nullptr || ClientSession == nullptr)
+        return;
+    
+    SetMyPlayerIndex(pkt.player_id);
+
+}
+
 // InstanceHandlePacket
 void UMyGameInstance::HandleSpawn(Protocol::SC_SPAWN_PKT& pkt)
 {

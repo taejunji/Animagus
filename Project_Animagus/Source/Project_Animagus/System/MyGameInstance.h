@@ -85,7 +85,11 @@ public:
 
 
 public:
+    void HandleEnterGame(Protocol::SC_ENTER_GAME_PKT& pkt);
     void HandleSpawn(Protocol::SC_SPAWN_PKT& pkt);
+
+    void SetMyPlayerIndex(uint16 playerIndex) { MyPlayerIndex = playerIndex; }
+    uint16 GetMyPlayerIndex() { return MyPlayerIndex; }
 
 public:
     // AI 캐릭터
@@ -98,4 +102,5 @@ public:
     FString IpAddress = TEXT("127.0.0.1");
     int16 Port = 7777;
     TSharedPtr<class Session> ClientSession;
+    uint16 MyPlayerIndex = 0;
 };

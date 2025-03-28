@@ -2,7 +2,7 @@
 
 namespace Protocol {
 
-    enum class PlayerType
+    enum class PlayerType : uint16
     {
         NONE,
         TIGER,
@@ -11,7 +11,7 @@ namespace Protocol {
         KOALA,
     };
 
-    enum class SkillType
+    enum class SkillType : uint16
     {
         HEAL,           // 힐
         ENERGYWAVE,     // 에너지파
@@ -27,7 +27,7 @@ namespace Protocol {
         THUNDERSTRIKE,  // 천둥
     };
 
-    enum class StatusType
+    enum class StatusType : uint16
     {
         Health,         // 체력
         AttackDamage,   // 공격력
@@ -35,7 +35,7 @@ namespace Protocol {
         AbilityHaste,   // 스킬가속
     };
 
-    enum class PlayerState
+    enum class PlayerState : uint16
     {
         MOVE_STATE_NONE,
         MOVE_STATE_IDLE,
@@ -110,7 +110,8 @@ namespace Protocol {
     struct SC_ENTER_GAME_PKT
     {
         uint16 player_id;
-        PlayerType p_type;
+        float x, y, z;
+        float rotation;
     };
     struct SC_LEAVE_PKT
     {   // 로비로 보내기

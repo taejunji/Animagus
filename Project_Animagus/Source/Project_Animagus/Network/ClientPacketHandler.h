@@ -15,6 +15,7 @@ extern PacketHandlerFunc GClientPacketHandler[UINT16_MAX];
 
 bool Handle_INVALID(SessionRef& session, BYTE* buffer, int32 len);
 bool Handle_DCS_TEST(SessionRef& session, Protocol::DCS_TEST_PKT& pkt);
+bool Handle_SC_ENTER_GAME_PKT(SessionRef& session, Protocol::SC_ENTER_GAME_PKT& pkt);
 bool Handle_SC_SPAWN_PKT(SessionRef& session, Protocol::SC_SPAWN_PKT& pkt);
 
 class ClientPacketHandler
@@ -24,6 +25,7 @@ public:
     {
         for (uint16 i = 0; i < UINT16_MAX; ++i) GClientPacketHandler[i] = Handle_INVALID;
         GClientPacketHandler[(int32)Protocol::PacketID::DCS_TEST] = [](SessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<Protocol::DCS_TEST_PKT>(Handle_DCS_TEST, session, buffer, len); };
+        GClientPacketHandler[(int32)Protocol::PacketID::SC_ENTER_GAME] = [](SessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<Protocol::SC_ENTER_GAME_PKT>(Handle_SC_ENTER_GAME_PKT, session, buffer, len); };
         GClientPacketHandler[(int32)Protocol::PacketID::SC_SPAWN] = [](SessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<Protocol::SC_SPAWN_PKT>(Handle_SC_SPAWN_PKT, session, buffer, len); };
 
     }

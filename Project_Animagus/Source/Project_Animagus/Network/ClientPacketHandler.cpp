@@ -24,6 +24,16 @@ bool Handle_DCS_TEST(SessionRef& session, Protocol::DCS_TEST_PKT& pkt)
     return true;
 }
 
+bool Handle_SC_ENTER_GAME_PKT(SessionRef& session, Protocol::SC_ENTER_GAME_PKT& pkt)
+{
+    if (auto* GameInstance = Cast<UMyGameInstance>(GWorld->GetGameInstance()))
+    {
+        GameInstance->HandleEnterGame(pkt);
+    }
+
+    return true;
+}
+
 bool Handle_SC_SPAWN_PKT(SessionRef& session, Protocol::SC_SPAWN_PKT& pkt)
 {   // TEMP : 기존 플레이어 or 신입 플레이어 스폰해줘야 함
 
