@@ -216,6 +216,8 @@ void ABattleGameMode::SpawnPlayers()
         }
 
         SpawnedPlayers.Add(AIChar);
+        //uint16 AIId = 101;
+        //SpawnedPlayers.Add(AIId, AIChar);
     }
 }
 

@@ -72,8 +72,6 @@ public:
     bool GetIsHardHit() const { return bIsStunned; }
     float GetMax_Hp() const { return max_hp; }
 
-    Protocol::PlayerType GetPlayerType() { return PlayerType; }
-
     virtual float TakeDamage(
         float DamageAmount,
         struct FDamageEvent const& DamageEvent,
@@ -131,9 +129,16 @@ public:
     UFUNCTION()
     virtual void RemoveStun();
     
+public:
+    Protocol::PlayerType GetPlayerType() { return PlayerType; }
+    uint16 GetPlayerId() { return PlayerId; }
+    Protocol::PlayerState GetMoveState() { return PlayerState; }
+    void SetMoveState(Protocol::PlayerState state) { PlayerState = state; }
+
 protected:
-    uint16 player_id;
+    uint16 PlayerId = -1;
     Protocol::PlayerType PlayerType = Protocol::PlayerType::RAM;
+    Protocol::PlayerState PlayerState = Protocol::PlayerState::MOVE_STATE_NONE;
 };
 
 // Called to bind functionality to input

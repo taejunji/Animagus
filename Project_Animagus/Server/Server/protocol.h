@@ -42,7 +42,9 @@ namespace Protocol {
         MOVE_STATE_RUN,
         MOVE_STATE_JUMP,
         MOVE_STATE_STUN,
+        MOVE_STATE_HIT,
         MOVE_STATE_SKILL,
+        MOVE_STATE_DEAD,
     };
 
     enum class PacketID : uint16

@@ -16,6 +16,10 @@
 #include "Project_Animagus/Skill/SmokeSkill.h"
 #include "Project_Animagus/Skill/Stun.h"
 
+#include "../Server/Server/protocol.h"
+#include "../Network/Session.h"
+#include "../Network/ClientPacketHandler.h"
+
 ABaseCharacter::ABaseCharacter()
 {
 	PrimaryActorTick.bCanEverTick = true;

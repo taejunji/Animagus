@@ -68,13 +68,14 @@ void AAttractionZone::UpdateAttractionParameters(float DeltaTime)
 		return;
 	}
 
-	if (!BM->SpawnedPlayers.IsValidIndex(ControlledPlayerIndex))
-	{
+	//if (!BM->SpawnedPlayers.Contains(ControlledPlayerIndex))
+    if (!BM->SpawnedPlayers.IsValidIndex(ControlledPlayerIndex))
+    {
 		// UE_LOG(LogTemp, Warning, TEXT("AttractionZone: Invalid ControlledPlayerIndex %d"), ControlledPlayerIndex);
 		return;
 	}
 
-	AActor* PlayerActor = BM->SpawnedPlayers[ControlledPlayerIndex];
+	AActor* PlayerActor = reinterpret_cast<AActor*>(BM->SpawnedPlayers[ControlledPlayerIndex]);
 	if (!PlayerActor)
 		return;
 

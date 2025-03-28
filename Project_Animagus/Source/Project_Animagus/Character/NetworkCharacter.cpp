@@ -7,7 +7,7 @@
 #include "GameFramework/CharacterMovementComponent.h"
 
 
-using namespace Protocol;
+//using namespace Protocol;
 
 ANetworkCharacter::ANetworkCharacter()
 {
@@ -42,16 +42,16 @@ void ANetworkCharacter::InitPlayerMesh()
     {
         switch (PlayerType)
         {
-        case PlayerType::MONKEY:
+        case Protocol::PlayerType::MONKEY:
             if (GameInstance->CharacterMeshes.Contains(TEXT("SM_Monkey"))) GetMesh()->SetSkeletalMesh(GameInstance->CharacterMeshes[TEXT("SM_Monkey")]);
             break;
-        case PlayerType::TIGER:
+        case Protocol::PlayerType::TIGER:
             if (GameInstance->CharacterMeshes.Contains(TEXT("SM_Tiger"))) GetMesh()->SetSkeletalMesh(GameInstance->CharacterMeshes[TEXT("SM_Tiger")]);
             break;
-        case PlayerType::KOALA:
+        case Protocol::PlayerType::KOALA:
             if (GameInstance->CharacterMeshes.Contains(TEXT("SM_Koala"))) GetMesh()->SetSkeletalMesh(GameInstance->CharacterMeshes[TEXT("SM_Koala")]);
             break;
-        case PlayerType::RAM:
+        case Protocol::PlayerType::RAM:
             if (GameInstance->CharacterMeshes.Contains(TEXT("SM_Sheep"))) GetMesh()->SetSkeletalMesh(GameInstance->CharacterMeshes[TEXT("SM_Sheep")]);
             break;
         default:
