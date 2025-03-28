@@ -40,6 +40,20 @@ protected:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Battle Settings")
     TMap<int32, FTransform> spawn_transform;
 
+    // 현재 카운트다운 시간
+    float CurrentCountdownTime;
+
+    // 현재 라운드 진행 시간 (카운트다운 종료 후)
+    float CurrentRoundTime;
+
+    // 타이머 핸들들
+    FTimerHandle CountdownTimerHandle;
+    FTimerHandle RoundTimerHandle;
+
+    // 타이머 업데이트 함수
+    void CountdownTimerUpdate();
+    void RoundTimerUpdate();
+    
 private:
     // BP_AI 애셋
     TSubclassOf<class AAIController> AIControllerClass;

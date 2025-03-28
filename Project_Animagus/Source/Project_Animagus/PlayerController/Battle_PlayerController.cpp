@@ -126,6 +126,16 @@ void ABattle_PlayerController::Tick(float DeltaTime)
                     float CooldownPercent = MyPlayer->Skills[i]->GetCooldownPercent();
                     PlayerHUD->UpdateSkillCooldown(i, CooldownPercent);
                 }
+
+                if (MyPlayer->Skills.IsValidIndex(i) && MyPlayer->Skills[i])
+                {
+                    UTexture2D* Icon = MyPlayer->Skills[i]->SkillIcon;
+                    if (PlayerHUD && i< 4)
+                    {
+                        PlayerHUD->UpdateSkillIcon(i, Icon);
+                    }
+                }
+                
             }
         }
 
