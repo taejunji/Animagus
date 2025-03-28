@@ -37,7 +37,7 @@ void ANetworkCharacter::BeginPlay()
 }
 
 void ANetworkCharacter::InitPlayerMesh()
-{   // 메쉬 설정 어캐함요?
+{
     if (auto* GameInstance = Cast<UMyGameInstance>(GetGameInstance()))
     {
         switch (PlayerType)

@@ -190,6 +190,7 @@ void ABattleGameMode::SpawnPlayers()
     // "0"번 플레이어가 아닌 경우 AI 생성하지 않고 나가기
     if (PossessIndex != 0) return;
 
+    uint16 AIId = 101;
     // ** AI를 추가할 경우 -> 0번 플레이어만 만들 것임 ** AI 플레이어 수 설정
     for (int32 i = 1; i < 4; ++i)
     {
@@ -215,9 +216,8 @@ void ABattleGameMode::SpawnPlayers()
             AICtrl->SetIgnoreLookInput(true);
         }
 
-        SpawnedPlayers.Add(AIChar);
-        //uint16 AIId = 101;
-        //SpawnedPlayers.Add(AIId, AIChar);
+        //SpawnedPlayers.Add(AIChar);
+        SpawnedPlayers.Add(static_cast<int32>(AIId++), AIChar);
     }
 }
 
@@ -232,6 +232,8 @@ void ABattleGameMode::SpawnPlayer(Protocol::SC_SPAWN_PKT& pkt)
 
     // TODO : 플레이어 ID 중복체크
     uint16 p_id = pkt.player_id;
+    if (SpawnedPlayers.Find(static_cast<int32>(p_id)) == false) return;
+
     Protocol::PlayerType type = pkt.p_type;
 
     // 플레이어 스폰 데이터
@@ -246,7 +248,7 @@ void ABattleGameMode::SpawnPlayer(Protocol::SC_SPAWN_PKT& pkt)
         NewPlayer->SetPlayerID(p_id);
         NewPlayer->SetPlayerType(type);
 
-        SpawnedPlayers.Add(NewPlayer);
+        SpawnedPlayers.Add(static_cast<int32>(p_id), NewPlayer);
 
         UE_LOG(LogTemp, Log, TEXT("SpawnPlayer: Spawned player %d at (%f, %f, %f)"),
             pkt.player_id, SpawnLocation.X, SpawnLocation.Y, SpawnLocation.Z);
@@ -275,8 +277,9 @@ void ABattleGameMode::ActivateInput()
     if (PossessIndex != 0) return;
 
     // **AI들의 Behavior Tree 실행**
-    for (ABaseCharacter* Players : SpawnedPlayers)
+    for (auto& Item : SpawnedPlayers)
     {
+        ABaseCharacter* Players = Item.Value;
         if (AAICharacter* AICastedChar = Cast<AAICharacter>(Players))
         {
             AMyAIController* AICtrl = Cast<AMyAIController>(AICastedChar->GetController());

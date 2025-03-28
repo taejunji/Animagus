@@ -8,14 +8,14 @@
 #include "../Project_Animagus.h"
 #endif
 
-using namespace Protocol;
+//using namespace Protocol;
 
 using PacketHandlerFunc = std::function<bool(SessionRef&, BYTE*, int32)>;
 extern PacketHandlerFunc GClientPacketHandler[UINT16_MAX];
 
 bool Handle_INVALID(SessionRef& session, BYTE* buffer, int32 len);
-bool Handle_DCS_TEST(SessionRef& session, DCS_TEST_PKT& pkt);
-bool Handle_SC_SPAWN_PKT(SessionRef& session, SC_SPAWN_PKT& pkt);
+bool Handle_DCS_TEST(SessionRef& session, Protocol::DCS_TEST_PKT& pkt);
+bool Handle_SC_SPAWN_PKT(SessionRef& session, Protocol::SC_SPAWN_PKT& pkt);
 
 class ClientPacketHandler
 {
@@ -23,8 +23,8 @@ public:
     static void Init()
     {
         for (uint16 i = 0; i < UINT16_MAX; ++i) GClientPacketHandler[i] = Handle_INVALID;
-        GClientPacketHandler[(int32)PacketID::DCS_TEST] = [](SessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<DCS_TEST_PKT>(Handle_DCS_TEST, session, buffer, len); };
-        GClientPacketHandler[(int32)PacketID::SC_SPAWN] = [](SessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<SC_SPAWN_PKT>(Handle_SC_SPAWN_PKT, session, buffer, len); };
+        GClientPacketHandler[(int32)Protocol::PacketID::DCS_TEST] = [](SessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<Protocol::DCS_TEST_PKT>(Handle_DCS_TEST, session, buffer, len); };
+        GClientPacketHandler[(int32)Protocol::PacketID::SC_SPAWN] = [](SessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<Protocol::SC_SPAWN_PKT>(Handle_SC_SPAWN_PKT, session, buffer, len); };
 
     }
 
@@ -35,10 +35,10 @@ public:
         return GClientPacketHandler[(int32)header->id](session, buffer, len);
     }
 
-    static SendBufferRef MakeSendBuffer(DCS_TEST_PKT& pkt) { return MakeSendBuffer(pkt, (uint16)PacketID::DCS_TEST); }
-    static SendBufferRef MakeSendBuffer(CS_LEAVE_PKT& pkt) { return MakeSendBuffer(pkt, (uint16)PacketID::CS_LEAVE); }
-    static SendBufferRef MakeSendBuffer(CS_ENTER_GAME_PKT& pkt) { return MakeSendBuffer(pkt, (uint16)PacketID::CS_ENTER_GAME); }
-    static SendBufferRef MakeSendBuffer(CS_MOVE_PKT& pkt) { return MakeSendBuffer(pkt, (uint16)PacketID::CS_MOVE); }
+    static SendBufferRef MakeSendBuffer(Protocol::DCS_TEST_PKT& pkt) { return MakeSendBuffer(pkt, (uint16)Protocol::PacketID::DCS_TEST); }
+    static SendBufferRef MakeSendBuffer(Protocol::CS_LEAVE_PKT& pkt) { return MakeSendBuffer(pkt, (uint16)Protocol::PacketID::CS_LEAVE); }
+    static SendBufferRef MakeSendBuffer(Protocol::CS_ENTER_GAME_PKT& pkt) { return MakeSendBuffer(pkt, (uint16)Protocol::PacketID::CS_ENTER_GAME); }
+    static SendBufferRef MakeSendBuffer(Protocol::CS_MOVE_PKT& pkt) { return MakeSendBuffer(pkt, (uint16)Protocol::PacketID::CS_MOVE); }
 
 
 private:

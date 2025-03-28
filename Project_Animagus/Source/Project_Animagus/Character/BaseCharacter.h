@@ -130,9 +130,9 @@ public:
     virtual void RemoveStun();
     
 public:
-    Protocol::PlayerType GetPlayerType() { return PlayerType; }
-    uint16 GetPlayerId() { return PlayerId; }
-    Protocol::PlayerState GetMoveState() { return PlayerState; }
+    Protocol::PlayerType GetPlayerType() const { return PlayerType; }
+    uint16 GetPlayerId() const { return PlayerId; }
+    Protocol::PlayerState GetMoveState() const { return PlayerState; }
     void SetMoveState(Protocol::PlayerState state) { PlayerState = state; }
 
 protected:

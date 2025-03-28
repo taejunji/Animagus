@@ -102,7 +102,8 @@ bool Room::HandleLeavePlayer(PlayerRef player)
 {
     std::lock_guard lock(m_mutex);
 
-    bool success = Leave(player->playerID);
+    uint16 p_id = player->playerID;
+    bool success = Leave(p_id);
 
     // 다른 플레이어에게 해당 플레이어 퇴장 알림
     {
@@ -113,4 +114,27 @@ bool Room::HandleLeavePlayer(PlayerRef player)
     }
 
     return success;
+}
+
+bool Room::HandleMoveLocked(Protocol::CS_MOVE_PKT& pkt)
+{
+    std::lock_guard lock(m_mutex);
+
+    const uint64 playerId = pkt.player_info.player_id;
+    if (m_players.find(playerId) == m_players.end())
+        return false;
+
+    // 적용
+    PlayerInfo info = pkt.player_info;
+    PlayerRef& player = m_players[playerId];
+    player->x = info.x; player->y = info.y; player->z = info.z;
+    player->rotation = info.rotation;
+
+    std::cout << info.x << " " << info.y << " " << info.z << std::endl;
+    
+    // 이동 
+    SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(pkt);
+    Broadcast(sendBuffer, playerId);
+
+    return true;
 }

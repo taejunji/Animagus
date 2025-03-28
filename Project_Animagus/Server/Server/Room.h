@@ -11,6 +11,7 @@ public:
 public:
     bool HandleEnterPlayer(PlayerRef player);
     bool HandleLeavePlayer(PlayerRef player);
+    bool HandleMoveLocked(Protocol::CS_MOVE_PKT& pkt);
 
 public:
     uint16 GetPlayerCount() { return m_playerCount; }   // 사람 수 받을 때 동기화 작업 필요

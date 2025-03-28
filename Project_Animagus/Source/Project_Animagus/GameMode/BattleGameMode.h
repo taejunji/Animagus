@@ -56,8 +56,8 @@ private:
 public:   
     // 스폰된 플레이어 캐릭터들을 저장할 배열
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Spawning", meta = (AllowPrivateAccess = "true"))
-    TArray<ABaseCharacter*> SpawnedPlayers;
-    //TMap<uint16, ABaseCharacter*> SpawnedPlayers;
+    TMap<int32, ABaseCharacter*> SpawnedPlayers;
+    //TArray<ABaseCharacter*> SpawnedPlayers;
 
     // 플레이어 스폰 위치 배열 (에디터에서 조절 가능)
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category= "Spawning", meta = (AllowPrivateAccess = "true"))
