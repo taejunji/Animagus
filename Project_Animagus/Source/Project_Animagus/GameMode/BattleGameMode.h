@@ -65,7 +65,9 @@ private:
 
     void InitBattleMode();
     void PrintElapsedtime();
- 
+
+public:
+    void SetPlayerIndex(uint16 playerIndex);
 
 public:   
     // 스폰된 플레이어 캐릭터들을 저장할 배열

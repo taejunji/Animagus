@@ -135,9 +135,10 @@ public:
     uint16 GetPlayerId() const { return PlayerId; }
     Protocol::PlayerState GetMoveState() const { return PlayerState; }
     void SetMoveState(Protocol::PlayerState state) { PlayerState = state; }
+    void SetPlayerId(uint16 playerId) { PlayerId = playerId; }
 
 protected:
-    uint16 PlayerId = -1;
+    uint16 PlayerId = 0;
     Protocol::PlayerType PlayerType = Protocol::PlayerType::RAM;
     Protocol::PlayerState PlayerState = Protocol::PlayerState::MOVE_STATE_NONE;
 };

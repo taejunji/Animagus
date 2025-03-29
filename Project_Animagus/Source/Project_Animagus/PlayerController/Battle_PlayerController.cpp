@@ -178,6 +178,8 @@ void ABattle_PlayerController::Tick(float DeltaTime)
                 MovePkt.player_info = Info;
             }
 
+            //UE_LOG(LogTemp, Warning, TEXT("PlayerInfo Send"));
+
             SendBufferRef SendBuffer = ClientPacketHandler::MakeSendBuffer(MovePkt);
             Cast<UMyGameInstance>(GWorld->GetGameInstance())->SendPacket(SendBuffer);
         }
@@ -190,6 +192,9 @@ void ABattle_PlayerController::Input_Move(const FInputActionValue& InputValue)
     FVector2D MoveInput = InputValue.Get<FVector2D>();
     // IMC에 연결된 Action이 행해지면 InputValue에서 값을 추출할 수 있다. 
     // Axis2D의 값 = 2D float => X는 앞뒤 이동, Y는 양옆 이동
+
+    DesiredInput = MoveInput;
+    DesiredMoveDirection = FVector::ZeroVector;
 
     if (MoveInput.X != 0)
     {
@@ -205,6 +210,8 @@ void ABattle_PlayerController::Input_Move(const FInputActionValue& InputValue)
         FRotator Rotator = GetControlRotation();
         FVector Direction = UKismetMathLibrary::GetForwardVector(FRotator(0, Rotator.Yaw, 0));
         GetPawn()->AddMovementInput(Direction, MoveInput.X);
+
+        DesiredMoveDirection += Direction * MoveInput.Y;
     }
 
     if (MoveInput.Y != 0)
@@ -212,7 +219,19 @@ void ABattle_PlayerController::Input_Move(const FInputActionValue& InputValue)
         FRotator Rotator = GetControlRotation();
         FVector Direction = UKismetMathLibrary::GetRightVector(FRotator(0, Rotator.Yaw, 0));
         GetPawn()->AddMovementInput(Direction, MoveInput.Y);
+
+        DesiredMoveDirection += Direction * MoveInput.X;
     }
+
+    DesiredMoveDirection.Normalize();
+
+    if (auto* MyPlayer = Cast<APlayerCharacter>(GetPawn()))
+    {
+        const FVector Location = MyPlayer->GetActorLocation();
+        FRotator Rotator = UKismetMathLibrary::FindLookAtRotation(Location, Location + DesiredMoveDirection);
+        DesiredYaw = Rotator.Yaw;
+    }
+
 }
 
 void ABattle_PlayerController::Input_Rotate(const FInputActionValue& InputValue)

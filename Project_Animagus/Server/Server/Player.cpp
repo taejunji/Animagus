@@ -4,7 +4,7 @@
 #include "Player.h"
 
 
-std::atomic<int64> PlayerFactory::s_idGenerator = 1;
+std::atomic<int64> PlayerFactory::s_idGenerator = 0;
 
 PlayerRef PlayerFactory::CreatePlayer(SessionRef session)
 {

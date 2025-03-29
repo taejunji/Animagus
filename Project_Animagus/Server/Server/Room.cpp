@@ -29,7 +29,7 @@ bool Room::Leave(uint16 playerID)
         return false;
 
     PlayerRef player = m_players[playerID];
-    player->room.store(std::weak_ptr<Room>());
+    player->room.store(shared_from_this());
 
     m_players.erase(playerID);
     m_playerCount--;
@@ -129,8 +129,11 @@ bool Room::HandleMoveLocked(Protocol::CS_MOVE_PKT& pkt)
     std::lock_guard lock(m_mutex);
 
     const uint64 playerId = pkt.player_info.player_id;
+    //std::cout << "Move PlayerID: " << playerId << std::endl;
     if (m_players.find(playerId) == m_players.end())
         return false;
+
+    //std::cout << "Handle Move" << std::endl;
 
     // 적용
     PlayerInfo info = pkt.player_info;
@@ -138,7 +141,7 @@ bool Room::HandleMoveLocked(Protocol::CS_MOVE_PKT& pkt)
     player->x = info.x; player->y = info.y; player->z = info.z;
     player->rotation = info.rotation;
 
-    std::cout << info.x << " " << info.y << " " << info.z << std::endl;
+    //std::cout << info.x << " " << info.y << " " << info.z << std::endl;
     
     // 이동 
     SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(pkt);

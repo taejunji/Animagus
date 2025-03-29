@@ -8,6 +8,7 @@
 #include "UObject/ConstructorHelpers.h"
 #include "../AI/MyAIController.h"
 #include "../Character/AICharacter.h"
+#include "../Character/PlayerCharacter.h"
 #include "../PlayerController/Battle_PlayerController.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "../Character/NetworkCharacter.h"
@@ -98,7 +99,7 @@ void ABattleGameMode::InitBattleMode()
         // 1초마다 경과시간 호출 함수 타이머 설정
         // GetWorld()->GetTimerManager().SetTimer(battle_timer_handle, this, &ABattleGameMode::PrintElapsedtime, 1.0f, true); 
 
-        // 서버에 배틀모드 입장 알림
+        // TDOO: 서버에 배틀모드 입장 알림
 
         CurrentCountdownTime = start_time;
         CurrentRoundTime = 0.0f;
@@ -323,6 +324,20 @@ void ABattleGameMode::PrintElapsedtime()
             MyGameInstance->round_count++;
         }
         MyGameInstance->PrintGameInstanceData(); 
+    }
+}
+
+void ABattleGameMode::SetPlayerIndex(uint16 playerIndex)
+{
+    PossessIndex = static_cast<int32>(playerIndex);
+
+    APlayerController* PC = UGameplayStatics::GetPlayerController(GetWorld(), 0);
+    if (PC)
+    {
+        if (APlayerCharacter* MyPlayer = Cast<APlayerCharacter>(PC->GetPawn()))
+        {
+            MyPlayer->SetPlayerId(playerIndex);
+        }
     }
 }
 

@@ -3,7 +3,10 @@
 #include "MyGameInstance.h"
 #include "Kismet/GameplayStatics.h"
 #include "../Character/AICharacter.h"
+#include "../Character/PlayerCharacter.h"
 #include "../Project_Animagus.h"
+#include "GameFramework/PlayerController.h"
+#include "Kismet/GameplayStatics.h"
 
 #include "Sockets.h"
 #include "Common/TcpSocketBuilder.h"
@@ -168,8 +171,9 @@ void UMyGameInstance::HandleEnterGame(Protocol::SC_ENTER_GAME_PKT& pkt)
     if (Socket == nullptr || ClientSession == nullptr)
         return;
     
-    SetMyPlayerIndex(pkt.player_id);
+    UE_LOG(LogTemp, Warning, TEXT("PlayerIndex: %d"), pkt.player_id);
 
+    SetMyPlayerIndex(pkt.player_id);
 }
 
 // InstanceHandlePacket
@@ -189,6 +193,57 @@ void UMyGameInstance::HandleSpawn(Protocol::SC_SPAWN_PKT& pkt)
         if (GameMode)
         {
             GameMode->SpawnPlayer(pkt);
+        }
+    }
+}
+
+void UMyGameInstance::HandleMove(Protocol::CS_MOVE_PKT& pkt)
+{
+    if (Socket == nullptr || ClientSession == nullptr)
+        return;
+
+    auto* World = GetWorld();
+    if (World == nullptr)
+        return;
+
+    AGameModeBase* BaseGameMode = UGameplayStatics::GetGameMode(World);
+    if (BaseGameMode)
+    {
+        ABattleGameMode* GameMode = Cast<ABattleGameMode>(BaseGameMode);
+        if (GameMode)
+        {
+            const uint16 playerId = pkt.player_info.player_id;
+            if (GameMode->SpawnedPlayers.Find(playerId) == nullptr)
+                return;
+
+            if (playerId == GameMode->PossessIndex)
+                return;
+
+            Protocol::PlayerInfo Info = pkt.player_info;
+            FVector Location(Info.x, Info.y, Info.z);
+            FRotator Rotation(0, Info.rotation, 0);
+
+            GameMode->SpawnedPlayers[playerId]->SetActorLocation(Location);
+            GameMode->SpawnedPlayers[playerId]->SetActorRotation(Rotation);
+        }
+    }
+}
+
+void UMyGameInstance::SetMyPlayerIndex(uint16 playerIndex)
+{
+    MyPlayerIndex = playerIndex;
+
+    auto* World = GetWorld();
+    if (World == nullptr)
+        return;
+
+    AGameModeBase* BaseGameMode = UGameplayStatics::GetGameMode(World);
+    if (BaseGameMode)
+    {
+        ABattleGameMode* GameMode = Cast<ABattleGameMode>(BaseGameMode);
+        if (GameMode)
+        {
+            GameMode->SetPlayerIndex(MyPlayerIndex);
         }
     }
 }

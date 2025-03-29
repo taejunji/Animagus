@@ -44,3 +44,13 @@ bool Handle_SC_SPAWN_PKT(SessionRef& session, Protocol::SC_SPAWN_PKT& pkt)
 
     return true;
 }
+
+bool Handle_CS_MOVE_PKT(SessionRef& session, Protocol::CS_MOVE_PKT& pkt)
+{
+    if (auto* GameInstance = Cast<UMyGameInstance>(GWorld->GetGameInstance()))
+    {
+        GameInstance->HandleMove(pkt);
+    }
+
+    return true;
+}
