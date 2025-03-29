@@ -24,5 +24,5 @@ bool UBTDecorator_DistanceCheck::CalculateRawConditionValue(UBehaviorTreeCompone
     FVector PatrolPos = BlackboardComp->GetValueAsVector(patrol_pos_key.SelectedKeyName);
     float Distance = FVector::Dist(AIPawn->GetActorLocation(), PatrolPos);
 
-    return Distance < reset_range; // reset_range 이하이면 도착한 것으로 판별하고 다시 reset
+    return Distance <= reset_range; // reset_range 이하이면 도착한 것으로 판별하고 다시 reset
 }

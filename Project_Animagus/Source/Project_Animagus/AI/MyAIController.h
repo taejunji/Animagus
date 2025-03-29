@@ -84,11 +84,19 @@ public:
     UPROPERTY(EditAnywhere, Category = "Blackboard")
     FBlackboardKeySelector DefendRadiusKey;
 
+    UPROPERTY(EditAnywhere, Category = "Blackboard")
+    FBlackboardKeySelector AttackRadiusKey;
+
+    
+    bool bCanChangeTarget = true; // 타겟 변경 가능 여부
+    FTimerHandle TargetChangeTimerHandle; // 타겟 변경 타이머
+
     // AI Perception Component
     UPROPERTY(VisibleAnywhere)
     class UAIPerceptionComponent* AIPerceptionComponent;
 
     TSet<AActor*> SensedActors; // 현재 감지된 액터 목록
+    TSet<AActor*> LostTargets; // 현재 감지된 액터 목록
 
 public:
     void StartBehaviorTree();
@@ -105,4 +113,11 @@ public:
 
     struct FAIStimulus CanSenseActor(AActor* Actor, EAIPerceptionSense AIPerceptionSense);
     void HandleSensedSight(AActor* Actor, bool bSensed, FAIStimulus Stimulus);
+
+    float CalculateTargetPriority(class ABaseCharacter* TargetCharacter);
+    void ResetTargetChange();
+    void RememberLostTarget(AActor* Target);
+    void RemoveLostTarget(AActor* Target);
+    ABaseCharacter* SelectBestTarget(const TSet<AActor*>& Candidates);
+    void SetAITarget(ABaseCharacter* NewTarget);
 };

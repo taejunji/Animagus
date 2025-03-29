@@ -10,7 +10,7 @@
 #include "BehaviorTree/BlackboardData.h"
 
 #include "Navigation/PathFollowingComponent.h"
-#include "../Character/AICharacter.h"
+#include "../Character/BaseCharacter.h"
 #include "TimerManager.h"
 
 #include "Perception/AIPerceptionComponent.h"
@@ -63,7 +63,10 @@ void AMyAIController::BeginPlay()
             // BlackboardPtr->SetValueAsEnum(AIStateKey.SelectedKeyName, static_cast<uint8>(EAIState::Patrol));
 
             DefendRadiusKey.SelectedKeyName = FName(TEXT("DefendRadius"));
-            BlackboardPtr->SetValueAsFloat(DefendRadiusKey.SelectedKeyName, 350.f);
+            BlackboardPtr->SetValueAsFloat(DefendRadiusKey.SelectedKeyName, 600.f); // 350
+
+            AttackRadiusKey.SelectedKeyName = FName(TEXT("AttackRadius"));
+            BlackboardPtr->SetValueAsFloat(AttackRadiusKey.SelectedKeyName, 600.f);
         }
 
         if (AIPerceptionComponent) 
@@ -139,7 +142,7 @@ void AMyAIController::Tick(float DeltaTime)
 {
     Super::Tick(DeltaTime);
 
-    AAICharacter* AI = Cast<AAICharacter>(GetPawn());
+    ABaseCharacter* AI = Cast<ABaseCharacter>(GetPawn());
     if (AI == nullptr) return;
     
     UBlackboardComponent* BlackboardComponent = GetBlackboardComponent();
@@ -151,6 +154,7 @@ void AMyAIController::Tick(float DeltaTime)
         if (UBehaviorTreeComponent* BehaviorTreeComponent = Cast<UBehaviorTreeComponent>(BrainComponent))
         {
             SetControlMode(AIControlMode::AIController);
+            ClearFocus(EAIFocusPriority::Gameplay);  // Focus 해제
             BehaviorTreeComponent->StopTree(); 
         }
     }
@@ -229,20 +233,21 @@ void AMyAIController::CheckAndDisableTargetIfDead()
 
 void AMyAIController::OnPerceptionUpdated(const TArray<AActor*>& UpdatedActors)
 {
-    TSet<AActor*> NewlySensedActors; 
+    if (bCanChangeTarget == false) return; // 타겟 변경이 불가능한 경우 나가기
 
+    TSet<AActor*> NewlySensedActors; 
+    TSet<AActor*> CandidateTargets; // 후보군 타겟들을 저장할 집합 (중복 방지) 
     FAIStimulus AIStimulus;
 
     for (AActor* UpdatedActor : UpdatedActors)
     {        
         // 시각 감지
         AIStimulus = CanSenseActor(UpdatedActor, EAIPerceptionSense::EPS_Sight);
-        bool bSensed = AIStimulus.WasSuccessfullySensed();
-
-        if (bSensed) 
+        if (AIStimulus.WasSuccessfullySensed())
         {
             NewlySensedActors.Add(UpdatedActor); 
-            HandleSensedSight(UpdatedActor, bSensed, AIStimulus);
+            CandidateTargets.Add(UpdatedActor);
+            // HandleSensedSight(UpdatedActor, true, AIStimulus);
         }
 
         // 청각 감지
@@ -260,17 +265,29 @@ void AMyAIController::OnPerceptionUpdated(const TArray<AActor*>& UpdatedActors)
         }
     }
 
-    // 기존에 감지된 액터 중에서 더 이상 감지되지 않는 액터 찾기
+    // 기존 감지 목록에서 사라진 액터 처리
     for (AActor* PreviouslySensedActor : SensedActors)
     {
         if (!NewlySensedActors.Contains(PreviouslySensedActor))
         {
-            HandleSensedSight(PreviouslySensedActor, false, AIStimulus);
+            RememberLostTarget(PreviouslySensedActor);
         }
     }
 
     // 현재 감지된 액터 목록 업데이트
     SensedActors = NewlySensedActors;
+
+    // 🔥 사라진 타겟도 후보군에 추가
+    for (AActor* LostTarget : LostTargets)
+    { 
+        CandidateTargets.Add(LostTarget); 
+    }
+
+    // 후보군에서 최적 타겟 선택
+    ABaseCharacter* BestTarget = SelectBestTarget(CandidateTargets); 
+
+    // 타겟 설정
+    SetAITarget(BestTarget); 
 }
 
 FAIStimulus AMyAIController::CanSenseActor(AActor* Actor, EAIPerceptionSense AIPerceptionSense)
@@ -329,9 +346,10 @@ void AMyAIController::HandleSensedSight(AActor* Actor, bool bSensed, FAIStimulus
 
     ABaseCharacter* TargetCharacter = Cast<ABaseCharacter>(Actor);
     if (TargetCharacter == nullptr) return;
-
-    if (TargetCharacter->GetIsDead() || bSensed == false)
-    {         
+     
+    if (TargetCharacter->GetIsDead()) 
+    {
+        LostTargets.Remove(TargetCharacter);  
         ClearFocus(EAIFocusPriority::Gameplay); 
         GetBlackboardComponent()->ClearValue(TargetKey.SelectedKeyName); 
     }
@@ -341,7 +359,87 @@ void AMyAIController::HandleSensedSight(AActor* Actor, bool bSensed, FAIStimulus
         //SetFocus(TargetCharacter);
         GetBlackboardComponent()->SetValueAsObject(TargetKey.SelectedKeyName, TargetCharacter);
     }
+}
 
-    FString DebugMessage = FString::Printf(TEXT("Target %s"), bSensed ? TEXT("시야에 포착됐다") : TEXT("시야에 없어졌다"));
-    GEngine->AddOnScreenDebugMessage(-1, 1.0f, bSensed ? FColor::Purple : FColor::Red, DebugMessage);
+float AMyAIController::CalculateTargetPriority(ABaseCharacter* TargetCharacter) 
+{
+    const float DistanceWeight = 1.0f; 
+    const float HPWeight = 0.5f; 
+
+    if (!IsValid(GetPawn()) || !IsValid(TargetCharacter)) return FLT_MAX; // 기본 우선순위 반환 
+    // 1. 가장 가까운 적 (거리 계산)
+    float Distance = FVector::Dist(GetPawn()->GetActorLocation(), TargetCharacter->GetActorLocation());
+
+    // 2. 자신을 때린 적 (혹은 해당 조건)
+    //if (TargetCharacter->HasRecentlyAttacked(GetPawn()))
+    //{
+    //    Priority -= 50.0f; // 자신을 때린 적에게 우선순위 부여
+    //}
+
+    // 3. HP가 적은 적
+    float HP = TargetCharacter->GetHP();
+
+    return (Distance * DistanceWeight) + (HP * HPWeight); 
+}
+
+void AMyAIController::ResetTargetChange()
+{
+    bCanChangeTarget = true;
+}
+
+
+void AMyAIController::RememberLostTarget(AActor* Target)
+{
+    //if (!Target || LostTargets.Contains(Target)) return;
+
+    //LostTargets.Add(Target);
+
+    //// 3초 후 제거하는 타이머 설정
+    //FTimerDelegate TimerDel;
+    //TimerDel.BindUObject(this, &AMyAIController::RemoveLostTarget, Target);
+
+    //GetWorld()->GetTimerManager().SetTimer(LostTargetTimers[Target], TimerDel, 3.0f, false);
+}
+
+void AMyAIController::RemoveLostTarget(AActor* Target)
+{
+    //LostTargets.Remove(Target);
+    //LostTargetTimers.Remove(Target);
+}
+
+ABaseCharacter* AMyAIController::SelectBestTarget(const TSet<AActor*>& Candidates)
+{
+    ABaseCharacter* BestTarget = nullptr;
+    float BestPriority = FLT_MAX;
+
+    for (AActor* Candidate : Candidates)
+    {
+        ABaseCharacter* CandidateCharacter = Cast<ABaseCharacter>(Candidate);
+        if (!CandidateCharacter) continue;
+
+        float CurrentPriority = CalculateTargetPriority(CandidateCharacter);
+        if (CurrentPriority < BestPriority)
+        {
+            BestPriority = CurrentPriority;
+            BestTarget = CandidateCharacter;
+        }
+    }
+
+    return BestTarget;
+}
+
+void AMyAIController::SetAITarget(ABaseCharacter* NewTarget)
+{
+    if (NewTarget)
+    {
+        GetBlackboardComponent()->SetValueAsObject(TargetKey.SelectedKeyName, NewTarget);
+
+        // 3초 동안 타겟 변경 불가능
+        bCanChangeTarget = false;
+        GetWorld()->GetTimerManager().SetTimer(TargetChangeTimerHandle, this, &AMyAIController::ResetTargetChange, 3.0f, false);
+    }
+    else
+    {
+        GetBlackboardComponent()->ClearValue(TargetKey.SelectedKeyName);
+    }
 }

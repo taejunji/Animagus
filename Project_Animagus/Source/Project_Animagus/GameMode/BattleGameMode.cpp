@@ -109,7 +109,7 @@ void ABattleGameMode::SpawnPlayers()
         return;
     }
     
-
+#if 0
     APlayerController* PC = UGameplayStatics::GetPlayerController(World, 0);
     if (PC)
     {
@@ -184,7 +184,7 @@ void ABattleGameMode::SpawnPlayers()
     {
         UE_LOG(LogTemp, Warning, TEXT("BattleGameMode: PossessIndex %d가 유효하지 않음."), PossessIndex);
     }
-
+#endif
 
     // "0"번 플레이어가 아닌 경우 AI 생성하지 않고 나가기
     if (PossessIndex != 0) return;
