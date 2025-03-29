@@ -43,7 +43,7 @@ void UBTTaskNode_TurnToTarget::TickTask(UBehaviorTreeComponent& OwnerComp, uint8
     FRotator TargetRotation = (Target->GetActorLocation() - Character->GetActorLocation()).Rotation(); 
     TargetRotation.Pitch = 0.0f; // Y 축 회전(상하 방향) 무시 - Y축을 기준으로 앞뒤로 고개를 흔드는(상하로 기울어지는) 회전
 
-    FRotator NewRotation = FMath::RInterpTo(Character->GetActorRotation(), TargetRotation, DeltaSeconds, 10.f); 
+    FRotator NewRotation = FMath::RInterpTo(Character->GetActorRotation(), TargetRotation, DeltaSeconds, 35.f); 
 
     Character->SetActorRotation(NewRotation);
 
@@ -52,6 +52,8 @@ void UBTTaskNode_TurnToTarget::TickTask(UBehaviorTreeComponent& OwnerComp, uint8
     float YawDifference = FMath::Abs(FMath::FindDeltaAngleDegrees(Character->GetActorRotation().Yaw, TargetRotation.Yaw));
     if (YawDifference < 3.0f)
     {
+        //AIController->SetFocalPoint(Target->GetActorLocation() + FVector(0, 0, 50)); // 플레이어 중앙(50cm 위)를 바라보게 하기
+
         b_is_turnning = false;
         FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded); // 회전이 끝나면 다음 Task 실행
     }

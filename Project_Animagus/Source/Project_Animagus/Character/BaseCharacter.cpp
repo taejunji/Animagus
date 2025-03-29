@@ -188,6 +188,7 @@ void ABaseCharacter::Tick(float DeltaTime)
             // 일시적으로 이동을 멈추고 싶다면? → DisableMovement()
             // 이동을 완전히 비활성화하고 싶다면 ? → SetMovementMode(MOVE_None)
             GetCharacterMovement()->DisableMovement();
+            GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
         }
         return;
     }

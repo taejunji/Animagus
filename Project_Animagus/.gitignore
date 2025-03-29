@@ -98,3 +98,19 @@ Plugins/**/Intermediate/*
 # Cache files for the editor to use
 # 에디터 캐시 파일은 언리얼 엔진에서 데이터를 임시 저장하는 데 사용됩니다. 이 파일들은 매번 달라지므로 Git에서는 제외해야 합니다.
 DerivedDataCache/*
+
+# Config 폴더들 제외 
+Config/
+
+# .idea 폴더 (IDE 설정)
+.idea/
+
+# Visual Studio 관련 설정 파일
+.vsconfig
+*.DotSettings.user
+
+# Unreal Engine에서 자동 생성되는 빌드 설정 파일
+Saved/
+
+# .ignore 파일 (자체적으로 무시 목록을 관리하는 파일)
+.ignore
