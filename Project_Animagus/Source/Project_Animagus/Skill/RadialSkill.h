@@ -45,6 +45,14 @@ public:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Radial|Parameters")
     float VerticalOffset;
 
+    // 기본값 저장 (강화 전)
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Radial|Parameters")
+    int32 BaseNumberOfProjectiles;
+
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Radial|Damage")
+    float BaseRadialDamage;
+    
+    virtual void UpgradeSkill(int32 NewPowerUpLevel) override;
 protected:
     // 스킬 사용 시 호출되는 함수
     virtual void ActiveSkill_Implementation() override;

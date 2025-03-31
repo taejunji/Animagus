@@ -18,6 +18,9 @@ UStun::UStun()
 
     // ProjectileBPClass는 에디터에서 할당 (예: MyProjectile_Stun_BP)
     ProjectileBPClass = nullptr;
+
+    BaseCooldownTime = CooldownTime;
+    BaseStunDuration = StunDuration;
 }
 
 void UStun::ActiveSkill_Implementation()
@@ -105,4 +108,12 @@ void UStun::ActiveSkill_Implementation()
     }
     
     StartCooldown();
+}
+void UStun::UpgradeSkill(int32 NewPowerUpLevel)
+{
+   
+    float CooldownMultiplier = FMath::Clamp(1.0f - (0.05f * NewPowerUpLevel), 0.5f, 1.0f);
+    
+    CooldownTime = BaseCooldownTime * CooldownMultiplier;
+
 }

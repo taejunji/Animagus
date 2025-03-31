@@ -29,10 +29,18 @@ public:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Change|Movement")
     float ChangeSpeed;
 
+    // 기본값을 저장하기 위한 변수 (옵션)
+    // UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Fireball")
+    // float BaseChange;
+
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Change")
+    float BaseCooldownTime;
+    
     // 스폰할 투사체 블루프린트 클래스 (Projectile_change를 상속받은 클래스)
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Change")
     TSubclassOf<class AProjectile_change> ProjectileBPClass;
 
+    virtual void UpgradeSkill(int32 NewPowerUpLevel) override;
 protected:
     // 스킬 사용 시 호출되는 함수
     virtual void ActiveSkill_Implementation() override;

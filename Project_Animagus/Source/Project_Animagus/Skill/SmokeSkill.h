@@ -25,6 +25,12 @@ public:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="SmokeSkill|Projectile")
     float SmokeProjectileSpeed;
 
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="SmokeSkill")
+    float BaseCooldownTime;
+
+
+    
     // ActiveSkill 함수 오버라이드: 스킬 사용 시 연막 투사체를 스폰함
     virtual void ActiveSkill_Implementation() override;
+    virtual void UpgradeSkill(int32 NewPowerUpLevel) override;
 };
