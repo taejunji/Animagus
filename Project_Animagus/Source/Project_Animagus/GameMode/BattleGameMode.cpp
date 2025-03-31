@@ -32,12 +32,12 @@ ABattleGameMode::ABattleGameMode()
     }
     else UE_LOG(LogTemp, Warning, TEXT("플레이어 컨트롤러 로드 실패"));
 
-    static ConstructorHelpers::FClassFinder<AAIController> AIController(TEXT("/Game/WorkFolder/Bluprints/AIPlayer/BP_AIController.BP_AIController_C"));
+    static ConstructorHelpers::FClassFinder<AAIController> AIController(TEXT("/Game/WorkFolder/AI/AIPlayer/BP_AIController.BP_AIController_C"));
     if (AIController.Succeeded())
     {
         AIControllerClass = AIController.Class;
     }
-    static ConstructorHelpers::FClassFinder<APawn> AIPawn(TEXT("/Game/WorkFolder/Bluprints/AIPlayer/BP_AIPlayer.BP_AIPlayer_C"));
+    static ConstructorHelpers::FClassFinder<APawn> AIPawn(TEXT("/Game/WorkFolder/AI/AIPlayer/BP_AIPlayer.BP_AIPlayer_C"));
     if (AIPawn.Succeeded()) 
     {
         AIPlayerClass = AIPawn.Class; 
@@ -109,7 +109,7 @@ void ABattleGameMode::SpawnPlayers()
         return;
     }
     
-
+#if 0
     APlayerController* PC = UGameplayStatics::GetPlayerController(World, 0);
     if (PC)
     {
@@ -184,7 +184,7 @@ void ABattleGameMode::SpawnPlayers()
     {
         UE_LOG(LogTemp, Warning, TEXT("BattleGameMode: PossessIndex %d가 유효하지 않음."), PossessIndex);
     }
-
+#endif
 
     // "0"번 플레이어가 아닌 경우 AI 생성하지 않고 나가기
     if (PossessIndex != 0) return;
