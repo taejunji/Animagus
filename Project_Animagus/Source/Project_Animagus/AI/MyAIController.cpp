@@ -41,6 +41,7 @@ AMyAIController::AMyAIController(const FObjectInitializer& ObjectInitializer)
 
     // Perception Component 생성 및 초기화
     AIPerceptionComponent = CreateDefaultSubobject<UAIPerceptionComponent>(TEXT("AIPerceptionComponent"));
+
 }
 
 void AMyAIController::BeginPlay()

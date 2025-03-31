@@ -14,6 +14,7 @@ class UProgressBar;
 class UImage;
 class UHorizontalBox;
 class UTextBlock;
+class UBorder;
 
 UCLASS()
 class PROJECT_ANIMAGUS_API UMyPlayerHUDWidget : public UUserWidget
@@ -37,7 +38,11 @@ public:
 
     UFUNCTION(BlueprintCallable, Category="UI")
     void UpdateRoundTime(float RoundTimeValue);
-    
+
+    UFUNCTION(BlueprintCallable, Category="UI")
+    void UpdateSelectedSkillOutline(int32 SelectedIndex);
+
+
 protected:
     // 화면 중앙에 고정될 에임 이미지
     UPROPERTY(meta = (BindWidget))
@@ -84,4 +89,21 @@ protected:
     // 라운드 진행 시간을 표시할 텍스트 블록
     UPROPERTY(meta = (BindWidget))
     UTextBlock* RoundTimeText;
+    
+    UPROPERTY(meta = (BindWidget))
+    UBorder* SkillBorder_0;
+    
+    UPROPERTY(meta = (BindWidget))
+    UBorder* SkillBorder_1;
+    
+    UPROPERTY(meta = (BindWidget))
+    UBorder* SkillBorder_2;
+    
+    UPROPERTY(meta = (BindWidget))
+    UBorder* SkillBorder_3;
+
+    
+    // 기본 윤곽선 색상과 선택되었을 때의 색상
+    FLinearColor NormalOutlineColor = FLinearColor::Gray;
+    FLinearColor SelectedOutlineColor = FLinearColor::Yellow;
 };
