@@ -16,8 +16,10 @@ UMagicMissile::UMagicMissile()
     CooldownTime = 5.0f; // 
     MissileDamage = 10.0f;
     MissileSpeed = 1800.f;
-    HomingActivationRadius = 3000.f;          // 30m
+    HomingActivationRadius = 1300.f;          // 30m
     HomingAccelerationMagnitude = 5000.f;
+    BaseCooldownTime = CooldownTime;
+
     static ConstructorHelpers::FClassFinder<AProjectile_MagicMissile> MaigicMissileBPFinder(TEXT("/Game/WorkFolder/Bluprints/Projectiles/MyProjectile_MagicMissile"));
     if (MaigicMissileBPFinder.Succeeded())
     {
@@ -121,4 +123,14 @@ void UMagicMissile::ActiveSkill_Implementation()
     }
     
     StartCooldown();
+}
+
+void UMagicMissile::UpgradeSkill(int32 NewPowerUpLevel)
+{
+    // 예시: 매 단계마다 데미지는 10%씩 증가, 쿨타임은 5%씩 단축 (최소 50%까지 단축)
+    // float DamageMultiplier = 1.0f + (0.10f * NewPowerUpLevel);
+    float CooldownMultiplier = FMath::Clamp(1.0f - (0.05f * NewPowerUpLevel), 0.5f, 1.0f);
+    
+    CooldownTime = BaseCooldownTime * CooldownMultiplier;
+
 }

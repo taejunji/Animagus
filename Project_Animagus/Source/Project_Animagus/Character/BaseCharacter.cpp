@@ -22,6 +22,8 @@ ABaseCharacter::ABaseCharacter()
 
     Skills.SetNum(5); 
 
+    PowerUpLevel = 0;
+    
     // 애님 인스턴스 설정
     static ConstructorHelpers::FClassFinder<UAnimInstance> AnimBP(TEXT("/Game/WorkFolder/Animation/AnimSystem/ABP_AnimationSystem.ABP_AnimationSystem_C"));
     if (AnimBP.Succeeded())
@@ -382,4 +384,19 @@ void ABaseCharacter::RemoveStun()
     }
 }
 
+void ABaseCharacter::IncreasePowerUpLevel()
+{
+    PowerUpLevel++;
+    UE_LOG(LogTemp, Log, TEXT("%s PowerUpLevel increased to %d"), *GetName(), PowerUpLevel);
 
+    // 보유한 모든 스킬에 대해 UpgradeSkill() 호출
+    for (UBaseSkill* Skill : Skills)
+    {
+        if (Skill)
+        {
+            Skill->UpgradeSkill(PowerUpLevel);
+        }
+    }
+    
+    // HUD 업데이트 등 추가 작업 가능 (예: 플레이어 머리 위에 현재 강화 단계를 표시)
+}

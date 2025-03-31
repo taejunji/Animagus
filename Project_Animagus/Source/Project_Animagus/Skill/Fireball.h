@@ -25,9 +25,18 @@ public:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Fireball|Movement")
     float FireballSpeed;
 
+    // 기본값을 저장하기 위한 변수 (옵션)
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Fireball")
+    float BaseFireballDamage;
+
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Fireball")
+    float BaseCooldownTime;
+
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Fireball")
     TSubclassOf<class AProjectile_FireBall> ProjectileBPClass;
     
     // ActiveSkill 인터페이스 오버라이드: 스킬 사용 시 호출
     virtual void ActiveSkill_Implementation() override;
+
+    virtual void UpgradeSkill(int32 NewPowerUpLevel) override;
 };

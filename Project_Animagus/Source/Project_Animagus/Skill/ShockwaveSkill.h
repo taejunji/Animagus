@@ -28,6 +28,12 @@ public:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Shockwave")
     float KnockbackForce;
 
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Shockwave")
+    float BaseCooldownTime;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Shockwave")
+    float BaseKnockbackForce; 
+    
     /** 충격파 확산 속도 (cm/s) */
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Shockwave")
     float ExpansionSpeed;
@@ -38,4 +44,5 @@ public:
 
     // ActiveSkill 인터페이스 오버라이드: 스킬 사용 시 호출됨
     virtual void ActiveSkill_Implementation() override;
+    virtual void UpgradeSkill(int32 NewPowerUpLevel) override;
 };

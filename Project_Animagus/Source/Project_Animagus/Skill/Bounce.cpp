@@ -11,6 +11,8 @@ UBounce::UBounce()
     CooldownTime = 5.0f; // 예시로 6초 쿨타임
     BounceDamage = 10.0f;
     BounceSpeed = 1000.f; // 필요에 따라 조정
+    BaseCooldownTime = CooldownTime;
+
 }
 
 void UBounce::ActiveSkill_Implementation()
@@ -97,4 +99,13 @@ void UBounce::ActiveSkill_Implementation()
     }
     
     StartCooldown();
+}
+
+void UBounce::UpgradSkill(int32 NewPowerUpLevel)
+{
+    // 예시: 매 단계마다 데미지는 10%씩 증가, 쿨타임은 5%씩 단축 (최소 50%까지 단축)
+    // float DamageMultiplier = 1.0f + (0.10f * NewPowerUpLevel);
+    float CooldownMultiplier = FMath::Clamp(1.0f - (0.05f * NewPowerUpLevel), 0.5f, 1.0f);
+    
+    CooldownTime = BaseCooldownTime * CooldownMultiplier;
 }
