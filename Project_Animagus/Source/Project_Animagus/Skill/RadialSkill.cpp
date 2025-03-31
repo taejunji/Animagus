@@ -9,14 +9,17 @@ URadialSkill::URadialSkill()
 {
     SkillName = "RadialSkill";           // 스킬 이름 설정
     CooldownTime = 8.0f;                 // 쿨타임 8초
-    NumberOfProjectiles = 7;             // 7개의 투사체 발사
-    SpreadAngle = 90.0f;                 // 전체 90도 부채꼴
+    NumberOfProjectiles = 3;             // 7개의 투사체 발사
+    SpreadAngle = 180.0f;                 // 전체 90도 부채꼴
     RadialDamage = 40.0f;                // 투사체 데미지
     RadialSpeed = 1600.f;                // 투사체 속도
 
     SpawnRadius = 80.f;                  // 캐릭터 기준으로 80cm 떨어진 위치에서 스폰
     VerticalOffset = 20.f;               // 캐릭터 기준으로 위쪽 20cm
 
+    BaseNumberOfProjectiles = NumberOfProjectiles;
+    BaseRadialDamage = RadialDamage;
+    
     ProjectileBPClass = nullptr;         // 에디터에서 할당 필요
 }
 
@@ -119,4 +122,30 @@ void URadialSkill::ActiveSkill_Implementation()
     }
     
     StartCooldown();
+}
+
+void URadialSkill::UpgradeSkill(int32 NewPowerUpLevel)
+{
+    int32 Level = FMath::Clamp(NewPowerUpLevel, 0, 14);
+
+    // 홀수 레벨이면 투사체 개수를 증가시키고, 짝수이면 데미지를 증가시킵니다.
+    if (Level % 2 == 1)
+    {
+        // 예를 들어, 홀수 단계마다 투사체 개수를 1씩 증가시킴.
+        int32 ExtraProjectiles = (Level + 1) / 2; // Level 1 → +1, Level 3 → +2, ...
+        NumberOfProjectiles = BaseNumberOfProjectiles + ExtraProjectiles;
+        // 데미지는 기본값 유지
+        // RadialDamage = BaseRadialDamage;
+    }
+    else
+    {
+        // 짝수 단계이면, 데미지를 10%씩 증가 (짝수 단계마다 1단계 상승)
+        int32 EvenLevelSteps = Level / 2;
+        float DamageMultiplier = 1.0f + 0.10f * EvenLevelSteps; // Level 2 → +10%, Level 4 → +20%, ...
+        RadialDamage = BaseRadialDamage * DamageMultiplier;
+        // 투사체 개수는 기본값 유지
+       // NumberOfProjectiles = BaseNumberOfProjectiles;
+    }
+
+    UE_LOG(LogTemp, Log, TEXT("RadialSkill upgraded: Level %d, Projectiles: %d, Damage: %f"), Level, NumberOfProjectiles, RadialDamage);
 }

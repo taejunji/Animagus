@@ -126,3 +126,9 @@ bool UBaseSkill::CanActivateSkill() const
     
     return true;
 }
+
+void UBaseSkill::UpgradeSkill(int32 NewPowerUpLevel)
+{
+    // 기본 구현: 로그만 출력 (파생 클래스에서 구체적인 강화 효과를 적용)
+    UE_LOG(LogTemp, Log, TEXT("BaseSkill::UpgradeSkill called for skill %s with PowerUpLevel: %d"), *SkillName, NewPowerUpLevel);
+}

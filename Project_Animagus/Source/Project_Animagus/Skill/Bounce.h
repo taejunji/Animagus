@@ -9,7 +9,7 @@
 /**
  * 
  */
-UCLASS()
+UCLASS(Blueprintable)
 class PROJECT_ANIMAGUS_API UBounce : public UBaseSkill
 {
 	GENERATED_BODY()
@@ -25,11 +25,15 @@ public:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Bounce|Movement")
     float BounceSpeed;
 
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Bounce")
+    float BaseCooldownTime;
+    
     /** 스폰할 반사 투사체 블루프린트 클래스 */
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Bounce")
     TSubclassOf<class AProjectile_Bounce> ProjectileBPClass;
 
+    virtual void UpgradSkill(int32 NewPowerUpLevel);
+    
     // ActiveSkill 인터페이스 오버라이드: 스킬 사용 시 호출됩니다.
     virtual void ActiveSkill_Implementation() override;
-	
 };

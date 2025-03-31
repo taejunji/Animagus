@@ -26,6 +26,7 @@ public:
     UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = "Skill")
     FString SkillDescription;
 
+    
     // 스킬 소유자. 실제 캐릭터 클래스(예: ABaseCharacter)를 사용합니다.
     UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Skill")
     TObjectPtr<class ABaseCharacter> Owner;
@@ -52,6 +53,9 @@ public:
     void ActiveSkill();
     virtual void ActiveSkill_Implementation();
 
+    UFUNCTION(BlueprintCallable, Category = "Skill")
+    virtual void UpgradeSkill(int32 NewPowerUpLevel);
+    
     // 스킬 비활성화 (예: 지속 효과 종료)
     UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Skill")
     void DeactiveSkill();

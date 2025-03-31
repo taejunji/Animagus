@@ -21,6 +21,9 @@ UShockwaveSkill::UShockwaveSkill()
     ExpansionSpeed = 1000.f;  // cm/s
     MaxRadius = 5000.f;       // cm
 
+    BaseCooldownTime = CooldownTime;
+    BaseKnockbackForce = KnockbackForce;
+    
     ShockwaveActorBPClass = nullptr; // 에디터에서 할당 (충격파 액터 블루프린트)
 }
 
@@ -71,4 +74,13 @@ void UShockwaveSkill::ActiveSkill_Implementation()
     }
     
     StartCooldown();
+}
+
+void UShockwaveSkill::UpgradeSkill(int32 NewPowerUpLevel)
+{
+   
+    float CooldownMultiplier = FMath::Clamp(1.0f - (0.05f * NewPowerUpLevel), 0.5f, 1.0f);
+    
+    CooldownTime = BaseCooldownTime * CooldownMultiplier;
+
 }

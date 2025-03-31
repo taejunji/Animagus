@@ -25,6 +25,11 @@ public:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "ShieldSkill")
     float ShieldDuration;
 
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="ShieldSkill")
+    float BaseCooldownTime;
+    
+    
     // 보호막 스킬 발동 시 보호막 액터를 소환하는 함수
     virtual void ActiveSkill_Implementation() override;
+    virtual void UpgradeSkill(int32 NewPowerUpLevel) override;
 };

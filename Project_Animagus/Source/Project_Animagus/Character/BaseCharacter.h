@@ -39,6 +39,10 @@ public:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement")
     float speed_change_rate; // 속도 변화 비율 ( 30.f면 1초에 30씩 변화 )
 
+    // 플레이어의 전반적인 스탯 강화 단계를 나타내는 변수
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "PowerUp")
+    int32 PowerUpLevel;
+    
 protected:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stat")
     float hp; // HP 체력
@@ -117,6 +121,9 @@ public:
     UFUNCTION(BlueprintCallable, Category="Skills")
     void InitializeSkills();
 
+    UFUNCTION(BlueprintCallable, Category = "PowerUp")
+    void IncreasePowerUpLevel();
+    
     // 스턴 상태 변수: 스턴 중이면 true
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Status")
     bool bIsStunned;
