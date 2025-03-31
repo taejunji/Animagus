@@ -8,6 +8,8 @@
 #include "MyAIController.generated.h"
 
 // 아오
+// Git에서 Merge하고 충돌하면 -> Git Desktop에서 update from main해야된다
+// 안그러면 바로 덮어씌워져서 꼬여버린다.
 /*
     Behavior Tree Node 
     1. Composite(복합) : 여러 개의 자식 노드 가짐
