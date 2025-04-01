@@ -10,8 +10,11 @@
 #include "../Character/AICharacter.h"
 #include "../PlayerController/Battle_PlayerController.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "Project_Animagus/Item/BaseItem.h"
 #include "Project_Animagus/UI/MyPlayerHUDWidget.h"
-
+#include "Algo/RandomShuffle.h"
+#include "Project_Animagus/Item/PowerUpItem.h"
+#include "Runtime/Core/Tests/Containers/TestUtils.h"
 
 ABattleGameMode::ABattleGameMode()
 {
@@ -43,6 +46,12 @@ ABattleGameMode::ABattleGameMode()
         AIPlayerClass = AIPawn.Class; 
     }
 
+    static ConstructorHelpers::FClassFinder<APowerUpItem> Powerupitem(TEXT("/Game/WorkFolder/Bluprints/Item/MyPowerUpItem"));
+    if (Powerupitem.Succeeded())
+    {
+        PowerUpBpclass = Powerupitem.Class;    
+    }
+    
     // 플레이어 ID(0~3)와 스폰 위치를 매핑
     spawn_transform.Add(0, FTransform(FRotator(0, 0, 0), FVector(-13500.0f, 0.0f, 800.f))); // Spawn_0
     spawn_transform.Add(1, FTransform(FRotator(0, 90, 0), FVector(0.0f, -13500.0f, 800.f))); // Spawn_1
@@ -69,6 +78,7 @@ void ABattleGameMode::StartPlay()
     Super::StartPlay();
 
     InitBattleMode();
+    
 }
 
 void ABattleGameMode::Tick(float DeltaTime)
@@ -97,6 +107,9 @@ void ABattleGameMode::InitBattleMode()
         // 1초마다 CountdownTimerUpdate() 호출
         GetWorld()->GetTimerManager().SetTimer(CountdownTimerHandle, this, &ABattleGameMode::CountdownTimerUpdate, 1.0f, true);
     }
+    
+    InitializeArea1SpawnPoints();
+    SpawnItemsInArea1();
 }
 
 void ABattleGameMode::SpawnPlayers()
@@ -109,7 +122,7 @@ void ABattleGameMode::SpawnPlayers()
         return;
     }
     
-#if 0
+#if 1
     APlayerController* PC = UGameplayStatics::GetPlayerController(World, 0);
     if (PC)
     {
@@ -336,4 +349,189 @@ void ABattleGameMode::RoundTimerUpdate()
         }
     }
     UE_LOG(LogTemp, Log, TEXT("Round Time: %.0f"), CurrentRoundTime);
+}
+
+void ABattleGameMode::SpawnItemsInArea1()
+{
+    // 예시로 영역1에 10개의 아이템 스폰
+    const int32 NumItemsToSpawn = 30;
+    if (Area1SpawnPoints.Num() == 0)
+    {
+        UE_LOG(LogTemp, Warning, TEXT("SpawnItemsInArea1: No spawn points available."));
+        return;
+    }
+
+    // 만약 NumItemsToSpawn이 전체 스폰 포인트보다 많으면, 경고 로그 출력
+    if (NumItemsToSpawn > Area1SpawnPoints.Num())
+    {
+        UE_LOG(LogTemp, Warning, TEXT("SpawnItemsInArea1: Not enough spawn points available. Reducing item count."));
+    }
+
+    // SpawnedItems 배열 초기화
+    SpawnedItems.Empty();
+
+    UWorld* World = GetWorld();
+    if (!World)
+    {
+        UE_LOG(LogTemp, Warning, TEXT("SpawnItemsInArea1: World is null."));
+        return;
+    }
+
+    // 지역 spawn 포인트 배열 복사 및 셔플
+    TArray<FVector> LocalSpawnPoints = Area1SpawnPoints;
+    
+    Test::Shuffle(LocalSpawnPoints);
+    
+    int32 ItemsToSpawn = FMath::Min(NumItemsToSpawn, LocalSpawnPoints.Num());
+
+    for (int32 i = 0; i < ItemsToSpawn; i++)
+    {
+        FVector SpawnLocation = LocalSpawnPoints[i];
+        FRotator SpawnRotation = FRotator::ZeroRotator;
+
+        FActorSpawnParameters SpawnParams;
+        // 필요에 따라 SpawnParams.Owner 또는 Instigator 설정
+
+        ABaseItem* NewItem = World->SpawnActor<ABaseItem>(PowerUpBpclass, SpawnLocation, SpawnRotation, SpawnParams);
+
+        if (NewItem)
+        {
+            SpawnedItems.Add(NewItem);
+            UE_LOG(LogTemp, Log, TEXT("SpawnItemsInArea1: Spawned item at %s"), *SpawnLocation.ToString());
+        }
+        else
+        {
+            UE_LOG(LogTemp, Warning, TEXT("SpawnItemsInArea1: Failed to spawn item at index %d"), i);
+        }
+    }
+}
+
+void ABattleGameMode::InitializeArea1SpawnPoints()
+{
+    // 기존 좌표 배열 초기화
+    Area1SpawnPoints.Empty();
+
+    // 예시로 몇 개의 하드코딩 좌표를 추가 (실제 프로젝트에서는 150개 정도의 좌표를 입력)
+    Area1SpawnPoints.Add(FVector(-12400.f, -600.f, 66.f));
+    Area1SpawnPoints.Add(FVector(-13000.f, 500.f, 66.f));
+    Area1SpawnPoints.Add(FVector(-11000.f, -1500.f, 66.f));
+    Area1SpawnPoints.Add(FVector(-11500.f, 800.f, 66.f));
+    Area1SpawnPoints.Add(FVector(-12000.f, -1000.f, 66.f));
+
+    Area1SpawnPoints.Add(FVector(12400.f, -600.f, 66.f));
+    Area1SpawnPoints.Add(FVector(13000.f, 500.f, 66.f));
+    Area1SpawnPoints.Add(FVector(11000.f, -1500.f, 66.f));
+    Area1SpawnPoints.Add(FVector(11500.f, 800.f, 66.f));
+    Area1SpawnPoints.Add(FVector(12000.f, -1000.f, 66.f)); 
+
+    Area1SpawnPoints.Add(FVector(12400.f, 600.f, 66.f));
+    Area1SpawnPoints.Add(FVector(13000.f, -500.f, 66.f));
+    Area1SpawnPoints.Add(FVector(11000.f, 1500.f, 66.f));
+    Area1SpawnPoints.Add(FVector(11500.f, -800.f, 66.f));
+    Area1SpawnPoints.Add(FVector(12000.f, 1000.f, 66.f)); 
+
+    Area1SpawnPoints.Add(FVector(-12400.f, 600.f, 66.f));
+    Area1SpawnPoints.Add(FVector(-13000.f, -500.f, 66.f));
+    Area1SpawnPoints.Add(FVector(-11000.f, 1500.f, 66.f));
+    Area1SpawnPoints.Add(FVector(-11500.f, -800.f, 66.f));
+    Area1SpawnPoints.Add(FVector(-12000.f, 1000.f, 66.f)); 
+
+    Area1SpawnPoints.Add(FVector(-12325.f, 3641.f, 66.f));
+    Area1SpawnPoints.Add(FVector(-10195.f, -6392.f, 66.f));
+    Area1SpawnPoints.Add(FVector(-9100.f, 6392.f, 66.f));
+    
+  
+    Area1SpawnPoints.Add(FVector(-8300.f, 8100.f, 66.f));
+    Area1SpawnPoints.Add(FVector(-8300.f, 10800.f, 66.f));
+    Area1SpawnPoints.Add(FVector(-8300.f, 13500.f, 66.f));
+
+    Area1SpawnPoints.Add(FVector(8300.f, 8100.f, 66.f));
+    Area1SpawnPoints.Add(FVector(8300.f, 10800.f, 66.f));
+    Area1SpawnPoints.Add(FVector(8300.f, 13500.f, 66.f));
+
+    Area1SpawnPoints.Add(FVector(8300.f, -8100.f, 66.f));
+    Area1SpawnPoints.Add(FVector(8300.f, -10800.f, 66.f));
+    Area1SpawnPoints.Add(FVector(8300.f, -13500.f, 66.f));
+
+    Area1SpawnPoints.Add(FVector(-8300.f, -8100.f, 66.f));
+    Area1SpawnPoints.Add(FVector(-8300.f, -10800.f, 66.f));
+    Area1SpawnPoints.Add(FVector(-8300.f, -13500.f, 66.f));
+    
+    Area1SpawnPoints.Add(FVector(-5400.f, 8100.f, 66.f));
+    Area1SpawnPoints.Add(FVector(-5400.f, 10800.f, 66.f));
+    Area1SpawnPoints.Add(FVector(-5400.f, 13500.f, 66.f));
+
+    Area1SpawnPoints.Add(FVector(5400.f, 8100.f, 66.f));
+    Area1SpawnPoints.Add(FVector(5400.f, 10800.f, 66.f));
+    Area1SpawnPoints.Add(FVector(5400.f, 13500.f, 66.f));
+
+    Area1SpawnPoints.Add(FVector(-5400.f, -8100.f, 66.f));
+    Area1SpawnPoints.Add(FVector(-5400.f, -10800.f, 66.f));
+    Area1SpawnPoints.Add(FVector(-5400.f, -13500.f, 66.f));
+
+    Area1SpawnPoints.Add(FVector(5400.f, -8100.f, 66.f));
+    Area1SpawnPoints.Add(FVector(5400.f, -10800.f, 66.f));
+    Area1SpawnPoints.Add(FVector(5400.f, -13500.f, 66.f));
+    
+    Area1SpawnPoints.Add(FVector(1394.f, 11911.f, 66.f)); 
+    Area1SpawnPoints.Add(FVector(2044.f, 10873.f, 66.f));
+    Area1SpawnPoints.Add(FVector(4469.f, 9526.f, 66.f)); 
+    Area1SpawnPoints.Add(FVector(5479.f, 10049.f, 66.f)); 
+    
+    Area1SpawnPoints.Add(FVector(-1394.f, -11911.f, 66.f)); 
+    Area1SpawnPoints.Add(FVector(-2044.f, -10873.f, 66.f));
+    Area1SpawnPoints.Add(FVector(-4469.f, -9526.f, 66.f)); 
+    Area1SpawnPoints.Add(FVector(-5479.f, -10049.f, 66.f)); 
+
+    Area1SpawnPoints.Add(FVector(1394.f, -11911.f, 66.f)); 
+    Area1SpawnPoints.Add(FVector(2044.f, -10873.f, 66.f));
+    Area1SpawnPoints.Add(FVector(4469.f, -9526.f, 66.f)); 
+    Area1SpawnPoints.Add(FVector(5479.f, -10049.f, 66.f)); 
+
+    Area1SpawnPoints.Add(FVector(-1394.f, 11911.f, 66.f)); 
+    Area1SpawnPoints.Add(FVector(-2044.f, 10873.f, 66.f));
+    Area1SpawnPoints.Add(FVector(-4469.f, 9526.f, 66.f)); 
+    Area1SpawnPoints.Add(FVector(-5479.f, 10049.f, 66.f));
+    
+    Area1SpawnPoints.Add(FVector(-12031.f, 4344.f, 66.f)); 
+    Area1SpawnPoints.Add(FVector(-10562.f, 6102.f, 66.f));
+    Area1SpawnPoints.Add(FVector(-9121.f, 7897.f, 66.f)); 
+    Area1SpawnPoints.Add(FVector(-9565.f, 4504.f, 66.f));
+
+    Area1SpawnPoints.Add(FVector(12031.f, 4344.f, 66.f)); 
+    Area1SpawnPoints.Add(FVector(10562.f, 6102.f, 66.f));
+    Area1SpawnPoints.Add(FVector(9121.f, 7897.f, 66.f)); 
+    Area1SpawnPoints.Add(FVector(9565.f, 4504.f, 66.f));
+
+    Area1SpawnPoints.Add(FVector(12031.f, -4344.f, 66.f)); 
+    Area1SpawnPoints.Add(FVector(10562.f, -6102.f, 66.f));
+    Area1SpawnPoints.Add(FVector(9121.f, -7897.f, 66.f)); 
+    Area1SpawnPoints.Add(FVector(9565.f, -4504.f, 66.f));
+
+    Area1SpawnPoints.Add(FVector(-12031.f, -4344.f, 66.f)); 
+    Area1SpawnPoints.Add(FVector(-10562.f, -6102.f, 66.f));
+    Area1SpawnPoints.Add(FVector(-9121.f, -7897.f, 66.f)); 
+    Area1SpawnPoints.Add(FVector(-9565.f, -4504.f, 66.f));
+
+    Area1SpawnPoints.Add(FVector(-7845.f, -115.f, 66.f)); 
+    Area1SpawnPoints.Add(FVector(-8151.f, -1855.f, 66.f));
+    Area1SpawnPoints.Add(FVector(-8806.f, -2018.f, 66.f)); 
+    Area1SpawnPoints.Add(FVector(-7416.f, -7377.f, 66.f)); 
+
+    Area1SpawnPoints.Add(FVector(7845.f, -115.f, 66.f)); 
+    Area1SpawnPoints.Add(FVector(8151.f, -1855.f, 66.f));
+    Area1SpawnPoints.Add(FVector(8806.f, -2018.f, 66.f)); 
+    Area1SpawnPoints.Add(FVector(7416.f, -7377.f, 66.f)); 
+
+    Area1SpawnPoints.Add(FVector(7845.f, 115.f, 66.f)); 
+    Area1SpawnPoints.Add(FVector(8151.f, 1855.f, 66.f));
+    Area1SpawnPoints.Add(FVector(8806.f, 2018.f, 66.f)); 
+    Area1SpawnPoints.Add(FVector(7416.f, 7377.f, 66.f)); 
+
+    Area1SpawnPoints.Add(FVector(-7845.f, 115.f, 66.f)); 
+    Area1SpawnPoints.Add(FVector(-8151.f, 1855.f, 66.f));
+    Area1SpawnPoints.Add(FVector(-8806.f, 2018.f, 66.f)); 
+    Area1SpawnPoints.Add(FVector(-7416.f, 7377.f, 66.f)); 
+    
+    UE_LOG(LogTemp, Log, TEXT("InitializeRegion1SpawnPoints: Initialized %d spawn points."), Area1SpawnPoints.Num());
 }
