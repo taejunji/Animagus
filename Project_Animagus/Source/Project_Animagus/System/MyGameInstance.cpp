@@ -229,6 +229,24 @@ void UMyGameInstance::HandleMove(Protocol::CS_MOVE_PKT& pkt)
     }
 }
 
+void UMyGameInstance::HandleSkill(Protocol::CS_USING_SKILL_PKT& pkt)
+{
+    // TODO: 다른 캐릭터가 사용한 스킬 그리기
+    auto* World = GetWorld();
+    if (World == nullptr)
+        return;
+
+    AGameModeBase* BaseGameMode = UGameplayStatics::GetGameMode(World);
+    if (BaseGameMode)
+    {
+        ABattleGameMode* GameMode = Cast<ABattleGameMode>(BaseGameMode);
+        if (GameMode)
+        {
+
+        }
+    }
+}
+
 void UMyGameInstance::SetMyPlayerIndex(uint16 playerIndex)
 {
     MyPlayerIndex = playerIndex;

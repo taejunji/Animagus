@@ -85,7 +85,7 @@ void ABattleGameMode::InitBattleMode()
     UMyGameInstance* MyGameInstance = Cast<UMyGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));  
     if (MyGameInstance)
     {
-        PossessIndex = MyGameInstance->GetMyPlayerIndex();
+        //PossessIndex = MyGameInstance->GetMyPlayerIndex();
 
         elasped_time = 0.0f; 
         GetWorld()->GetTimerManager().ClearTimer(battle_timer_handle); // 타이머가 중지됨 
@@ -329,7 +329,7 @@ void ABattleGameMode::PrintElapsedtime()
 
 void ABattleGameMode::SetPlayerIndex(uint16 playerIndex)
 {
-    PossessIndex = static_cast<int32>(playerIndex);
+    //PossessIndex = static_cast<int32>(playerIndex);
 
     APlayerController* PC = UGameplayStatics::GetPlayerController(GetWorld(), 0);
     if (PC)

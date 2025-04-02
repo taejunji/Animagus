@@ -54,3 +54,13 @@ bool Handle_CS_MOVE_PKT(SessionRef& session, Protocol::CS_MOVE_PKT& pkt)
 
     return true;
 }
+
+bool Handle_CS_USING_SKILL(SessionRef& session, Protocol::CS_USING_SKILL_PKT& pkt)
+{
+    if (auto* GameInstance = Cast<UMyGameInstance>(GWorld->GetGameInstance()))
+    {
+        GameInstance->HandleSkill(pkt);
+    }
+
+    return true;
+}

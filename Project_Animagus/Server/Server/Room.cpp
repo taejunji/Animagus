@@ -58,6 +58,7 @@ bool Room::HandleEnterPlayer(PlayerRef player)
     if (success == false)
         std::cout << "Error" << std::endl;
 
+    int n_pid = 0;
     // 신입 플레이어 스폰 위치, 회전각 서버에서 지정해주고 해당 정보 플레이어에게 전송
     {
         SC_ENTER_GAME_PKT newPlayer;
@@ -69,6 +70,28 @@ bool Room::HandleEnterPlayer(PlayerRef player)
         SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(newPlayer);
         if (auto session = player->ownerSession.lock())
             session->Send(sendBuffer);
+
+        n_pid = player->playerID;
+    }
+
+    // 신입 플레이어에게 기존 플레이어들 정보 전송
+    {
+        SC_SPAWN_PKT oldPlayer;
+
+        for (auto& item : m_players)
+        {
+            if (n_pid == item.first) continue;
+            PlayerRef o_player = item.second;
+            oldPlayer.x = o_player->x;
+            oldPlayer.y = o_player->y;
+            oldPlayer.z = o_player->z;
+            oldPlayer.rotation = player->rotation;
+            oldPlayer.player_id = player->playerID;
+            oldPlayer.p_type = player->type;
+            SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(oldPlayer);
+            if (auto session = player->ownerSession.lock())
+                session->Send(sendBuffer);
+        }
     }
 
     // 기존 플레이어들에게 신입 플레이어 정보 전송
@@ -82,25 +105,6 @@ bool Room::HandleEnterPlayer(PlayerRef player)
         newPlayer.p_type = player->type;
         SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(newPlayer);
         Broadcast(sendBuffer, player->playerID);
-    }
-
-    // 신입 플레이어에게 기존 플레이어들 정보 전송
-    {
-        SC_SPAWN_PKT oldPlayer;
-
-        for (auto& item : m_players)
-        {
-            PlayerRef o_player = item.second;
-            oldPlayer.x = o_player->x;
-            oldPlayer.y = o_player->y;
-            oldPlayer.z = o_player->z;
-            oldPlayer.rotation = player->rotation;
-            oldPlayer.player_id = player->playerID;
-            oldPlayer.p_type = player->type;
-            SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(oldPlayer);
-            if (auto session = player->ownerSession.lock())
-                session->Send(sendBuffer);
-        }
     }
 
     return success;
@@ -128,7 +132,7 @@ bool Room::HandleMoveLocked(Protocol::CS_MOVE_PKT& pkt)
 {
     std::lock_guard lock(m_mutex);
 
-    const uint64 playerId = pkt.player_info.player_id;
+    const uint16 playerId = pkt.player_info.player_id;
     //std::cout << "Move PlayerID: " << playerId << std::endl;
     if (m_players.find(playerId) == m_players.end())
         return false;
@@ -149,3 +153,17 @@ bool Room::HandleMoveLocked(Protocol::CS_MOVE_PKT& pkt)
 
     return true;
 }
+
+bool Room::HandleSkillLocked(Protocol::CS_USING_SKILL_PKT& pkt)
+{
+    const uint16 playerId = pkt.player_id;
+    std::cout << "Player" << playerId << " Used Skill " << static_cast<int>(pkt.s_type) << std::endl;
+
+    // 뭐 더 붙일 정보가 있나?
+
+    SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(pkt);
+    Broadcast(sendBuffer, playerId);
+
+    return true;
+}
+

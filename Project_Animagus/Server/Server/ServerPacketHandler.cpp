@@ -71,3 +71,20 @@ bool Handle_CS_MOVE(SessionRef& session, CS_MOVE_PKT& pkt)
 
     return true;
 }
+
+bool Handle_CS_USING_SKILL(SessionRef& session, CS_USING_SKILL_PKT& pkt)
+{
+    auto gameSession = static_pointer_cast<Session>(session);
+
+    PlayerRef player = gameSession->m_player.load();
+    if (player == nullptr)
+        return false;
+
+    RoomRef room = player->room.load().lock();
+    if (room == nullptr)
+        return false;
+
+    room->HandleSkillLocked(pkt);
+
+    return true;
+}

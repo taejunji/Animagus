@@ -261,6 +261,10 @@ void ABattle_PlayerController::Input_Attack(const FInputActionValue& InputValue)
         if (MyCharacter && MyCharacter->Skills.IsValidIndex(0) && MyCharacter->Skills[0])
         {
             MyCharacter->Skills[0]->ActiveSkill();
+
+            Protocol::CS_USING_SKILL_PKT SkillPkt;
+            SendBufferRef SendBuffer = ClientPacketHandler::MakeSendBuffer(SkillPkt);
+            Cast<UMyGameInstance>(GWorld->GetGameInstance())->SendPacket(SendBuffer);
         }
     }
 

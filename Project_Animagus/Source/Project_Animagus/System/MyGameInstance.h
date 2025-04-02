@@ -88,6 +88,7 @@ public:
     void HandleEnterGame(Protocol::SC_ENTER_GAME_PKT& pkt);
     void HandleSpawn(Protocol::SC_SPAWN_PKT& pkt);
     void HandleMove(Protocol::CS_MOVE_PKT& pkt);
+    void HandleSkill(Protocol::CS_USING_SKILL_PKT& pkt);
 
     void SetMyPlayerIndex(uint16 playerIndex);
     uint16 GetMyPlayerIndex() { return MyPlayerIndex; }

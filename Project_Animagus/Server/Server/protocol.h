@@ -134,11 +134,11 @@ namespace Protocol {
     };
     struct CS_USING_SKILL_PKT
     {
-        int16 player_id;
+        uint16 player_id;
+        uint16 room_id;
         SkillType s_type;
         float x, y, z;      // 위치
-        float vx, vy, vz;   // 방향 벡터
-        
+        float vx, vy, vz;   // 방향 벡터 or 오일러 각        
     };
 #pragma pack(pop)
 
