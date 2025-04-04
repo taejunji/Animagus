@@ -13,6 +13,7 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "../Character/NetworkCharacter.h"
 #include "Project_Animagus/UI/MyPlayerHUDWidget.h"
+#include "../Skill/BaseSkill.h"
 
 
 ABattleGameMode::ABattleGameMode()
@@ -305,6 +306,21 @@ void ABattleGameMode::ActivateInput()
             //}
         }
     }
+}
+
+void ABattleGameMode::SpawnSkill(Protocol::CS_USING_SKILL_PKT& pkt)
+{
+    UWorld* World = GetWorld();
+    if (!World)
+    {
+        UE_LOG(LogTemp, Error, TEXT("SpawnPlayer: World is null"));
+        return;
+    }
+
+    if (SpawnedPlayers.Contains(static_cast<int32>(pkt.player_id)) == false) return;
+    //if (static_cast<int32>(pkt.player_id) == PlayerId) return;    // 자신이 쏜 스킬은 스폰X
+
+    SpawnedPlayers[static_cast<int32>(pkt.player_id)]->Skills[0]->ActiveSkill();    // TODO: SkillType 에 맞는 스킬 사용하도록
 }
 
 void ABattleGameMode::PrintElapsedtime()

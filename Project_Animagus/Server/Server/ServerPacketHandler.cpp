@@ -47,10 +47,7 @@ bool Handle_CS_LEAVE(SessionRef& session, CS_LEAVE_PKT& pkt)
     if (room == nullptr)
         return false;
 
-    room->Leave(player->playerID);
-
-    // TEMP, TODO : 해당 플레이어를 로비로
-    std::cout << "Leave Game" << std::endl;
+    room->HandleLeavePlayer(player);
 
     return true;
 }

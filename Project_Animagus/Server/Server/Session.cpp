@@ -6,6 +6,8 @@
 #include "SocketUtils.h"
 #include "GameServer.h"
 #include "ServerPacketHandler.h"
+#include "Room.h"
+#include "Player.h"
 
 
 /*--------------
@@ -348,6 +350,19 @@ int32 Session::OnRecv(BYTE* buffer, int32 len)
 
     return processLen;
 
+}
+
+void Session::OnDisconnected()
+{
+    PlayerRef player = m_player.load();
+    if (player == nullptr)
+        return;
+
+    RoomRef room = player->room.load().lock(); 
+    if (room == nullptr)
+        return;
+
+    room->HandleLeavePlayer(player);
 }
 
 void Session::OnRecvPacket(BYTE* buffer, int32 len)

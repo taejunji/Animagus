@@ -47,6 +47,8 @@ void Room::Broadcast(SendBufferRef sendBuffer, uint16 execptID)
 
         SessionRef session = player->ownerSession.lock();
         session->Send(sendBuffer);
+
+        //std::cout << "Send Packet to " << player->playerID << std::endl;
     }
 }
 
@@ -71,6 +73,8 @@ bool Room::HandleEnterPlayer(PlayerRef player)
         if (auto session = player->ownerSession.lock())
             session->Send(sendBuffer);
 
+        //std::cout << "Send Enter Game Packet" << std::endl;
+
         n_pid = player->playerID;
     }
 
@@ -80,17 +84,21 @@ bool Room::HandleEnterPlayer(PlayerRef player)
 
         for (auto& item : m_players)
         {
-            if (n_pid == item.first) continue;
+            if (n_pid == item.first) continue;  // 자기 자신의 정보는 이미 보냈음
+
             PlayerRef o_player = item.second;
             oldPlayer.x = o_player->x;
             oldPlayer.y = o_player->y;
             oldPlayer.z = o_player->z;
-            oldPlayer.rotation = player->rotation;
-            oldPlayer.player_id = player->playerID;
-            oldPlayer.p_type = player->type;
+            oldPlayer.rotation = o_player->rotation;
+            oldPlayer.player_id = o_player->playerID;
+            oldPlayer.p_type = o_player->type;
+
             SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(oldPlayer);
             if (auto session = player->ownerSession.lock())
                 session->Send(sendBuffer);
+
+            //std::cout << item.first << " Send Spawn Packet to " << n_pid << std::endl;
         }
     }
 
@@ -116,6 +124,8 @@ bool Room::HandleLeavePlayer(PlayerRef player)
 
     uint16 p_id = player->playerID;
     bool success = Leave(p_id);
+
+    std::cout << "Leave PlayerID: " << p_id << std::endl;
 
     // 다른 플레이어에게 해당 플레이어 퇴장 알림
     {
@@ -156,8 +166,14 @@ bool Room::HandleMoveLocked(Protocol::CS_MOVE_PKT& pkt)
 
 bool Room::HandleSkillLocked(Protocol::CS_USING_SKILL_PKT& pkt)
 {
+    std::lock_guard lock(m_mutex);
+
     const uint16 playerId = pkt.player_id;
-    std::cout << "Player" << playerId << " Used Skill " << static_cast<int>(pkt.s_type) << std::endl;
+    if (m_players.find(playerId) == m_players.end())
+        return false;
+
+    std::cout << "Player" << playerId << " Used Skill " << static_cast<int>(pkt.s_type);
+    std::cout << " " << pkt.x << " " << pkt.y << " " << pkt.z << std::endl;
 
     // 뭐 더 붙일 정보가 있나?
 

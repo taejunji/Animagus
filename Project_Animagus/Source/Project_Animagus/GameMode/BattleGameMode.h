@@ -31,6 +31,7 @@ public:
     void SpawnPlayers();
     void SpawnPlayer(Protocol::SC_SPAWN_PKT& pkt);
     void ActivateInput();
+    void SpawnSkill(Protocol::CS_USING_SKILL_PKT& pkt);
 	
 protected:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Battle Settings")
@@ -69,7 +70,7 @@ private:
 public:
     void SetPlayerIndex(uint16 playerIndex);
 
-public:   
+public:
     // 스폰된 플레이어 캐릭터들을 저장할 배열
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Spawning", meta = (AllowPrivateAccess = "true"))
     TMap<int32, ABaseCharacter*> SpawnedPlayers;
@@ -86,4 +87,8 @@ public:
     // 내가 소유할 플레이어 인덱스 (예: GameInstance에서 가져올 수 있음)
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Spawning", meta = (AllowPrivateAccess = "true"))
     int32 PossessIndex;
+
+public:
+    int16 RoomId = 0;
+    int16 PlayerIndex = 0;
 };

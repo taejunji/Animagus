@@ -260,9 +260,21 @@ void ABattle_PlayerController::Input_Attack(const FInputActionValue& InputValue)
         
         if (MyCharacter && MyCharacter->Skills.IsValidIndex(0) && MyCharacter->Skills[0])
         {
-            MyCharacter->Skills[0]->ActiveSkill();
+            UBaseSkill* Skill = MyCharacter->Skills[0];
+            Skill->ActiveSkill();
+
+            // TODO: 유동적으로 스킬 사용 할 수 있도록 설정
+
+            // 스폰 위치: 캐릭터의 전면 (예: 캐릭터 위치에서 전방으로 70cm)
+            FVector Location = MyCharacter->GetActorLocation() + MyCharacter->GetActorForwardVector() * 80.f + MyCharacter->GetActorRightVector() * 30.f;
+            FRotator Rotation = MyCharacter->GetActorRotation();
 
             Protocol::CS_USING_SKILL_PKT SkillPkt;
+            SkillPkt.player_id = MyCharacter->GetPlayerId();
+            SkillPkt.s_type = Skill->SkillType;
+            SkillPkt.x = Location.X; SkillPkt.y = Location.Y; SkillPkt.z = Location.Z;  // 필수인가?
+            SkillPkt.pitch = Rotation.Pitch; SkillPkt.yaw = Rotation.Yaw; SkillPkt.roll = Rotation.Roll;
+
             SendBufferRef SendBuffer = ClientPacketHandler::MakeSendBuffer(SkillPkt);
             Cast<UMyGameInstance>(GWorld->GetGameInstance())->SendPacket(SendBuffer);
         }

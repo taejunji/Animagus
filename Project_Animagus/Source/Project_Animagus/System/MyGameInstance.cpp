@@ -173,7 +173,6 @@ void UMyGameInstance::HandleEnterGame(Protocol::SC_ENTER_GAME_PKT& pkt)
     
     UE_LOG(LogTemp, Warning, TEXT("PlayerIndex: %d"), pkt.player_id);
 
-    SetMyPlayerIndex(pkt.player_id);
 }
 
 // InstanceHandlePacket
@@ -242,26 +241,26 @@ void UMyGameInstance::HandleSkill(Protocol::CS_USING_SKILL_PKT& pkt)
         ABattleGameMode* GameMode = Cast<ABattleGameMode>(BaseGameMode);
         if (GameMode)
         {
-
+            GameMode->SpawnSkill(pkt);
         }
     }
 }
 
-void UMyGameInstance::SetMyPlayerIndex(uint16 playerIndex)
-{
-    MyPlayerIndex = playerIndex;
-
-    auto* World = GetWorld();
-    if (World == nullptr)
-        return;
-
-    AGameModeBase* BaseGameMode = UGameplayStatics::GetGameMode(World);
-    if (BaseGameMode)
-    {
-        ABattleGameMode* GameMode = Cast<ABattleGameMode>(BaseGameMode);
-        if (GameMode)
-        {
-            GameMode->SetPlayerIndex(MyPlayerIndex);
-        }
-    }
-}
+//void UMyGameInstance::SetMyPlayerIndex(uint16 playerIndex)
+//{
+//    MyPlayerIndex = playerIndex;
+//
+//    auto* World = GetWorld();
+//    if (World == nullptr)
+//        return;
+//
+//    AGameModeBase* BaseGameMode = UGameplayStatics::GetGameMode(World);
+//    if (BaseGameMode)
+//    {
+//        ABattleGameMode* GameMode = Cast<ABattleGameMode>(BaseGameMode);
+//        if (GameMode)
+//        {
+//            GameMode->SetPlayerIndex(MyPlayerIndex);
+//        }
+//    }
+//}

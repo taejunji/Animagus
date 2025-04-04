@@ -13,6 +13,7 @@ namespace Protocol {
 
     enum class SkillType : uint16
     {
+        NONE,
         HEAL,           // 힐
         ENERGYWAVE,     // 에너지파
         BLACKHOLE,      // 블랙홀
@@ -137,8 +138,8 @@ namespace Protocol {
         uint16 player_id;
         uint16 room_id;
         SkillType s_type;
-        float x, y, z;      // 위치
-        float vx, vy, vz;   // 방향 벡터 or 오일러 각        
+        float x, y, z;          // 위치, 근데, 필요한가? 이미 클라이언트에서도 player_id 로 해당 플레이어의 위치 접근 가능하지 않나?
+        float pitch, yaw, roll; // 방향 벡터 or 오일러 각        
     };
 #pragma pack(pop)
 

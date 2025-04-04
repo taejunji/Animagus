@@ -22,6 +22,8 @@ UFireball::UFireball()
     {
         UE_LOG(LogTemp, Warning, TEXT("Failed to load Fireball BP class!"));
     }
+
+    SkillType = Protocol::SkillType::FIREBALL;
 }
 
 void UFireball::ActiveSkill_Implementation()
