@@ -11,6 +11,8 @@
 
 #include "Navigation/PathFollowingComponent.h"
 #include "../Character/BaseCharacter.h"
+#include "GameFramework/CharacterMovementComponent.h"
+
 #include "../Skill/BaseSkill.h"
 #include "TimerManager.h"
 

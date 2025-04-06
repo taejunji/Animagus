@@ -54,7 +54,7 @@ void UCharacterAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
     //    b_is_moving = (ground_speed > 3.f && movement_component->GetCurrentAcceleration() != FVector::ZeroVector);
     //}
 
-    b_is_moving = (ground_speed > 3.f && movement_component->GetCurrentAcceleration() != FVector::ZeroVector);
+    b_is_moving = (ground_speed > 3.f || movement_component->GetCurrentAcceleration() != FVector::ZeroVector);
     b_is_falling = movement_component->IsFalling(); 
     b_is_stun = character->GetIsHardHit();
 }

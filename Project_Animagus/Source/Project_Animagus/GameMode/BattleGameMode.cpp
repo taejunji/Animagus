@@ -10,6 +10,7 @@
 #include "../Character/AICharacter.h"
 #include "../PlayerController/Battle_PlayerController.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "GameFramework/NavMovementComponent.h"
 #include "Project_Animagus/Item/BaseItem.h"
 #include "Project_Animagus/UI/MyPlayerHUDWidget.h"
 #include "Algo/RandomShuffle.h"
@@ -216,6 +217,11 @@ void ABattleGameMode::SpawnPlayers()
         // AI 캐릭터 스폰
         AAICharacter* AIChar = GetWorld()->SpawnActor<AAICharacter>(AIPlayerClass,SpawnTransform);
         if (!AIChar) continue;
+
+        auto Movement = AIChar->GetCharacterMovement(); 
+        Movement->bUseControllerDesiredRotation = true; 
+        Movement->bOrientRotationToMovement = false; 
+        //Movement->bUseAccelerationForPaths = false; // MoveTo가 목적지 가까워져도 감속 없이 직선 고속 이동
 
         // AI 컨트롤러 생성 및 연결
         AMyAIController* AICtrl = GetWorld()->SpawnActor<AMyAIController>(AIControllerClass, SpawnTransform);
