@@ -2,7 +2,8 @@
 #include "Engine/World.h"
 #include "TimerManager.h"
 #include "../Character/BaseCharacter.h"  // 소유자 캐릭터 클래스 헤더
-
+#include "../AI/MyAIController.h"
+#include "../Character/AICharacter.h"
 
 UBaseSkill::UBaseSkill()
 {

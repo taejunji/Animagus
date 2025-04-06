@@ -11,6 +11,7 @@
 
 #include "Navigation/PathFollowingComponent.h"
 #include "../Character/BaseCharacter.h"
+#include "../Skill/BaseSkill.h"
 #include "TimerManager.h"
 
 #include "Perception/AIPerceptionComponent.h"
@@ -68,6 +69,13 @@ void AMyAIController::BeginPlay()
 
             AttackRadiusKey.SelectedKeyName = FName(TEXT("AttackRadius"));
             BlackboardPtr->SetValueAsFloat(AttackRadiusKey.SelectedKeyName, 600.f);
+
+            Skill_isCoolTime_Key.SetNum(5);
+            Skill_isCoolTime_Key[0].SelectedKeyName = FName(TEXT("Skill_0_Ready"));
+            Skill_isCoolTime_Key[1].SelectedKeyName = FName(TEXT("Skill_1_Ready"));
+            Skill_isCoolTime_Key[2].SelectedKeyName = FName(TEXT("Skill_2_Ready"));
+            Skill_isCoolTime_Key[3].SelectedKeyName = FName(TEXT("Skill_3_Ready"));
+            Skill_isCoolTime_Key[4].SelectedKeyName = FName(TEXT("Skill_4_Ready"));
         }
 
         if (AIPerceptionComponent) 
@@ -109,7 +117,9 @@ void AMyAIController::StartBehaviorTree()
     if (AIBehavior != nullptr)
     {
         SetControlMode(AIControlMode::BehaviorTree);
+
         RunBehaviorTree(AIBehavior);
+
     }
 }
 
@@ -127,6 +137,27 @@ void AMyAIController::SetControlMode(AIControlMode mode)
         ControlMode = AIControlMode::AIController;
         break;
     }
+}
+
+void AMyAIController::SetSkillCoolTime()
+{
+    UBlackboardComponent* BlackboardPtr = Blackboard.Get();
+
+    if (auto* MyCharacter = Cast<ABaseCharacter>(GetPawn())) 
+    {
+        Skill_1_CoolTime_Key.SelectedKeyName = FName(TEXT("Skill_1_CoolTime")); 
+        BlackboardPtr->SetValueAsFloat(Skill_1_CoolTime_Key.SelectedKeyName, MyCharacter->Skills[1]->CooldownTime);
+
+        Skill_2_CoolTime_Key.SelectedKeyName = FName(TEXT("Skill_2_CoolTime"));
+        BlackboardPtr->SetValueAsFloat(Skill_2_CoolTime_Key.SelectedKeyName, MyCharacter->Skills[2]->CooldownTime);
+
+        Skill_3_CoolTime_Key.SelectedKeyName = FName(TEXT("Skill_3_CoolTime"));
+        BlackboardPtr->SetValueAsFloat(Skill_3_CoolTime_Key.SelectedKeyName, MyCharacter->Skills[3]->CooldownTime);
+
+        Skill_4_CoolTime_Key.SelectedKeyName = FName(TEXT("Skill_4_CoolTime"));
+        BlackboardPtr->SetValueAsFloat(Skill_4_CoolTime_Key.SelectedKeyName, MyCharacter->Skills[4]->CooldownTime);
+    }
+
 }
 
 void AMyAIController::ResumeBehaviorTree()
@@ -149,19 +180,19 @@ void AMyAIController::Tick(float DeltaTime)
     UBlackboardComponent* BlackboardComponent = GetBlackboardComponent();
     if (!BlackboardComponent) return;
 
-    if (AI->GetIsDead())
-    {
-        // AI가 죽었으면 Behavior Tree를 멈춤
-        if (UBehaviorTreeComponent* BehaviorTreeComponent = Cast<UBehaviorTreeComponent>(BrainComponent))
-        {
-            SetControlMode(AIControlMode::AIController);
-            ClearFocus(EAIFocusPriority::Gameplay);  // Focus 해제
-            BehaviorTreeComponent->StopTree(); 
-        }
-    }
+    if (AI->GetIsDead()) return;
 
     // 타겟이 죽었는지 확인
     CheckAndDisableTargetIfDead();
+
+    // 스킬 쿨타임 확인
+    for (int32 i = 0; i < AI->Skills.Num(); i++) 
+    {
+        if (AI->Skills.IsValidIndex(i) && AI->Skills[i] != nullptr)
+        {
+            BlackboardComponent->SetValueAsBool(Skill_isCoolTime_Key[i].SelectedKeyName, AI->Skills[i]->bIsCooldown);
+        }
+    }
 
     // Blackboard에서 키의 FKey를 가져옴
     FBlackboard::FKey IsRunningKeyID = BlackboardComponent->GetKeyID(IsRunningKey.SelectedKeyName); 
@@ -387,7 +418,6 @@ void AMyAIController::ResetTargetChange()
 {
     bCanChangeTarget = true;
 }
-
 
 void AMyAIController::RememberLostTarget(AActor* Target)
 {

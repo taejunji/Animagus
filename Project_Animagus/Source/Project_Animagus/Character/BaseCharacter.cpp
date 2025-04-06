@@ -4,6 +4,11 @@
 #include "BaseCharacter.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Animation/AnimInstance.h"
+#include "AICharacter.h"
+#include "../AI/MyAIController.h"
+#include "BehaviorTree/BlackboardComponent.h"
+#include "BehaviorTree/BehaviorTreeComponent.h"
+
 
 #include "../Skill/BaseSkill.h"
 #include "../Skill/Fireball.h"
@@ -143,7 +148,6 @@ ABaseCharacter::ABaseCharacter()
     GetCapsuleComponent()->SetCollisionResponseToChannel(ECollisionChannel::ECC_GameTraceChannel2, ECollisionResponse::ECR_Overlap);
 }
 
-
 void ABaseCharacter::BeginPlay()
 {
 	Super::BeginPlay();
@@ -244,6 +248,21 @@ float ABaseCharacter::TakeDamage(float DamageAmount, struct FDamageEvent const& 
     if (hp <= 0)
     {
         // 사망 처리 로직...
+
+        // AI 사망 처리 
+        if (AAICharacter* AI = Cast<AAICharacter>(this))
+        {
+            if (AMyAIController* AIC = Cast<AMyAIController>(AI->GetController()))
+            {
+                // AI가 죽었으면 Behavior Tree를 멈춤
+                if (UBehaviorTreeComponent* BehaviorTreeComponent = Cast<UBehaviorTreeComponent>(AIC->BrainComponent))
+                {
+                    AIC->SetControlMode(AIControlMode::AIController);
+                    AIC->ClearFocus(EAIFocusPriority::Gameplay);  // Focus 해제
+                    BehaviorTreeComponent->StopTree();
+                }
+            }
+        }
     }
     return ActualDamage;
     //return Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
