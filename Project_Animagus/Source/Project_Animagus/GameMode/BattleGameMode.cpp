@@ -122,7 +122,7 @@ void ABattleGameMode::SpawnPlayers()
         return;
     }
     
-#if 1
+#if 0
     APlayerController* PC = UGameplayStatics::GetPlayerController(World, 0);
     if (PC)
     {
@@ -225,6 +225,7 @@ void ABattleGameMode::SpawnPlayers()
             AICtrl->SetControlRotation(FRotator(SpawnTransform.GetRotation()));
             AICtrl->SetIgnoreMoveInput(true);
             AICtrl->SetIgnoreLookInput(true);
+            AICtrl->SetSkillCoolTime();
         }
 
         SpawnedPlayers.Add(AIChar);
@@ -259,6 +260,7 @@ void ABattleGameMode::ActivateInput()
                 AICtrl->StartBehaviorTree();
                 AICtrl->SetIgnoreMoveInput(false);  // AI 입력 활성화
                 AICtrl->SetIgnoreLookInput(false);  // AI 회전 활성화
+
             }
 
             //if (UCharacterMovementComponent* MovementComp = AIChar->GetCharacterMovement())

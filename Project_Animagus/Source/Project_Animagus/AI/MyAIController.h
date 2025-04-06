@@ -8,6 +8,8 @@
 #include "MyAIController.generated.h"
 
 // 아오
+// Git에서 Merge하고 충돌하면 -> Git Desktop에서 update from main해야된다
+// 안그러면 바로 덮어씌워져서 꼬여버린다.
 /*
     Behavior Tree Node 
     1. Composite(복합) : 여러 개의 자식 노드 가짐
@@ -88,6 +90,17 @@ public:
     UPROPERTY(EditAnywhere, Category = "Blackboard")
     FBlackboardKeySelector AttackRadiusKey;
 
+    UPROPERTY(EditAnywhere, Category = "Blackboard")
+    FBlackboardKeySelector Skill_1_CoolTime_Key;
+    UPROPERTY(EditAnywhere, Category = "Blackboard")
+    FBlackboardKeySelector Skill_2_CoolTime_Key;
+    UPROPERTY(EditAnywhere, Category = "Blackboard")
+    FBlackboardKeySelector Skill_3_CoolTime_Key;
+    UPROPERTY(EditAnywhere, Category = "Blackboard")
+    FBlackboardKeySelector Skill_4_CoolTime_Key;
+
+    UPROPERTY(EditAnywhere, Category = "Blackboard")
+    TArray<FBlackboardKeySelector> Skill_isCoolTime_Key;
     
     bool bCanChangeTarget = true; // 타겟 변경 가능 여부
     FTimerHandle TargetChangeTimerHandle; // 타겟 변경 타이머
@@ -103,6 +116,8 @@ public:
     void StartBehaviorTree();
 
     void SetControlMode(AIControlMode mode);
+
+    void SetSkillCoolTime();
 
     UFUNCTION(BlueprintCallable)
     void ResumeBehaviorTree(); // BT 재개
