@@ -27,7 +27,7 @@ protected:
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Item")
     USphereComponent* CollisionComp;
 
-    /** 아이템 획득 시 재생할 피크업 이펙트 (나이아가라 시스템) */
+    /** 아이템 획득 시 재생할 피크업 이펙트*/
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Item")
     UNiagaraSystem* SpawnEffect;
 

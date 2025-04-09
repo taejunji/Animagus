@@ -43,7 +43,7 @@ void APlayerCharacter::BeginPlay()
     // 에디터에서 메쉬가 없는것처럼 보이지만 정상동작이다.
     InitPlayerMesh();
     GetMesh()->SetRelativeLocationAndRotation(FVector(0, 0, -55), FRotator(0, -90, 0)); // 메쉬 기본 위치, 회전값 설정( X축을 앞으로 바라보도록 설정하기 위함 )
-
+    
 }
 
 void APlayerCharacter::Tick(float DeltaTime)
@@ -54,6 +54,8 @@ void APlayerCharacter::Tick(float DeltaTime)
 
 void APlayerCharacter::InitPlayerMesh()
 {
+    UE_LOG(LogTemp, Log, TEXT("InitPlayerMesh() 시작"));
+    
     if (auto* GameInstance = Cast<UMyGameInstance>(GetGameInstance()))
     {
         switch (GameInstance->player_data.stored_mesh)
@@ -79,6 +81,38 @@ void APlayerCharacter::InitPlayerMesh()
             break;
         }
     }
+
+    if (AuraMaterialInstance)
+    {
+        UE_LOG(LogTemp, Warning, TEXT("InitPlayerMesh: AuraMaterialInstance 이미 생성됨, 재설정 진행."));
+    }
+    else
+    {
+        UE_LOG(LogTemp, Log, TEXT("InitPlayerMesh: AuraMaterialInstance 없음, 새로 생성합니다."));
+    }
+    
+    if (BaseAuraMaterial && GetMesh())
+    {
+       
+        AuraMaterialInstance = UMaterialInstanceDynamic::Create(BaseAuraMaterial, this);
+
+        if (AuraMaterialInstance)
+        {
+            // 초기 기본 색상 설정 
+            AuraMaterialInstance->SetVectorParameterValue(FName("BaseColor"), FLinearColor::White);
+            GetMesh()->SetOverlayMaterial(AuraMaterialInstance);
+            UE_LOG(LogTemp, Log, TEXT("PlayerCharacter: Dynamic Aura Material Instance created and set."));
+        }
+        else
+        {
+            UE_LOG(LogTemp, Warning, TEXT("PlayerCharacter: Failed to create dynamic aura material instance."));
+        }
+    }
+    else
+    {
+        UE_LOG(LogTemp, Warning, TEXT("aura 머티리얼 설정 실패"));
+    } 
+    UE_LOG(LogTemp, Log, TEXT("InitPlayerMesh() 끝"));
 }
 
 void APlayerCharacter::Initialize_TPS_Settings()

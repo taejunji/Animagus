@@ -119,7 +119,11 @@ public:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Skills")
     TSubclassOf<class UShockwaveSkill> ShockwaveBPClass;
 
- 
+    UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Visual")
+    UMaterialInstanceDynamic* AuraMaterialInstance;
+
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Visual")
+    UMaterialInterface* BaseAuraMaterial;
     
     // 지정 슬롯에 스킬을 장착하는 함수
     UFUNCTION(BlueprintCallable, Category="Skills")
@@ -134,6 +138,9 @@ public:
     
     UFUNCTION(BlueprintCallable, Category = "PowerUp")
     void IncreasePowerUpLevel();
+
+    UFUNCTION(BlueprintCallable, Category="PowerUp")
+    void UpdateAuraColorBasedOnPowerUpLevel();
     
     // 스턴 상태 변수: 스턴 중이면 true
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Status")

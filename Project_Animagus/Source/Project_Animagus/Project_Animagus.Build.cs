@@ -20,7 +20,9 @@ public class Project_Animagus : ModuleRules
             "NavigationSystem",
             "Slate",
             "SlateCore", 
-            "UMG"
+            "UMG",
+            "Chaos", 
+            "GeometryCollectionEngine"
         });
 
 		PrivateDependencyModuleNames.AddRange(new string[] {  });
