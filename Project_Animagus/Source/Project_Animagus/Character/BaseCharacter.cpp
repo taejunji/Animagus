@@ -32,7 +32,7 @@ ABaseCharacter::ABaseCharacter()
 
     skill_Sellect = 0;
     
-    // 애님 인스턴스 설정
+        // 애님 인스턴스 설정
     static ConstructorHelpers::FClassFinder<UAnimInstance> AnimBP(TEXT("/Game/WorkFolder/Animation/AnimSystem/ABP_AnimationSystem.ABP_AnimationSystem_C"));
     if (AnimBP.Succeeded())
     {
@@ -173,8 +173,12 @@ void ABaseCharacter::BeginPlay()
 
     UE_LOG(LogTemp, Log, TEXT("BaseCharacter::BeginPlay() - Capsule Collision Response for Shockwave: %d"),
     (int)GetCapsuleComponent()->GetCollisionResponseToChannel(ECollisionChannel::ECC_GameTraceChannel2));
+
     
     InitializeSkills();
+    
+
+
 }
 
 void ABaseCharacter::PlayAnimMontageByType(MontageType montage_type)
@@ -507,6 +511,11 @@ void ABaseCharacter::RemoveStun()
 
 void ABaseCharacter::IncreasePowerUpLevel()
 {
+    if (PowerUpLevel > 14)
+    {
+        return;
+    }
+    
     PowerUpLevel++;
     UE_LOG(LogTemp, Log, TEXT("%s PowerUpLevel increased to %d"), *GetName(), PowerUpLevel);
 
@@ -518,6 +527,62 @@ void ABaseCharacter::IncreasePowerUpLevel()
             Skill->UpgradeSkill(PowerUpLevel);
         }
     }
+
+    hp += 10.f;
+    max_hp += 10.f;
     
+    UpdateAuraColorBasedOnPowerUpLevel(); 
     // HUD 업데이트 등 추가 작업 가능 (예: 플레이어 머리 위에 현재 강화 단계를 표시)
+}
+
+void ABaseCharacter::UpdateAuraColorBasedOnPowerUpLevel()
+{
+    
+    if (!AuraMaterialInstance)
+    {
+        UE_LOG(LogTemp, Warning, TEXT("UpdateAuraColorBasedOnPowerUpLevel: Failed to get dynamic material instance."));
+        return;
+    }
+
+    FLinearColor NewColor;
+    // PowerUpLevel에 따라 색상 결정 (예시: 1~2: Red, 3~4: Orange, 5~6: Yellow, 7~8: Green, 9~10: Blue, 11~12: Indigo, 13~14: Purple)
+    if (PowerUpLevel == 1 || PowerUpLevel == 7)
+    {
+        NewColor = FLinearColor::Red;
+    }
+    else if (PowerUpLevel == 2 || PowerUpLevel == 8)
+    {
+        NewColor = FLinearColor(1.0f, 0.25f, 0.0f, 0.5f); // Orange
+    }
+    else if (PowerUpLevel == 3 || PowerUpLevel == 9)
+    {
+        NewColor = FLinearColor::Yellow;
+    }
+    else if (PowerUpLevel == 4 || PowerUpLevel == 10)
+    {
+        NewColor = FLinearColor::Green;
+       
+    }
+    else if (PowerUpLevel == 5 || PowerUpLevel == 11)
+    {
+        NewColor = FLinearColor::Blue;
+    }
+    else if (PowerUpLevel == 6 || PowerUpLevel == 12)
+    {
+        NewColor = FLinearColor(0.29f, 0.0f, 0.51f); // Indigo (근사치)
+    }
+    else
+    {
+        NewColor = FLinearColor(1.5f, 3.0f, 8.5f);
+    }
+
+    if (PowerUpLevel > 6)
+    {
+        AuraMaterialInstance->SetScalarParameterValue(FName("Power"), 15.f);
+    }
+
+    // "auracolor" 파라미터 업데이트
+    AuraMaterialInstance->SetVectorParameterValue(FName("BaseColor"), NewColor);
+
+    UE_LOG(LogTemp, Log, TEXT("UpdateAuraColorBasedOnPowerUpLevel: Updated auracolor to %s for PowerUpLevel %d"), *NewColor.ToString(), PowerUpLevel);
 }
