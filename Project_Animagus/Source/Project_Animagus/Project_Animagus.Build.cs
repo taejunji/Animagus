@@ -22,7 +22,7 @@ public class Project_Animagus : ModuleRules
             "Networking",
             "Slate",
             "SlateCore",
-            "UMG"
+            "UMG",
             "SlateCore", 
             "UMG",
             "Chaos", 

@@ -205,10 +205,6 @@ void ABattleGameMode::SpawnPlayers()
         }
 
     }
-    else
-    {
-        UE_LOG(LogTemp, Warning, TEXT("BattleGameMode: PossessIndex %d가 유효하지 않음."), PossessIndex);
-    }
 
     // "0"번 플레이어가 아닌 경우 AI 생성하지 않고 나가기
     if (PossessIndex != 0) return;
@@ -408,36 +404,23 @@ void ABattleGameMode::CountdownTimerUpdate()
     float DisplayTime = FMath::CeilToFloat(CurrentCountdownTime);
     if (DisplayTime > 0)
     {
-        // 각 플레이어의 HUD 업데이트 (SpawnedPlayers 배열의 각 플레이어의 컨트롤러에서 HUD에 업데이트)
-        for (auto& Item : SpawnedPlayers)
+        // 자신의 HUD도 업데이트
+        ABattle_PlayerController* PC = Cast<ABattle_PlayerController>(PlayerCharacter->GetController());
+        if (PC && PC->PlayerHUD)
         {
-            ABaseCharacter* Player = Item.Value;
-            if (Player && Player->GetController())
-            {
-                ABattle_PlayerController* PC = Cast<ABattle_PlayerController>(Player->GetController());
-                if (PC && PC->PlayerHUD)
-                {
-                    PC->PlayerHUD->UpdateCountdown(DisplayTime);
-                }
-            }
+            PC->PlayerHUD->UpdateCountdown(DisplayTime);
         }
+
         UE_LOG(LogTemp, Log, TEXT("Countdown: %.0f"), DisplayTime);
     }
     else
     {
-        // CountdownValue가 0 이하이면 HUD를 빈 텍스트로 업데이트하고 타이머 종료
-        for (auto& Item : SpawnedPlayers)
+        ABattle_PlayerController* PC = Cast<ABattle_PlayerController>(PlayerCharacter->GetController());
+        if (PC && PC->PlayerHUD)
         {
-            ABaseCharacter* Player = Item.Value;
-            if (Player && Player->GetController())
-            {
-                ABattle_PlayerController* PC = Cast<ABattle_PlayerController>(Player->GetController());
-                if (PC && PC->PlayerHUD)
-                {
-                    PC->PlayerHUD->UpdateCountdown(0.0f);
-                }
-            }
+            PC->PlayerHUD->UpdateCountdown(0.0f);
         }
+
         GetWorld()->GetTimerManager().ClearTimer(CountdownTimerHandle);
         // 라운드 진행 타이머 시작
         GetWorld()->GetTimerManager().SetTimer(RoundTimerHandle, this, &ABattleGameMode::RoundTimerUpdate, 1.0f, true);
