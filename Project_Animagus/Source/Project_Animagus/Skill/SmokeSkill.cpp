@@ -16,6 +16,18 @@ USmokeSkill::USmokeSkill()
     CooldownTime = 5.0f;
     SmokeProjectileSpeed = 1000.f; // 기본값, 필요에 따라 조정 가능
 
+    //SmokeProjectileBPClass = nullptr;  // 에디터에서 할당할 것
+    static ConstructorHelpers::FClassFinder<AProjectile_Smoke> SmokeBPFinder(TEXT("/Game/WorkFolder/Bluprints/Projectiles/MyProjectile_Smoke"));
+    if (SmokeBPFinder.Succeeded())
+    {
+        SmokeProjectileBPClass = SmokeBPFinder.Class;
+    }
+    else
+    {
+        UE_LOG(LogTemp, Warning, TEXT("Failed to load Smoke BP class!"));
+    }
+
+
     SkillType = Protocol::SkillType::SMOKE;
 
 }
@@ -46,7 +58,8 @@ void USmokeSkill::ActiveSkill_Implementation()
     else
     {
         CameraLocation = Owner->GetActorLocation();
-        CameraRotation = Owner->GetActorRotation();
+        //CameraRotation = Owner->GetActorRotation();
+        CameraRotation = Rotation;
     }
 
     // 스폰 위치: 캐릭터의 전면 (예: 캐릭터 위치에서 전방으로 70cm)

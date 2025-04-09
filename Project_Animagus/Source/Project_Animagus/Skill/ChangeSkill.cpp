@@ -16,7 +16,16 @@ UChangeSkill::UChangeSkill()
     ChangeSpeed = 1000.f;       // 투사체 속도
 
     BaseCooldownTime = CooldownTime;
-    ProjectileBPClass = nullptr;  // 에디터에서 할당할 것
+    //ProjectileBPClass = nullptr;  // 에디터에서 할당할 것
+    static ConstructorHelpers::FClassFinder<AProjectile_change> ChangeBPFinder(TEXT("/Game/WorkFolder/Bluprints/Projectiles/MyProjectile_change"));
+    if (ChangeBPFinder.Succeeded())
+    {
+        ProjectileBPClass = ChangeBPFinder.Class;
+    }
+    else
+    {
+        UE_LOG(LogTemp, Warning, TEXT("Failed to load Change BP class!"));
+    }
 
     SkillType = Protocol::SkillType::CHANGE;
 
@@ -58,7 +67,8 @@ void UChangeSkill::ActiveSkill_Implementation()
     }
     else
     {
-        CameraRotation = Owner->GetActorRotation();
+        //CameraRotation = Owner->GetActorRotation();
+        CameraRotation = Rotation;
         UE_LOG(LogTemp, Log, TEXT("UChangeSkill: Controller 없음, CameraRotation = %s"), *CameraRotation.ToString());
     }
     

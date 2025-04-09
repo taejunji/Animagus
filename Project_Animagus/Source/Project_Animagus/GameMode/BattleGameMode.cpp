@@ -356,15 +356,19 @@ void ABattleGameMode::SpawnSkill(Protocol::CS_USING_SKILL_PKT& pkt)
             break;
     case Protocol::SkillType::MAGICMISSILE:
             Skill = NewObject<UMagicMissile>(this, UMagicMissile::StaticClass());
+            Skill->SetSkillRotation(pkt.pitch, pkt.yaw, pkt.roll);
             break;
     case Protocol::SkillType::SMOKE:
             Skill = NewObject<USmokeSkill>(this, USmokeSkill::StaticClass());
+            Skill->SetSkillRotation(pkt.pitch, pkt.yaw, pkt.roll);
             break;
     case Protocol::SkillType::RADIAL:
             Skill = NewObject<URadialSkill>(this, URadialSkill::StaticClass());
+            Skill->SetSkillRotation(pkt.pitch, pkt.yaw, pkt.roll);
             break;
     case Protocol::SkillType::CHANGE:
             Skill = NewObject<UChangeSkill>(this, UChangeSkill::StaticClass());
+            Skill->SetSkillRotation(pkt.pitch, pkt.yaw, pkt.roll);
             break;
     case Protocol::SkillType::STUN:
             Skill = NewObject<UStun>(this, UStun::StaticClass());

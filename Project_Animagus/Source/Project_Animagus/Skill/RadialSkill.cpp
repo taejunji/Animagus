@@ -1,5 +1,6 @@
 #include "RadialSkill.h"
 #include "../Projectile/ProjectileBase.h"
+#include "../Projectile/Projectile_Radial.h"
 #include "Kismet/GameplayStatics.h"
 #include "../Character/BaseCharacter.h"
 #include "GameFramework/PlayerController.h"
@@ -20,7 +21,17 @@ URadialSkill::URadialSkill()
     BaseNumberOfProjectiles = NumberOfProjectiles;
     BaseRadialDamage = RadialDamage;
     
-    ProjectileBPClass = nullptr;         // 에디터에서 할당 필요
+    //ProjectileBPClass = nullptr;         // 에디터에서 할당 필요
+    static ConstructorHelpers::FClassFinder<AProjectile_Radial> RadialBPFinder(TEXT("/Game/WorkFolder/Bluprints/Projectiles/MyProjectile_Radial"));
+    if (RadialBPFinder.Succeeded())
+    {
+        ProjectileBPClass = RadialBPFinder.Class;
+    }
+    else
+    {
+        UE_LOG(LogTemp, Warning, TEXT("Failed to load Radial BP class!"));
+    }
+
 
     SkillType = Protocol::SkillType::RADIAL;
 }
@@ -55,7 +66,8 @@ void URadialSkill::ActiveSkill_Implementation()
     }
     else
     {
-        CameraRotation = Owner->GetActorRotation();
+        //CameraRotation = Owner->GetActorRotation();
+        CameraRotation = Rotation;
         UE_LOG(LogTemp, Log, TEXT("URadialSkill: Controller 없음, CameraRotation = %s"), *CameraRotation.ToString());
     }
     

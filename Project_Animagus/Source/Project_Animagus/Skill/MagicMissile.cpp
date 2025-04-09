@@ -63,7 +63,8 @@ void UMagicMissile::ActiveSkill_Implementation()
     else
     {
         CameraLocation = Owner->GetActorLocation();
-        CameraRotation = Owner->GetActorRotation();
+        //CameraRotation = Owner->GetActorRotation();
+        CameraRotation = Rotation;
     }
 
     // 스폰 위치: 캐릭터 위치에서 전방 100cm, 동시에 Z축으로 50cm 올림
