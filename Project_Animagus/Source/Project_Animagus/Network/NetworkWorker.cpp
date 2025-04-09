@@ -177,6 +177,8 @@ bool SendWorker::SendDesiredBytes(const uint8* Buffer, int32 Size)
         if (Socket->Send(Buffer, Size, BytesSent) == false)
             return false;
 
+        UE_LOG(LogTemp, Log, TEXT("Send Packet, PacketSize : %d"), BytesSent);
+
         Size -= BytesSent;
         Buffer += BytesSent;
     }

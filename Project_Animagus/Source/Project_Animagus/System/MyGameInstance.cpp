@@ -170,6 +170,21 @@ void UMyGameInstance::HandleEnterGame(Protocol::SC_ENTER_GAME_PKT& pkt)
 {
     if (Socket == nullptr || ClientSession == nullptr)
         return;
+
+    auto* World = GetWorld();
+    if (World == nullptr)
+        return;
+    AGameModeBase* BaseGameMode = UGameplayStatics::GetGameMode(World);
+    if (BaseGameMode)
+    {
+        ABattleGameMode* GameMode = Cast<ABattleGameMode>(BaseGameMode);
+        if (GameMode)
+        {
+            GameMode->SetPlayerIndex(pkt.player_id);
+            //GameMode->SetPlayerType(pkt.player_type);
+            //GameMode->SetPlayerName(pkt.player_name);
+        }
+    }
     
     UE_LOG(LogTemp, Warning, TEXT("PlayerIndex: %d"), pkt.player_id);
 

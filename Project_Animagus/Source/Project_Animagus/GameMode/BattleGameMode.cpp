@@ -13,7 +13,7 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "../Character/NetworkCharacter.h"
 #include "Project_Animagus/UI/MyPlayerHUDWidget.h"
-#include "../Skill/BaseSkill.h"
+#include "../Skill/SkillsPch.h"
 
 
 ABattleGameMode::ABattleGameMode()
@@ -121,75 +121,78 @@ void ABattleGameMode::SpawnPlayers()
     }
     
 
-    //APlayerController* PC = UGameplayStatics::GetPlayerController(World, 0);
-    //if (PC)
-    //{
-    //    APawn* AutoPawn = PC->GetPawn();
-    //    if (AutoPawn)
-    //    {
-    //        UE_LOG(LogTemp, Log, TEXT("BattleGameMode: 자동 생성된 Pawn %s 제거함."), *AutoPawn->GetName());
-    //        AutoPawn->Destroy();
-    //    }
-    //}
-    //
-    //// 플레이어 캐릭터들을 SpawnLocations 배열에 따라 스폰함
-    //SpawnedPlayers.Empty();
-    //if (!World)
-    //{
-    //    UE_LOG(LogTemp, Warning, TEXT("BattleGameMode: World가 null임."));
-    //    return;
-    //}
-    //
-    //// SpawnLocations 배열에 최소 4개가 있어야 함.
-    //if (SpawnLocations.Num() < 4)
-    //{
-    //    UE_LOG(LogTemp, Warning, TEXT("BattleGameMode: SpawnLocations 수가 충분하지 않음."));
-    //    return;
-    //}
-    //
-    //for (int32 i = 0; i < 1; i++)
-    //{
-    //    FTransform SpawnTransform;
-    //    SpawnTransform.SetLocation(SpawnLocations[i]);
-    //    SpawnTransform.SetLocation(SpawnLocations[i]);
-    //    // 회전값은 SpawnRotations 배열의 값을 사용함 (있으면)
-    //    if (SpawnRotations.IsValidIndex(i))
-    //    {
-    //        SpawnTransform.SetRotation(SpawnRotations[i].Quaternion());
-    //    }
-    //    else
-    //    {
-    //        SpawnTransform.SetRotation(FRotator::ZeroRotator.Quaternion());
-    //    }
-    //    ABaseCharacter* NewCharacter = World->SpawnActor<ABaseCharacter>(DefaultPawnClass, SpawnTransform);
-    //    if (NewCharacter)
-    //    {
-    //        SpawnedPlayers.Add(NewCharacter);
-    //        UE_LOG(LogTemp, Log, TEXT("BattleGameMode: 플레이어 %d 스폰됨, 위치: %s"), i, *SpawnLocations[i].ToString());
-    //    }
-    //    else
-    //    {
-    //        UE_LOG(LogTemp, Warning, TEXT("BattleGameMode: 플레이어 %d 스폰 실패"), i);
-    //    }
-    //}
-    //
+    APlayerController* PC = UGameplayStatics::GetPlayerController(World, 0);
+    if (PC)
+    {
+        APawn* AutoPawn = PC->GetPawn();
+        if (AutoPawn)
+        {
+            UE_LOG(LogTemp, Log, TEXT("BattleGameMode: 자동 생성된 Pawn %s 제거함."), *AutoPawn->GetName());
+            AutoPawn->Destroy();
+        }
+    }
+    
+    // 플레이어 캐릭터들을 SpawnLocations 배열에 따라 스폰함
+    SpawnedPlayers.Empty();
+    if (!World)
+    {
+        UE_LOG(LogTemp, Warning, TEXT("BattleGameMode: World가 null임."));
+        return;
+    }
+    
+    //SpawnLocations 배열에 최소 4개가 있어야 함.
+    if (SpawnLocations.Num() < 4)
+    {
+        UE_LOG(LogTemp, Warning, TEXT("BattleGameMode: SpawnLocations 수가 충분하지 않음."));
+        return;
+    }
+    
+    for (int32 i = 0; i < 1; i++)
+    {
+        FTransform SpawnTransform;
+        SpawnTransform.SetLocation(SpawnLocations[i]);
+        SpawnTransform.SetLocation(SpawnLocations[i]);
+        // 회전값은 SpawnRotations 배열의 값을 사용함 (있으면)
+        if (SpawnRotations.IsValidIndex(i))
+        {
+            SpawnTransform.SetRotation(SpawnRotations[i].Quaternion());
+        }
+        else
+        {
+            SpawnTransform.SetRotation(FRotator::ZeroRotator.Quaternion());
+        }
+
+        ABaseCharacter* NewCharacter = World->SpawnActor<ABaseCharacter>(DefaultPawnClass, SpawnTransform);
+        if (NewCharacter)
+        {
+            PlayerCharacter = Cast<APlayerCharacter>(NewCharacter);
+            UE_LOG(LogTemp, Log, TEXT("BattleGameMode: 플레이어 %d 스폰됨, 위치: %s"), i, *SpawnLocations[i].ToString());
+        }
+        else
+        {
+            UE_LOG(LogTemp, Warning, TEXT("BattleGameMode: 플레이어 %d 스폰 실패"), i);
+        }
+
+        PC = UGameplayStatics::GetPlayerController(World, 0);
+        if (PC)
+        {
+            PC->Possess(PlayerCharacter);
+            PC->DisableInput(PC); // 입력 비활성화
+
+            //if (UCharacterMovementComponent* MovementComp = SpawnedPlayers[PossessIndex]->GetCharacterMovement())
+            //{
+            //    MovementComp->SetMovementMode(EMovementMode::MOVE_None);   // 공중에서 멈춰서 5초 
+            //    MovementComp->SetMovementMode(EMovementMode::MOVE_Falling);// 시작하자마자 낙하하고 5초 
+            //}
+
+            UE_LOG(LogTemp, Log, TEXT("BattleGameMode: PlayerController가 인덱스 %d의 캐릭터를 소유함."), PossessIndex);
+        }
+
+    }
+
     //// PossessIndex 안전 검사 후, 해당 인덱스의 캐릭터를 소유하도록 함
     //if (SpawnedPlayers.IsValidIndex(PossessIndex))
     //{
-    //    PC = UGameplayStatics::GetPlayerController(World, 0);
-    //    if (PC)
-    //    {
-    //        PC->Possess(SpawnedPlayers[PossessIndex]);
-    //        PC->DisableInput(PC); // 입력 비활성화
-    //
-    //        //if (UCharacterMovementComponent* MovementComp = SpawnedPlayers[PossessIndex]->GetCharacterMovement())
-    //        //{
-    //        //    MovementComp->SetMovementMode(EMovementMode::MOVE_None);   // 공중에서 멈춰서 5초 
-    //        //    MovementComp->SetMovementMode(EMovementMode::MOVE_Falling);// 시작하자마자 낙하하고 5초 
-    //        //}
-    //
-    //        UE_LOG(LogTemp, Log, TEXT("BattleGameMode: PlayerController가 인덱스 %d의 캐릭터를 소유함."), PossessIndex);
-    //    }
     //}
     //else
     //{
@@ -255,7 +258,7 @@ void ABattleGameMode::SpawnPlayer(Protocol::SC_SPAWN_PKT& pkt)
     if (NewPlayer)
     {
         // TODO
-        NewPlayer->SetPlayerID(p_id);
+        NewPlayer->SetPlayerId(p_id);
         NewPlayer->SetPlayerType(type);
 
         SpawnedPlayers.Add(static_cast<int32>(p_id), NewPlayer);
@@ -271,7 +274,7 @@ void ABattleGameMode::SpawnPlayer(Protocol::SC_SPAWN_PKT& pkt)
 
 void ABattleGameMode::ActivateInput()
 {
-    ABattle_PlayerController* PlayerController = Cast<ABattle_PlayerController>(SpawnedPlayers[PossessIndex]->GetController()); // 첫 번째 플레이어 컨트롤러 가져오기
+    ABattle_PlayerController* PlayerController = Cast<ABattle_PlayerController>(PlayerCharacter->GetController()); // 첫 번째 플레이어 컨트롤러 가져오기
     if (PlayerController)
     {
         PlayerController->EnableInput(PlayerController);
@@ -320,7 +323,31 @@ void ABattleGameMode::SpawnSkill(Protocol::CS_USING_SKILL_PKT& pkt)
     if (SpawnedPlayers.Contains(static_cast<int32>(pkt.player_id)) == false) return;
     //if (static_cast<int32>(pkt.player_id) == PlayerId) return;    // 자신이 쏜 스킬은 스폰X
 
-    SpawnedPlayers[static_cast<int32>(pkt.player_id)]->Skills[0]->ActiveSkill();    // TODO: SkillType 에 맞는 스킬 사용하도록
+    UBaseSkill* Skill = nullptr;
+
+    if (pkt.s_type == Protocol::SkillType::NONE)
+    {
+        UE_LOG(LogTemp, Error, TEXT("SpawnSkill: Skill type is NONE"));
+        return;
+    }
+    else if (pkt.s_type == Protocol::SkillType::FIREBALL)
+    {
+        Skill = NewObject<UFireball>(this, UFireball::StaticClass());
+    }
+    else if (pkt.s_type == Protocol::SkillType::SHIELD)
+    {
+        Skill = NewObject<UShieldSkill>(this, UShieldSkill::StaticClass());
+    }
+    else
+    {
+        UE_LOG(LogTemp, Error, TEXT("SpawnSkill: Unknown skill type"));
+        return;
+    }
+
+    if (Skill && SpawnedPlayers.Contains(static_cast<int32>(pkt.player_id))) {
+        Skill->Owner = SpawnedPlayers[static_cast<int32>(pkt.player_id)];
+        Skill->ActiveSkill();   // TODO: pkt.pitch, yaw, roll로 회전값 설정 따로 해줘야 함
+    }
 }
 
 void ABattleGameMode::PrintElapsedtime()

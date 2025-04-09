@@ -73,9 +73,10 @@ bool Room::HandleEnterPlayer(PlayerRef player)
         if (auto session = player->ownerSession.lock())
             session->Send(sendBuffer);
 
-        //std::cout << "Send Enter Game Packet" << std::endl;
+        std::cout << "Send Enter Game Packet to " << player->playerID << std::endl;
 
         n_pid = player->playerID;
+        //std::cout << n_pid << std::endl;
     }
 
     // 신입 플레이어에게 기존 플레이어들 정보 전송
@@ -98,7 +99,7 @@ bool Room::HandleEnterPlayer(PlayerRef player)
             if (auto session = player->ownerSession.lock())
                 session->Send(sendBuffer);
 
-            //std::cout << item.first << " Send Spawn Packet to " << n_pid << std::endl;
+            std::cout << item.first << "'s info Send Spawn Packet to " << n_pid << std::endl;
         }
     }
 
@@ -169,11 +170,11 @@ bool Room::HandleSkillLocked(Protocol::CS_USING_SKILL_PKT& pkt)
     std::lock_guard lock(m_mutex);
 
     const uint16 playerId = pkt.player_id;
-    if (m_players.find(playerId) == m_players.end())
+    if (m_players.contains(playerId) == false)
         return false;
 
-    std::cout << "Player" << playerId << " Used Skill " << static_cast<int>(pkt.s_type);
-    std::cout << " " << pkt.x << " " << pkt.y << " " << pkt.z << std::endl;
+    std::cout << "Player" << playerId << " Used Skill " << static_cast<int>(pkt.s_type) << std::endl;
+    //std::cout << " " << pkt.x << " " << pkt.y << " " << pkt.z << std::endl;
 
     // 뭐 더 붙일 정보가 있나?
 

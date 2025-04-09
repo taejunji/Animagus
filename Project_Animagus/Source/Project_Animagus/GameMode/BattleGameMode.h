@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/GameModeBase.h"
+#include "../Character/PlayerCharacter.h"
 
 #include "../Server/Server/protocol.h"
 
@@ -87,6 +88,9 @@ public:
     // 내가 소유할 플레이어 인덱스 (예: GameInstance에서 가져올 수 있음)
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Spawning", meta = (AllowPrivateAccess = "true"))
     int32 PossessIndex;
+
+
+    APlayerCharacter* PlayerCharacter; // 플레이어 캐릭터 포인터
 
 public:
     int16 RoomId = 0;
