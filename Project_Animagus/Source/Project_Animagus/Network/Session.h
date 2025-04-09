@@ -27,6 +27,8 @@ public:
     // GameThread와 NetworkThread가 데이터 주고 받는 공용 큐.
     TQueue<TArray<uint8>> RecvPacketQueue;
     TQueue<SendBufferRef> SendPacketQueue;
+
+    // 커밋 보호용
 };
 
 
