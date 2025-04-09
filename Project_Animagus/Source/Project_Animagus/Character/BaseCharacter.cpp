@@ -4,6 +4,11 @@
 #include "BaseCharacter.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Animation/AnimInstance.h"
+#include "AICharacter.h"
+#include "../AI/MyAIController.h"
+#include "BehaviorTree/BlackboardComponent.h"
+#include "BehaviorTree/BehaviorTreeComponent.h"
+
 
 #include "../Skill/BaseSkill.h"
 #include "../Skill/Fireball.h"
@@ -13,6 +18,7 @@
 #include "Project_Animagus/Skill/ChangeSkill.h"
 #include "Project_Animagus/Skill/RadialSkill.h"
 #include "Project_Animagus/Skill/ShieldSkill.h"
+#include "Project_Animagus/Skill/ShockwaveSkill.h"
 #include "Project_Animagus/Skill/SmokeSkill.h"
 #include "Project_Animagus/Skill/Stun.h"
 
@@ -22,11 +28,15 @@
 
 ABaseCharacter::ABaseCharacter()
 {
-	PrimaryActorTick.bCanEverTick = true;
+    PrimaryActorTick.bCanEverTick = true;
 
     Skills.SetNum(5); 
 
-    // 애님 인스턴스 설정
+    PowerUpLevel = 0;
+
+    skill_Sellect = 0;
+    
+        // 애님 인스턴스 설정
     static ConstructorHelpers::FClassFinder<UAnimInstance> AnimBP(TEXT("/Game/WorkFolder/Animation/AnimSystem/ABP_AnimationSystem.ABP_AnimationSystem_C"));
     if (AnimBP.Succeeded())
     {
@@ -82,7 +92,7 @@ ABaseCharacter::ABaseCharacter()
         UE_LOG(LogTemp, Warning, TEXT("BaseCharacter: Failed to load StunBPClassFinder!"));
     } 
 
-static ConstructorHelpers::FClassFinder<URadialSkill> RadialBPClassFinder(TEXT("/Game/WorkFolder/Bluprints/Skills/MyRadialSkill"));
+    static ConstructorHelpers::FClassFinder<URadialSkill> RadialBPClassFinder(TEXT("/Game/WorkFolder/Bluprints/Skills/MyRadialSkill"));
     if (RadialBPClassFinder.Succeeded())
     {
         RadialBPClass = RadialBPClassFinder.Class;
@@ -125,8 +135,20 @@ static ConstructorHelpers::FClassFinder<URadialSkill> RadialBPClassFinder(TEXT("
     {
         UE_LOG(LogTemp, Warning, TEXT("BaseCharacter: Failed to load ShieldBPClassFinder!"));
     }
+
+    static ConstructorHelpers::FClassFinder<UShockwaveSkill> ShockwaveBPClassFinder(TEXT("/Game/WorkFolder/Bluprints/Skills/MyShockwaveSkill"));
+    if (ShockwaveBPClassFinder.Succeeded())
+    {
+        ShockwaveBPClass = ShockwaveBPClassFinder.Class;
+        UE_LOG(LogTemp, Log, TEXT("BaseCharacter: Successfully loaded ShockBPClassFinder: %s"), *ShockwaveBPClass -> GetName());
+    }
+    else
+    {
+        UE_LOG(LogTemp, Warning, TEXT("BaseCharacter: Failed to load ShockBPClassFinder!"));
+    }
     
     bIsStunned = false;
+
     GetCapsuleComponent()->SetCollisionResponseToChannel(ECollisionChannel::ECC_GameTraceChannel2, ECollisionResponse::ECR_Overlap);
 }
 
@@ -155,8 +177,12 @@ void ABaseCharacter::BeginPlay()
 
     UE_LOG(LogTemp, Log, TEXT("BaseCharacter::BeginPlay() - Capsule Collision Response for Shockwave: %d"),
     (int)GetCapsuleComponent()->GetCollisionResponseToChannel(ECollisionChannel::ECC_GameTraceChannel2));
+
     
     InitializeSkills();
+    
+
+
 }
 
 void ABaseCharacter::PlayAnimMontageByType(MontageType montage_type)
@@ -192,6 +218,7 @@ void ABaseCharacter::Tick(float DeltaTime)
             // 일시적으로 이동을 멈추고 싶다면? → DisableMovement()
             // 이동을 완전히 비활성화하고 싶다면 ? → SetMovementMode(MOVE_None)
             GetCharacterMovement()->DisableMovement();
+            GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
         }
         return;
     }
@@ -229,6 +256,21 @@ float ABaseCharacter::TakeDamage(float DamageAmount, struct FDamageEvent const& 
     if (hp <= 0)
     {
         // 사망 처리 로직...
+
+        // AI 사망 처리 
+        if (AAICharacter* AI = Cast<AAICharacter>(this))
+        {
+            if (AMyAIController* AIC = Cast<AMyAIController>(AI->GetController()))
+            {
+                // AI가 죽었으면 Behavior Tree를 멈춤
+                if (UBehaviorTreeComponent* BehaviorTreeComponent = Cast<UBehaviorTreeComponent>(AIC->BrainComponent))
+                {
+                    AIC->SetControlMode(AIControlMode::AIController);
+                    AIC->ClearFocus(EAIFocusPriority::Gameplay);  // Focus 해제
+                    BehaviorTreeComponent->StopTree();
+                }
+            }
+        }
     }
     return ActualDamage;
     //return Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
@@ -242,6 +284,8 @@ void ABaseCharacter::EquipSkill(int32 SlotIndex, UBaseSkill* NewSkill)
     {
         Skills[SlotIndex] = NewSkill;
     }
+
+    
 }
 
 void ABaseCharacter::InitializeSkills()
@@ -350,6 +394,89 @@ void ABaseCharacter::InitializeSkills()
     
 }
 
+void ABaseCharacter::TestSkill_Change()
+{
+    // 슬롯 0: UBounce 스킬 생성
+    if (BounceBPClass)
+    {
+        UBaseSkill* NewSkill = NewObject<UBounce>(this, BounceBPClass);
+        if (NewSkill)
+        {
+            NewSkill->Owner = this;
+            Skills[0] = NewSkill;
+            UE_LOG(LogTemp, Log, TEXT("TestSkill_Change: Successfully created Bounce skill for slot 0: %s"), *NewSkill->GetName());
+        }
+        else
+        {
+            UE_LOG(LogTemp, Warning, TEXT("TestSkill_Change: Failed to create Bounce skill for slot 0"));
+        }
+    }
+    else
+    {
+        UE_LOG(LogTemp, Warning, TEXT("TestSkill_Change: BounceBPClass is not assigned."));
+    }
+
+    // 슬롯 1: UStun 스킬 생성
+    if (StunBPClass)
+    {
+        UBaseSkill* NewSkill = NewObject<UStun>(this, StunBPClass);
+        if (NewSkill)
+        {
+            NewSkill->Owner = this;
+            Skills[1] = NewSkill;
+            UE_LOG(LogTemp, Log, TEXT("TestSkill_Change: Successfully created Stun skill for slot 1: %s"), *NewSkill->GetName());
+        }
+        else
+        {
+            UE_LOG(LogTemp, Warning, TEXT("TestSkill_Change: Failed to create Stun skill for slot 1"));
+        }
+    }
+    else
+    {
+        UE_LOG(LogTemp, Warning, TEXT("TestSkill_Change: StunBPClass is not assigned."));
+    }
+
+    // 슬롯 2: UChangeSkill 스킬 생성
+    if (ChangeBPClass)
+    {
+        UBaseSkill* NewSkill = NewObject<UChangeSkill>(this, ChangeBPClass);
+        if (NewSkill)
+        {
+            NewSkill->Owner = this;
+            Skills[2] = NewSkill;
+            UE_LOG(LogTemp, Log, TEXT("TestSkill_Change: Successfully created Change skill for slot 2: %s"), *NewSkill->GetName());
+        }
+        else
+        {
+            UE_LOG(LogTemp, Warning, TEXT("TestSkill_Change: Failed to create Change skill for slot 2"));
+        }
+    }
+    else
+    {
+        UE_LOG(LogTemp, Warning, TEXT("TestSkill_Change: ChangeBPClass is not assigned."));
+    }
+
+    // 슬롯 3: USmokeSkill 스킬 생성
+    if (SmokeBPClass)
+    {
+        UBaseSkill* NewSkill = NewObject<USmokeSkill>(this, SmokeBPClass);
+        if (NewSkill)
+        {
+            NewSkill->Owner = this;
+            Skills[3] = NewSkill;
+            UE_LOG(LogTemp, Log, TEXT("TestSkill_Change: Successfully created Smoke skill for slot 3: %s"), *NewSkill->GetName());
+        }
+        else
+        {
+            UE_LOG(LogTemp, Warning, TEXT("TestSkill_Change: Failed to create Smoke skill for slot 3"));
+        }
+    }
+    else
+    {
+        UE_LOG(LogTemp, Warning, TEXT("TestSkill_Change: SmokeBPClass is not assigned."));
+    }
+}
+
 void ABaseCharacter::ApplyStun(float Duration)
 {
     // 이미 스턴 중이면 무시
@@ -386,4 +513,80 @@ void ABaseCharacter::RemoveStun()
     }
 }
 
+void ABaseCharacter::IncreasePowerUpLevel()
+{
+    if (PowerUpLevel > 14)
+    {
+        return;
+    }
+    
+    PowerUpLevel++;
+    UE_LOG(LogTemp, Log, TEXT("%s PowerUpLevel increased to %d"), *GetName(), PowerUpLevel);
 
+    // 보유한 모든 스킬에 대해 UpgradeSkill() 호출
+    for (UBaseSkill* Skill : Skills)
+    {
+        if (Skill)
+        {
+            Skill->UpgradeSkill(PowerUpLevel);
+        }
+    }
+
+    hp += 10.f;
+    max_hp += 10.f;
+    
+    UpdateAuraColorBasedOnPowerUpLevel(); 
+    // HUD 업데이트 등 추가 작업 가능 (예: 플레이어 머리 위에 현재 강화 단계를 표시)
+}
+
+void ABaseCharacter::UpdateAuraColorBasedOnPowerUpLevel()
+{
+    
+    if (!AuraMaterialInstance)
+    {
+        UE_LOG(LogTemp, Warning, TEXT("UpdateAuraColorBasedOnPowerUpLevel: Failed to get dynamic material instance."));
+        return;
+    }
+
+    FLinearColor NewColor;
+    // PowerUpLevel에 따라 색상 결정 (예시: 1~2: Red, 3~4: Orange, 5~6: Yellow, 7~8: Green, 9~10: Blue, 11~12: Indigo, 13~14: Purple)
+    if (PowerUpLevel == 1 || PowerUpLevel == 7)
+    {
+        NewColor = FLinearColor::Red;
+    }
+    else if (PowerUpLevel == 2 || PowerUpLevel == 8)
+    {
+        NewColor = FLinearColor(1.0f, 0.25f, 0.0f, 0.5f); // Orange
+    }
+    else if (PowerUpLevel == 3 || PowerUpLevel == 9)
+    {
+        NewColor = FLinearColor::Yellow;
+    }
+    else if (PowerUpLevel == 4 || PowerUpLevel == 10)
+    {
+        NewColor = FLinearColor::Green;
+       
+    }
+    else if (PowerUpLevel == 5 || PowerUpLevel == 11)
+    {
+        NewColor = FLinearColor::Blue;
+    }
+    else if (PowerUpLevel == 6 || PowerUpLevel == 12)
+    {
+        NewColor = FLinearColor(0.29f, 0.0f, 0.51f); // Indigo (근사치)
+    }
+    else
+    {
+        NewColor = FLinearColor(1.5f, 3.0f, 8.5f);
+    }
+
+    if (PowerUpLevel > 6)
+    {
+        AuraMaterialInstance->SetScalarParameterValue(FName("Power"), 15.f);
+    }
+
+    // "auracolor" 파라미터 업데이트
+    AuraMaterialInstance->SetVectorParameterValue(FName("BaseColor"), NewColor);
+
+    UE_LOG(LogTemp, Log, TEXT("UpdateAuraColorBasedOnPowerUpLevel: Updated auracolor to %s for PowerUpLevel %d"), *NewColor.ToString(), PowerUpLevel);
+}

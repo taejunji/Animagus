@@ -7,6 +7,9 @@
 #include "BehaviorTree/BlackboardComponent.h" // 필요: Blackboard 컴포넌트를 포함
 #include "MyAIController.generated.h"
 
+// 아오
+// Git에서 Merge하고 충돌하면 -> Git Desktop에서 update from main해야된다
+// 안그러면 바로 덮어씌워져서 꼬여버린다.
 /*
     Behavior Tree Node 
     1. Composite(복합) : 여러 개의 자식 노드 가짐
@@ -32,6 +35,23 @@
 
 enum class AIControlMode { AIController, BehaviorTree };
 
+//UENUM(BlueprintType) 
+//enum class EAIState : uint8 
+//{
+//    Patrol     UMETA(DisplayName = "Patrol"),
+//    Attacking  UMETA(DisplayName = "Attacking"),
+//    Stun       UMETA(DisplayName = "Stun"),
+//    Dead       UMETA(DisplayName = "Dead")
+//};
+
+UENUM(BlueprintType)
+enum class EAIPerceptionSense : uint8
+{
+    EPS_Sight     UMETA(DisplayName = "Sight"),
+    EPS_Hearing  UMETA(DisplayName = "Hearing"),
+    EPS_Damage       UMETA(DisplayName = "Damage"),
+};
+
 UCLASS()
 class PROJECT_ANIMAGUS_API AMyAIController : public AAIController
 {
@@ -52,17 +72,68 @@ public:
     UPROPERTY(EditAnywhere, Category = "AI")
     TObjectPtr<class UBlackboardData> BlackboardData;
     
+    AIControlMode ControlMode;
+
+    UPROPERTY(EditAnywhere, Category = "Blackboard")
+    FBlackboardKeySelector IsRunningKey;
+
+    // AI State를 저장할 Blackboard Key
+    //UPROPERTY(EditAnywhere, Category = "Blackboard")
+    //FBlackboardKeySelector AIStateKey;
+
+    UPROPERTY(EditAnywhere, Category = "Blackboard")
+    FBlackboardKeySelector TargetKey;
+
+    UPROPERTY(EditAnywhere, Category = "Blackboard")
+    FBlackboardKeySelector DefendRadiusKey;
+
+    UPROPERTY(EditAnywhere, Category = "Blackboard")
+    FBlackboardKeySelector AttackRadiusKey;
+
+    UPROPERTY(EditAnywhere, Category = "Blackboard")
+    FBlackboardKeySelector Skill_1_CoolTime_Key;
+    UPROPERTY(EditAnywhere, Category = "Blackboard")
+    FBlackboardKeySelector Skill_2_CoolTime_Key;
+    UPROPERTY(EditAnywhere, Category = "Blackboard")
+    FBlackboardKeySelector Skill_3_CoolTime_Key;
+    UPROPERTY(EditAnywhere, Category = "Blackboard")
+    FBlackboardKeySelector Skill_4_CoolTime_Key;
+
+    UPROPERTY(EditAnywhere, Category = "Blackboard")
+    TArray<FBlackboardKeySelector> Skill_isCoolTime_Key;
+    
+    bool bCanChangeTarget = true; // 타겟 변경 가능 여부
+    FTimerHandle TargetChangeTimerHandle; // 타겟 변경 타이머
+
+    // AI Perception Component
+    UPROPERTY(VisibleAnywhere)
+    class UAIPerceptionComponent* AIPerceptionComponent;
+
+    TSet<AActor*> SensedActors; // 현재 감지된 액터 목록
+    TSet<AActor*> LostTargets; // 현재 감지된 액터 목록
 
 public:
     void StartBehaviorTree();
 
-    AIControlMode ControlMode;
-
     void SetControlMode(AIControlMode mode);
+
+    void SetSkillCoolTime();
 
     UFUNCTION(BlueprintCallable)
     void ResumeBehaviorTree(); // BT 재개
 
-    UPROPERTY(EditAnywhere, Category = "Blackboard")
-    FBlackboardKeySelector IsRunningKey;
+    void CheckAndDisableTargetIfDead();
+
+    UFUNCTION()
+    void OnPerceptionUpdated(const TArray<AActor*>& UpdatedActors);
+
+    struct FAIStimulus CanSenseActor(AActor* Actor, EAIPerceptionSense AIPerceptionSense);
+    void HandleSensedSight(AActor* Actor, bool bSensed, FAIStimulus Stimulus);
+
+    float CalculateTargetPriority(class ABaseCharacter* TargetCharacter);
+    void ResetTargetChange();
+    void RememberLostTarget(AActor* Target);
+    void RemoveLostTarget(AActor* Target);
+    ABaseCharacter* SelectBestTarget(const TSet<AActor*>& Candidates);
+    void SetAITarget(ABaseCharacter* NewTarget);
 };

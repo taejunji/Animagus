@@ -33,11 +33,16 @@ public:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="MagicMissile|Homing")
     float HomingAccelerationMagnitude;
 
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="MagicMissile")
+    float BaseCooldownTime;
+
+
+    
     /** 스폰할 매직 미사일 투사체 블루프린트 클래스 */
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="MagicMissile")
     TSubclassOf<class AProjectile_MagicMissile> ProjectileBPClass;
 
     // ActiveSkill 인터페이스 오버라이드: 스킬 사용 시 호출
     virtual void ActiveSkill_Implementation() override;
-    
+    virtual void UpgradeSkill(int32 NewPowerUpLevel) override;
 };

@@ -1,5 +1,6 @@
 #include "Projectile_MagicMissile.h"
 
+#include "../Character/BaseCharacter.h"
 #include "NiagaraFunctionLibrary.h"
 #include "GameFramework/Character.h"
 #include "Kismet/GameplayStatics.h"
@@ -38,8 +39,12 @@ void AProjectile_MagicMissile::Tick(float DeltaTime)
         float ClosestDistSq = HomingActivationRadius * HomingActivationRadius;
         for (AActor* Target : PotentialTargets)
         {
-            // 발사자(Shooter)는 제외
+            // 발사자(Shooter)는 제외 + 죽은 애는 제외
             if (Target == Shooter) continue;
+            if (ABaseCharacter* Character = Cast<ABaseCharacter>(Target)) {
+                if (Character->GetIsDead())
+                    continue;
+            }
 
             float DistSq = FVector::DistSquared(Target->GetActorLocation(), GetActorLocation());
             if (DistSq <= ClosestDistSq)

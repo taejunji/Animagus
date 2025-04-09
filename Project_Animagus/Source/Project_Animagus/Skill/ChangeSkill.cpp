@@ -15,6 +15,7 @@ UChangeSkill::UChangeSkill()
     ChangeDamage = 0.0f;        // 데미지 없음(교환 효과 목적)
     ChangeSpeed = 1000.f;       // 투사체 속도
 
+    BaseCooldownTime = CooldownTime;
     ProjectileBPClass = nullptr;  // 에디터에서 할당할 것
 }
 
@@ -107,4 +108,12 @@ void UChangeSkill::ActiveSkill_Implementation()
     StartCooldown();
 }
 
+void UChangeSkill::UpgradeSkill(int32 NewPowerUpLevel)
+{
+    // 예시: 매 단계마다 데미지는 10%씩 증가, 쿨타임은 5%씩 단축 (최소 50%까지 단축)
+    // float DamageMultiplier = 1.0f + (0.10f * NewPowerUpLevel);
+    float CooldownMultiplier = FMath::Clamp(1.0f - (0.05f * NewPowerUpLevel), 0.5f, 1.0f);
+    
+    CooldownTime = BaseCooldownTime * CooldownMultiplier;
 
+}

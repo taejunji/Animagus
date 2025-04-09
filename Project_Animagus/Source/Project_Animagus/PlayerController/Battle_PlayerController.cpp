@@ -54,7 +54,9 @@ void ABattle_PlayerController::BeginPlay()
         if (PlayerHUD)
         {
             PlayerHUD->AddToViewport();
+            PlayerHUD->UpdateSelectedSkillOutline(0);
         }
+
     }
 }
 
@@ -257,10 +259,10 @@ void ABattle_PlayerController::Input_Attack(const FInputActionValue& InputValue)
     if (APawn* MyPawn  = GetPawn())
     {
         ABaseCharacter* MyCharacter = Cast<ABaseCharacter>(MyPawn);
-        
-        if (MyCharacter && MyCharacter->Skills.IsValidIndex(0) && MyCharacter->Skills[0])
+        int32 now_skill_idx = MyCharacter->skill_Sellect;
+        if (MyCharacter && MyCharacter->Skills.IsValidIndex(now_skill_idx) && MyCharacter->Skills[now_skill_idx] != nullptr)
         {
-            UBaseSkill* Skill = MyCharacter->Skills[0];
+            UBaseSkill* Skill = MyCharacter->Skills[now_skill_idx];
             if (Skill->CanActivateSkill() == false) return;
 
             Skill->ActiveSkill();
@@ -299,11 +301,7 @@ void ABattle_PlayerController::Input_Ready(const FInputActionValue& InputValue)
     if (APawn* MyPawn  = GetPawn())
     {
         ABaseCharacter* MyCharacter = Cast<ABaseCharacter>(MyPawn);
-        
-        if (MyCharacter && MyCharacter->Skills.IsValidIndex(1) && MyCharacter->Skills[1])
-        {
-            MyCharacter->Skills[1]->ActiveSkill();
-        }
+        MyCharacter->TestSkill_Change();
     } 
 }
 
@@ -315,9 +313,13 @@ void ABattle_PlayerController::Input_Skill_1(const FInputActionValue& InputValue
     {        
         ABaseCharacter* MyCharacter = Cast<ABaseCharacter>(MyPawn);
         
-        if (MyCharacter && MyCharacter->Skills.IsValidIndex(4) && MyCharacter->Skills[4])
+        if (MyCharacter && MyCharacter->Skills.IsValidIndex(0) && MyCharacter->Skills[0])
         {
-            MyCharacter->Skills[4]->ActiveSkill();
+            MyCharacter->skill_Sellect = 0;
+        }
+        if (PlayerHUD)
+        {
+            PlayerHUD->UpdateSelectedSkillOutline(0);
         }
     }
 }
@@ -332,7 +334,12 @@ void ABattle_PlayerController::Input_Skill_2(const FInputActionValue& InputValue
         
         if (MyCharacter && MyCharacter->Skills.IsValidIndex(1) && MyCharacter->Skills[1])
         {
-            MyCharacter->Skills[1]->ActiveSkill();
+            MyCharacter->skill_Sellect = 1;
+        }
+
+        if (PlayerHUD)
+        {
+            PlayerHUD->UpdateSelectedSkillOutline(1);
         }
     }
 
@@ -346,7 +353,12 @@ void ABattle_PlayerController::Input_Skill_3(const FInputActionValue& InputValue
         
         if (MyCharacter && MyCharacter->Skills.IsValidIndex(2) && MyCharacter->Skills[2])
         {
-            MyCharacter->Skills[2]->ActiveSkill();
+            MyCharacter->skill_Sellect = 2;
+        }
+
+        if (PlayerHUD)
+        {
+            PlayerHUD->UpdateSelectedSkillOutline(2);
         }
     }
 }
@@ -359,7 +371,12 @@ void ABattle_PlayerController::Input_Skill_4(const FInputActionValue& InputValue
         
         if (MyCharacter && MyCharacter->Skills.IsValidIndex(3) && MyCharacter->Skills[3])
         {
-            MyCharacter->Skills[3]->ActiveSkill();
+            MyCharacter->skill_Sellect = 3;
+        }
+
+        if (PlayerHUD)
+        {
+            PlayerHUD->UpdateSelectedSkillOutline(3);
         }
     }
     UE_LOG(LogTemp, Display, TEXT("Skill_4_Pressed"));

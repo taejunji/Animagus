@@ -23,6 +23,10 @@ public class Project_Animagus : ModuleRules
             "Slate",
             "SlateCore",
             "UMG"
+            "SlateCore", 
+            "UMG",
+            "Chaos", 
+            "GeometryCollectionEngine"
         });
 
 		PrivateDependencyModuleNames.AddRange(new string[] {  });

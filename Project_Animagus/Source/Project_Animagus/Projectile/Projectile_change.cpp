@@ -1,6 +1,7 @@
 #include "Projectile_change.h"
 #include "GameFramework/Character.h"
 #include "Kismet/GameplayStatics.h"
+#include "../Character/BaseCharacter.h"
 
 AProjectile_change::AProjectile_change()
 {
@@ -14,9 +15,11 @@ void AProjectile_change::OnHit(UPrimitiveComponent* OverlappedComponent, AActor*
     // 충돌한 대상이 유효하고, 자기 자신 및 발사자(Shooter)가 아닐 때 처리함
     if (OtherActor && OtherActor != this && OtherActor != Shooter)
     {
-        ACharacter* HitCharacter = Cast<ACharacter>(OtherActor);
+        ABaseCharacter* HitCharacter = Cast<ABaseCharacter>(OtherActor);
         if (HitCharacter)
         {
+            if (HitCharacter->GetIsDead()) return;
+
             // 발사자(Shooter)가 있으면 두 캐릭터의 위치를 교환
             if (Shooter)
             {

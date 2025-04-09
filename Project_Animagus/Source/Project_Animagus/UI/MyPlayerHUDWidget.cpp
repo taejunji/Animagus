@@ -2,6 +2,8 @@
 
 
 #include "MyPlayerHUDWidget.h"
+
+#include "Components/Border.h"
 #include "Components/ProgressBar.h"
 #include "Components/Image.h"
 #include "Components/HorizontalBox.h" // 나중에 스킬 목록 추가 시 사용
@@ -83,5 +85,26 @@ void UMyPlayerHUDWidget::UpdateRoundTime(float RoundTimeValue)
         int32 Seconds = TotalSeconds % 60;
         FString NewText = FString::Printf(TEXT("%d : %02d"), Minutes, Seconds);
         RoundTimeText->SetText(FText::FromString(NewText));
+    }
+}
+
+void UMyPlayerHUDWidget::UpdateSelectedSkillOutline(int32 SelectedIndex)
+{
+  
+    if (SkillBorder_0)
+    {
+        SkillBorder_0->SetBrushColor((SelectedIndex == 0) ? SelectedOutlineColor : NormalOutlineColor);
+    }
+    if (SkillBorder_1)
+    {
+        SkillBorder_1->SetBrushColor((SelectedIndex == 1) ? SelectedOutlineColor : NormalOutlineColor);
+    }
+    if (SkillBorder_2)
+    {
+        SkillBorder_2->SetBrushColor((SelectedIndex == 2) ? SelectedOutlineColor : NormalOutlineColor);
+    }
+    if (SkillBorder_3)
+    {
+        SkillBorder_3->SetBrushColor((SelectedIndex == 3) ? SelectedOutlineColor : NormalOutlineColor);
     }
 }

@@ -85,3 +85,12 @@ void USmokeSkill::ActiveSkill_Implementation()
     
     StartCooldown();
 }
+
+void USmokeSkill::UpgradeSkill(int32 NewPowerUpLevel)
+{
+   
+    float CooldownMultiplier = FMath::Clamp(1.0f - (0.05f * NewPowerUpLevel), 0.5f, 1.0f);
+    
+    CooldownTime = BaseCooldownTime * CooldownMultiplier;
+
+}

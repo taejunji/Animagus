@@ -24,6 +24,10 @@ UFireball::UFireball()
     }
 
     SkillType = Protocol::SkillType::FIREBALL;
+
+    // 기본값 저장 (강화 전 기본 수치)
+    BaseFireballDamage = FireballDamage;
+    BaseCooldownTime = CooldownTime;
 }
 
 void UFireball::ActiveSkill_Implementation()
@@ -117,4 +121,17 @@ void UFireball::ActiveSkill_Implementation()
         bFirstUse = false;
     } 
     StartCooldown();
+}
+
+void UFireball::UpgradeSkill(int32 NewPowerUpLevel)
+{
+    // 예시: 매 단계마다 데미지는 10%씩 증가, 쿨타임은 5%씩 단축 (최소 50%까지 단축)
+    float DamageMultiplier = 1.0f + (0.10f * NewPowerUpLevel);
+    float CooldownMultiplier = FMath::Clamp(1.0f - (0.05f * NewPowerUpLevel), 0.5f, 1.0f);
+
+    FireballDamage = BaseFireballDamage * DamageMultiplier;
+    CooldownTime = BaseCooldownTime * CooldownMultiplier;
+
+    UE_LOG(LogTemp, Log, TEXT("Fireball upgraded: PowerUpLevel %d, Damage: %f, Cooldown: %f"), 
+        NewPowerUpLevel, FireballDamage, CooldownTime);
 }

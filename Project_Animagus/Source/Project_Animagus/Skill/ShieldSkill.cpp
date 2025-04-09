@@ -13,12 +13,21 @@ UShieldSkill::UShieldSkill()
     // 쿨타임과 지속 시간은 디폴트 값으로 설정, 필요에 따라 에디터에서 조정 가능
     CooldownTime = 10.0f;
     ShieldDuration = 5.0f;
+    BaseCooldownTime = CooldownTime;
 
     ShieldActorBPClass = nullptr; // 에디터에서 보호막 액터 블루프린트 클래스를 할당할 것
 
  
 }
+void UShieldSkill::UpgradeSkill(int32 NewPowerUpLevel)
+{
+    // 예시: 매 단계마다 데미지는 10%씩 증가, 쿨타임은 5%씩 단축 (최소 50%까지 단축)
+    // float DamageMultiplier = 1.0f + (0.10f * NewPowerUpLevel);
+    float CooldownMultiplier = FMath::Clamp(1.0f - (0.05f * NewPowerUpLevel), 0.5f, 1.0f);
+    
+    CooldownTime = BaseCooldownTime * CooldownMultiplier;
 
+}
 void UShieldSkill::ActiveSkill_Implementation()
 {
 

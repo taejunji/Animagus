@@ -61,6 +61,8 @@ private:
     TSubclassOf<class AAIController> AIControllerClass;
     TSubclassOf<class APawn> AIPlayerClass;
 
+    TSubclassOf<class APowerUpItem> PowerUpBpclass;
+    
     // 라운드 경과 시간 출력
     FTimerHandle battle_timer_handle;
     float elasped_time;
@@ -95,4 +97,22 @@ public:
 public:
     int16 RoomId = 0;
     int16 PlayerIndex = 0;
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawning")
+    TArray<FVector> Area1SpawnPoints;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawning")
+    TArray<FVector> Area2SpawnPoints;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawning")
+    TArray<FVector> Area3SpawnPoints;
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "PowerUp")
+    TArray<class ABaseItem*> SpawnedItems;
+    
+    // 영역1의 스폰 좌표들을 초기화하는 함수 
+    UFUNCTION(BlueprintCallable, Category = "PowerUp")
+    void InitializeArea1SpawnPoints();
+
+    UFUNCTION(BlueprintCallable, Category = "PowerUp")
+    void SpawnItemsInArea1();
 };

@@ -40,6 +40,13 @@ public:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement")
     float speed_change_rate; // 속도 변화 비율 ( 30.f면 1초에 30씩 변화 )
 
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Skill")
+    int32 skill_Sellect;
+    
+    // 플레이어의 전반적인 스탯 강화 단계를 나타내는 변수
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "PowerUp")
+    int32 PowerUpLevel;
+    
 protected:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stat")
     float hp; // HP 체력
@@ -47,7 +54,7 @@ protected:
     float max_hp; // MaxHP 체력
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stat")
     bool is_dead; // 죽었는지
-
+    
 protected:
     UPROPERTY(EditAnywhere, Category = "AnimationMontage")
     TObjectPtr<class UAnimMontage> attack_montage;
@@ -109,6 +116,15 @@ public:
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Skills")
     TSubclassOf<class UShieldSkill> ShieldBPClass;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Skills")
+    TSubclassOf<class UShockwaveSkill> ShockwaveBPClass;
+
+    UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Visual")
+    UMaterialInstanceDynamic* AuraMaterialInstance;
+
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Visual")
+    UMaterialInterface* BaseAuraMaterial;
     
     // 지정 슬롯에 스킬을 장착하는 함수
     UFUNCTION(BlueprintCallable, Category="Skills")
@@ -118,6 +134,15 @@ public:
     UFUNCTION(BlueprintCallable, Category="Skills")
     void InitializeSkills();
 
+    UFUNCTION(BlueprintCallable, Category="Skills")
+    void TestSkill_Change();
+    
+    UFUNCTION(BlueprintCallable, Category = "PowerUp")
+    void IncreasePowerUpLevel();
+
+    UFUNCTION(BlueprintCallable, Category="PowerUp")
+    void UpdateAuraColorBasedOnPowerUpLevel();
+    
     // 스턴 상태 변수: 스턴 중이면 true
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Status")
     bool bIsStunned;
