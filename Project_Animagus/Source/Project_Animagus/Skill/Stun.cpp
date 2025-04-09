@@ -17,10 +17,22 @@ UStun::UStun()
     StunDuration = 1.67f; // 예시 스턴 지속 시간
 
     // ProjectileBPClass는 에디터에서 할당 (예: MyProjectile_Stun_BP)
-    ProjectileBPClass = nullptr;
+    //ProjectileBPClass = nullptr;
+    static ConstructorHelpers::FClassFinder<AProjectile_Stun> StunBPFinder(TEXT("/Game/WorkFolder/Bluprints/Projectiles/MyProjectile_Stun"));
+    if (StunBPFinder.Succeeded())
+    {
+        ProjectileBPClass = StunBPFinder.Class;
+    }
+    else
+    {
+        UE_LOG(LogTemp, Warning, TEXT("Failed to load StunSkill BP class!"));
+    }
 
     BaseCooldownTime = CooldownTime;
     BaseStunDuration = StunDuration;
+
+    SkillType = Protocol::SkillType::STUN;
+
 }
 
 void UStun::ActiveSkill_Implementation()
@@ -51,7 +63,8 @@ void UStun::ActiveSkill_Implementation()
     else
     {
         CameraLocation = Owner->GetActorLocation();
-        CameraRotation = Owner->GetActorRotation();
+        //CameraRotation = Owner->GetActorRotation();
+        CameraRotation = Rotation;
     }
     
     // 스폰 위치: 캐릭터의 위치에서 전방으로 100cm, 추가로 Z축 50cm 올림 (예시)

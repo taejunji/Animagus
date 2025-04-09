@@ -21,6 +21,8 @@ URadialSkill::URadialSkill()
     BaseRadialDamage = RadialDamage;
     
     ProjectileBPClass = nullptr;         // 에디터에서 할당 필요
+
+    SkillType = Protocol::SkillType::RADIAL;
 }
 
 void URadialSkill::ActiveSkill_Implementation()

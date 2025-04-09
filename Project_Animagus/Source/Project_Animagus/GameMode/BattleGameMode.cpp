@@ -338,23 +338,41 @@ void ABattleGameMode::SpawnSkill(Protocol::CS_USING_SKILL_PKT& pkt)
 
     UBaseSkill* Skill = nullptr;
 
-    if (pkt.s_type == Protocol::SkillType::NONE)
+    switch (pkt.s_type)
     {
-        UE_LOG(LogTemp, Error, TEXT("SpawnSkill: Skill type is NONE"));
-        return;
-    }
-    else if (pkt.s_type == Protocol::SkillType::FIREBALL)
-    {
-        Skill = NewObject<UFireball>(this, UFireball::StaticClass());
-    }
-    else if (pkt.s_type == Protocol::SkillType::SHIELD)
-    {
-        Skill = NewObject<UShieldSkill>(this, UShieldSkill::StaticClass());
-    }
-    else
-    {
-        UE_LOG(LogTemp, Error, TEXT("SpawnSkill: Unknown skill type"));
-        return;
+    case Protocol::SkillType::NONE:
+            UE_LOG(LogTemp, Error, TEXT("SpawnSkill: Skill type is NONE"));
+            return;
+    case Protocol::SkillType::FIREBALL:
+            Skill = NewObject<UFireball>(this, UFireball::StaticClass());
+            Skill->SetSkillRotation(pkt.pitch, pkt.yaw, pkt.roll);
+            break;
+    case Protocol::SkillType::SHIELD:
+            Skill = NewObject<UShieldSkill>(this, UShieldSkill::StaticClass());
+            break;
+    case Protocol::SkillType::BOUNCE:
+            Skill = NewObject<UBounce>(this, UBounce::StaticClass());
+            Skill->SetSkillRotation(pkt.pitch, pkt.yaw, pkt.roll);
+            break;
+    case Protocol::SkillType::MAGICMISSILE:
+            Skill = NewObject<UMagicMissile>(this, UMagicMissile::StaticClass());
+            break;
+    case Protocol::SkillType::SMOKE:
+            Skill = NewObject<USmokeSkill>(this, USmokeSkill::StaticClass());
+            break;
+    case Protocol::SkillType::RADIAL:
+            Skill = NewObject<URadialSkill>(this, URadialSkill::StaticClass());
+            break;
+    case Protocol::SkillType::CHANGE:
+            Skill = NewObject<UChangeSkill>(this, UChangeSkill::StaticClass());
+            break;
+    case Protocol::SkillType::STUN:
+            Skill = NewObject<UStun>(this, UStun::StaticClass());
+            Skill->SetSkillRotation(pkt.pitch, pkt.yaw, pkt.roll);
+            break;
+    default:
+            UE_LOG(LogTemp, Error, TEXT("SpawnSkill: Unknown skill type"));
+            return;
     }
 
     if (Skill && SpawnedPlayers.Contains(static_cast<int32>(pkt.player_id))) {

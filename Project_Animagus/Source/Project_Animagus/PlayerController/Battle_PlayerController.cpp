@@ -271,7 +271,7 @@ void ABattle_PlayerController::Input_Attack(const FInputActionValue& InputValue)
 
             // 스폰 위치: 캐릭터의 전면 (예: 캐릭터 위치에서 전방으로 70cm)
             //FVector Location = MyCharacter->GetActorLocation() + MyCharacter->GetActorForwardVector() * 80.f + MyCharacter->GetActorRightVector() * 30.f;
-            FRotator Rotation = MyCharacter->GetActorRotation();
+            FRotator Rotation = MyCharacter->GetController()->GetControlRotation();
 
             Protocol::CS_USING_SKILL_PKT SkillPkt;
             SkillPkt.player_id = MyCharacter->GetPlayerId();

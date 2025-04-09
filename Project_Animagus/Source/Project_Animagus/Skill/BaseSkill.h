@@ -84,6 +84,10 @@ public:
     UPROPERTY(BlueprintReadOnly, Category="Skill")
     bool bFirstUse;
 
+    void SetSkillRotation(float pitch, float yaw, float roll);
+
 public:
     Protocol::SkillType SkillType = Protocol::SkillType::NONE;
+
+    FRotator Rotation;
 };

@@ -29,6 +29,9 @@ UMagicMissile::UMagicMissile()
     {
         UE_LOG(LogTemp, Warning, TEXT("Failed to load MagicMissile BP class!"));
     }
+
+    SkillType = Protocol::SkillType::MAGICMISSILE;
+
 }
 
 void UMagicMissile::ActiveSkill_Implementation()

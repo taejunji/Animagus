@@ -25,6 +25,9 @@ UShockwaveSkill::UShockwaveSkill()
     BaseKnockbackForce = KnockbackForce;
     
     ShockwaveActorBPClass = nullptr; // 에디터에서 할당 (충격파 액터 블루프린트)
+
+    SkillType = Protocol::SkillType::SHOCKWAVE;
+
 }
 
 void UShockwaveSkill::ActiveSkill_Implementation()

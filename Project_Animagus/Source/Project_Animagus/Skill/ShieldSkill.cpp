@@ -17,7 +17,8 @@ UShieldSkill::UShieldSkill()
 
     ShieldActorBPClass = nullptr; // 에디터에서 보호막 액터 블루프린트 클래스를 할당할 것
 
- 
+    SkillType = Protocol::SkillType::SHIELD;
+
 }
 void UShieldSkill::UpgradeSkill(int32 NewPowerUpLevel)
 {

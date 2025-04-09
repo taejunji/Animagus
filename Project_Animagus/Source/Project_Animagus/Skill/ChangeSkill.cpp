@@ -17,6 +17,9 @@ UChangeSkill::UChangeSkill()
 
     BaseCooldownTime = CooldownTime;
     ProjectileBPClass = nullptr;  // 에디터에서 할당할 것
+
+    SkillType = Protocol::SkillType::CHANGE;
+
 }
 
 void UChangeSkill::ActiveSkill_Implementation()

@@ -15,6 +15,9 @@ USmokeSkill::USmokeSkill()
     SkillName = "SmokeSkill";
     CooldownTime = 5.0f;
     SmokeProjectileSpeed = 1000.f; // 기본값, 필요에 따라 조정 가능
+
+    SkillType = Protocol::SkillType::SMOKE;
+
 }
 
 void USmokeSkill::ActiveSkill_Implementation()

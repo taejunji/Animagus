@@ -130,6 +130,11 @@ bool UBaseSkill::CanActivateSkill() const
     return true;
 }
 
+void UBaseSkill::SetSkillRotation(float pitch, float yaw, float roll)
+{
+    Rotation.Pitch = pitch; Rotation.Yaw = yaw; Rotation.Roll = roll;
+}
+
 void UBaseSkill::UpgradeSkill(int32 NewPowerUpLevel)
 {
     // 기본 구현: 로그만 출력 (파생 클래스에서 구체적인 강화 효과를 적용)

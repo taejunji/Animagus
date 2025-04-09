@@ -59,7 +59,8 @@ void UFireball::ActiveSkill_Implementation()
     else
     {
         CameraLocation = Owner->GetActorLocation();
-        CameraRotation = Owner->GetActorRotation();
+        //CameraRotation = Owner->GetActorRotation();
+        CameraRotation = Rotation;
     }
 
     // 스폰 위치: 캐릭터의 전면 (예: 캐릭터 위치에서 전방으로 70cm)

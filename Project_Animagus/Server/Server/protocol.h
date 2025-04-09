@@ -26,6 +26,12 @@ namespace Protocol {
         LIFEDRAIN,      // 흡혈
         SHOCKWAVE,      // 기폭발
         THUNDERSTRIKE,  // 천둥
+        BOUNCE,         // 탱탱볼
+        MAGICMISSILE,   // 유도미사일
+        SMOKE,          // 연막
+        STUN,           // 기절
+        RADIAL,         // 방사형
+        CHANGE,         // 초동역학위치변환기
     };
 
     enum class StatusType : uint16

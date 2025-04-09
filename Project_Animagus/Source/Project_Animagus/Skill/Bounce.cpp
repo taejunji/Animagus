@@ -13,6 +13,17 @@ UBounce::UBounce()
     BounceSpeed = 1000.f; // 필요에 따라 조정
     BaseCooldownTime = CooldownTime;
 
+    static ConstructorHelpers::FClassFinder<AProjectile_Bounce> BounceBPFinder(TEXT("/Game/WorkFolder/Bluprints/Projectiles/MyProjectile_Bounce"));
+    if (BounceBPFinder.Succeeded())
+    {
+        ProjectileBPClass = BounceBPFinder.Class;
+    }
+    else
+    {
+        UE_LOG(LogTemp, Warning, TEXT("Failed to load Bounce BP class!"));
+    }
+
+    SkillType = Protocol::SkillType::BOUNCE;
 }
 
 void UBounce::ActiveSkill_Implementation()
@@ -43,7 +54,8 @@ void UBounce::ActiveSkill_Implementation()
     else
     {
         CameraLocation = Owner->GetActorLocation();
-        CameraRotation = Owner->GetActorRotation();
+        //CameraRotation = Owner->GetActorRotation();
+        CameraRotation = Rotation;
     }
     
     // 스폰 위치: 캐릭터의 전면 오프셋 + 약간 위쪽 (예: 전방 80cm, Z축 20cm)
