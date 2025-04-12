@@ -55,6 +55,21 @@ void AProjectile_Radial::OnHit(UPrimitiveComponent* OverlappedComponent, AActor*
             ProjectileLight->SetIntensity(0.0f);
         }
 
+        // 카메라 쉐이크, 플레이어와 거리가 멀면 쉐이크 안되도록
+        APlayerController* PlayerController = GetWorld()->GetFirstPlayerController();
+        if (PlayerController && HitCameraShakeClass)
+        {
+            if (ACharacter* Player = Cast<ACharacter>(PlayerController->GetPawn()))
+            {
+                // 플레이어와 투사체 거리 계산
+                float DistanceToPlayer = FVector::Dist(Player->GetActorLocation(), GetActorLocation());
+                if (DistanceToPlayer < MaxShakeDistance) // ex) 10m 안에서만 쉐이크
+                {
+                    PlayerController->ClientStartCameraShake(HitCameraShakeClass);
+                }
+            }
+        }
+
         // Knockback 효과 적용 (상대가 ACharacter인 경우)
         if (ACharacter* HitCharacter = Cast<ACharacter>(OtherActor))
         {
