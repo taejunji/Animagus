@@ -14,7 +14,7 @@ AProjectileBase::AProjectileBase()
 
     // ProjectileBase.cpp의 생성자 내에서
     CollisionSphere = CreateDefaultSubobject<USphereComponent>(TEXT("CollisionSphere"));
-    CollisionSphere->InitSphereRadius(10.0f);
+    CollisionSphere->InitSphereRadius(15.0f);
     CollisionSphere->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 
     // 투사체 전용 커스텀 채널 (예: ECC_GameTraceChannel1)을 사용하도록 설정
