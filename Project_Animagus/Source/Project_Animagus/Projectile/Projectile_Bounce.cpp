@@ -53,13 +53,28 @@ void AProjectile_Bounce::OnHit(UPrimitiveComponent* OverlappedComponent, AActor*
             {
                 ProjectileLight->SetIntensity(0.0f);
             }
+
+            // 카메라 쉐이크, 플레이어와 거리가 멀면 쉐이크 안되도록
+            APlayerController* PlayerController = GetWorld()->GetFirstPlayerController();
+            if (PlayerController && HitCameraShakeClass)
+            {
+                if (ACharacter* Player = Cast<ACharacter>(PlayerController->GetPawn()))
+                {
+                    // 플레이어와 투사체 거리 계산
+                    float DistanceToPlayer = FVector::Dist(Player->GetActorLocation(), GetActorLocation());
+                    if (DistanceToPlayer < MaxShakeDistance) // ex) 10m 안에서만 쉐이크
+                    {
+                        PlayerController->ClientStartCameraShake(HitCameraShakeClass);
+                    }
+                }
+            }
             
-                // 충돌 표면의 법선이 대상에게 밀리는 방향이므로 이를 이용
-                FVector ImpulseDirection = -Hit.Normal;
-                // 필요한 경우, 추가 보정: 예를 들어 대상의 뒤쪽으로 밀리게 하려면 -Hit.Normal을 사용할 수도 있음.
-                // 여기서는 충돌 표면의 외부 방향으로 밀어내는 효과를 줍니다.
-                FVector LaunchVelocity = ImpulseDirection * KnockbackForce;
-                HitCharacter->LaunchCharacter(LaunchVelocity, true, true);
+            // 충돌 표면의 법선이 대상에게 밀리는 방향이므로 이를 이용
+            FVector ImpulseDirection = -Hit.Normal;
+            // 필요한 경우, 추가 보정: 예를 들어 대상의 뒤쪽으로 밀리게 하려면 -Hit.Normal을 사용할 수도 있음.
+            // 여기서는 충돌 표면의 외부 방향으로 밀어내는 효과를 줍니다.
+            FVector LaunchVelocity = ImpulseDirection * KnockbackForce;
+            HitCharacter->LaunchCharacter(LaunchVelocity, true, true);
             
             DestroySkill();
         }
@@ -72,6 +87,21 @@ void AProjectile_Bounce::OnHit(UPrimitiveComponent* OverlappedComponent, AActor*
                 UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), BounceEffect, Hit.Location, Hit.Normal.Rotation());
             }
             
+            // 카메라 쉐이크, 플레이어와 거리가 멀면 쉐이크 안되도록
+            APlayerController* PlayerController = GetWorld()->GetFirstPlayerController();
+            if (PlayerController && HitCameraShakeClass)
+            {
+                if (ACharacter* Player = Cast<ACharacter>(PlayerController->GetPawn()))
+                {
+                    // 플레이어와 투사체 거리 계산
+                    float DistanceToPlayer = FVector::Dist(Player->GetActorLocation(), GetActorLocation());
+                    if (DistanceToPlayer < MaxShakeDistance) // ex) 10m 안에서만 쉐이크
+                    {
+                        PlayerController->ClientStartCameraShake(HitCameraShakeClass);
+                    }
+                }
+            }
+
             ++BounceCount;
             if (BounceCount >= MaxBounceCount)
             {
@@ -83,7 +113,7 @@ void AProjectile_Bounce::OnHit(UPrimitiveComponent* OverlappedComponent, AActor*
                 {
                     ProjectileLight->SetIntensity(0.0f);
                 }
-                
+
                 DestroySkill();
             }
             // 여기서 다른 처리는 하지 않고, ProjectileMovementComponent가 반사 동작을 수행하도록 합니다.
