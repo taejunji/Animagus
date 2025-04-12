@@ -14,6 +14,12 @@ class PROJECT_ANIMAGUS_API AAICharacter : public ABaseCharacter
 {
 	GENERATED_BODY()
 	
+protected:
+    virtual void BeginPlay() override;
+
+private:
+    void InitPlayerMesh(enum class CharacterMesh MeshType);
+
 public:
     virtual void ApplyStun(float Duration);
 
