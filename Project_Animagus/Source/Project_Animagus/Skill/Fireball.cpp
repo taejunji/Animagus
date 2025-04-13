@@ -59,7 +59,10 @@ void UFireball::ActiveSkill_Implementation()
     else
     {
         CameraLocation = Owner->GetActorLocation();
-        //CameraRotation = Owner->GetActorRotation();
+
+        //if (AIPlayer)
+            //CameraRotation = Owner->GetActorRotation();
+        //else (NetworkPlayer)
         CameraRotation = Rotation;
     }
 

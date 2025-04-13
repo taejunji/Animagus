@@ -59,4 +59,37 @@ void ANetworkCharacter::InitPlayerMesh()
             break;
         }
     }
+
+    if (AuraMaterialInstance)
+    {
+        UE_LOG(LogTemp, Warning, TEXT("InitPlayerMesh: AuraMaterialInstance 이미 생성됨, 재설정 진행."));
+    }
+    else
+    {
+        UE_LOG(LogTemp, Log, TEXT("InitPlayerMesh: AuraMaterialInstance 없음, 새로 생성합니다."));
+    }
+
+    if (BaseAuraMaterial && GetMesh())
+    {
+
+        AuraMaterialInstance = UMaterialInstanceDynamic::Create(BaseAuraMaterial, this);
+
+        if (AuraMaterialInstance)
+        {
+            // 초기 기본 색상 설정 
+            AuraMaterialInstance->SetVectorParameterValue(FName("BaseColor"), FLinearColor::White);
+            GetMesh()->SetOverlayMaterial(AuraMaterialInstance);
+            UE_LOG(LogTemp, Log, TEXT("PlayerCharacter: Dynamic Aura Material Instance created and set."));
+        }
+        else
+        {
+            UE_LOG(LogTemp, Warning, TEXT("PlayerCharacter: Failed to create dynamic aura material instance."));
+        }
+    }
+    else
+    {
+        UE_LOG(LogTemp, Warning, TEXT("aura 머티리얼 설정 실패"));
+    }
+    UE_LOG(LogTemp, Log, TEXT("InitPlayerMesh() 끝"));
+
 }

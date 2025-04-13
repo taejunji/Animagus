@@ -13,6 +13,7 @@ bool Handle_CS_ENTER_GAME(SessionRef& session, CS_ENTER_GAME_PKT& pkt);
 bool Handle_CS_LEAVE(SessionRef& session, CS_LEAVE_PKT& pkt);
 bool Handle_CS_MOVE(SessionRef& session, CS_MOVE_PKT& pkt);
 bool Handle_CS_USING_SKILL(SessionRef& session, CS_USING_SKILL_PKT& pkt);
+bool Handle_CS_AI_ENTER(SessionRef& session, CS_AI_ENTER_PKT& pkt);
 
 
 class ServerPacketHandler
@@ -26,6 +27,7 @@ public:
         GServerPacketHandler[(int32)PacketID::CS_LEAVE] = [](SessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<CS_LEAVE_PKT>(Handle_CS_LEAVE, session, buffer, len); };
         GServerPacketHandler[(int32)PacketID::CS_MOVE] = [](SessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<CS_MOVE_PKT>(Handle_CS_MOVE, session, buffer, len); };
         GServerPacketHandler[(int32)PacketID::CS_USING_SKILL] = [](SessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<CS_USING_SKILL_PKT>(Handle_CS_USING_SKILL, session, buffer, len); };
+        GServerPacketHandler[(int32)PacketID::CS_AI_ENTER] = [](SessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<CS_AI_ENTER_PKT>(Handle_CS_AI_ENTER, session, buffer, len); };
     }
 
     static bool HandlePacket(SessionRef& session, BYTE* buffer, int32 len)

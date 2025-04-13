@@ -180,9 +180,25 @@ void UMyGameInstance::HandleEnterGame(Protocol::SC_ENTER_GAME_PKT& pkt)
         ABattleGameMode* GameMode = Cast<ABattleGameMode>(BaseGameMode);
         if (GameMode)
         {
-            GameMode->SetPlayerIndex(pkt.player_id);
+            //GameMode->SetPlayerIndex(pkt.player_id);
             //GameMode->SetPlayerType(pkt.player_type);
             //GameMode->SetPlayerName(pkt.player_name);
+
+            GameMode->AmIHost = pkt.host;
+            if (pkt.host == true)
+            UE_LOG(LogTemp, Warning, TEXT("I AM THE HOST: %d"), pkt.player_id);
+
+            GameMode->SpawnPlayers();
+
+            APlayerController* PC = UGameplayStatics::GetPlayerController(GetWorld(), 0);
+            if (PC)
+            {
+                if (APlayerCharacter* MyPlayer = Cast<APlayerCharacter>(PC->GetPawn()))
+                {
+                    MyPlayer->SetPlayerId(pkt.player_id);
+                }
+            }
+
         }
     }
     

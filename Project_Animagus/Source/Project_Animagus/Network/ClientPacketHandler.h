@@ -47,6 +47,7 @@ public:
     static SendBufferRef MakeSendBuffer(Protocol::CS_ENTER_GAME_PKT& pkt) { return MakeSendBuffer(pkt, (uint16)Protocol::PacketID::CS_ENTER_GAME); }
     static SendBufferRef MakeSendBuffer(Protocol::CS_MOVE_PKT& pkt) { return MakeSendBuffer(pkt, (uint16)Protocol::PacketID::CS_MOVE); }
     static SendBufferRef MakeSendBuffer(Protocol::CS_USING_SKILL_PKT& pkt) { return MakeSendBuffer(pkt, (uint16)Protocol::PacketID::CS_USING_SKILL); }
+    static SendBufferRef MakeSendBuffer(Protocol::CS_AI_ENTER_PKT& pkt) { return MakeSendBuffer(pkt, (uint16)Protocol::PacketID::CS_AI_ENTER); }
 
 
 private:

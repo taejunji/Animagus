@@ -106,7 +106,7 @@ public:
     class UMyPlayerHUDWidget* PlayerHUD;
 
 protected:
-    const float MOVE_PACKET_SEND_DELAY = 0.2f;
+    const float MOVE_PACKET_SEND_DELAY = 0.05f;
     float MovePacketSendTimer = MOVE_PACKET_SEND_DELAY;
 
     // Cache

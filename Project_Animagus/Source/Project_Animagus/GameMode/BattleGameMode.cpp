@@ -22,6 +22,8 @@
 #include "Algo/RandomShuffle.h"
 #include "Project_Animagus/Item/PowerUpItem.h"
 #include "Runtime/Core/Tests/Containers/TestUtils.h"
+#include "../Network/ClientPacketHandler.h"
+
 
 ABattleGameMode::ABattleGameMode()
 {
@@ -33,7 +35,7 @@ ABattleGameMode::ABattleGameMode()
     {
         DefaultPawnClass = PlayerPawn.Class;
     }
-    else UE_LOG(LogTemp, Warning, TEXT("디폴트 폰 로드 실패")); 
+    else UE_LOG(LogTemp, Warning, TEXT("디폴트 폰 로드 실패"));
 
     static ConstructorHelpers::FClassFinder<APlayerController> PController(TEXT("/Game/WorkFolder/Controller/BP_Battle_PlayerController.BP_Battle_PlayerController_C"));
     if (PController.Succeeded())
@@ -105,11 +107,11 @@ void ABattleGameMode::InitBattleMode()
         elasped_time = 0.0f; 
         GetWorld()->GetTimerManager().ClearTimer(battle_timer_handle); // 타이머가 중지됨 
 
-        SpawnPlayers(); 
+        //SpawnPlayers(); 
 
         // 5초 후에 플레이어 입력 활성화
-        FTimerHandle GameStartTimerHandle; 
-        GetWorld()->GetTimerManager().SetTimer(GameStartTimerHandle, this, &ABattleGameMode::ActivateInput, 6.0f, false); 
+        //FTimerHandle GameStartTimerHandle; 
+        //GetWorld()->GetTimerManager().SetTimer(GameStartTimerHandle, this, &ABattleGameMode::ActivateInput, 6.0f, false); 
 
         // 1초마다 경과시간 호출 함수 타이머 설정
         // GetWorld()->GetTimerManager().SetTimer(battle_timer_handle, this, &ABattleGameMode::PrintElapsedtime, 1.0f, true); 
@@ -120,7 +122,7 @@ void ABattleGameMode::InitBattleMode()
         CurrentRoundTime = 0.0f;
 
         // 1초마다 CountdownTimerUpdate() 호출
-        GetWorld()->GetTimerManager().SetTimer(CountdownTimerHandle, this, &ABattleGameMode::CountdownTimerUpdate, 1.0f, true);
+        //GetWorld()->GetTimerManager().SetTimer(CountdownTimerHandle, this, &ABattleGameMode::CountdownTimerUpdate, 1.0f, true);
     }
     
     InitializeArea1SpawnPoints();
@@ -204,10 +206,19 @@ void ABattleGameMode::SpawnPlayers()
             UE_LOG(LogTemp, Log, TEXT("BattleGameMode: PlayerController가 인덱스 %d의 캐릭터를 소유함."), PossessIndex);
         }
 
+        // 5초 후에 플레이어 입력 활성화
+        FTimerHandle GameStartTimerHandle;
+        GetWorld()->GetTimerManager().SetTimer(GameStartTimerHandle, this, &ABattleGameMode::ActivateInput, 6.0f, false);
+
+        // 1초마다 CountdownTimerUpdate() 호출
+        GetWorld()->GetTimerManager().SetTimer(CountdownTimerHandle, this, &ABattleGameMode::CountdownTimerUpdate, 1.0f, true);
+
     }
 
     // "0"번 플레이어가 아닌 경우 AI 생성하지 않고 나가기
-    if (PossessIndex != 0) return;
+    //if (PossessIndex != 0) return;
+
+    if (AmIHost == false) return;
 
     uint16 AIId = 101;
     // ** AI를 추가할 경우 -> 0번 플레이어만 만들 것임 ** AI 플레이어 수 설정
@@ -225,8 +236,8 @@ void ABattleGameMode::SpawnPlayers()
         AAICharacter* AIChar = GetWorld()->SpawnActor<AAICharacter>(AIPlayerClass,SpawnTransform);
         if (!AIChar) continue;
 
-        auto Movement = AIChar->GetCharacterMovement(); 
-        Movement->bUseControllerDesiredRotation = true; 
+        auto Movement = AIChar->GetCharacterMovement();
+        Movement->bUseControllerDesiredRotation = true;
         Movement->bOrientRotationToMovement = false; 
         //Movement->bUseAccelerationForPaths = false; // MoveTo가 목적지 가까워져도 감속 없이 직선 고속 이동
 
@@ -243,6 +254,17 @@ void ABattleGameMode::SpawnPlayers()
 
         //SpawnedPlayers.Add(AIChar);
         SpawnedPlayers.Add(static_cast<int32>(AIId++), AIChar);
+
+        Protocol::CS_AI_ENTER_PKT AIPkt;
+
+
+
+
+
+        SendBufferRef SendBuffer = ClientPacketHandler::MakeSendBuffer(AIPkt);
+        Cast<UMyGameInstance>(GWorld->GetGameInstance())->SendPacket(SendBuffer);
+
+
     }
 }
 
@@ -456,18 +478,28 @@ void ABattleGameMode::CountdownTimerUpdate()
 void ABattleGameMode::RoundTimerUpdate()
 {
     CurrentRoundTime += 1.0f;
-    for (auto& Item : SpawnedPlayers)
+    //for (auto& Item : SpawnedPlayers)
+    //{
+    //    ABaseCharacter* Player = Item.Value;
+    //    if (Player && Player->GetController())
+    //    {
+    //        ABattle_PlayerController* PC = Cast<ABattle_PlayerController>(Player->GetController());
+    //        if (PC && PC->PlayerHUD)
+    //        {
+    //            PC->PlayerHUD->UpdateRoundTime(CurrentRoundTime);
+    //        }
+    //    }
+    //}
+
+    if (PlayerCharacter != nullptr)
     {
-        ABaseCharacter* Player = Item.Value;
-        if (Player && Player->GetController())
+        ABattle_PlayerController* PC = Cast<ABattle_PlayerController>(PlayerCharacter->GetController());
+        if (PC && PC->PlayerHUD)
         {
-            ABattle_PlayerController* PC = Cast<ABattle_PlayerController>(Player->GetController());
-            if (PC && PC->PlayerHUD)
-            {
-                PC->PlayerHUD->UpdateRoundTime(CurrentRoundTime);
-            }
+            PC->PlayerHUD->UpdateRoundTime(CurrentRoundTime);
         }
     }
+
     UE_LOG(LogTemp, Log, TEXT("Round Time: %.0f"), CurrentRoundTime);
 }
 

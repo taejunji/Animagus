@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "Player.h"
+#include "AIPlayer.h"
 #include "Room.h"
 #include "Buffers.h"
 #include "Session.h"
@@ -69,17 +70,24 @@ bool Room::HandleEnterPlayer(PlayerRef player)
         newPlayer.y = player->y;
         newPlayer.z = player->z;
         newPlayer.rotation = player->rotation;
+        newPlayer.host = (m_playerCount % 2) == 1;   // TODO: host 기준 만들기
         SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(newPlayer);
         if (auto session = player->ownerSession.lock())
             session->Send(sendBuffer);
 
+        n_pid = player->playerID;
         std::cout << "Send Enter Game Packet to " << player->playerID << std::endl;
 
-        n_pid = player->playerID;
+        if (newPlayer.host == true)
+        {
+            m_hostPlayer = player;
+
+            std::cout << n_pid << " is Host" << std::endl;
+        }
         //std::cout << n_pid << std::endl;
     }
 
-    // 신입 플레이어에게 기존 플레이어들 정보 전송
+    // 신입 플레이어에게 기존 플레이어들 정보 전송 + AI 정보 전송
     {
         SC_SPAWN_PKT oldPlayer;
 
@@ -101,6 +109,26 @@ bool Room::HandleEnterPlayer(PlayerRef player)
 
             std::cout << item.first << "'s info Send Spawn Packet to " << n_pid << std::endl;
         }
+
+        for (auto& item : m_aiPlayers)
+        {
+            if ((m_playerCount % 2) == 1) break;  // host 에게 ai 정보는 필요 없음
+
+            AIPlayerRef ai_player = item.second;
+            oldPlayer.x = ai_player->x;
+            oldPlayer.y = ai_player->y;
+            oldPlayer.z = ai_player->z;
+            oldPlayer.rotation = ai_player->rotation;
+            oldPlayer.player_id = ai_player->aiID;
+            oldPlayer.p_type = ai_player->type;
+
+            SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(oldPlayer);
+            if (auto session = player->ownerSession.lock())
+                session->Send(sendBuffer);
+
+            std::cout << "AI info Send Spawn Packet to " << n_pid << std::endl;
+        }
+
     }
 
     // 기존 플레이어들에게 신입 플레이어 정보 전송
@@ -180,6 +208,22 @@ bool Room::HandleSkillLocked(Protocol::CS_USING_SKILL_PKT& pkt)
 
     SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(pkt);
     Broadcast(sendBuffer, playerId);
+
+    return true;
+}
+
+bool Room::HandleEnterAIPlayer(Protocol::CS_AI_ENTER_PKT& pkt)
+{
+    std::lock_guard lock(m_mutex);
+
+    uint16 aiID = pkt.ai_id;
+    if (m_aiPlayers.contains(aiID) == true) return false;
+
+    AIPlayerRef ai = std::make_shared<AIPlayer>(pkt.x, pkt.y, pkt.z, pkt.rotation);
+    ai->aiID = aiID;
+
+    m_aiPlayers.insert(make_pair(ai->aiID, ai));
+    ai->room.store(shared_from_this());
 
     return true;
 }

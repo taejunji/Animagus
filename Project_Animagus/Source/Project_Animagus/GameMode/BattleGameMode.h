@@ -91,6 +91,7 @@ public:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Spawning", meta = (AllowPrivateAccess = "true"))
     int32 PossessIndex;
 
+    bool AmIHost = false;
 
     APlayerCharacter* PlayerCharacter; // 플레이어 캐릭터 포인터
 

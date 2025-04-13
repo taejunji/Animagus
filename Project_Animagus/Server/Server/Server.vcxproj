@@ -131,6 +131,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="AIPlayer.cpp" />
     <ClCompile Include="GameServer.cpp" />
     <ClCompile Include="IocpCore.cpp" />
     <ClCompile Include="IocpEvent.cpp" />
@@ -145,6 +146,7 @@
     <ClCompile Include="SocketUtils.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AIPlayer.h" />
     <ClInclude Include="GameServer.h" />
     <ClInclude Include="IocpCore.h" />
     <ClInclude Include="IocpEvent.h" />

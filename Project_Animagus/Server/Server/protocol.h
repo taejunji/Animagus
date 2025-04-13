@@ -67,6 +67,7 @@ namespace Protocol {
         CS_MOVE,
         CS_SELECT,
         CS_USING_SKILL,
+        CS_AI_ENTER,
     };
 
 
@@ -117,6 +118,7 @@ namespace Protocol {
     struct SC_ENTER_GAME_PKT
     {
         uint16 player_id;
+        bool host;
         float x, y, z;
         float rotation;
     };
@@ -127,6 +129,14 @@ namespace Protocol {
     {
         uint16 player_id;
         PlayerType p_type;
+        float x, y, z;
+        float rotation;
+    };
+    struct CS_AI_ENTER_PKT
+    {
+        uint16 player_id;
+        uint16 room_id;
+        uint16 ai_id;
         float x, y, z;
         float rotation;
     };

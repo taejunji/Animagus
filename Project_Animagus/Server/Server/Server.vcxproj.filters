@@ -48,6 +48,9 @@
     <ClCompile Include="Room.cpp">
       <Filter>ServerMain</Filter>
     </ClCompile>
+    <ClCompile Include="AIPlayer.cpp">
+      <Filter>ServerMain</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -87,6 +90,9 @@
       <Filter>Network</Filter>
     </ClInclude>
     <ClInclude Include="Room.h">
+      <Filter>ServerMain</Filter>
+    </ClInclude>
+    <ClInclude Include="AIPlayer.h">
       <Filter>ServerMain</Filter>
     </ClInclude>
   </ItemGroup>
