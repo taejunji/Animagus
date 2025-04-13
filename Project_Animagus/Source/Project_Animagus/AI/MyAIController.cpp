@@ -465,11 +465,14 @@ void AMyAIController::SetAITarget(ABaseCharacter* NewTarget)
 {
     if (NewTarget)
     {
+        // 중복 타이머 방지
+        GetWorld()->GetTimerManager().ClearTimer(TargetChangeTimerHandle);
+
         GetBlackboardComponent()->SetValueAsObject(TargetKey.SelectedKeyName, NewTarget);
 
         // 3초 동안 타겟 변경 불가능
         bCanChangeTarget = false;
-        GetWorld()->GetTimerManager().SetTimer(TargetChangeTimerHandle, this, &AMyAIController::ResetTargetChange, 3.0f, false);
+        GetWorld()->GetTimerManager().SetTimer(TargetChangeTimerHandle, this, &AMyAIController::ResetTargetChange, 10.0f, false);
     }
     else
     {
