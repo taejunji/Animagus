@@ -68,6 +68,7 @@ namespace Protocol {
         CS_SELECT,
         CS_USING_SKILL,
         CS_AI_ENTER,
+        CS_AI_MOVE,
     };
 
 
@@ -134,9 +135,10 @@ namespace Protocol {
     };
     struct CS_AI_ENTER_PKT
     {
-        uint16 player_id;
+        //uint16 player_id; -> PlayerID 가 정해지는 시점이 AI 생성 이후임. 즉, 이 시점에서 클라는 자신의 PID 모름
         uint16 room_id;
         uint16 ai_id;
+        PlayerType p_type;
         float x, y, z;
         float rotation;
     };
@@ -157,6 +159,11 @@ namespace Protocol {
         float x, y, z;          // 위치, 근데, 필요한가? 이미 클라이언트에서도 player_id 로 해당 플레이어의 위치 접근 가능하지 않나?
         float pitch, yaw, roll; // 방향 벡터 or 오일러 각        
     };
+    struct CS_AI_MOVE_PKT
+    {
+        PlayerInfo player_info;
+    };
+
 #pragma pack(pop)
 
 }

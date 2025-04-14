@@ -136,4 +136,17 @@ public:
     void RemoveLostTarget(AActor* Target);
     ABaseCharacter* SelectBestTarget(const TSet<AActor*>& Candidates);
     void SetAITarget(ABaseCharacter* NewTarget);
+
+protected:
+    const float MOVE_PACKET_SEND_DELAY = 0.1f;
+    float MovePacketSendTimer = MOVE_PACKET_SEND_DELAY;
+
+    // Cache
+    FVector2D DesiredInput;
+    FVector DesiredMoveDirection;
+    float DesiredYaw;
+
+    // Dirty Flag Test
+    FVector2D LastDesiredInput;
+
 };

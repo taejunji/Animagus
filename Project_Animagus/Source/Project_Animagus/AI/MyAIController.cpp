@@ -23,6 +23,13 @@
 #include "Perception/AISense_Damage.h"
 #include "Perception/AIPerceptionSystem.h"
 
+#include "../System/MyGameInstance.h"
+
+#include "../Server/Server/protocol.h"
+#include "../Network/Session.h"
+#include "../Network/ClientPacketHandler.h"
+
+
 AMyAIController::AMyAIController(const FObjectInitializer& ObjectInitializer)
     : Super(ObjectInitializer)
 {
@@ -243,6 +250,48 @@ void AMyAIController::Tick(float DeltaTime)
         GetBlackboardComponent()->ClearValue(TEXT("PlayerLocation"));
     }
 #endif
+
+    // Send 판정
+    bool ForceSendPacket = false;
+
+    if (LastDesiredInput != DesiredInput)
+    {
+        ForceSendPacket = true;
+        LastDesiredInput = DesiredInput;
+    }
+
+    // State 정보
+    if (DesiredInput == FVector2D::Zero())
+        AI->SetMoveState(Protocol::PlayerState::MOVE_STATE_IDLE);
+    else
+        AI->SetMoveState(Protocol::PlayerState::MOVE_STATE_RUN);
+
+    MovePacketSendTimer -= DeltaTime;
+
+    if (MovePacketSendTimer <= 0 || ForceSendPacket)
+    {
+        MovePacketSendTimer = MOVE_PACKET_SEND_DELAY;
+
+        Protocol::CS_AI_MOVE_PKT MovePkt;
+
+        // 현재 위치 정보
+        {
+            Protocol::PlayerInfo Info;
+            FVector Location = AI->GetActorLocation();
+            Info.x = Location.X; Info.y = Location.Y; Info.z = Location.Z;
+            Info.rotation = AI->GetActorRotation().Yaw;
+            Info.player_id = AI->GetPlayerId();
+            Info.player_type = AI->GetPlayerType();
+            Info.player_state = AI->GetMoveState();
+
+            MovePkt.player_info = Info;
+        }
+
+        //UE_LOG(LogTemp, Warning, TEXT("PlayerInfo Send"));
+
+        SendBufferRef SendBuffer = ClientPacketHandler::MakeSendBuffer(MovePkt);
+        Cast<UMyGameInstance>(GWorld->GetGameInstance())->SendPacket(SendBuffer);
+    }
 
 }
 

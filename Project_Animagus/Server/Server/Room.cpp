@@ -62,6 +62,7 @@ bool Room::HandleEnterPlayer(PlayerRef player)
         std::cout << "Error" << std::endl;
 
     int n_pid = 0;
+    bool isHost = false;
     // 신입 플레이어 스폰 위치, 회전각 서버에서 지정해주고 해당 정보 플레이어에게 전송
     {
         SC_ENTER_GAME_PKT newPlayer;
@@ -81,6 +82,7 @@ bool Room::HandleEnterPlayer(PlayerRef player)
         if (newPlayer.host == true)
         {
             m_hostPlayer = player;
+            isHost = true;
 
             std::cout << n_pid << " is Host" << std::endl;
         }
@@ -132,6 +134,7 @@ bool Room::HandleEnterPlayer(PlayerRef player)
     }
 
     // 기존 플레이어들에게 신입 플레이어 정보 전송
+    // 현재 Host 조건이 해당 Room 의 홀수번째 플레이어이기 때문에 기존 플레이어는 이미 AI 정보 갖고있음
     {
         SC_SPAWN_PKT newPlayer;
         newPlayer.x = player->x;
@@ -156,7 +159,7 @@ bool Room::HandleLeavePlayer(PlayerRef player)
 
     std::cout << "Leave PlayerID: " << p_id << std::endl;
 
-    // 다른 플레이어에게 해당 플레이어 퇴장 알림
+    // 다른 플레이어에게 해당 플레이어 퇴장 알림 + Host 라면 AI 플레이어 퇴장 일림
     {
         //SC_LEAVE_PKT pkt;
         //pkt.player_id = player->playerID;
@@ -216,14 +219,42 @@ bool Room::HandleEnterAIPlayer(Protocol::CS_AI_ENTER_PKT& pkt)
 {
     std::lock_guard lock(m_mutex);
 
+    std::cout << "AI Enter" << std::endl;
+
     uint16 aiID = pkt.ai_id;
     if (m_aiPlayers.contains(aiID) == true) return false;
 
     AIPlayerRef ai = std::make_shared<AIPlayer>(pkt.x, pkt.y, pkt.z, pkt.rotation);
     ai->aiID = aiID;
+    ai->type = pkt.p_type;
 
     m_aiPlayers.insert(make_pair(ai->aiID, ai));
     ai->room.store(shared_from_this());
+
+    return true;
+}
+
+bool Room::HandleAIMoveLocked(Protocol::CS_AI_MOVE_PKT& pkt, const uint16 ownerID)
+{
+    std::lock_guard lock(m_mutex);
+    const uint16 aiID = pkt.player_info.player_id;
+    if (m_aiPlayers.contains(aiID) == false) return false;
+
+    PlayerInfo info = pkt.player_info;
+    AIPlayerRef& player = m_aiPlayers[aiID];
+    player->x = info.x; player->y = info.y; player->z = info.z;
+    player->rotation = info.rotation;
+
+    Protocol::CS_MOVE_PKT movePkt;
+    movePkt.player_info.x = player->x;
+    movePkt.player_info.y = player->y;
+    movePkt.player_info.z = player->z;
+    movePkt.player_info.rotation = player->rotation;
+    movePkt.player_info.player_id = player->aiID;
+
+    // host 에게는 전송 X
+    SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(movePkt);
+    Broadcast(sendBuffer, ownerID);
 
     return true;
 }

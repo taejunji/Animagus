@@ -240,6 +240,8 @@ void ABattleGameMode::SpawnPlayers()
         Movement->bUseControllerDesiredRotation = true;
         Movement->bOrientRotationToMovement = false; 
         //Movement->bUseAccelerationForPaths = false; // MoveTo가 목적지 가까워져도 감속 없이 직선 고속 이동
+        
+        AIChar->SetPlayerId(AIId);
 
         // AI 컨트롤러 생성 및 연결
         AMyAIController* AICtrl = GetWorld()->SpawnActor<AMyAIController>(AIControllerClass, SpawnTransform);
@@ -253,18 +255,21 @@ void ABattleGameMode::SpawnPlayers()
         }
 
         //SpawnedPlayers.Add(AIChar);
-        SpawnedPlayers.Add(static_cast<int32>(AIId++), AIChar);
+        SpawnedPlayers.Add(static_cast<int32>(AIId), AIChar);
 
         Protocol::CS_AI_ENTER_PKT AIPkt;
 
-
-
-
+        AIPkt.ai_id = AIId;
+        AIPkt.p_type = AIChar->GetPlayerType();
+        AIPkt.x = SpawnLocations[i].X;
+        AIPkt.y = SpawnLocations[i].Y;
+        AIPkt.z = SpawnLocations[i].Z;
+        AIPkt.rotation = SpawnRotations[i].Yaw;
 
         SendBufferRef SendBuffer = ClientPacketHandler::MakeSendBuffer(AIPkt);
         Cast<UMyGameInstance>(GWorld->GetGameInstance())->SendPacket(SendBuffer);
 
-
+        AIId++;
     }
 }
 
