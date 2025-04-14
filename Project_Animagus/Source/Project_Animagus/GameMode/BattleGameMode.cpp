@@ -123,7 +123,7 @@ void ABattleGameMode::SpawnPlayers()
         return;
     }
     
-#if 1
+#if 0
     APlayerController* PC = UGameplayStatics::GetPlayerController(World, 0);
     if (PC)
     {
