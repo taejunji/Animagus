@@ -251,6 +251,8 @@ void AMyAIController::Tick(float DeltaTime)
     }
 #endif
 
+    UE_LOG(LogTemp, Warning, TEXT("AI PlayerInfo Send 111"));
+
     // Send 판정
     bool ForceSendPacket = false;
 
@@ -287,7 +289,7 @@ void AMyAIController::Tick(float DeltaTime)
             MovePkt.player_info = Info;
         }
 
-        //UE_LOG(LogTemp, Warning, TEXT("PlayerInfo Send"));
+        UE_LOG(LogTemp, Warning, TEXT("AI PlayerInfo Send 222"));
 
         SendBufferRef SendBuffer = ClientPacketHandler::MakeSendBuffer(MovePkt);
         Cast<UMyGameInstance>(GWorld->GetGameInstance())->SendPacket(SendBuffer);

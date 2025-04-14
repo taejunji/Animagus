@@ -219,10 +219,11 @@ bool Room::HandleEnterAIPlayer(Protocol::CS_AI_ENTER_PKT& pkt)
 {
     std::lock_guard lock(m_mutex);
 
-    std::cout << "AI Enter" << std::endl;
-
+    uint16 ownerID = pkt.player_id;
     uint16 aiID = pkt.ai_id;
     if (m_aiPlayers.contains(aiID) == true) return false;
+
+    std::cout << "AI Enter: " << aiID << std::endl;
 
     AIPlayerRef ai = std::make_shared<AIPlayer>(pkt.x, pkt.y, pkt.z, pkt.rotation);
     ai->aiID = aiID;
@@ -230,6 +231,18 @@ bool Room::HandleEnterAIPlayer(Protocol::CS_AI_ENTER_PKT& pkt)
 
     m_aiPlayers.insert(make_pair(ai->aiID, ai));
     ai->room.store(shared_from_this());
+
+    // Host 를 제외한 클라이언트에서는 AI 를 일반 NetworkPlayer 로 인식
+    SC_SPAWN_PKT newPlayer;
+    newPlayer.x = ai->x;
+    newPlayer.y = ai->y;
+    newPlayer.z = ai->z;
+    newPlayer.rotation = ai->rotation;
+    newPlayer.player_id = ai->aiID;
+    newPlayer.p_type = ai->type;
+
+    SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(newPlayer);
+    Broadcast(sendBuffer, ownerID);
 
     return true;
 }
@@ -239,6 +252,8 @@ bool Room::HandleAIMoveLocked(Protocol::CS_AI_MOVE_PKT& pkt, const uint16 ownerI
     std::lock_guard lock(m_mutex);
     const uint16 aiID = pkt.player_info.player_id;
     if (m_aiPlayers.contains(aiID) == false) return false;
+
+    std::cout << "AI Move" << std::endl;
 
     PlayerInfo info = pkt.player_info;
     AIPlayerRef& player = m_aiPlayers[aiID];

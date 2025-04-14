@@ -68,7 +68,7 @@ bool RecvWorker::ReceivePacket(TArray<uint8>& OutPacket)
     {
         FMemoryReader Reader(HeaderBuffer);
         Reader << Header;
-        UE_LOG(LogTemp, Log, TEXT("Recv PacketID : %d, PacketSize : %d"), Header.PacketID, Header.PacketSize);
+        //UE_LOG(LogTemp, Log, TEXT("Recv PacketID : %d, PacketSize : %d"), Header.PacketID, Header.PacketSize);
     }
 
     // 패킷 헤더 복사
@@ -177,7 +177,7 @@ bool SendWorker::SendDesiredBytes(const uint8* Buffer, int32 Size)
         if (Socket->Send(Buffer, Size, BytesSent) == false)
             return false;
 
-        UE_LOG(LogTemp, Log, TEXT("Send Packet, PacketSize : %d"), BytesSent);
+        //UE_LOG(LogTemp, Log, TEXT("Send Packet, PacketSize : %d"), BytesSent);
 
         Size -= BytesSent;
         Buffer += BytesSent;

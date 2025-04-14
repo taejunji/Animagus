@@ -135,7 +135,7 @@ namespace Protocol {
     };
     struct CS_AI_ENTER_PKT
     {
-        //uint16 player_id; -> PlayerID 가 정해지는 시점이 AI 생성 이후임. 즉, 이 시점에서 클라는 자신의 PID 모름
+        uint16 player_id;
         uint16 room_id;
         uint16 ai_id;
         PlayerType p_type;

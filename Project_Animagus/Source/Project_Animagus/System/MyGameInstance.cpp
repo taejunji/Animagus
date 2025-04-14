@@ -171,6 +171,8 @@ void UMyGameInstance::HandleEnterGame(Protocol::SC_ENTER_GAME_PKT& pkt)
     if (Socket == nullptr || ClientSession == nullptr)
         return;
 
+    MyPlayerId = pkt.player_id;
+
     auto* World = GetWorld();
     if (World == nullptr)
         return;
@@ -191,14 +193,12 @@ void UMyGameInstance::HandleEnterGame(Protocol::SC_ENTER_GAME_PKT& pkt)
             GameMode->SpawnPlayers();
 
             APlayerController* PC = UGameplayStatics::GetPlayerController(GetWorld(), 0);
-            if (PC)
-            {
-                if (APlayerCharacter* MyPlayer = Cast<APlayerCharacter>(PC->GetPawn()))
-                {
-                    MyPlayer->SetPlayerId(pkt.player_id);
-                }
-            }
+            if (PC == nullptr) return;
 
+            if (APlayerCharacter* MyPlayer = Cast<APlayerCharacter>(PC->GetPawn()))
+            {
+                MyPlayer->SetPlayerId(pkt.player_id);
+            }
         }
     }
     

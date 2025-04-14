@@ -259,6 +259,7 @@ void ABattleGameMode::SpawnPlayers()
 
         Protocol::CS_AI_ENTER_PKT AIPkt;
 
+        AIPkt.player_id = Cast<UMyGameInstance>(GWorld->GetGameInstance())->MyPlayerId;
         AIPkt.ai_id = AIId;
         AIPkt.p_type = AIChar->GetPlayerType();
         AIPkt.x = SpawnLocations[i].X;
@@ -285,6 +286,11 @@ void ABattleGameMode::SpawnPlayer(Protocol::SC_SPAWN_PKT& pkt)
     // TODO : 플레이어 ID 중복체크
     uint16 p_id = pkt.player_id;
     if (SpawnedPlayers.Contains(static_cast<int32>(p_id)) == true) return;
+
+    if (p_id >= 100)
+    {
+        UE_LOG(LogTemp, Warning, TEXT("AI Player Spawn: %d"), p_id);
+    }
 
     Protocol::PlayerType type = pkt.p_type;
 
