@@ -220,38 +220,6 @@ void AMyAIController::Tick(float DeltaTime)
     // 캐릭터의 이동 속도 업데이트
     AI->SetWalkSpeed(AI->current_speed);
 
-    
-    if (ControlMode != AIControlMode::AIController) return;
-
-#if 0
-    // [ 보이는지 확인해서 쫓아가서 쏘거나 마지막으로 발견한 위치에 가기 ] : BT 
-    // 플레이어 시야에 들어오면 쳐다보기 
-    APawn* PlayerPawn = UGameplayStatics::GetPlayerPawn(GetWorld(), 0);
-    //
-    if (LineOfSightTo(PlayerPawn))
-    {
-        // Actor 쳐다보고 따라오는거
-    //    MoveToActor(PlayerPawn, AcceptanceRadius);
-    //    SetFocus(PlayerPawn);
-        SetFocalPoint(PlayerPawn->GetActorLocation() + FVector(0, 0, 50)); // 플레이어 중앙(50cm 위)를 바라보게 하기
-
-        // 시야에 보이면 Plaeyr 따라가고 아니면 지우기 
-        GetBlackboardComponent()->SetValueAsVector(TEXT("PlayerLocation"), PlayerPawn->GetActorLocation());
-        GetBlackboardComponent()->SetValueAsVector(TEXT("LastKnownPlayerLocation"), PlayerPawn->GetActorLocation());
-        // 발사 방향 디버깅
-    //    DrawDebugLine(GetWorld(), GetOwner()->GetActorLocation(), PlayerPawn->GetActorLocation(), FColor::Blue, false, 2.0f, 0, 2.0f);
-    }
-    else
-    {
-        ClearFocus(EAIFocusPriority::Gameplay);
-    //    StopMovement();
-
-        // 해당 키의 값을 제거하고, 블랙보드에서 "존재하지 않는 상태"로 만든다.
-        GetBlackboardComponent()->ClearValue(TEXT("PlayerLocation"));
-    }
-#endif
-
-    UE_LOG(LogTemp, Warning, TEXT("AI PlayerInfo Send 111"));
 
     // Send 판정
     bool ForceSendPacket = false;
@@ -289,11 +257,39 @@ void AMyAIController::Tick(float DeltaTime)
             MovePkt.player_info = Info;
         }
 
-        UE_LOG(LogTemp, Warning, TEXT("AI PlayerInfo Send 222"));
-
         SendBufferRef SendBuffer = ClientPacketHandler::MakeSendBuffer(MovePkt);
         Cast<UMyGameInstance>(GWorld->GetGameInstance())->SendPacket(SendBuffer);
     }
+
+    if (ControlMode != AIControlMode::AIController) return;
+
+#if 0
+    // [ 보이는지 확인해서 쫓아가서 쏘거나 마지막으로 발견한 위치에 가기 ] : BT 
+    // 플레이어 시야에 들어오면 쳐다보기 
+    APawn* PlayerPawn = UGameplayStatics::GetPlayerPawn(GetWorld(), 0);
+    //
+    if (LineOfSightTo(PlayerPawn))
+    {
+        // Actor 쳐다보고 따라오는거
+    //    MoveToActor(PlayerPawn, AcceptanceRadius);
+    //    SetFocus(PlayerPawn);
+        SetFocalPoint(PlayerPawn->GetActorLocation() + FVector(0, 0, 50)); // 플레이어 중앙(50cm 위)를 바라보게 하기
+
+        // 시야에 보이면 Plaeyr 따라가고 아니면 지우기 
+        GetBlackboardComponent()->SetValueAsVector(TEXT("PlayerLocation"), PlayerPawn->GetActorLocation());
+        GetBlackboardComponent()->SetValueAsVector(TEXT("LastKnownPlayerLocation"), PlayerPawn->GetActorLocation());
+        // 발사 방향 디버깅
+    //    DrawDebugLine(GetWorld(), GetOwner()->GetActorLocation(), PlayerPawn->GetActorLocation(), FColor::Blue, false, 2.0f, 0, 2.0f);
+    }
+    else
+    {
+        ClearFocus(EAIFocusPriority::Gameplay);
+    //    StopMovement();
+
+        // 해당 키의 값을 제거하고, 블랙보드에서 "존재하지 않는 상태"로 만든다.
+        GetBlackboardComponent()->ClearValue(TEXT("PlayerLocation"));
+    }
+#endif
 
 }
 

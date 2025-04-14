@@ -105,8 +105,6 @@ bool Handle_CS_AI_ENTER(SessionRef& session, CS_AI_ENTER_PKT& pkt)
 
 bool Handle_CS_AI_MOVE(SessionRef& session, CS_AI_MOVE_PKT& pkt)
 {
-    std::cout << "AI Move" << std::endl;
-
     auto gameSession = static_pointer_cast<Session>(session);
 
     PlayerRef player = gameSession->m_player.load();

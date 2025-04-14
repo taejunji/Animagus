@@ -253,7 +253,7 @@ bool Room::HandleAIMoveLocked(Protocol::CS_AI_MOVE_PKT& pkt, const uint16 ownerI
     const uint16 aiID = pkt.player_info.player_id;
     if (m_aiPlayers.contains(aiID) == false) return false;
 
-    std::cout << "AI Move" << std::endl;
+    //std::cout << "AI Move" << std::endl;
 
     PlayerInfo info = pkt.player_info;
     AIPlayerRef& player = m_aiPlayers[aiID];
