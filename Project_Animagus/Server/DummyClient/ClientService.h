@@ -1,5 +1,6 @@
 #pragma once
 
+extern std::atomic<int> GClientCount;
 
 class ClientService : public std::enable_shared_from_this<ClientService>
 {
@@ -15,6 +16,8 @@ public:
     IocpCoreRef&    GetIocpCore() { return m_iocpCore; }
     void            AddSession(SessionRef session) { m_sessions.emplace_back(session); }
 
+    void            SendRandomPacket(SessionRef session);
+
 private:
     std::vector<std::thread>    m_thread;
     std::mutex                  m_mutex;
@@ -22,6 +25,7 @@ private:
     IocpCoreRef     m_iocpCore;         // IOCP 관련 기능 담당
     std::vector<SessionRef> m_sessions;
 
-    uint16 CLIENT_COUNT = 1;
+public:
+    uint16 CLIENT_COUNT;
 };
 

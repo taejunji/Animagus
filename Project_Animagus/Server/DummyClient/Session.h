@@ -90,6 +90,9 @@ private:
     DisconnectEvent		_disconnectEvent;
     RecvEvent			_recvEvent;
     SendEvent			_sendEvent;
+
+public:
+    uint16 playerID = 0;
 };
 
 

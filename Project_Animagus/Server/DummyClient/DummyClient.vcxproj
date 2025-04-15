@@ -133,7 +133,6 @@
     <ClInclude Include="IocpCore.h" />
     <ClInclude Include="IocpEvent.h" />
     <ClInclude Include="pch.h" />
-    <ClInclude Include="protocol.h" />
     <ClInclude Include="Session.h" />
     <ClInclude Include="SocketUtils.h" />
     <ClInclude Include="Types.h" />

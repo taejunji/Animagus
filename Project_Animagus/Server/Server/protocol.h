@@ -92,7 +92,7 @@ namespace Protocol {
 
 
     /* 패킷이름 뒤에 _PKT 붙이고 반드시 패킷ID 넣어주기 */
-    /* 패킷 헤더는 PacketHandler::MakeSendBuffer 에서 버퍼 앞에 붙여서 나감*/
+    /* 패킷 헤더는 PacketHandler::MakeSendBuffer 에서 버퍼 앞에 붙여서 나감 */
     /* 가변 길이 데이터는 담지 않기 (ex: vector, string) */
 #pragma pack (push, 1)
     struct DCS_TEST_PKT
@@ -157,11 +157,19 @@ namespace Protocol {
         uint16 room_id;
         SkillType s_type;
         float x, y, z;          // 위치, 근데, 필요한가? 이미 클라이언트에서도 player_id 로 해당 플레이어의 위치 접근 가능하지 않나?
-        float pitch, yaw, roll; // 방향 벡터 or 오일러 각        
+        float pitch, yaw, roll;       
     };
     struct CS_AI_MOVE_PKT
     {
         PlayerInfo player_info;
+    };
+    struct CS_AI_USING_SKILL_PKT
+    {
+        uint16 player_id;
+        uint16 room_id;
+        SkillType s_type;
+        float x, y, z;
+        float pitch, yaw, roll;
     };
 
 #pragma pack(pop)

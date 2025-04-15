@@ -7,15 +7,15 @@ int main()
 {
     this_thread::sleep_for(chrono::seconds(5));
 
-    ClientServiceRef client = std::make_shared<ClientService>(4000);
+    ClientServiceRef dummyClient = std::make_shared<ClientService>(5000);
 
-    if (false == client->Initialize()) {
+    if (false == dummyClient->Initialize()) {
         std::cerr << "[Client] Initialization failed." << std::endl;
         return -1;
     }
 
-    client->Start();
+    dummyClient->Start();
 
-    client->ShutDown();
+    dummyClient->ShutDown();
     return 0;
 }

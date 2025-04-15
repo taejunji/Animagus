@@ -2,6 +2,8 @@
 #include "ClientPacketHandler.h"
 #include "Buffers.h"
 #include "Session.h"
+#include "ClientService.h"
+
 using namespace Protocol;
 
 PacketHandlerFunc GClientPacketHandler[UINT16_MAX];
@@ -26,5 +28,20 @@ bool Handle_DCS_TEST(SessionRef& session, DCS_TEST_PKT& pkt)
 
 bool Handle_SC_SPAWN(SessionRef& session, SC_SPAWN_PKT& pkt)
 {
+    return true;
+}
+
+bool Handle_SC_ENTER_GAME(SessionRef& session, SC_ENTER_GAME_PKT& pkt)
+{
+    if (session == nullptr) return false;
+
+    session->playerID = pkt.player_id;
+    GClientCount++;
+
+    if (GClientCount >= session->GetService()->CLIENT_COUNT)
+    {
+        std::cout << "[Client] All clients connected. cnt: " << GClientCount << std::endl;
+    }
+
     return true;
 }

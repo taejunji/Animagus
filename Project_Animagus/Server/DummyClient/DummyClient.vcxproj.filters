@@ -28,7 +28,6 @@
       <Filter>Network</Filter>
     </ClInclude>
     <ClInclude Include="pch.h" />
-    <ClInclude Include="protocol.h" />
     <ClInclude Include="Types.h" />
     <ClInclude Include="ClientPacketHandler.h">
       <Filter>ClientMain</Filter>
