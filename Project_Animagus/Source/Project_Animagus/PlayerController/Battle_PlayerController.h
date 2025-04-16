@@ -21,6 +21,7 @@ class PROJECT_ANIMAGUS_API ABattle_PlayerController : public APlayerController
 private:
     ControllerType control_type = ControllerType::TPS; // 기본이 TPS, Alt 누르면 RPG
     bool is_running = false;
+    int32 current_camera_index = 0;
 
 public:
     ABattle_PlayerController(const FObjectInitializer& ObjectInitializer);
@@ -38,6 +39,8 @@ private:
     void Input_Attack(const FInputActionValue& InputValue);
     void Input_Ready(const FInputActionValue& InputValue);
     
+    void Input_ConvertCamera(const FInputActionValue& InputValue);
+
     void Input_Skill_1(const FInputActionValue& InputValue);
     void Input_Skill_2(const FInputActionValue& InputValue);
     void Input_Skill_3(const FInputActionValue& InputValue);
@@ -75,6 +78,9 @@ protected:
     TObjectPtr<class UInputAction> attack_action;
     UPROPERTY(EditAnywhere, Category = "Input")
     TObjectPtr<class UInputAction> ready_action;
+
+    UPROPERTY(EditAnywhere, Category = "Input")
+    TObjectPtr<class UInputAction> convert_camera_action;
 
 
     UPROPERTY(EditAnywhere, Category = "Input")

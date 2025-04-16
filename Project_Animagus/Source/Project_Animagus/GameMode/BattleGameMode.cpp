@@ -10,6 +10,7 @@
 #include "../Character/AICharacter.h"
 #include "../PlayerController/Battle_PlayerController.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "GameFramework/NavMovementComponent.h"
 #include "Project_Animagus/Item/BaseItem.h"
 #include "Project_Animagus/UI/MyPlayerHUDWidget.h"
 #include "Algo/RandomShuffle.h"
@@ -122,7 +123,7 @@ void ABattleGameMode::SpawnPlayers()
         return;
     }
     
-#if 1
+#if 0
     APlayerController* PC = UGameplayStatics::GetPlayerController(World, 0);
     if (PC)
     {
@@ -217,6 +218,11 @@ void ABattleGameMode::SpawnPlayers()
         AAICharacter* AIChar = GetWorld()->SpawnActor<AAICharacter>(AIPlayerClass,SpawnTransform);
         if (!AIChar) continue;
 
+        auto Movement = AIChar->GetCharacterMovement(); 
+        Movement->bUseControllerDesiredRotation = true; 
+        Movement->bOrientRotationToMovement = false; 
+        //Movement->bUseAccelerationForPaths = false; // MoveTo가 목적지 가까워져도 감속 없이 직선 고속 이동
+
         // AI 컨트롤러 생성 및 연결
         AMyAIController* AICtrl = GetWorld()->SpawnActor<AMyAIController>(AIControllerClass, SpawnTransform);
         if (AICtrl)
@@ -225,6 +231,7 @@ void ABattleGameMode::SpawnPlayers()
             AICtrl->SetControlRotation(FRotator(SpawnTransform.GetRotation()));
             AICtrl->SetIgnoreMoveInput(true);
             AICtrl->SetIgnoreLookInput(true);
+            AICtrl->SetSkillCoolTime();
         }
 
         SpawnedPlayers.Add(AIChar);
@@ -259,6 +266,7 @@ void ABattleGameMode::ActivateInput()
                 AICtrl->StartBehaviorTree();
                 AICtrl->SetIgnoreMoveInput(false);  // AI 입력 활성화
                 AICtrl->SetIgnoreLookInput(false);  // AI 회전 활성화
+
             }
 
             //if (UCharacterMovementComponent* MovementComp = AIChar->GetCharacterMovement())

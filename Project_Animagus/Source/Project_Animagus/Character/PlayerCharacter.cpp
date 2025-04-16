@@ -76,6 +76,10 @@ void APlayerCharacter::InitPlayerMesh()
             if (GameInstance->CharacterMeshes.Contains(TEXT("SM_Sheep"))) GetMesh()->SetSkeletalMesh(GameInstance->CharacterMeshes[TEXT("SM_Sheep")]);
             break;
 
+        case CharacterMesh::Fox:
+            if (GameInstance->CharacterMeshes.Contains(TEXT("SM_Fox"))) GetMesh()->SetSkeletalMesh(GameInstance->CharacterMeshes[TEXT("SM_Fox")]);
+            break;
+
         default:
             UE_LOG(LogTemp, Error, TEXT("메쉬 로드 실패"));
             break;

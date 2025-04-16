@@ -18,11 +18,13 @@ UMyGameInstance::UMyGameInstance(const FObjectInitializer& ObjectInitializer)
     static ConstructorHelpers::FObjectFinder<USkeletalMesh> SM_Tiger(TEXT("/Game/WorkFolder/Assets/Tiger/Character128_RiggedTiger.Character128_RiggedTiger"));
     static ConstructorHelpers::FObjectFinder<USkeletalMesh> SM_Koala(TEXT("/Game/WorkFolder/Assets/Koala/Character139_RiggedKoala.Character139_RiggedKoala"));
     static ConstructorHelpers::FObjectFinder<USkeletalMesh> SM_Sheep(TEXT("/Game/WorkFolder/Assets/Sheep/Character144_RiggedSheep.Character144_RiggedSheep"));
+    static ConstructorHelpers::FObjectFinder<USkeletalMesh> SM_Fox(TEXT("/Game/WorkFolder/Assets/Fox/Character131_RiggedFox.Character131_RiggedFox"));
 
     if (SM_Monkey.Succeeded()) CharacterMeshes.Add(TEXT("SM_Monkey"), SM_Monkey.Object);
     if (SM_Tiger.Succeeded()) CharacterMeshes.Add(TEXT("SM_Tiger"), SM_Tiger.Object);
     if (SM_Koala.Succeeded()) CharacterMeshes.Add(TEXT("SM_Koala"), SM_Koala.Object);
     if (SM_Sheep.Succeeded()) CharacterMeshes.Add(TEXT("SM_Sheep"), SM_Sheep.Object);
+    if (SM_Fox.Succeeded()) CharacterMeshes.Add(TEXT("SM_Fox"), SM_Fox.Object);
 }
 
 void UMyGameInstance::Init()

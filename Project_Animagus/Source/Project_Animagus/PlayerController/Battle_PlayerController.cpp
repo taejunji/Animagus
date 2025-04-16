@@ -10,6 +10,8 @@
 #include "GameFramework/CharacterMovementComponent.h" 
 #include "Project_Animagus/Skill/BaseSkill.h"
 #include "../UI/MyPlayerHUDWidget.h"
+#include "../GameMode/BattleGameMode.h"
+#include "Kismet/GameplayStatics.h"
 
 ABattle_PlayerController::ABattle_PlayerController(const FObjectInitializer& ObjectInitializer)
     : Super(ObjectInitializer)
@@ -84,6 +86,10 @@ void ABattle_PlayerController::SetupInputComponent()
         EnhancedInputComponent->BindAction(skill_2_action, ETriggerEvent::Started, this, &ThisClass::Input_Skill_2);
         EnhancedInputComponent->BindAction(skill_3_action, ETriggerEvent::Started, this, &ThisClass::Input_Skill_3);
         EnhancedInputComponent->BindAction(skill_4_action, ETriggerEvent::Started, this, &ThisClass::Input_Skill_4);
+
+        // "Camera 변경: <-, ->"
+        EnhancedInputComponent->BindAction(convert_camera_action, ETriggerEvent::Started, this, &ThisClass::Input_ConvertCamera);
+
     }
 }
 
@@ -191,7 +197,7 @@ void ABattle_PlayerController::Input_Attack(const FInputActionValue& InputValue)
     {
         ABaseCharacter* MyCharacter = Cast<ABaseCharacter>(MyPawn);
         int32 now_skill_idx = MyCharacter->skill_Sellect;
-        if (MyCharacter && MyCharacter->Skills.IsValidIndex(now_skill_idx) && MyCharacter->Skills[now_skill_idx] != nullptr)
+        if (MyCharacter->GetIsDead() == false && MyCharacter->Skills.IsValidIndex(now_skill_idx) && MyCharacter->Skills[now_skill_idx] != nullptr)
         {
             MyCharacter->Skills[now_skill_idx]->ActiveSkill();
         }
@@ -218,6 +224,42 @@ void ABattle_PlayerController::Input_Ready(const FInputActionValue& InputValue)
     } 
 }
 
+void ABattle_PlayerController::Input_ConvertCamera(const FInputActionValue& InputValue)
+{
+#if 0
+    if (APawn* MyPawn = GetPawn()) 
+    {
+        ABaseCharacter* MyCharacter = Cast<ABaseCharacter>(MyPawn);
+        // 살아있으면 카메라 변경 못하도록
+        if (MyCharacter->GetIsDead() == false)
+            return;
+    }
+#endif
+
+    int32 Direction = FMath::RoundToInt(InputValue.Get<float>()); 
+    ABattleGameMode* BM = Cast<ABattleGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
+
+    if (Direction == 0 || BM->SpawnedPlayers.Num() == 0) return;
+
+    int32 StartIndex = current_camera_index;
+
+    do
+    {
+        // 방향에 따라 인덱스 조정
+        // (현재 인덱스 + 방향 + Num) % Num 구조는 항상 양수 인덱스를 보장하기 위한 패턴
+        current_camera_index = (current_camera_index + Direction + BM->SpawnedPlayers.Num()) % BM->SpawnedPlayers.Num();
+
+        ABaseCharacter* TargetPawn = BM->SpawnedPlayers[current_camera_index];
+        if (TargetPawn && !TargetPawn->GetIsDead())
+        {
+            SetViewTargetWithBlend(TargetPawn, 0.0f);
+            return;
+        }
+
+    } while (current_camera_index != StartIndex);
+    
+}
+
 void ABattle_PlayerController::Input_Skill_1(const FInputActionValue& InputValue)
 {
     UE_LOG(LogTemp, Display, TEXT("Skill_1_Pressed"));
@@ -226,7 +268,7 @@ void ABattle_PlayerController::Input_Skill_1(const FInputActionValue& InputValue
     {        
         ABaseCharacter* MyCharacter = Cast<ABaseCharacter>(MyPawn);
         
-        if (MyCharacter && MyCharacter->Skills.IsValidIndex(0) && MyCharacter->Skills[0])
+        if (MyCharacter->GetIsDead() == false && MyCharacter->Skills.IsValidIndex(0) && MyCharacter->Skills[0])
         {
             MyCharacter->skill_Sellect = 0;
         }
@@ -245,7 +287,7 @@ void ABattle_PlayerController::Input_Skill_2(const FInputActionValue& InputValue
     {
         ABaseCharacter* MyCharacter = Cast<ABaseCharacter>(MyPawn);
         
-        if (MyCharacter && MyCharacter->Skills.IsValidIndex(1) && MyCharacter->Skills[1])
+        if (MyCharacter->GetIsDead() == false && MyCharacter->Skills.IsValidIndex(1) && MyCharacter->Skills[1])
         {
             MyCharacter->skill_Sellect = 1;
         }
@@ -264,7 +306,7 @@ void ABattle_PlayerController::Input_Skill_3(const FInputActionValue& InputValue
     {
         ABaseCharacter* MyCharacter = Cast<ABaseCharacter>(MyPawn);
         
-        if (MyCharacter && MyCharacter->Skills.IsValidIndex(2) && MyCharacter->Skills[2])
+        if (MyCharacter->GetIsDead() == false && MyCharacter->Skills.IsValidIndex(2) && MyCharacter->Skills[2])
         {
             MyCharacter->skill_Sellect = 2;
         }
@@ -282,7 +324,7 @@ void ABattle_PlayerController::Input_Skill_4(const FInputActionValue& InputValue
     {
         ABaseCharacter* MyCharacter = Cast<ABaseCharacter>(MyPawn);
         
-        if (MyCharacter && MyCharacter->Skills.IsValidIndex(3) && MyCharacter->Skills[3])
+        if (MyCharacter->GetIsDead() == false && MyCharacter->Skills.IsValidIndex(3) && MyCharacter->Skills[3])
         {
             MyCharacter->skill_Sellect = 3;
         }

@@ -4,12 +4,23 @@
 #include "AICharacter.h"
 #include "../AI/MyAIController.h"
 #include "Project_Animagus/System/MyGameInstance.h"
+#include "../System/MyGameInstance.h"
+
 
 void AAICharacter::BeginPlay()
 {
     Super::BeginPlay();
+
     InitPlayerMesh();
+    
+    // 생성자에서 메쉬를 초기화했을 때는 문제가 생겼음 -> GameInstance가 초기화되지 않았는데 포인터 접근해서 프로젝트가 터짐 -> 게임 시작 시( BeginPlay )에 메쉬를 설정하도록 수정
+    // 에디터에서 메쉬가 없는것처럼 보이지만 정상동작이다.
+
+    // InitPlayerMesh(CharacterMesh::Fox);
+    // GetMesh()->SetRelativeLocationAndRotation(FVector(0, 0, -55), FRotator(0, -90, 0)); // 메쉬 기본 위치, 회전값 설정( X축을 앞으로 바라보도록 설정하기 위함 )
+
 }
+
 
 void AAICharacter::ApplyStun(float Duration)
 {
