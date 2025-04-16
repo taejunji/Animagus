@@ -11,56 +11,51 @@
 AProjectile_MagicMissile::AProjectile_MagicMissile()
 {
     PrimaryActorTick.bCanEverTick = true;
-
-    // 유도 기능 기본값 설정
-    HomingActivationRadius = 3000.0f;          // 30m
-    HomingAccelerationMagnitude = 5000.f;       // 필요에 따라 조절
-
-    // ProjectileMovement 컴포넌트가 있다면 초기에는 유도 기능 off로 설정
+    
+    // 초기 가속 관련 기본값 설정
+    AccelerationThreshold = 0.7f;         // 생성 후 3초가 지나면 가속 시작
+    SuddenAccelerationFactor = 2.f;        // 이 값은 원하는 가속의 강도에 맞게 조정 (높을수록 급격하게 가속)
+    
+    ProjectileMovement->InitialSpeed = 500.f;
+    // ProjectileMovementComponent가 ProjectileBase에 이미 포함되어 있다고 가정합니다.
     if (ProjectileMovement)
     {
+        ProjectileMovement->MaxSpeed = 5000.f;
         ProjectileMovement->bIsHomingProjectile = false;
-        ProjectileMovement->HomingAccelerationMagnitude = HomingAccelerationMagnitude;
     }
+}
+
+void AProjectile_MagicMissile::BeginPlay()
+{
+    Super::BeginPlay();
+    // 투사체 생성 시점을 기록합니다.
+    SpawnTime = GetWorld()->GetTimeSeconds();
 }
 
 void AProjectile_MagicMissile::Tick(float DeltaTime)
 {
     Super::Tick(DeltaTime);
 
-    // 아직 유도 기능이 활성화되지 않았다면, 조건 검사
-    if (ProjectileMovement && !ProjectileMovement->bIsHomingProjectile)
+    if (ProjectileMovement)
     {
-        // 모든 ACharacter를 대상으로 검사
-        TArray<AActor*> PotentialTargets;
-        UGameplayStatics::GetAllActorsOfClass(GetWorld(), ACharacter::StaticClass(), PotentialTargets);
+        float ElapsedTime = GetWorld()->GetTimeSeconds() - SpawnTime;
+        FVector CurrentVelocity = ProjectileMovement->Velocity;
+        float CurrentSpeed = CurrentVelocity.Size();
+        float NewSpeed = CurrentSpeed;
 
-        AActor* BestTarget = nullptr;
-        float ClosestDistSq = HomingActivationRadius * HomingActivationRadius;
-        for (AActor* Target : PotentialTargets)
+        // 일정 시간이 지나면 갑자기 가속: 예를 들어, 3초 이후부터 SuddenAccelerationFactor에 따라 속도가 급증
+        if (ElapsedTime >= AccelerationThreshold)
         {
-            // 발사자(Shooter)는 제외 + 죽은 애는 제외
-            if (Target == Shooter) continue;
-            if (ABaseCharacter* Character = Cast<ABaseCharacter>(Target)) {
-                if (Character->GetIsDead())
-                    continue;
-            }
-
-            float DistSq = FVector::DistSquared(Target->GetActorLocation(), GetActorLocation());
-            if (DistSq <= ClosestDistSq)
-            {
-                BestTarget = Target;
-                ClosestDistSq = DistSq;
-            }
+            // 가속 적용: NewSpeed를 현재 속도에 SuddenAccelerationFactor * DeltaTime를 더하는 대신,
+            // 보다 극적인 증가를 위해 현재 속도에 비례하는 곱셈 계수를 사용합니다.
+            float Multiplier = 1.0f + SuddenAccelerationFactor * DeltaTime;
+            NewSpeed = CurrentSpeed * Multiplier;
         }
+        // 속도 방향은 그대로 유지하며, 새 속도를 적용
+        FVector NewVelocity = CurrentVelocity.GetSafeNormal() * NewSpeed;
+        ProjectileMovement->Velocity = NewVelocity;
 
-        if (BestTarget)
-        {
-            // 유도 기능 활성화: 해당 대상의 루트 컴포넌트를 HomingTargetComponent로 지정
-            ProjectileMovement->bIsHomingProjectile = true;
-            ProjectileMovement->HomingTargetComponent = BestTarget->GetRootComponent();
-            UE_LOG(LogTemp, Log, TEXT("MagicMissile homing activated on target: %s"), *BestTarget->GetName());
-        }
+        UE_LOG(LogTemp, Log, TEXT("Projectile_MagicMissile: ElapsedTime: %f, NewSpeed: %f"), ElapsedTime, NewSpeed);
     }
 }
 
@@ -73,9 +68,9 @@ void AProjectile_MagicMissile::OnHit(UPrimitiveComponent* OverlappedComponent, A
     
     if (OtherActor == Shooter )
     {
-        ProjectileLight->SetIntensity(0.0f);
-        DestroySkill();
-        
+        return;
+        // ProjectileLight->SetIntensity(0.0f);
+        // DestroySkill();
     }
     
     if (OtherActor && OtherActor != this && OtherActor != Shooter)
@@ -110,6 +105,14 @@ void AProjectile_MagicMissile::OnHit(UPrimitiveComponent* OverlappedComponent, A
             FVector ImpulseDirection = -Hit.Normal;
             // 필요한 경우, 추가 보정: 예를 들어 대상의 뒤쪽으로 밀리게 하려면 -Hit.Normal을 사용할 수도 있음.
             // 여기서는 충돌 표면의 외부 방향으로 밀어내는 효과를 줍니다.
+
+            float MinZ = 0.5f;
+            if (ImpulseDirection.Z < MinZ)
+            {
+                ImpulseDirection.Z = MinZ;
+                ImpulseDirection.Normalize();  // 보정 후 재정규화
+            }
+            
             FVector LaunchVelocity = ImpulseDirection * KnockbackForce;
             HitCharacter->LaunchCharacter(LaunchVelocity, true, true);
             

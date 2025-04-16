@@ -13,5 +13,9 @@ UCLASS()
 class PROJECT_ANIMAGUS_API ANetworkCharacter : public ABaseCharacter  
 {
 	GENERATED_BODY() 
-	
+protected:
+    virtual void BeginPlay() override;
+        
+private:
+    void InitPlayerMesh();	
 };

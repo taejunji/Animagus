@@ -15,7 +15,10 @@ class PROJECT_ANIMAGUS_API AAICharacter : public ABaseCharacter
 	GENERATED_BODY()
 	
 public:
+    virtual void BeginPlay()override;
     virtual void ApplyStun(float Duration);
 
     virtual void RemoveStun();
+private:
+    void InitPlayerMesh();
 };

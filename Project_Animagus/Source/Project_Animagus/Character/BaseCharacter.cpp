@@ -165,7 +165,7 @@ void ABaseCharacter::BeginPlay()
     SetWalkSpeed(default_walk_speed);
 
     // 공중 제어 능력 높임. 기본값이 낮으면 공중에서 이동키가 약하게 반응함.
-    GetCharacterMovement()->AirControl = 0.8f; // 기본 AirControl은 보통 0.2 ~ 0.3 정도임. 높이면 공중 이동이 민감해짐.
+    GetCharacterMovement()->AirControl = 0.7f; // 기본 AirControl은 보통 0.2 ~ 0.3 정도임. 높이면 공중 이동이 민감해짐.
 
     UE_LOG(LogTemp, Log, TEXT("BaseCharacter::BeginPlay() - Capsule Collision Response for Shockwave: %d"),
     (int)GetCapsuleComponent()->GetCollisionResponseToChannel(ECollisionChannel::ECC_GameTraceChannel2));
@@ -232,23 +232,7 @@ float ABaseCharacter::TakeDamage(float DamageAmount, struct FDamageEvent const& 
 
     PlayAnimMontageByType(MontageType::Hit);
     hp -= ActualDamage;
-
-    // 나중에 패킷관리 할 예시 코드 ㅇㅇ
-
-    // FDamagePacket DamagePacket;
-    // DamagePacket.CharacterID = this->GetUniqueID(); // 예시로 캐릭터의 고유 ID 사용
-    // DamagePacket.DamageAmount = ActualDamage;
-    // DamagePacket.DamageCauserID = DamageCauser ? DamageCauser->GetUniqueID() : 0;
-    // DamagePacket.Timestamp = GetWorld()->TimeSeconds;
-    //
-    // // 네트워크 매니저를 통해 서버로 데미지 패킷 전송
-    // // MyNetworkManager는 여러분이 구현한 네트워크 시스템 클래스여야 합니다.
-    // MyNetworkManager::Get()->SendDamagePacket(DamagePacket);
     
-    if (hp <= 0)
-    {
-        // 사망 처리 로직...
-    }
     return ActualDamage;
     //return Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
     
@@ -559,7 +543,7 @@ void ABaseCharacter::UpdateAuraColorBasedOnPowerUpLevel()
 
     if (PowerUpLevel > 6)
     {
-        AuraMaterialInstance->SetScalarParameterValue(FName("Power"), 15.f);
+        AuraMaterialInstance->SetScalarParameterValue(FName("Power"), 18.f);
     }
 
     // "auracolor" 파라미터 업데이트
