@@ -73,8 +73,9 @@ void AProjectileBase::BeginPlay()
     if (!Shooter)
     {
         Shooter = GetInstigator();
+        CollisionSphere->IgnoreActorWhenMoving(Shooter, true);
     }
-    
+
     // 스폰 시 FlashEffect 이펙트 재생
     if (FlashEffect && ProjectileEffectComponent)
     {

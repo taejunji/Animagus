@@ -12,7 +12,8 @@
 #include "Components/PointLightComponent.h"
 #include "Components/SphereComponent.h"
 #include "Project_Animagus/Actor/Shield/ShieldActor.h"
-
+#include "../Character/BaseCharacter.h"
+#include "../System/MyGameInstance.h"
 
 AProjectile_FireBall::AProjectile_FireBall()
 {
@@ -22,18 +23,28 @@ AProjectile_FireBall::AProjectile_FireBall()
 
 
 void AProjectile_FireBall::OnHit(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
-                                 UPrimitiveComponent* OtherComp, FVector NormalImpulse,
-                                 const FHitResult& Hit)
+    UPrimitiveComponent* OtherComp, FVector NormalImpulse,
+    const FHitResult& Hit)
 {
 
-    if (OtherActor == Shooter )
-    {
-        return;
-       // ProjectileLight->SetIntensity(0.0f);
-       //  DestroySkill();
-        
-    }
-    
+    //if (OtherActor == Shooter)
+    //{
+    //    CollisionSphere->IgnoreActorWhenMoving(Shooter, true); // 자기 자신과의 충돌 무시
+    //    return;
+    //}
+
+    //if (OtherActor == Shooter )
+    //{
+    //    uint16 ID = Cast<UMyGameInstance>(GWorld->GetGameInstance())->MyPlayerId;
+    //    UE_LOG(LogTemp, Warning, TEXT("지 혼자 부딪힘 : %d"), ID);
+
+    //    return;
+    //    // ProjectileLight->SetIntensity(0.0f);
+    //    //  DestroySkill();
+
+    //}
+
+
     AShieldActor* Shield = Cast<AShieldActor>(OtherActor);
     if (Shield && Shield->ShieldOwner && Shield->ShieldOwner == Shooter)
     {
@@ -41,7 +52,7 @@ void AProjectile_FireBall::OnHit(UPrimitiveComponent* OverlappedComponent, AActo
         CollisionSphere->IgnoreActorWhenMoving(OtherActor, true);
         return;
     }
-    
+
     // 기본 AProjectileBase의 충돌 처리 전에, 충돌 대상이 유효하고, 자신과 발사자(Shooter)와 충돌하지 않을 때 처리
     if (OtherActor && OtherActor != this && OtherActor != Shooter)
     {
@@ -93,9 +104,14 @@ void AProjectile_FireBall::OnHit(UPrimitiveComponent* OverlappedComponent, AActo
             
         }
         
-        DestroySkill();
+        UE_LOG(LogTemp, Warning, TEXT("FireBall is about to be destroyed. Hit actor: %s (%s)"),
+            *OtherActor->GetName(),
+            *OtherActor->GetClass()->GetName()
+        );
 
+        DestroySkill();
         
+
         // else
         // {
         //     // 캐릭터 이외에도 넉백 넣고 싶으면 ㄱㄱ 
@@ -116,5 +132,7 @@ void AProjectile_FireBall::OnHit(UPrimitiveComponent* OverlappedComponent, AActo
         //     1.0f,
         //     false
         // );
+
+        return;
     }
 }

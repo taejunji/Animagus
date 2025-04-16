@@ -37,6 +37,14 @@ ABattleGameMode::ABattleGameMode()
     }
     else UE_LOG(LogTemp, Warning, TEXT("디폴트 폰 로드 실패"));
 
+    static ConstructorHelpers::FClassFinder<APawn> NetPlayerPawn(TEXT("/Game/WorkFolder/Bluprints/MyNetworkCharacter"));
+    if (NetPlayerPawn.Succeeded())
+    {
+        NetPawnClass = NetPlayerPawn.Class;
+    }
+    else UE_LOG(LogTemp, Warning, TEXT("디폴트 폰 로드 실패"));
+
+
     static ConstructorHelpers::FClassFinder<APlayerController> PController(TEXT("/Game/WorkFolder/Controller/BP_Battle_PlayerController.BP_Battle_PlayerController_C"));
     if (PController.Succeeded())
     {
@@ -299,7 +307,8 @@ void ABattleGameMode::SpawnPlayer(Protocol::SC_SPAWN_PKT& pkt)
     FRotator SpawnRotation(0.0f, pkt.rotation, 0.0f);
     FTransform SpawnTransform(SpawnRotation, SpawnLocation);
 
-    ANetworkCharacter* NewPlayer = World->SpawnActor<ANetworkCharacter>(ANetworkCharacter::StaticClass(), SpawnTransform);
+
+    ANetworkCharacter* NewPlayer = World->SpawnActor<ANetworkCharacter>(NetPawnClass, SpawnTransform);
     if (NewPlayer)
     {
         // TODO

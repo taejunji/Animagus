@@ -16,6 +16,8 @@
 #include "../Network/ClientPacketHandler.h"
 #include "../Character/NetworkCharacter.h"
 #include "../GameMode/BattleGameMode.h"
+#include "../Animation/CharacterAnimInstance.h"
+#include "GameFramework/CharacterMovementComponent.h"
 
 #include "../Server/Server/protocol.h"
 
@@ -252,16 +254,28 @@ void UMyGameInstance::HandleMove(Protocol::CS_MOVE_PKT& pkt)
             Protocol::PlayerInfo Info = pkt.player_info;
             FVector Location(Info.x, Info.y, Info.z);
             FRotator Rotation(0, Info.rotation, 0);
+            FVector Velo = FVector(Info.velo_x, Info.velo_y, Info.velo_z);
+            Protocol::PlayerState State = Info.player_state;
 
-            GameMode->SpawnedPlayers[playerId]->SetActorLocation(Location);
-            GameMode->SpawnedPlayers[playerId]->SetActorRotation(Rotation);
+            ANetworkCharacter* Player = Cast<ANetworkCharacter>(GameMode->SpawnedPlayers[playerId]);
+
+            Player->SetActorLocation(Location);
+            Player->SetActorRotation(Rotation);
+            Player->GetCharacterMovement()->Velocity = Velo;
+
+            if (State == Protocol::PlayerState::MOVE_STATE_JUMP)
+                Player->GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_Falling);
+            else
+                Player->GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_Walking);
         }
     }
 }
 
 void UMyGameInstance::HandleSkill(Protocol::CS_USING_SKILL_PKT& pkt)
 {
-    // TODO: 다른 캐릭터가 사용한 스킬 그리기
+    if (Socket == nullptr || ClientSession == nullptr)
+        return;
+
     auto* World = GetWorld();
     if (World == nullptr)
         return;

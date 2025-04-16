@@ -33,7 +33,10 @@ public:
     void SpawnPlayer(Protocol::SC_SPAWN_PKT& pkt);
     void ActivateInput();
     void SpawnSkill(Protocol::CS_USING_SKILL_PKT& pkt);
-	
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Classes)
+    TSubclassOf<APawn> NetPawnClass;
+
 protected:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Battle Settings")
     float start_time; // ex) 5초 후에 입력 활성화

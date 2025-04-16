@@ -79,6 +79,7 @@ namespace Protocol {
         float rotation;
         PlayerType player_type;
         PlayerState player_state;
+        float velo_x, velo_y, velo_z;
     };
 
 //#pragma pack(push, 1)

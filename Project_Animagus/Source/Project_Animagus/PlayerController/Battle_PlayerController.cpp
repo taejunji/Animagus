@@ -151,13 +151,17 @@ void ABattle_PlayerController::Tick(float DeltaTime)
             LastDesiredInput = DesiredInput;
         }
 
-        // State 정보
-        if (DesiredInput == FVector2D::Zero())
-            MyPlayer->SetMoveState(Protocol::PlayerState::MOVE_STATE_IDLE);
-        else
-            MyPlayer->SetMoveState(Protocol::PlayerState::MOVE_STATE_RUN);
+        //// State 정보
+        //if (DesiredInput == FVector2D::Zero())
+        //    MyPlayer->SetMoveState(Protocol::PlayerState::MOVE_STATE_IDLE);
+        //else
+        //    MyPlayer->SetMoveState(Protocol::PlayerState::MOVE_STATE_RUN);
         // state 를 캐릭터 클래스에서 사용하나?
         // 안하면 그냥 컨트롤러에 박아놓고 사용
+
+        // State 설정
+        if (MyPlayer->GetMovementComponent()->IsFalling() == false)
+            MyPlayer->SetMoveState(Protocol::PlayerState::MOVE_STATE_RUN);
 
         MovePacketSendTimer -= DeltaTime;
 
@@ -169,13 +173,16 @@ void ABattle_PlayerController::Tick(float DeltaTime)
 
             // 현재 위치 정보
             {
+                FVector Velo = MyPlayer->GetMovementComponent()->Velocity;
+
                 Protocol::PlayerInfo Info;
                 FVector Location = MyPlayer->GetActorLocation();
                 Info.x = Location.X; Info.y = Location.Y; Info.z = Location.Z;
                 Info.rotation = MyPlayer->GetActorRotation().Yaw;
                 Info.player_id = MyPlayer->GetPlayerId();
                 Info.player_type = MyPlayer->GetPlayerType();
-                Info.player_state = MyPlayer->GetMoveState();   
+                Info.player_state = MyPlayer->GetMoveState();
+                Info.velo_x = Velo.X; Info.velo_y = Velo.Y; Info.velo_z = Velo.Z;
 
                 MovePkt.player_info = Info;
             }
@@ -202,7 +209,7 @@ void ABattle_PlayerController::Input_Move(const FInputActionValue& InputValue)
     {
         // 플레이어 컨트롤러가 바라보는 방향에 따라 캐릭터가 이동할 방향을 계산하고 움직임을 처리하는 코드
 
-        // 1. 현재 컨트롤러가 바라보는 방향의 회전 정보 
+        // 1. 현재 컨트롤러가 바라보는 방향의 회전 정보
         // 2. UKismetMathLibrary::GetForwardVector 함수는 입력받은 FRotator를 기준으로 
         //      기본 전방 Forward 벡터 (1, 0, 0)을 회전시켜 새로운 방향 벡터를 반환
         // 
@@ -227,12 +234,14 @@ void ABattle_PlayerController::Input_Move(const FInputActionValue& InputValue)
 
     DesiredMoveDirection.Normalize();
 
-    if (auto* MyPlayer = Cast<APlayerCharacter>(GetPawn()))
-    {
-        const FVector Location = MyPlayer->GetActorLocation();
-        FRotator Rotator = UKismetMathLibrary::FindLookAtRotation(Location, Location + DesiredMoveDirection);
-        DesiredYaw = Rotator.Yaw;
-    }
+    auto* MyPlayer = Cast<APlayerCharacter>(GetPawn());
+    if (MyPlayer == nullptr) return;
+
+    // 이동 보정 관련
+    const FVector Location = MyPlayer->GetActorLocation();
+    FRotator Rotator = UKismetMathLibrary::FindLookAtRotation(Location, Location + DesiredMoveDirection);
+    DesiredYaw = Rotator.Yaw;
+
 
 }
 
@@ -249,6 +258,8 @@ void ABattle_PlayerController::Input_Jump(const FInputActionValue& InputValue)
     if (auto* MyPlayer = Cast<APlayerCharacter>(GetPawn()))
     {
         MyPlayer->Jump();
+
+        MyPlayer->SetMoveState(Protocol::PlayerState::MOVE_STATE_JUMP);
     }
 }
 
@@ -266,6 +277,8 @@ void ABattle_PlayerController::Input_Attack(const FInputActionValue& InputValue)
             if (Skill->CanActivateSkill() == false) return;
 
             Skill->ActiveSkill();
+
+            MyCharacter->SetMoveState(Protocol::PlayerState::MOVE_STATE_SKILL);
 
             // TODO: 유동적으로 스킬 사용 할 수 있도록 설정
 

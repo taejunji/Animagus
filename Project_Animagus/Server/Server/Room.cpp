@@ -188,6 +188,10 @@ bool Room::HandleMoveLocked(Protocol::CS_MOVE_PKT& pkt)
     player->rotation = info.rotation;
 
     //std::cout << info.x << " " << info.y << " " << info.z << std::endl;
+    //std::cout << pkt.player_info.speed << std::endl;
+
+    //if (pkt.player_info.player_state == Protocol::PlayerState::MOVE_STATE_JUMP)
+    //    std::cout << "Jump" << std::endl;
     
     // 이동 
     SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(pkt);

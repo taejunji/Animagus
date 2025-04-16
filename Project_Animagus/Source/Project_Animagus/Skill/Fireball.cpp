@@ -94,7 +94,7 @@ void UFireball::ActiveSkill_Implementation()
     if (ProjectileBPClass)
     {
         Owner->PlayAnimMontageByType(MontageType::DefaultAttack);
-        
+
         if (FireballProj)
         {
             FireballProj->Shooter = Owner;    
