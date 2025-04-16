@@ -30,6 +30,9 @@ public:
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Zone")
     float CurrentRadius;
 
+    UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Zone")
+    bool Is_in; 
+    
     // Collision Component (안전구역 체크용)
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Zone")
     class UCapsuleComponent* CollisionComp;
@@ -44,7 +47,11 @@ public:
     // 플레이어가 안전구역 내에 있는지 판단하는 함수
     bool IsActorInsideZone(AActor* OtherActor) const;
 
+    void SetFogPostProcess(float NewWeight);
+    
     // 디버그용: 안전구역 시각화 활성화 여부
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Debug")
     bool bShowDebug = true;
 };
+
+

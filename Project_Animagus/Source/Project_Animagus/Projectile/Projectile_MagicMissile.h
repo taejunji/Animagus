@@ -18,20 +18,25 @@ public:
     AProjectile_MagicMissile();
 
 protected:
-    // 유도 기능이 발동되는 거리 (단위: cm, 30m = 3000cm)
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Homing")
-    float HomingActivationRadius;
+    virtual void BeginPlay() override;
 
-    // 유도 가속도 (필요에 따라 조절)
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Homing")
-    float HomingAccelerationMagnitude;
+    // 가속도가 시작되는 시간 (초) - 이 시간이 지나면 갑자기 가속 시작
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Acceleration")
+    float AccelerationThreshold;
 
-    // Tick() 오버라이드하여 유도 대상 찾기
+    // 가속 계수: 임계치 이후 매 Tick 당 배율 (예: 2.0이면 매 Tick마다 속도가 2배씩 증가하는 것은 아니고, 아주 빠른 증가를 유도)
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Acceleration")
+    float SuddenAccelerationFactor;
+
+    // 투사체가 생성된 시각 (BeginPlay()에서 설정)
+    float SpawnTime;
+    
+    // Tick() 오버라이드: 매 프레임 가속도 적용
     virtual void Tick(float DeltaTime) override;
  
     // 충돌 시 데미지 적용 및 기타 효과 (오버라이드)
     virtual void OnHit(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
                        UPrimitiveComponent* OtherComp, FVector NormalImpulse,
-                       const FHitResult& Hit) override;
+                       const FHitResult& Hit) override;;
 	
 };

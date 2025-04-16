@@ -25,14 +25,9 @@ public:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="MagicMissile|Movement")
     float MissileSpeed;
 
-    /** 유도 기능 발동 거리 (cm) - 예: 3000cm = 30m */
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="MagicMissile|Homing")
-    float HomingActivationRadius;
-
-    /** 유도 가속도 (HomingAccelerationMagnitude) */
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="MagicMissile|Homing")
-    float HomingAccelerationMagnitude;
-
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="MagicMissile|Movement")
+    float startMissileSpeed;
+    
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="MagicMissile")
     float BaseCooldownTime;
 

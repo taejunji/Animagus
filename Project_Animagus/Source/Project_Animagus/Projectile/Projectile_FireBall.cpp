@@ -86,6 +86,14 @@ void AProjectile_FireBall::OnHit(UPrimitiveComponent* OverlappedComponent, AActo
         {
             // 충돌 표면의 법선이 대상에게 밀리는 방향이므로 이를 이용
             FVector ImpulseDirection = -Hit.Normal;
+
+            float MinZ = 0.5f;
+            if (ImpulseDirection.Z < MinZ)
+            {
+                ImpulseDirection.Z = MinZ;
+                ImpulseDirection.Normalize();  // 보정 후 재정규화
+            }
+            
             // 필요한 경우, 추가 보정: 예를 들어 대상의 뒤쪽으로 밀리게 하려면 -Hit.Normal을 사용할 수도 있음.
             // 여기서는 충돌 표면의 외부 방향으로 밀어내는 효과를 줍니다.
             FVector LaunchVelocity = ImpulseDirection * KnockbackForce;

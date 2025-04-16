@@ -63,7 +63,7 @@ void UFireball::ActiveSkill_Implementation()
     FVector SpawnLocation = Owner->GetActorLocation() + Owner->GetActorForwardVector() * 80.f + Owner->GetActorRightVector() * 30.f;
 
     // 진행 방향: 카메라 뷰 방향 사용
-    FRotator SpawnRotation = CameraRotation;
+    FRotator SpawnRotation = CameraRotation + FRotator(2.f, 0.f, 0.f); 
     
     UE_LOG(LogTemp, Log, TEXT("Fireball Skill: OwnerLocation = %s"), *Owner->GetActorLocation().ToString());
     UE_LOG(LogTemp, Log, TEXT("Fireball Skill: CameraRotation = %s"), *CameraRotation.ToString());
