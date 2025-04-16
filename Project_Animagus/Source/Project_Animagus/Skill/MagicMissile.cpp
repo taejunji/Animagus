@@ -13,11 +13,10 @@ UMagicMissile::UMagicMissile()
 {
     SkillName = "MagicMissile";
     SkillDescription = "유도 기능이 있고 데미지가 높지만 쿨타임이 긴 스킬";
-    CooldownTime = 5.0f; // 
+    CooldownTime = 10.0f; // 
     MissileDamage = 10.0f;
-    MissileSpeed = 1800.f;
-    HomingActivationRadius = 1300.f;          // 30m
-    HomingAccelerationMagnitude = 5000.f;
+    MissileSpeed = 4000.f;
+    startMissileSpeed = 500.f;
     BaseCooldownTime = CooldownTime;
 
     static ConstructorHelpers::FClassFinder<AProjectile_MagicMissile> MaigicMissileBPFinder(TEXT("/Game/WorkFolder/Bluprints/Projectiles/MyProjectile_MagicMissile"));
@@ -68,10 +67,10 @@ void UMagicMissile::ActiveSkill_Implementation()
     }
 
     // 스폰 위치: 캐릭터 위치에서 전방 100cm, 동시에 Z축으로 50cm 올림
-    FVector SpawnLocation = Owner->GetActorLocation() + Owner->GetActorForwardVector() * 100.f + Owner->GetActorRightVector() * 30.f;
+    FVector SpawnLocation = Owner->GetActorLocation() + Owner->GetActorForwardVector() * 80.f + Owner->GetActorRightVector() * 30.f;
 
     // 진행 방향: 카메라 뷰 방향 사용
-    FRotator SpawnRotation = CameraRotation;
+    FRotator SpawnRotation = CameraRotation+ FRotator(2.f, 0.f, 0.f);
 
     UE_LOG(LogTemp, Log, TEXT("MagicMissile: OwnerLocation = %s"), *Owner->GetActorLocation().ToString());
     UE_LOG(LogTemp, Log, TEXT("MagicMissile: CameraRotation = %s"), *CameraRotation.ToString());
@@ -99,11 +98,9 @@ void UMagicMissile::ActiveSkill_Implementation()
             MissileProj->DamageValue = MissileDamage;
             if (MissileProj->ProjectileMovement)
             {
-                MissileProj->ProjectileMovement->InitialSpeed = MissileSpeed;
+                MissileProj->ProjectileMovement->InitialSpeed = startMissileSpeed;
                 MissileProj->ProjectileMovement->MaxSpeed = MissileSpeed;
-                // 초기에는 유도 기능 off, MissileProj의 Tick()에서 유도 대상이 있으면 활성화하도록 함.
-                MissileProj->ProjectileMovement->bIsHomingProjectile = false;
-                MissileProj->ProjectileMovement->HomingAccelerationMagnitude = HomingAccelerationMagnitude;
+
             }
             // 추가로, MissileProj에 HomingActivationRadius 값을 전달할 수도 있음(만약 필요하면)
             // 예: MissileProj->HomingActivationRadius = HomingActivationRadius;

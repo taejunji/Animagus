@@ -48,6 +48,10 @@ void USmokeSkill::ActiveSkill_Implementation()
         return;
     }
 
+    // 공격 애니메이션
+    Owner->PlayAnimMontageByType(MontageType::DefaultAttack);
+
+
     // 플레이어(Owner)의 카메라 뷰포인트를 사용하여 스폰 위치 결정
     FVector CameraLocation;
     FRotator CameraRotation;

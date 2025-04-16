@@ -27,6 +27,8 @@ void AProjectile_Radial::OnHit(UPrimitiveComponent* OverlappedComponent, AActor*
 {
     if (OtherActor == Shooter )
     {
+        return;
+        
         ProjectileLight->SetIntensity(0.0f);
         DestroySkill();
         
@@ -55,6 +57,21 @@ void AProjectile_Radial::OnHit(UPrimitiveComponent* OverlappedComponent, AActor*
             ProjectileLight->SetIntensity(0.0f);
         }
 
+        // 카메라 쉐이크, 플레이어와 거리가 멀면 쉐이크 안되도록
+        APlayerController* PlayerController = GetWorld()->GetFirstPlayerController();
+        if (PlayerController && HitCameraShakeClass)
+        {
+            if (ACharacter* Player = Cast<ACharacter>(PlayerController->GetPawn()))
+            {
+                // 플레이어와 투사체 거리 계산
+                float DistanceToPlayer = FVector::Dist(Player->GetActorLocation(), GetActorLocation());
+                if (DistanceToPlayer < MaxShakeDistance) // ex) 10m 안에서만 쉐이크
+                {
+                    PlayerController->ClientStartCameraShake(HitCameraShakeClass);
+                }
+            }
+        }
+
         // Knockback 효과 적용 (상대가 ACharacter인 경우)
         if (ACharacter* HitCharacter = Cast<ACharacter>(OtherActor))
         {
@@ -62,6 +79,12 @@ void AProjectile_Radial::OnHit(UPrimitiveComponent* OverlappedComponent, AActor*
             FVector ImpulseDirection = -Hit.Normal;
             // 필요한 경우, 추가 보정: 예를 들어 대상의 뒤쪽으로 밀리게 하려면 -Hit.Normal을 사용할 수도 있음.
             // 여기서는 충돌 표면의 외부 방향으로 밀어내는 효과를 줍니다.
+            float MinZ = 0.5f;
+            if (ImpulseDirection.Z < MinZ)
+            {
+                ImpulseDirection.Z = MinZ;
+                ImpulseDirection.Normalize();  // 보정 후 재정규화
+            }
             FVector LaunchVelocity = ImpulseDirection * KnockbackForce;
             HitCharacter->LaunchCharacter(LaunchVelocity, true, true);
             

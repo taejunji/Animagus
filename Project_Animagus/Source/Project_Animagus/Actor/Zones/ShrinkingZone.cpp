@@ -14,7 +14,8 @@ AShrinkingZone::AShrinkingZone()
 	ShrinkSpeed = 100.0f;
 	InitialRadius = 18000.0f;
 	CurrentRadius = InitialRadius;
-
+    Is_in = false;
+    
 	// Collision Component 생성 및 설정
 	CollisionComp = CreateDefaultSubobject<UCapsuleComponent>(TEXT("CollisionComp"));
 	CollisionComp->InitCapsuleSize(InitialRadius, 5000.0f);
@@ -44,12 +45,20 @@ void AShrinkingZone::Tick(float DeltaTime)
 
 	// 액터의 스케일을 업데이트 (LargeRadius 기준, Z는 1)
 	float NewScale = CurrentRadius / InitialRadius;
-	SetActorScale3D(FVector(NewScale, NewScale, 1.0f));
+
+    // SetActorScale3D(FVector(NewScale, NewScale, 1.0f));
 
 	// Niagara 시스템에 LargeRadius 값 업데이트
 	if (NiagaraComp)
 	{
-		NiagaraComp->SetVariableFloat(FName("LargeRadius"), CurrentRadius);
+	    if (CurrentRadius > 5000.f)
+	    {
+	        NiagaraComp->SetVariableFloat(FName("LargeRa"), CurrentRadius + 5000.f);
+	    }
+	    else
+        {
+          NiagaraComp->SetVariableFloat(FName("HandleRa"), 10000.f - CurrentRadius);   
+        }
 	}
 
 	// 디버그: 현재 안전구역(현재 LargeRadius) 시각화
@@ -73,8 +82,22 @@ void AShrinkingZone::Tick(float DeltaTime)
 		{
 			if (!IsActorInsideZone(Pawn))
 			{
+			    if (!Is_in)
+			    {
+			        Is_in = true;
+			        SetFogPostProcess(1);
+			    }
+			    
 				ApplyGasDamage(Pawn, DeltaTime);
 			}
+		    else
+		    {
+		        if (Is_in)
+		        {
+		            Is_in = false;
+		            SetFogPostProcess(0);
+		        }
+		    }
 		}
 	}
 }
@@ -94,4 +117,39 @@ bool AShrinkingZone::IsActorInsideZone(AActor* OtherActor) const
 void AShrinkingZone::ApplyGasDamage(AActor* AffectedActor, float DeltaTime)
 {
 	UGameplayStatics::ApplyDamage(AffectedActor, 5.0f * DeltaTime, nullptr, this, nullptr);
+}
+
+void AShrinkingZone::SetFogPostProcess(float NewWeight)
+{
+    TArray<AActor*> FoundVolumes;
+
+    UWorld* World = GetWorld();
+    if (!World)
+    {
+        UE_LOG(LogTemp, Warning, TEXT("SetFogPostProcess: World is null."));
+        return;
+    }
+    
+    UGameplayStatics::GetAllActorsOfClass(World, APostProcessVolume::StaticClass(), FoundVolumes);
+    
+    for (AActor* Actor : FoundVolumes)
+    {
+        APostProcessVolume* PPVolume = Cast<APostProcessVolume>(Actor);
+        if (PPVolume)
+        {
+            {
+                // WeightedBlendables 배열의 크기가 3 이상이어야 합니다.
+                if (PPVolume->Settings.WeightedBlendables.Array.Num() >= 3)
+                {
+                    PPVolume->Settings.WeightedBlendables.Array[2].Weight = NewWeight;
+                    UE_LOG(LogTemp, Log, TEXT("SetFogPostProcess: Updated material at index 2 to weight: %f"), NewWeight);
+                }
+                else
+                {
+                    UE_LOG(LogTemp, Warning, TEXT("SetFogPostProcess: WeightedBlendables array has less than 3 elements."));
+                }
+            }
+        }
+    }
+    
 }
