@@ -21,7 +21,7 @@ private:
     void InitPlayerMesh(enum class CharacterMesh MeshType);
 
 public:
-    virtual void BeginPlay()override;
+    
     virtual void ApplyStun(float Duration);
 
     virtual void RemoveStun();
