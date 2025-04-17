@@ -77,14 +77,19 @@ bool Room::HandleEnterPlayer(PlayerRef player)
             session->Send(sendBuffer);
 
         n_pid = player->playerID;
+
+#ifndef _DUMMYTEST
         std::cout << "Send Enter Game Packet to " << player->playerID << std::endl;
+#endif
 
         if (newPlayer.host == true)
         {
             m_hostPlayer = player;
             isHost = true;
 
+#ifndef _DUMMYTEST
             std::cout << n_pid << " is Host" << std::endl;
+#endif
         }
         //std::cout << n_pid << std::endl;
     }
@@ -109,7 +114,9 @@ bool Room::HandleEnterPlayer(PlayerRef player)
             if (auto session = player->ownerSession.lock())
                 session->Send(sendBuffer);
 
+#ifndef _DUMMYTEST
             std::cout << item.first << "'s info Send Spawn Packet to " << n_pid << std::endl;
+#endif
         }
 
         for (auto& item : m_aiPlayers)
@@ -157,7 +164,9 @@ bool Room::HandleLeavePlayer(PlayerRef player)
     uint16 p_id = player->playerID;
     bool success = Leave(p_id);
 
+#ifndef _DUMMYTEST
     std::cout << "Leave PlayerID: " << p_id << std::endl;
+#endif
 
     // 다른 플레이어에게 해당 플레이어 퇴장 알림 + Host 라면 AI 플레이어 퇴장 일림
     {
@@ -208,8 +217,10 @@ bool Room::HandleSkillLocked(Protocol::CS_USING_SKILL_PKT& pkt)
     if (m_players.contains(playerId) == false)
         return false;
 
+#ifndef _DUMMYTEST
     std::cout << "Player" << playerId << " Used Skill " << static_cast<int>(pkt.s_type) << std::endl;
     //std::cout << " " << pkt.x << " " << pkt.y << " " << pkt.z << std::endl;
+#endif
 
     // 뭐 더 붙일 정보가 있나?
 

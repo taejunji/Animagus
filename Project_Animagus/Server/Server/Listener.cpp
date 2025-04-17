@@ -120,7 +120,9 @@ void Listener::ProcessAccept(AcceptEvent* acceptEvent)
     session->SetNetAddress(sockAddress);
     session->ProcessConnect();
 
+#ifndef _DUMMYTEST
     std::cout << "Client Connected" << std::endl;
+#endif
 
     RegisterAccept(acceptEvent);    // 물고기 어망에 담고 다시 낚싯대 던지기
 }

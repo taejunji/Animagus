@@ -76,6 +76,7 @@ bool ClientService::Start()
         if (GClientCount >= CLIENT_COUNT)
         {
             for (auto& session : m_sessions) {
+                if (session->IsConnected() == false) continue;
                 SendRandomPacket(session);
             }
         }

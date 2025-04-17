@@ -6,7 +6,7 @@
 
 using namespace Protocol;
 
-PacketHandlerFunc GClientPacketHandler[UINT16_MAX];
+PacketHandlerFunc GClientPacketHandler[1024];
 
 
 bool Handle_INVALID(SessionRef& session, BYTE* buffer, int32 len)

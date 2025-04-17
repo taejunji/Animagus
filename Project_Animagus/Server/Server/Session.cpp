@@ -68,8 +68,10 @@ void Session::Disconnect(const WCHAR* cause)
     if (m_connected.exchange(false) == false)
         return;
 
+#ifndef _DUMMYTEST
     // TEMP
     std::wcout << "Disconnect : " << cause << std::endl;
+#endif
 
     RegisterDisconnect();
 }

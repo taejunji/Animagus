@@ -7,7 +7,7 @@
 
 using namespace Protocol;
 
-PacketHandlerFunc GServerPacketHandler[UINT16_MAX];
+PacketHandlerFunc GServerPacketHandler[1024];
 
 
 bool Handle_INVALID(SessionRef& session, BYTE* buffer, int32 len)
@@ -32,7 +32,9 @@ bool Handle_CS_ENTER_GAME(SessionRef& session, CS_ENTER_GAME_PKT& pkt)
     //GRoom->Enter(player);
     GRoom->HandleEnterPlayer(player);
 
+#ifndef _DUMMYTEST
     std::cout << player->playerID << ": Enter Game" << std::endl;
+#endif
 
     return true;
 }
