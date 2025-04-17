@@ -114,3 +114,6 @@ Saved/
 
 # .ignore 파일 (자체적으로 무시 목록을 관리하는 파일)
 .ignore
+
+# Ignore Unreal Build Tool generated PDBs
+*.pdb
