@@ -55,7 +55,7 @@ protected:
                UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
 
     // 박스 파괴 시 실행 함수
-    void BreakBox();
+    virtual void BreakBox();
 
     // 래퍼 함수: 타이머로 호출되어 액터를 Destroy()함
     UFUNCTION()

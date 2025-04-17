@@ -14,7 +14,7 @@ AProjectileBase::AProjectileBase()
 
     // ProjectileBase.cpp의 생성자 내에서
     CollisionSphere = CreateDefaultSubobject<USphereComponent>(TEXT("CollisionSphere"));
-    CollisionSphere->InitSphereRadius(15.0f);
+    CollisionSphere->InitSphereRadius(20.0f);
     CollisionSphere->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 
     // 투사체 전용 커스텀 채널 (예: ECC_GameTraceChannel1)을 사용하도록 설정
@@ -48,8 +48,8 @@ AProjectileBase::AProjectileBase()
 
     // ProjectileMovement 컴포넌트 생성 및 설정
     ProjectileMovement = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("ProjectileMovement"));
-    ProjectileMovement->InitialSpeed = 1500.f;
-    ProjectileMovement->MaxSpeed = 1500.f;
+    ProjectileMovement->InitialSpeed = 1000.f;
+    ProjectileMovement->MaxSpeed = 5000.f;
     ProjectileMovement->bRotationFollowsVelocity = true;
     ProjectileMovement->bShouldBounce = false;
     ProjectileMovement->ProjectileGravityScale = 0.f;
