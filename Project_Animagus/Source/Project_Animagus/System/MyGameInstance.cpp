@@ -311,6 +311,7 @@ void UMyGameInstance::HandleSpawnItem(Protocol::SC_SPAWN_ITEM_PKT& pkt)
         ABattleGameMode* GameMode = Cast<ABattleGameMode>(BaseGameMode);
         if (GameMode)
         {
+            GameMode->InitializeArea1SpawnPoints();
             GameMode->SpawnItem(pkt);
         }
     }

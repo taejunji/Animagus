@@ -140,7 +140,7 @@ void ABattleGameMode::InitBattleMode()
         //GetWorld()->GetTimerManager().SetTimer(CountdownTimerHandle, this, &ABattleGameMode::CountdownTimerUpdate, 1.0f, true);
     }
     
-    InitializeArea1SpawnPoints();
+    //InitializeArea1SpawnPoints();
     //SpawnItemsInArea1();
 }
 
@@ -485,7 +485,7 @@ void ABattleGameMode::SpawnItem(Protocol::SC_SPAWN_ITEM_PKT& pkt)
         // 필요에 따라 SpawnParams.Owner 또는 Instigator 설정
 
         AItem_Box_Base* NewItem = World->SpawnActor<AItem_Box_Base>(ItemBoxBpclass, SpawnLocation, SpawnRotation, SpawnParams);
-        NewItem->SpawnItemType = ItemLevel[i];
+        //NewItem->SpawnItemType = ItemLevel[i];
 
         if (NewItem)
         {

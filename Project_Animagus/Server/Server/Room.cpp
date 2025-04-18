@@ -166,7 +166,6 @@ bool Room::HandleEnterPlayer(PlayerRef player)
             session->Send(sendBuffer);
     }
 
-
     return success;
 }
 
