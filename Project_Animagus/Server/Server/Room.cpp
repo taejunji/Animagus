@@ -161,7 +161,9 @@ bool Room::HandleEnterPlayer(PlayerRef player)
 
     // 신입 플레이어에게 아이템 정보 전송
     {
-        SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(m_itemInfo);
+        SC_SPAWN_ITEM_PKT item = m_itemInfo;
+
+        SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(item);
         if (auto session = player->ownerSession.lock())
             session->Send(sendBuffer);
     }
@@ -312,7 +314,8 @@ void Room::InitItemInfo()
 {
     SC_SPAWN_ITEM_PKT item;
 
-    std::vector<int> pool(100);
+    std::vector<int> pool;
+    pool.resize(50); ZeroMemory(pool.data(), sizeof(int) * 50);
     std::iota(pool.begin(), pool.end(), 0);
 
     std::mt19937_64 rng(std::chrono::steady_clock::now().time_since_epoch().count());
@@ -323,6 +326,9 @@ void Room::InitItemInfo()
         item.spawn_index[i] = static_cast<char>(pool[i]);
         item.item_level[i] = static_cast<char>(rand() % 2);
     }
+
+    //std::cout << "Item Index - " << static_cast<int>(item.spawn_index[19]) << std::endl;
+    //std::cout << "Item Level - " << static_cast<int>(item.item_level[19]) << std::endl;
 
     m_itemInfo = item;
 }

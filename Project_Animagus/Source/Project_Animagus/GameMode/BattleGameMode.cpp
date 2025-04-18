@@ -448,11 +448,13 @@ void ABattleGameMode::SpawnItem(Protocol::SC_SPAWN_ITEM_PKT& pkt)
     int32 SpawnIndex[20];
     int32 ItemLevel[20];
 
-    for (int8 i = 0; i < 20; i++)
+    for (int32 i = 0; i < 20; ++i)
     {
         SpawnIndex[i] = static_cast<int32>(pkt.spawn_index[i]);
         ItemLevel[i] = static_cast<int32>(pkt.item_level[i]);
     }
+
+    //UE_LOG(LogTemp, Warning, TEXT("%d - %d"), SpawnIndex[19], ItemLevel[19]);
 
     if (Area1SpawnPoints.Num() == 0)
     {
@@ -477,7 +479,7 @@ void ABattleGameMode::SpawnItem(Protocol::SC_SPAWN_ITEM_PKT& pkt)
 
     for (int32 i = 0; i < ItemsToSpawn; i++)
     {
-        int8 index = SpawnIndex[i];
+        int32 index = SpawnIndex[i];
         FVector SpawnLocation = Area1SpawnPoints[index];
         FRotator SpawnRotation = FRotator::ZeroRotator;
 
