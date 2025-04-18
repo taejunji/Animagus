@@ -43,7 +43,7 @@ public:
     // 정보 관련 //
     SOCKET				GetSocket() { return m_socket; }
     void                SetNetAddress(SOCKADDR_IN sockAddress) { m_sockAddress = sockAddress; }
-    bool				IsConnected() { return m_connected; }
+    bool				IsConnected() { return m_connected.load(); }
     SessionRef			GetSessionRef() { return std::static_pointer_cast<Session>(shared_from_this()); }
 
 private:

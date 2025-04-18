@@ -11,14 +11,15 @@
 //using namespace Protocol;
 
 using PacketHandlerFunc = std::function<bool(SessionRef&, BYTE*, int32)>;
-extern PacketHandlerFunc GClientPacketHandler[UINT16_MAX];
+extern PacketHandlerFunc GClientPacketHandler[1024];
 
 bool Handle_INVALID(SessionRef& session, BYTE* buffer, int32 len);
 bool Handle_DCS_TEST(SessionRef& session, Protocol::DCS_TEST_PKT& pkt);
 bool Handle_SC_ENTER_GAME_PKT(SessionRef& session, Protocol::SC_ENTER_GAME_PKT& pkt);
 bool Handle_SC_SPAWN_PKT(SessionRef& session, Protocol::SC_SPAWN_PKT& pkt);
 bool Handle_CS_MOVE_PKT(SessionRef& session, Protocol::CS_MOVE_PKT& pkt);
-bool Handle_CS_USING_SKILL(SessionRef& session, Protocol::CS_USING_SKILL_PKT& pkt);
+bool Handle_CS_USING_SKILL_PKT(SessionRef& session, Protocol::CS_USING_SKILL_PKT& pkt);
+bool Handle_SC_SPAWN_ITEM_PKT(SessionRef& session, Protocol::SC_SPAWN_ITEM_PKT& pkt);
 
 
 class ClientPacketHandler
@@ -26,12 +27,13 @@ class ClientPacketHandler
 public:
     static void Init()
     {
-        for (uint16 i = 0; i < UINT16_MAX; ++i) GClientPacketHandler[i] = Handle_INVALID;
+        for (uint16 i = 0; i < 1024; ++i) GClientPacketHandler[i] = Handle_INVALID;
         GClientPacketHandler[(int32)Protocol::PacketID::DCS_TEST] = [](SessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<Protocol::DCS_TEST_PKT>(Handle_DCS_TEST, session, buffer, len); };
         GClientPacketHandler[(int32)Protocol::PacketID::SC_ENTER_GAME] = [](SessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<Protocol::SC_ENTER_GAME_PKT>(Handle_SC_ENTER_GAME_PKT, session, buffer, len); };
         GClientPacketHandler[(int32)Protocol::PacketID::SC_SPAWN] = [](SessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<Protocol::SC_SPAWN_PKT>(Handle_SC_SPAWN_PKT, session, buffer, len); };
         GClientPacketHandler[(int32)Protocol::PacketID::CS_MOVE] = [](SessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<Protocol::CS_MOVE_PKT>(Handle_CS_MOVE_PKT, session, buffer, len); };
-        GClientPacketHandler[(int32)Protocol::PacketID::CS_USING_SKILL] = [](SessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<Protocol::CS_USING_SKILL_PKT>(Handle_CS_USING_SKILL, session, buffer, len); };
+        GClientPacketHandler[(int32)Protocol::PacketID::CS_USING_SKILL] = [](SessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<Protocol::CS_USING_SKILL_PKT>(Handle_CS_USING_SKILL_PKT, session, buffer, len); };
+        GClientPacketHandler[(int32)Protocol::PacketID::SC_SPAWN_ITEM] = [](SessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<Protocol::SC_SPAWN_ITEM_PKT>(Handle_SC_SPAWN_ITEM_PKT, session, buffer, len); };
 
     }
 

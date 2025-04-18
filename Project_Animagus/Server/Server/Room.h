@@ -4,6 +4,10 @@
 class Room : public std::enable_shared_from_this<Room>
 {
 public:
+    Room();
+    ~Room() = default;
+
+public:
     bool Enter(PlayerRef player);
     bool Leave(uint16 playerID);
     void Broadcast(SendBufferRef sendBuffer, uint16 execptID);
@@ -20,6 +24,10 @@ public:
 public:
     uint16 GetPlayerCount() { return m_playerCount; }   // 사람 수 받을 때 동기화 작업 필요
 
+public:
+    void InitializeGame();
+    void InitItemInfo();
+
 private:
     std::mutex m_mutex;
 
@@ -29,6 +37,7 @@ private:
     std::unordered_map<uint16/*ai_id*/, AIPlayerRef> m_aiPlayers;
 
     PlayerRef m_hostPlayer = nullptr;
+    Protocol::SC_SPAWN_ITEM_PKT m_itemInfo;
 };
 
 extern RoomRef GRoom;       // 배열 or 벡터로 관리해 여러 게임룸을 생성

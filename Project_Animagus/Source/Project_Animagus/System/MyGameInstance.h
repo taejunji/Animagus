@@ -89,6 +89,7 @@ public:
     void HandleSpawn(Protocol::SC_SPAWN_PKT& pkt);
     void HandleMove(Protocol::CS_MOVE_PKT& pkt);
     void HandleSkill(Protocol::CS_USING_SKILL_PKT& pkt);
+    void HandleSpawnItem(Protocol::SC_SPAWN_ITEM_PKT& pkt);
 
 
 public:

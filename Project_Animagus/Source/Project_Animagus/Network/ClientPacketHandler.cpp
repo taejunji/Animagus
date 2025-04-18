@@ -9,7 +9,7 @@
 
 //using namespace Protocol;
 
-PacketHandlerFunc GClientPacketHandler[UINT16_MAX];
+PacketHandlerFunc GClientPacketHandler[1024];
 
 
 bool Handle_INVALID(SessionRef& session, BYTE* buffer, int32 len)
@@ -55,11 +55,21 @@ bool Handle_CS_MOVE_PKT(SessionRef& session, Protocol::CS_MOVE_PKT& pkt)
     return true;
 }
 
-bool Handle_CS_USING_SKILL(SessionRef& session, Protocol::CS_USING_SKILL_PKT& pkt)
+bool Handle_CS_USING_SKILL_PKT(SessionRef& session, Protocol::CS_USING_SKILL_PKT& pkt)
 {
     if (auto* GameInstance = Cast<UMyGameInstance>(GWorld->GetGameInstance()))
     {
         GameInstance->HandleSkill(pkt);
+    }
+
+    return true;
+}
+
+bool Handle_SC_SPAWN_ITEM_PKT(SessionRef& session, Protocol::SC_SPAWN_ITEM_PKT& pkt)
+{
+    if (auto* GameInstance = Cast<UMyGameInstance>(GWorld->GetGameInstance()))
+    {
+        GameInstance->HandleSpawnItem(pkt);
     }
 
     return true;

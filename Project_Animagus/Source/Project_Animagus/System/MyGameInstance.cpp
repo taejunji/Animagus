@@ -256,14 +256,17 @@ void UMyGameInstance::HandleMove(Protocol::CS_MOVE_PKT& pkt)
             Protocol::PlayerInfo Info = pkt.player_info;
             FVector Location(Info.x, Info.y, Info.z);
             FRotator Rotation(0, Info.rotation, 0);
-            FVector Velo = FVector(Info.velo_x, Info.velo_y, Info.velo_z);
             Protocol::PlayerState State = Info.player_state;
 
             ANetworkCharacter* Player = Cast<ANetworkCharacter>(GameMode->SpawnedPlayers[playerId]);
 
             Player->SetActorLocation(Location);
             Player->SetActorRotation(Rotation);
-            Player->GetCharacterMovement()->Velocity = Velo;
+            Player->GetCharacterMovement()->Velocity = FVector(0, Info.speed, 0);
+
+            if (Player->GetPlayerId() < 100) {
+                //UE_LOG(LogTemp, Warning, TEXT("OtherAccel: %f - %d"), Player->GetCharacterMovement()->GetCurrentAcceleration().Size2D(), Player->GetPlayerId());
+            }
 
             if (State == Protocol::PlayerState::MOVE_STATE_JUMP)
                 Player->GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_Falling);
@@ -292,6 +295,28 @@ void UMyGameInstance::HandleSkill(Protocol::CS_USING_SKILL_PKT& pkt)
         }
     }
 }
+
+void UMyGameInstance::HandleSpawnItem(Protocol::SC_SPAWN_ITEM_PKT& pkt)
+{
+    if (Socket == nullptr || ClientSession == nullptr)
+        return;
+
+    auto* World = GetWorld();
+    if (World == nullptr)
+        return;
+
+    AGameModeBase* BaseGameMode = UGameplayStatics::GetGameMode(World);
+    if (BaseGameMode)
+    {
+        ABattleGameMode* GameMode = Cast<ABattleGameMode>(BaseGameMode);
+        if (GameMode)
+        {
+            GameMode->SpawnItem(pkt);
+        }
+    }
+}
+
+
 
 //void UMyGameInstance::SetMyPlayerIndex(uint16 playerIndex)
 //{

@@ -165,14 +165,14 @@ void ABattle_PlayerController::Tick(float DeltaTime)
         // state 를 캐릭터 클래스에서 사용하나?
         // 안하면 그냥 컨트롤러에 박아놓고 사용
 
-        // State 설정
-        if (MyPlayer->GetMovementComponent()->IsFalling() == false)
-            MyPlayer->SetMoveState(Protocol::PlayerState::MOVE_STATE_RUN);
-
         MovePacketSendTimer -= DeltaTime;
 
         if (MovePacketSendTimer <= 0 || ForceSendPacket)
         {
+            // State 설정
+            if (MyPlayer->GetMovementComponent()->IsFalling() == false)
+                MyPlayer->SetMoveState(Protocol::PlayerState::MOVE_STATE_RUN);
+
             MovePacketSendTimer = MOVE_PACKET_SEND_DELAY;
 
             Protocol::CS_MOVE_PKT MovePkt;
@@ -188,7 +188,8 @@ void ABattle_PlayerController::Tick(float DeltaTime)
                 Info.player_id = MyPlayer->GetPlayerId();
                 Info.player_type = MyPlayer->GetPlayerType();
                 Info.player_state = MyPlayer->GetMoveState();
-                Info.velo_x = Velo.X; Info.velo_y = Velo.Y; Info.velo_z = Velo.Z;
+                Info.speed = MyPlayer->GetMovementComponent()->Velocity.Size2D();
+                //UE_LOG(LogTemp, Warning, TEXT("MySpeed: %f - %d"), Info.speed, MyPlayer->GetPlayerId());
 
                 MovePkt.player_info = Info;
             }
@@ -290,7 +291,10 @@ void ABattle_PlayerController::Input_Attack(const FInputActionValue& InputValue)
 
             // 스폰 위치: 캐릭터의 전면 (예: 캐릭터 위치에서 전방으로 70cm)
             //FVector Location = MyCharacter->GetActorLocation() + MyCharacter->GetActorForwardVector() * 80.f + MyCharacter->GetActorRightVector() * 30.f;
-            FRotator Rotation = MyCharacter->GetController()->GetControlRotation();
+            //FRotator Rotation11 = MyCharacter->GetController()->GetControlRotation();
+            FRotator Rotation = MyCharacter->GetViewRotation();
+
+            //UE_LOG(LogTemp, Warning, TEXT("(%f, %f, %f) - (%f, %f, %f)"), Rotation11.Pitch, Rotation11.Yaw, Rotation11.Roll, Rotation.Pitch, Rotation.Yaw, Rotation.Roll);
 
             Protocol::CS_USING_SKILL_PKT SkillPkt;
             SkillPkt.player_id = MyCharacter->GetPlayerId();

@@ -69,18 +69,9 @@ namespace Protocol {
         CS_USING_SKILL,
         CS_AI_ENTER,
         CS_AI_MOVE,
+        SC_SPAWN_ITEM,
     };
 
-
-    struct PlayerInfo
-    {
-        uint16 player_id;
-        float x, y, z;
-        float rotation;
-        PlayerType player_type;
-        PlayerState player_state;
-        float velo_x, velo_y, velo_z;
-    };
 
 //#pragma pack(push, 1)
 //    struct PacketHeader {
@@ -96,6 +87,17 @@ namespace Protocol {
     /* 패킷 헤더는 PacketHandler::MakeSendBuffer 에서 버퍼 앞에 붙여서 나감 */
     /* 가변 길이 데이터는 담지 않기 (ex: vector, string) */
 #pragma pack (push, 1)
+    struct PlayerInfo
+    {
+        uint16 player_id;
+        float x, y, z;
+        float rotation;
+        PlayerType player_type;
+        PlayerState player_state;
+        float speed;
+    };
+
+
     struct DCS_TEST_PKT
     {
         uint16 player_id;
@@ -171,6 +173,11 @@ namespace Protocol {
         SkillType s_type;
         float x, y, z;
         float pitch, yaw, roll;
+    };
+    struct SC_SPAWN_ITEM_PKT
+    {
+        char spawn_index[20];
+        char item_level[20];
     };
 
 #pragma pack(pop)

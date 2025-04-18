@@ -9,6 +9,11 @@
 
 RoomRef GRoom = std::make_shared<Room>();
 
+Room::Room()
+{
+    InitializeGame();
+}
+
 bool Room::Enter(PlayerRef player)
 {
     //std::lock_guard lock(m_mutex);
@@ -154,6 +159,14 @@ bool Room::HandleEnterPlayer(PlayerRef player)
         Broadcast(sendBuffer, player->playerID);
     }
 
+    // 신입 플레이어에게 아이템 정보 전송
+    {
+        SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(m_itemInfo);
+        if (auto session = player->ownerSession.lock())
+            session->Send(sendBuffer);
+    }
+
+
     return success;
 }
 
@@ -287,5 +300,31 @@ bool Room::HandleAIMoveLocked(Protocol::CS_AI_MOVE_PKT& pkt, const uint16 ownerI
     Broadcast(sendBuffer, ownerID);
 
     return true;
+}
+
+void Room::InitializeGame()
+{
+    // 이 함수는 항상 스레드 하나에서만 호출함. 프로그램 시작 시, host 로부터 전투단계 종료 확인 시
+
+    InitItemInfo();
+}
+
+void Room::InitItemInfo()
+{
+    SC_SPAWN_ITEM_PKT item;
+
+    std::vector<int> pool(100);
+    std::iota(pool.begin(), pool.end(), 0);
+
+    std::mt19937_64 rng(std::chrono::steady_clock::now().time_since_epoch().count());
+    std::shuffle(pool.begin(), pool.end(), rng);
+
+    for (int i = 0; i < 20; ++i)
+    {
+        item.spawn_index[i] = static_cast<char>(pool[i]);
+        item.item_level[i] = static_cast<char>(rand() % 2);
+    }
+
+    m_itemInfo = item;
 }
 

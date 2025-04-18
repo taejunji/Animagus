@@ -43,6 +43,7 @@ public:
     static SendBufferRef MakeSendBuffer(SC_ENTER_GAME_PKT& pkt) { return MakeSendBuffer(pkt, (uint16)PacketID::SC_ENTER_GAME); }
     static SendBufferRef MakeSendBuffer(CS_MOVE_PKT& pkt) { return MakeSendBuffer(pkt, (uint16)PacketID::CS_MOVE); }
     static SendBufferRef MakeSendBuffer(CS_USING_SKILL_PKT& pkt) { return MakeSendBuffer(pkt, (uint16)PacketID::CS_USING_SKILL); }
+    static SendBufferRef MakeSendBuffer(SC_SPAWN_ITEM_PKT& pkt) { return MakeSendBuffer(pkt, (uint16)PacketID::SC_SPAWN_ITEM); }
 
 private:
     template<typename PacketType, typename ProcessFunc>

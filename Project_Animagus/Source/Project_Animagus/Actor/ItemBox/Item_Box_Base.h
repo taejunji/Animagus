@@ -18,7 +18,7 @@ class PROJECT_ANIMAGUS_API AItem_Box_Base : public AActor
 public:
     AItem_Box_Base();
 
-protected:
+public:
     virtual void BeginPlay() override;
     virtual void Tick(float DeltaTime) override;
 

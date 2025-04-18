@@ -11,7 +11,7 @@
 
 AProjectile_Radial::AProjectile_Radial()
 {
-
+    CollisionSphere->InitSphereRadius(10.0f);
 }
 
 void AProjectile_Radial::BeginPlay()

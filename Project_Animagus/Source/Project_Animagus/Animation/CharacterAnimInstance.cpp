@@ -6,6 +6,8 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "../Character/BaseCharacter.h"
+#include "../Character/NetworkCharacter.h"
+
 
 UCharacterAnimInstance::UCharacterAnimInstance(const FObjectInitializer& ObjectInitializer)
     : Super(ObjectInitializer)
@@ -61,7 +63,12 @@ void UCharacterAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
     }
     else
     {
-        b_is_moving = (ground_speed > 3.f && movement_component->GetCurrentAcceleration() != FVector::ZeroVector);
+        if (Cast<ANetworkCharacter>(character) == nullptr)
+            b_is_moving = (ground_speed > 3.f && movement_component->GetCurrentAcceleration() != FVector::ZeroVector);
+        else {
+            b_is_moving = (ground_speed > 3.f);
+            //UE_LOG(LogTemp, Warning, TEXT("ground_speed: %f - %d"), ground_speed, character->GetPlayerId());
+        }
     }
 
     //b_is_moving = (ground_speed > 3.f || movement_component->GetCurrentAcceleration() != FVector::ZeroVector);

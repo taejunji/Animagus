@@ -22,6 +22,7 @@
 #include "Algo/RandomShuffle.h"
 #include "Project_Animagus/Item/PowerUpItem.h"
 #include "Runtime/Core/Tests/Containers/TestUtils.h"
+#include "../Actor/ItemBox/Item_Box_Base.h"
 #include "../Network/ClientPacketHandler.h"
 
 
@@ -68,7 +69,13 @@ ABattleGameMode::ABattleGameMode()
     {
         PowerUpBpclass = Powerupitem.Class;    
     }
-    
+
+    static ConstructorHelpers::FClassFinder<AItem_Box_Base> ItemboxBp(TEXT("/Game/WorkFolder/Bluprints/Actor/MyItem_Box_Base"));
+    if (ItemboxBp.Succeeded())
+    {
+        ItemBoxBpclass = ItemboxBp.Class;
+    }
+
     // 플레이어 ID(0~3)와 스폰 위치를 매핑
     spawn_transform.Add(0, FTransform(FRotator(0, 0, 0), FVector(-13500.0f, 0.0f, 800.f))); // Spawn_0
     spawn_transform.Add(1, FTransform(FRotator(0, 90, 0), FVector(0.0f, -13500.0f, 800.f))); // Spawn_1
@@ -134,7 +141,7 @@ void ABattleGameMode::InitBattleMode()
     }
     
     InitializeArea1SpawnPoints();
-    SpawnItemsInArea1();
+    //SpawnItemsInArea1();
 }
 
 void ABattleGameMode::SpawnPlayers()
@@ -376,6 +383,7 @@ void ABattleGameMode::SpawnSkill(Protocol::CS_USING_SKILL_PKT& pkt)
     }
 
     if (SpawnedPlayers.Contains(static_cast<int32>(pkt.player_id)) == false) return;
+    ABaseCharacter* Player = SpawnedPlayers[static_cast<int32>(pkt.player_id)];
     //if (static_cast<int32>(pkt.player_id) == PlayerId) return;    // 자신이 쏜 스킬은 스폰X
 
     UBaseSkill* Skill = nullptr;
@@ -388,43 +396,108 @@ void ABattleGameMode::SpawnSkill(Protocol::CS_USING_SKILL_PKT& pkt)
     case Protocol::SkillType::FIREBALL:
             Skill = NewObject<UFireball>(this, UFireball::StaticClass());
             Skill->SetSkillRotation(pkt.pitch, pkt.yaw, pkt.roll);
+            Skill->UpgradeSkill(Player->PowerUpLevel);
             break;
     case Protocol::SkillType::SHIELD:
             Skill = NewObject<UShieldSkill>(this, UShieldSkill::StaticClass());
+            Skill->UpgradeSkill(Player->PowerUpLevel);
             break;
     case Protocol::SkillType::BOUNCE:
             Skill = NewObject<UBounce>(this, UBounce::StaticClass());
             Skill->SetSkillRotation(pkt.pitch, pkt.yaw, pkt.roll);
+            Skill->UpgradeSkill(Player->PowerUpLevel);
             break;
     case Protocol::SkillType::MAGICMISSILE:
             Skill = NewObject<UMagicMissile>(this, UMagicMissile::StaticClass());
             Skill->SetSkillRotation(pkt.pitch, pkt.yaw, pkt.roll);
+            Skill->UpgradeSkill(Player->PowerUpLevel);
             break;
     case Protocol::SkillType::SMOKE:
             Skill = NewObject<USmokeSkill>(this, USmokeSkill::StaticClass());
             Skill->SetSkillRotation(pkt.pitch, pkt.yaw, pkt.roll);
+            Skill->UpgradeSkill(Player->PowerUpLevel);
             break;
     case Protocol::SkillType::RADIAL:
             Skill = NewObject<URadialSkill>(this, URadialSkill::StaticClass());
             Skill->SetSkillRotation(pkt.pitch, pkt.yaw, pkt.roll);
+            Skill->UpgradeSkill(Player->PowerUpLevel);
             break;
     case Protocol::SkillType::CHANGE:
             Skill = NewObject<UChangeSkill>(this, UChangeSkill::StaticClass());
             Skill->SetSkillRotation(pkt.pitch, pkt.yaw, pkt.roll);
+            Skill->UpgradeSkill(Player->PowerUpLevel);
             break;
     case Protocol::SkillType::STUN:
             Skill = NewObject<UStun>(this, UStun::StaticClass());
             Skill->SetSkillRotation(pkt.pitch, pkt.yaw, pkt.roll);
+            Skill->UpgradeSkill(Player->PowerUpLevel);
             break;
     default:
             UE_LOG(LogTemp, Error, TEXT("SpawnSkill: Unknown skill type"));
             return;
     }
 
-    if (Skill && SpawnedPlayers.Contains(static_cast<int32>(pkt.player_id))) {
-        Skill->Owner = SpawnedPlayers[static_cast<int32>(pkt.player_id)];
+    if (Skill) {
+        Skill->Owner = Player;
         Skill->ActiveSkill();   // TODO: pkt.pitch, yaw, roll로 회전값 설정 따로 해줘야 함
     }
+}
+
+void ABattleGameMode::SpawnItem(Protocol::SC_SPAWN_ITEM_PKT& pkt)
+{
+    int32 SpawnIndex[20];
+    int32 ItemLevel[20];
+
+    for (int8 i = 0; i < 20; i++)
+    {
+        SpawnIndex[i] = static_cast<int32>(pkt.spawn_index[i]);
+        ItemLevel[i] = static_cast<int32>(pkt.item_level[i]);
+    }
+
+    if (Area1SpawnPoints.Num() == 0)
+    {
+        UE_LOG(LogTemp, Warning, TEXT("SpawnItemsInArea1: No spawn points available."));
+        return;
+    }
+
+    // SpawnedItems 배열 초기화
+    SpawnedItems.Empty();
+
+    UWorld* World = GetWorld();
+    if (!World)
+    {
+        UE_LOG(LogTemp, Warning, TEXT("SpawnItemsInArea1: World is null."));
+        return;
+    }
+
+    // 지역 spawn 포인트 배열 복사 및 셔플
+    const int32 NumItemsToSpawn = 20;
+
+    int32 ItemsToSpawn = FMath::Min(NumItemsToSpawn, Area1SpawnPoints.Num());
+
+    for (int32 i = 0; i < ItemsToSpawn; i++)
+    {
+        int8 index = SpawnIndex[i];
+        FVector SpawnLocation = Area1SpawnPoints[index];
+        FRotator SpawnRotation = FRotator::ZeroRotator;
+
+        FActorSpawnParameters SpawnParams;
+        // 필요에 따라 SpawnParams.Owner 또는 Instigator 설정
+
+        AItem_Box_Base* NewItem = World->SpawnActor<AItem_Box_Base>(ItemBoxBpclass, SpawnLocation, SpawnRotation, SpawnParams);
+        NewItem->SpawnItemType = ItemLevel[i];
+
+        if (NewItem)
+        {
+            SpawnedItems.Add(NewItem);
+            UE_LOG(LogTemp, Log, TEXT("SpawnItemsInArea1: Spawned item at %s"), *SpawnLocation.ToString());
+        }
+        else
+        {
+            UE_LOG(LogTemp, Warning, TEXT("SpawnItemsInArea1: Failed to spawn item at index %d"), i);
+        }
+    }
+
 }
 
 void ABattleGameMode::PrintElapsedtime()
@@ -525,57 +598,57 @@ void ABattleGameMode::RoundTimerUpdate()
 
 void ABattleGameMode::SpawnItemsInArea1()
 {
-    // 예시로 영역1에 10개의 아이템 스폰
-    const int32 NumItemsToSpawn = 30;
-    if (Area1SpawnPoints.Num() == 0)
-    {
-        UE_LOG(LogTemp, Warning, TEXT("SpawnItemsInArea1: No spawn points available."));
-        return;
-    }
+    //// 예시로 영역1에 10개의 아이템 스폰
+    //const int32 NumItemsToSpawn = 30;
+    //if (Area1SpawnPoints.Num() == 0)
+    //{
+    //    UE_LOG(LogTemp, Warning, TEXT("SpawnItemsInArea1: No spawn points available."));
+    //    return;
+    //}
 
-    // 만약 NumItemsToSpawn이 전체 스폰 포인트보다 많으면, 경고 로그 출력
-    if (NumItemsToSpawn > Area1SpawnPoints.Num())
-    {
-        UE_LOG(LogTemp, Warning, TEXT("SpawnItemsInArea1: Not enough spawn points available. Reducing item count."));
-    }
+    //// 만약 NumItemsToSpawn이 전체 스폰 포인트보다 많으면, 경고 로그 출력
+    //if (NumItemsToSpawn > Area1SpawnPoints.Num())
+    //{
+    //    UE_LOG(LogTemp, Warning, TEXT("SpawnItemsInArea1: Not enough spawn points available. Reducing item count."));
+    //}
 
-    // SpawnedItems 배열 초기화
-    SpawnedItems.Empty();
+    //// SpawnedItems 배열 초기화
+    //SpawnedItems.Empty();
 
-    UWorld* World = GetWorld();
-    if (!World)
-    {
-        UE_LOG(LogTemp, Warning, TEXT("SpawnItemsInArea1: World is null."));
-        return;
-    }
+    //UWorld* World = GetWorld();
+    //if (!World)
+    //{
+    //    UE_LOG(LogTemp, Warning, TEXT("SpawnItemsInArea1: World is null."));
+    //    return;
+    //}
 
-    // 지역 spawn 포인트 배열 복사 및 셔플
-    TArray<FVector> LocalSpawnPoints = Area1SpawnPoints;
-    
-    Test::Shuffle(LocalSpawnPoints);
-    
-    int32 ItemsToSpawn = FMath::Min(NumItemsToSpawn, LocalSpawnPoints.Num());
+    //// 지역 spawn 포인트 배열 복사 및 셔플
+    //TArray<FVector> LocalSpawnPoints = Area1SpawnPoints;
+    //
+    //Test::Shuffle(LocalSpawnPoints);
+    //
+    //int32 ItemsToSpawn = FMath::Min(NumItemsToSpawn, LocalSpawnPoints.Num());
 
-    for (int32 i = 0; i < ItemsToSpawn; i++)
-    {
-        FVector SpawnLocation = LocalSpawnPoints[i];
-        FRotator SpawnRotation = FRotator::ZeroRotator;
+    //for (int32 i = 0; i < ItemsToSpawn; i++)
+    //{
+    //    FVector SpawnLocation = LocalSpawnPoints[i];
+    //    FRotator SpawnRotation = FRotator::ZeroRotator;
 
-        FActorSpawnParameters SpawnParams;
-        // 필요에 따라 SpawnParams.Owner 또는 Instigator 설정
+    //    FActorSpawnParameters SpawnParams;
+    //    // 필요에 따라 SpawnParams.Owner 또는 Instigator 설정
 
-        ABaseItem* NewItem = World->SpawnActor<ABaseItem>(PowerUpBpclass, SpawnLocation, SpawnRotation, SpawnParams);
+    //    ABaseItem* NewItem = World->SpawnActor<ABaseItem>(PowerUpBpclass, SpawnLocation, SpawnRotation, SpawnParams);
 
-        if (NewItem)
-        {
-            SpawnedItems.Add(NewItem);
-            UE_LOG(LogTemp, Log, TEXT("SpawnItemsInArea1: Spawned item at %s"), *SpawnLocation.ToString());
-        }
-        else
-        {
-            UE_LOG(LogTemp, Warning, TEXT("SpawnItemsInArea1: Failed to spawn item at index %d"), i);
-        }
-    }
+    //    if (NewItem)
+    //    {
+    //        SpawnedItems.Add(NewItem);
+    //        UE_LOG(LogTemp, Log, TEXT("SpawnItemsInArea1: Spawned item at %s"), *SpawnLocation.ToString());
+    //    }
+    //    else
+    //    {
+    //        UE_LOG(LogTemp, Warning, TEXT("SpawnItemsInArea1: Failed to spawn item at index %d"), i);
+    //    }
+    //}
 }
 
 void ABattleGameMode::InitializeArea1SpawnPoints()
