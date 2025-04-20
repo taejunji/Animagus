@@ -33,8 +33,10 @@ public:
     void SpawnPlayers();
     void SpawnPlayer(Protocol::SC_SPAWN_PKT& pkt);
     void ActivateInput();
+    void MoveOtherPlayer(Protocol::CS_MOVE_PKT& pkt);
     void SpawnSkill(Protocol::CS_USING_SKILL_PKT& pkt);
     void SpawnItem(Protocol::SC_SPAWN_ITEM_PKT& pkt);
+    void UpdateHp(Protocol::SC_UPDATE_HP_PKT& pkt);
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Classes)
     TSubclassOf<APawn> NetPawnClass;

@@ -64,6 +64,8 @@ void ANetworkCharacter::BeginPlay()
 
     InitPlayerMesh();
     GetMesh()->SetRelativeLocationAndRotation(FVector(0, 0, -55), FRotator(0, -90, 0)); // 메쉬 기본 위치, 회전값 설정( X축을 앞으로 바라보도록 설정하기 위함 )
+    
+    SetPawnType(PawnType::NETWORK);
 
     FVector Location = GetActorLocation();
     DestInfo->x = Location.X;

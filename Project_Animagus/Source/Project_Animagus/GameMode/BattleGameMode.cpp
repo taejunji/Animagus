@@ -373,6 +373,37 @@ void ABattleGameMode::ActivateInput()
     }
 }
 
+void ABattleGameMode::MoveOtherPlayer(Protocol::CS_MOVE_PKT& pkt)
+{
+    const uint16 playerId = pkt.player_info.player_id;
+    if (SpawnedPlayers.Find(playerId) == nullptr)
+        return;
+
+    if (playerId == PossessIndex)
+        return;
+
+    Protocol::PlayerInfo Info = pkt.player_info;
+    FVector Location(Info.x, Info.y, Info.z);
+    FRotator Rotation(0, Info.rotation, 0);
+    Protocol::PlayerState State = Info.player_state;
+
+    ANetworkCharacter* Player = Cast<ANetworkCharacter>(SpawnedPlayers[playerId]);
+
+    Player->SetActorLocation(Location);
+    Player->SetActorRotation(Rotation);
+    Player->GetCharacterMovement()->Velocity = FVector(0, Info.speed, 0);
+
+    if (Player->GetPlayerId() < 100) {
+        //UE_LOG(LogTemp, Warning, TEXT("OtherAccel: %f - %d"), Player->GetCharacterMovement()->GetCurrentAcceleration().Size2D(), Player->GetPlayerId());
+    }
+
+    if (State == Protocol::PlayerState::MOVE_STATE_JUMP)
+        Player->GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_Falling);
+    else
+        Player->GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_Walking);
+
+}
+
 void ABattleGameMode::SpawnSkill(Protocol::CS_USING_SKILL_PKT& pkt)
 {
     UWorld* World = GetWorld();
@@ -500,6 +531,19 @@ void ABattleGameMode::SpawnItem(Protocol::SC_SPAWN_ITEM_PKT& pkt)
         }
     }
 
+}
+
+void ABattleGameMode::UpdateHp(Protocol::SC_UPDATE_HP_PKT& pkt)
+{
+    const uint16 playerId = pkt.player_id;
+    if (SpawnedPlayers.Find(playerId) == nullptr)
+        return;
+
+    ANetworkCharacter* Player = Cast<ANetworkCharacter>(SpawnedPlayers[playerId]);
+    if (Player == nullptr) return;
+    Player->SetHP(pkt.hp);
+
+    // TODO: 더 할게 있나?
 }
 
 void ABattleGameMode::PrintElapsedtime()

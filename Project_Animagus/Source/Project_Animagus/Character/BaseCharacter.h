@@ -20,6 +20,7 @@
 */
 
 enum class MontageType { DefaultAttack, Hit };
+enum class PawnType { NONE, PLAYER, AI, NETWORK };
 
 UCLASS()
 class PROJECT_ANIMAGUS_API ABaseCharacter : public ACharacter
@@ -162,10 +163,14 @@ public:
     void SetMoveState(Protocol::PlayerState state) { PlayerState = state; }
     void SetPlayerId(uint16 playerId) { PlayerId = playerId; }
 
+    void SetPawnType(PawnType type) { mPawnType = type; }
+    PawnType GetPawnType() { return mPawnType; }
+
 protected:
     uint16 PlayerId = 0;
     Protocol::PlayerType PlayerType = Protocol::PlayerType::RAM;
     Protocol::PlayerState PlayerState = Protocol::PlayerState::MOVE_STATE_NONE;
+    PawnType mPawnType = PawnType::NONE;
 };
 
 // Called to bind functionality to input

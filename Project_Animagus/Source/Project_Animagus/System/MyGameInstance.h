@@ -90,7 +90,7 @@ public:
     void HandleMove(Protocol::CS_MOVE_PKT& pkt);
     void HandleSkill(Protocol::CS_USING_SKILL_PKT& pkt);
     void HandleSpawnItem(Protocol::SC_SPAWN_ITEM_PKT& pkt);
-
+    void HandleUpdateHp(Protocol::SC_UPDATE_HP_PKT& pkt);
 
 public:
     // AI 캐릭터

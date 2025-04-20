@@ -139,4 +139,21 @@ bool Handle_CS_AI_USING_SKILL(SessionRef& session, CS_AI_USING_SKILL_PKT& pkt)
     return true;
 }
 
+bool Handle_CS_DAMAGE(SessionRef& session, CS_DAMAGE_PKT& pkt)
+{
+    auto gameSession = static_pointer_cast<Session>(session);
+
+    PlayerRef player = gameSession->m_player.load();
+    if (player == nullptr)
+        return false;
+
+    RoomRef room = player->room.load().lock();
+    if (room == nullptr)
+        return false;
+
+    room->HandleDamageLocked(pkt, player->playerID);
+
+    return true;
+}
+
 // 브랜치 보호용 커밋

@@ -246,32 +246,7 @@ void UMyGameInstance::HandleMove(Protocol::CS_MOVE_PKT& pkt)
         ABattleGameMode* GameMode = Cast<ABattleGameMode>(BaseGameMode);
         if (GameMode)
         {
-            const uint16 playerId = pkt.player_info.player_id;
-            if (GameMode->SpawnedPlayers.Find(playerId) == nullptr)
-                return;
-
-            if (playerId == GameMode->PossessIndex)
-                return;
-
-            Protocol::PlayerInfo Info = pkt.player_info;
-            FVector Location(Info.x, Info.y, Info.z);
-            FRotator Rotation(0, Info.rotation, 0);
-            Protocol::PlayerState State = Info.player_state;
-
-            ANetworkCharacter* Player = Cast<ANetworkCharacter>(GameMode->SpawnedPlayers[playerId]);
-
-            Player->SetActorLocation(Location);
-            Player->SetActorRotation(Rotation);
-            Player->GetCharacterMovement()->Velocity = FVector(0, Info.speed, 0);
-
-            if (Player->GetPlayerId() < 100) {
-                //UE_LOG(LogTemp, Warning, TEXT("OtherAccel: %f - %d"), Player->GetCharacterMovement()->GetCurrentAcceleration().Size2D(), Player->GetPlayerId());
-            }
-
-            if (State == Protocol::PlayerState::MOVE_STATE_JUMP)
-                Player->GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_Falling);
-            else
-                Player->GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_Walking);
+            GameMode->MoveOtherPlayer(pkt);
         }
     }
 }
@@ -313,6 +288,26 @@ void UMyGameInstance::HandleSpawnItem(Protocol::SC_SPAWN_ITEM_PKT& pkt)
         {
             GameMode->InitializeArea1SpawnPoints();
             GameMode->SpawnItem(pkt);
+        }
+    }
+}
+
+void UMyGameInstance::HandleUpdateHp(Protocol::SC_UPDATE_HP_PKT& pkt)
+{
+    if (Socket == nullptr || ClientSession == nullptr)
+        return;
+
+    auto* World = GetWorld();
+    if (World == nullptr)
+        return;
+
+    AGameModeBase* BaseGameMode = UGameplayStatics::GetGameMode(World);
+    if (BaseGameMode)
+    {
+        ABattleGameMode* GameMode = Cast<ABattleGameMode>(BaseGameMode);
+        if (GameMode)
+        {
+            GameMode->UpdateHp(pkt);
         }
     }
 }

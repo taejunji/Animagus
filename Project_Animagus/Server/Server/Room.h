@@ -20,7 +20,7 @@ public:
     bool HandleEnterAIPlayer(Protocol::CS_AI_ENTER_PKT& pkt);
     bool HandleAIMoveLocked(Protocol::CS_AI_MOVE_PKT& pkt, const uint16 ownerID);
     bool HandleAISkillLocked(Protocol::CS_AI_USING_SKILL_PKT& pkt, const uint16 ownerID);
-
+    bool HandleDamageLocked(Protocol::CS_DAMAGE_PKT& pkt, const uint16 ownerID);
 
 public:
     uint16 GetPlayerCount() { return m_playerCount; }   // 사람 수 받을 때 동기화 작업 필요

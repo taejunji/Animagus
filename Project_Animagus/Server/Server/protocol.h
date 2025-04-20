@@ -65,12 +65,14 @@ namespace Protocol {
         CS_SPAWN,
         SC_SPAWN,
         CS_MOVE,
-        CS_SELECT,
+        CS_SELECT_CHARACTER,
         CS_USING_SKILL,
         CS_AI_ENTER,
         CS_AI_MOVE,
         CS_AI_USING_SKILL,
         SC_SPAWN_ITEM,
+        CS_DAMAGE,
+        SC_UPDATE_HP,
     };
 
 
@@ -178,6 +180,20 @@ namespace Protocol {
     {
         char spawn_index[20];
         char item_level[20];
+    };
+    struct CS_DAMAGE_PKT
+    {
+        uint16 player_id;
+        uint16 room_id;
+        float hp;
+        bool isAlive;
+    };
+    struct SC_UPDATE_HP_PKT
+    {
+        uint16 player_id;
+        uint16 room_id;
+        float hp;
+        bool isAlive;
     };
 
 #pragma pack(pop)

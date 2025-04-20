@@ -324,6 +324,35 @@ bool Room::HandleAISkillLocked(Protocol::CS_AI_USING_SKILL_PKT& pkt, const uint1
     return true;
 }
 
+bool Room::HandleDamageLocked(Protocol::CS_DAMAGE_PKT& pkt, const uint16 ownerID)
+{
+    std::lock_guard lock(m_mutex);
+
+    const uint16 player_id = pkt.player_id;
+    if (m_players.contains(player_id) == false && m_aiPlayers.contains(player_id) == false) return false;
+
+    PlayerRef player;
+    if (player_id < 100) player = m_players[player_id];
+    else player = m_aiPlayers[player_id];
+    player->playerHP = pkt.hp;
+    //player->isAlive = pkt.isAlive;
+
+#ifndef _DUMMYTEST
+    std::cout << player_id << " Got Damage - HP: " << pkt.hp << std::endl;
+#endif
+
+    SC_UPDATE_HP_PKT updateHpPkt;
+    updateHpPkt.player_id = player_id;
+    updateHpPkt.room_id = 0;            // TODO: 로비에서 여러 룸 중 선택
+    updateHpPkt.hp = pkt.hp;
+    updateHpPkt.isAlive = pkt.isAlive;
+
+    SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(updateHpPkt);
+    Broadcast(sendBuffer, ownerID);
+
+    return true;
+}
+
 void Room::InitializeGame()
 {
     // 이 함수는 항상 스레드 하나에서만 호출함. 프로그램 시작 시, host 로부터 전투단계 종료 확인 시
