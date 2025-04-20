@@ -303,6 +303,27 @@ bool Room::HandleAIMoveLocked(Protocol::CS_AI_MOVE_PKT& pkt, const uint16 ownerI
     return true;
 }
 
+bool Room::HandleAISkillLocked(Protocol::CS_AI_USING_SKILL_PKT& pkt, const uint16 ownerID)
+{
+    std::lock_guard lock(m_mutex);
+
+    const uint16 aiID = pkt.ai_id;
+    if (m_aiPlayers.contains(aiID) == false) return false;
+
+    CS_USING_SKILL_PKT aiSkillPkt;
+    aiSkillPkt.player_id = aiID;
+    aiSkillPkt.room_id = pkt.room_id;
+    aiSkillPkt.pitch = pkt.pitch;
+    aiSkillPkt.yaw = pkt.yaw;
+    aiSkillPkt.roll = pkt.roll;
+    aiSkillPkt.s_type = pkt.s_type;
+
+    SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(aiSkillPkt);
+    Broadcast(sendBuffer, ownerID);
+
+    return true;
+}
+
 void Room::InitializeGame()
 {
     // 이 함수는 항상 스레드 하나에서만 호출함. 프로그램 시작 시, host 로부터 전투단계 종료 확인 시

@@ -19,13 +19,22 @@ class PROJECT_ANIMAGUS_API ANetworkCharacter : public ABaseCharacter
 	
 public:
     ANetworkCharacter();
-    virtual void Tick(float DeltaTime) override;
-
-    void SetPlayerType(Protocol::PlayerType type) { PlayerType = type; }
+    virtual ~ANetworkCharacter();
 
 protected:
     virtual void BeginPlay() override;
+    virtual void Tick(float DeltaTime) override;
+
+public:
+    void SetPlayerType(Protocol::PlayerType type) { PlayerType = type; }
+    void SetPlayerInfo(Protocol::PlayerInfo& info);
+    void SetDestInfo(Protocol::PlayerInfo& info);
+
 
 private:
     void InitPlayerMesh();
+
+protected:
+    Protocol::PlayerInfo* PlayerInfo; // 현재 위치
+    Protocol::PlayerInfo* DestInfo;   // 목적지
 };

@@ -19,6 +19,7 @@ public:
     bool HandleSkillLocked(Protocol::CS_USING_SKILL_PKT& pkt);
     bool HandleEnterAIPlayer(Protocol::CS_AI_ENTER_PKT& pkt);
     bool HandleAIMoveLocked(Protocol::CS_AI_MOVE_PKT& pkt, const uint16 ownerID);
+    bool HandleAISkillLocked(Protocol::CS_AI_USING_SKILL_PKT& pkt, const uint16 ownerID);
 
 
 public:

@@ -6,6 +6,12 @@
 #include "../Character/AICharacter.h"
 #include "Project_Animagus/Skill/BaseSkill.h"
 
+#include "../System/MyGameInstance.h"
+
+#include "../Server/Server/protocol.h"
+#include "../Network/Session.h"
+#include "../Network/ClientPacketHandler.h"
+
 
 UBTTaskNode_Fire::UBTTaskNode_Fire()
 {
@@ -30,7 +36,20 @@ EBTNodeResult::Type UBTTaskNode_Fire::ExecuteTask(UBehaviorTreeComponent& OwnerC
       
     if (Character && Character->Skills.IsValidIndex(0) && Character->Skills[0])
     {
-        Character->Skills[0]->ActiveSkill();
+        UBaseSkill* Skill = Character->Skills[0];
+        Skill->ActiveSkill();
+
+        FRotator Rotation = Character->GetViewRotation();
+
+        Protocol::CS_AI_USING_SKILL_PKT SkillPkt;
+        SkillPkt.ai_id = Character->GetPlayerId();
+        SkillPkt.s_type = Skill->SkillType;
+        //SkillPkt.x = Location.X; SkillPkt.y = Location.Y; SkillPkt.z = Location.Z;  // 필수인가?
+        SkillPkt.pitch = Rotation.Pitch; SkillPkt.yaw = Rotation.Yaw; SkillPkt.roll = Rotation.Roll;
+
+        SendBufferRef SendBuffer = ClientPacketHandler::MakeSendBuffer(SkillPkt);
+        Cast<UMyGameInstance>(GWorld->GetGameInstance())->SendPacket(SendBuffer);
+
     }
 
 

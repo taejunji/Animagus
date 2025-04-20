@@ -239,7 +239,10 @@ float ABaseCharacter::TakeDamage(float DamageAmount, struct FDamageEvent const& 
     float ActualDamage = Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
 
     PlayAnimMontageByType(MontageType::Hit);
-    hp -= ActualDamage;
+
+
+
+    //hp -= ActualDamage;
 
     if (hp <= 0)
     {

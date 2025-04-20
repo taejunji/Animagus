@@ -69,6 +69,7 @@ namespace Protocol {
         CS_USING_SKILL,
         CS_AI_ENTER,
         CS_AI_MOVE,
+        CS_AI_USING_SKILL,
         SC_SPAWN_ITEM,
     };
 
@@ -92,7 +93,6 @@ namespace Protocol {
         uint16 player_id;
         float x, y, z;
         float rotation;
-        PlayerType player_type;
         PlayerState player_state;
         float speed;
     };
@@ -168,7 +168,7 @@ namespace Protocol {
     };
     struct CS_AI_USING_SKILL_PKT
     {
-        uint16 player_id;
+        uint16 ai_id;
         uint16 room_id;
         SkillType s_type;
         float x, y, z;

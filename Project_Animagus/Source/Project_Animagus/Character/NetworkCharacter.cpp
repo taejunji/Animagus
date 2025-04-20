@@ -20,12 +20,42 @@ ANetworkCharacter::ANetworkCharacter()
 
     // 충돌영역 정의
     GetCapsuleComponent()->SetCapsuleSize(54.358692, 38.444557);
+
+    PlayerInfo = new Protocol::PlayerInfo();
+    DestInfo = new Protocol::PlayerInfo();
+}
+
+ANetworkCharacter::~ANetworkCharacter()
+{
+    delete PlayerInfo;
+    delete DestInfo;
+    PlayerInfo = nullptr;
+    DestInfo = nullptr;
 }
 
 void ANetworkCharacter::Tick(float DeltaTime)
 {
     Super::Tick(DeltaTime);
 
+    {
+        FVector Location = GetActorLocation();
+        PlayerInfo->x = Location.X;
+        PlayerInfo->y = Location.Y;
+        PlayerInfo->z = Location.Z;
+        PlayerInfo->rotation = GetActorRotation().Yaw;
+    }
+
+    const Protocol::PlayerState State = GetMoveState();
+
+    if (State == Protocol::PlayerState::MOVE_STATE_RUN)
+    {
+        SetActorRotation(FRotator(0, DestInfo->rotation, 0));
+        AddMovementInput(GetActorForwardVector());
+    }
+    else
+    {
+
+    }
 }
 
 void ANetworkCharacter::BeginPlay()
@@ -34,6 +64,27 @@ void ANetworkCharacter::BeginPlay()
 
     InitPlayerMesh();
     GetMesh()->SetRelativeLocationAndRotation(FVector(0, 0, -55), FRotator(0, -90, 0)); // 메쉬 기본 위치, 회전값 설정( X축을 앞으로 바라보도록 설정하기 위함 )
+
+    FVector Location = GetActorLocation();
+    DestInfo->x = Location.X;
+    DestInfo->y = Location.Y;
+    DestInfo->z = Location.Z;
+    DestInfo->rotation = GetActorRotation().Yaw;
+
+}
+
+void ANetworkCharacter::SetPlayerInfo(Protocol::PlayerInfo& info)
+{
+    PlayerInfo->x = info.x;
+    PlayerInfo->y = info.y;
+    PlayerInfo->z = info.z;
+    PlayerInfo->rotation = info.rotation;
+    PlayerInfo->player_state = info.player_state;
+}
+
+void ANetworkCharacter::SetDestInfo(Protocol::PlayerInfo& info)
+{
+
 }
 
 void ANetworkCharacter::InitPlayerMesh()

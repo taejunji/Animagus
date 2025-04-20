@@ -251,7 +251,7 @@ void AMyAIController::Tick(float DeltaTime)
             Info.x = Location.X; Info.y = Location.Y; Info.z = Location.Z;
             Info.rotation = AI->GetActorRotation().Yaw;
             Info.player_id = AI->GetPlayerId();
-            Info.player_type = AI->GetPlayerType();
+            //Info.player_type = AI->GetPlayerType();
             Info.player_state = AI->GetMoveState();
 
             MovePkt.player_info = Info;

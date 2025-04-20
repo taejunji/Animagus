@@ -186,7 +186,7 @@ void ABattle_PlayerController::Tick(float DeltaTime)
                 Info.x = Location.X; Info.y = Location.Y; Info.z = Location.Z;
                 Info.rotation = MyPlayer->GetActorRotation().Yaw;
                 Info.player_id = MyPlayer->GetPlayerId();
-                Info.player_type = MyPlayer->GetPlayerType();
+                //Info.player_type = MyPlayer->GetPlayerType();
                 Info.player_state = MyPlayer->GetMoveState();
                 Info.speed = MyPlayer->GetMovementComponent()->Velocity.Size2D();
                 //UE_LOG(LogTemp, Warning, TEXT("MySpeed: %f - %d"), Info.speed, MyPlayer->GetPlayerId());

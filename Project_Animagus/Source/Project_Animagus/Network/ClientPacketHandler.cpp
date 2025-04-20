@@ -24,7 +24,7 @@ bool Handle_DCS_TEST(SessionRef& session, Protocol::DCS_TEST_PKT& pkt)
     return true;
 }
 
-bool Handle_SC_ENTER_GAME_PKT(SessionRef& session, Protocol::SC_ENTER_GAME_PKT& pkt)
+bool Handle_SC_ENTER_GAME(SessionRef& session, Protocol::SC_ENTER_GAME_PKT& pkt)
 {
     if (auto* GameInstance = Cast<UMyGameInstance>(GWorld->GetGameInstance()))
     {
@@ -34,7 +34,7 @@ bool Handle_SC_ENTER_GAME_PKT(SessionRef& session, Protocol::SC_ENTER_GAME_PKT& 
     return true;
 }
 
-bool Handle_SC_SPAWN_PKT(SessionRef& session, Protocol::SC_SPAWN_PKT& pkt)
+bool Handle_SC_SPAWN(SessionRef& session, Protocol::SC_SPAWN_PKT& pkt)
 {   // TEMP : 기존 플레이어 or 신입 플레이어 스폰해줘야 함
 
     if (auto* GameInstance = Cast<UMyGameInstance>(GWorld->GetGameInstance()))
@@ -45,7 +45,7 @@ bool Handle_SC_SPAWN_PKT(SessionRef& session, Protocol::SC_SPAWN_PKT& pkt)
     return true;
 }
 
-bool Handle_CS_MOVE_PKT(SessionRef& session, Protocol::CS_MOVE_PKT& pkt)
+bool Handle_CS_MOVE(SessionRef& session, Protocol::CS_MOVE_PKT& pkt)
 {
     if (auto* GameInstance = Cast<UMyGameInstance>(GWorld->GetGameInstance()))
     {
@@ -55,7 +55,7 @@ bool Handle_CS_MOVE_PKT(SessionRef& session, Protocol::CS_MOVE_PKT& pkt)
     return true;
 }
 
-bool Handle_CS_USING_SKILL_PKT(SessionRef& session, Protocol::CS_USING_SKILL_PKT& pkt)
+bool Handle_CS_USING_SKILL(SessionRef& session, Protocol::CS_USING_SKILL_PKT& pkt)
 {
     if (auto* GameInstance = Cast<UMyGameInstance>(GWorld->GetGameInstance()))
     {
@@ -65,7 +65,7 @@ bool Handle_CS_USING_SKILL_PKT(SessionRef& session, Protocol::CS_USING_SKILL_PKT
     return true;
 }
 
-bool Handle_SC_SPAWN_ITEM_PKT(SessionRef& session, Protocol::SC_SPAWN_ITEM_PKT& pkt)
+bool Handle_SC_SPAWN_ITEM(SessionRef& session, Protocol::SC_SPAWN_ITEM_PKT& pkt)
 {
     if (auto* GameInstance = Cast<UMyGameInstance>(GWorld->GetGameInstance()))
     {
