@@ -2,6 +2,11 @@
 #include "../Projectile/Projectile_FireBall.h"
 #include "Kismet/GameplayStatics.h"
 #include "../Character/BaseCharacter.h"
+#include "../Character/PlayerCharacter.h"
+
+#include "../AI/MyAIController.h"
+#include "BehaviorTree/BlackboardComponent.h"
+
 #include "GameFramework/PlayerController.h"
 #include "GameFramework/ProjectileMovementComponent.h"
 
@@ -46,6 +51,7 @@ void UFireball::ActiveSkill_Implementation()
     // 공격 애니메이션
     Owner->PlayAnimMontageByType(MontageType::DefaultAttack);
 
+#if 0
     // 플레이어 컨트롤러를 통해 카메라 뷰포인트를 가져옵니다.
     FVector CameraLocation;
     FRotator CameraRotation;
@@ -65,8 +71,57 @@ void UFireball::ActiveSkill_Implementation()
     // 진행 방향: 카메라 뷰 방향 사용
     FRotator SpawnRotation = CameraRotation + FRotator(2.f, 0.f, 0.f); 
     
+#endif
+
+    // 투사체 스폰 위치
+    FVector SpawnLocation = Owner->GetActorLocation() + Owner->GetActorForwardVector() * 80.f + Owner->GetActorRightVector() * 30.f;
+    FRotator SpawnRotation;
+
+    // 플레이어와 AI 분기 처리
+    if (APlayerCharacter* player = Cast<APlayerCharacter>(Owner))
+    {
+        FVector CameraLocation;
+        FRotator CameraRotation;
+        if (player->GetController())
+        {
+            player->GetController()->GetPlayerViewPoint(CameraLocation, CameraRotation);
+        }
+        else
+        {
+            // 컨트롤러가 없을 때
+            CameraLocation = player->GetActorLocation();
+            CameraRotation = player->GetActorRotation();
+        }
+        SpawnRotation = CameraRotation + FRotator(2.f, 0.f, 0.f);
+    }
+    else
+    {
+        ABaseCharacter* TargetCharacter = nullptr;
+
+        if (AMyAIController* AIController = Cast<AMyAIController>(Owner->GetController()))
+        {
+            UBlackboardComponent* BBComp = AIController->GetBlackboardComponent();
+            if (BBComp && AIController->TargetKey.SelectedKeyName.IsValid())
+            {
+                TargetCharacter = Cast<ABaseCharacter>(BBComp->GetValueAsObject(AIController->TargetKey.SelectedKeyName));
+            }
+        }
+
+        if (TargetCharacter)
+        {
+            FVector DirectionToTarget = (TargetCharacter->GetActorLocation() - SpawnLocation).GetSafeNormal();
+            SpawnRotation = DirectionToTarget.Rotation();
+        }
+        else
+        {
+            // 타겟이 없다면 Panw이 바라보는 방향으로 발사
+            SpawnRotation = Owner->GetActorRotation();
+        }
+    }
+
+
     UE_LOG(LogTemp, Log, TEXT("Fireball Skill: OwnerLocation = %s"), *Owner->GetActorLocation().ToString());
-    UE_LOG(LogTemp, Log, TEXT("Fireball Skill: CameraRotation = %s"), *CameraRotation.ToString());
+    // UE_LOG(LogTemp, Log, TEXT("Fireball Skill: CameraRotation = %s"), *CameraRotation.ToString());
     UE_LOG(LogTemp, Log, TEXT("Fireball Skill: SpawnLocation = %s"), *SpawnLocation.ToString());
     UE_LOG(LogTemp, Log, TEXT("Fireball Skill: SpawnRotation = %s"), *SpawnRotation.ToString());
 
@@ -132,3 +187,50 @@ void UFireball::UpgradeSkill(int32 NewPowerUpLevel)
     UE_LOG(LogTemp, Log, TEXT("Fireball upgraded: PowerUpLevel %d, Damage: %f, Cooldown: %f"), 
         NewPowerUpLevel, FireballDamage, CooldownTime);
 }
+
+
+
+//// 투사체 스폰 위치
+//FVector SpawnLocation = Owner->GetActorLocation() + Owner->GetActorForwardVector() * 80.f + Owner->GetActorRightVector() * 30.f;
+//FRotator SpawnRotation;
+//
+//// 플레이어와 AI 분기 처리
+//if (Owner->IsPlayerControlled())
+//{
+//    FVector CameraLocation;
+//    FRotator CameraRotation;
+//    if (Owner->GetController())
+//    {
+//        Owner->GetController()->GetPlayerViewPoint(CameraLocation, CameraRotation);
+//    }
+//    else
+//    {
+//        CameraLocation = Owner->GetActorLocation();
+//        CameraRotation = Owner->GetActorRotation();
+//    }
+//    SpawnRotation = CameraRotation + FRotator(2.f, 0.f, 0.f);
+//}
+//else
+//{
+//    AMyAIController* AIController = Cast<AMyAIController>(Owner->GetController());
+//    ABaseCharacter* TargetCharacter = nullptr;
+//
+//    if (AIController)
+//    {
+//        UBlackboardComponent* BBComp = AIController->GetBlackboardComponent();
+//        if (BBComp && AIController->TargetKey.SelectedKeyName.IsValid())
+//        {
+//            TargetCharacter = Cast<ABaseCharacter>(BBComp->GetValueAsObject(AIController->TargetKey.SelectedKeyName));
+//        }
+//    }
+//
+//    if (TargetCharacter)
+//    {
+//        FVector DirectionToTarget = (TargetCharacter->GetActorLocation() - SpawnLocation).GetSafeNormal();
+//        SpawnRotation = DirectionToTarget.Rotation();
+//    }
+//    else
+//    {
+//        SpawnRotation = Owner->GetActorRotation();
+//    }
+//}
