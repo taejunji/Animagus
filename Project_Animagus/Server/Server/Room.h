@@ -38,7 +38,7 @@ private:
     std::unordered_map<uint16/*ai_id*/, AIPlayerRef> m_aiPlayers;
 
     PlayerRef m_hostPlayer = nullptr;
-    Protocol::SC_SPAWN_ITEM_PKT m_itemInfo;
+    std::array<Protocol::SC_SPAWN_ITEM_PKT, 3> m_itemInfo;
 };
 
 extern RoomRef GRoom;       // 배열 or 벡터로 관리해 여러 게임룸을 생성

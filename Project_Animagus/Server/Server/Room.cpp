@@ -160,8 +160,9 @@ bool Room::HandleEnterPlayer(PlayerRef player)
     }
 
     // 신입 플레이어에게 아이템 정보 전송
+    for (uint16 i = 0; i < 2; ++i)
     {
-        SC_SPAWN_ITEM_PKT item = m_itemInfo;
+        SC_SPAWN_ITEM_PKT item = m_itemInfo[i];
 
         SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(item);
         if (auto session = player->ownerSession.lock())
@@ -260,6 +261,8 @@ bool Room::HandleEnterAIPlayer(Protocol::CS_AI_ENTER_PKT& pkt)
 
     m_aiPlayers.insert(make_pair(ai->aiID, ai));
     ai->room.store(shared_from_this());
+
+    m_playerCount++;
 
     // Host 를 제외한 클라이언트에서는 AI 를 일반 NetworkPlayer 로 인식
     SC_SPAWN_PKT newPlayer;
@@ -362,24 +365,68 @@ void Room::InitializeGame()
 
 void Room::InitItemInfo()
 {
-    SC_SPAWN_ITEM_PKT item;
+    {   // Zone1
+        SC_SPAWN_ITEM_PKT item;
 
-    std::vector<int> pool;
-    pool.resize(50); ZeroMemory(pool.data(), sizeof(int) * 50);
-    std::iota(pool.begin(), pool.end(), 0);
+        std::vector<int> pool;
+        pool.resize(90); ZeroMemory(pool.data(), sizeof(int) * 90);
+        std::iota(pool.begin(), pool.end(), 0);
 
-    std::mt19937_64 rng(std::chrono::steady_clock::now().time_since_epoch().count());
-    std::shuffle(pool.begin(), pool.end(), rng);
+        std::mt19937_64 rng(std::chrono::steady_clock::now().time_since_epoch().count());
+        std::shuffle(pool.begin(), pool.end(), rng);
 
-    for (int i = 0; i < 20; ++i)
-    {
-        item.spawn_index[i] = static_cast<char>(pool[i]);
-        item.item_level[i] = static_cast<char>(rand() % 2);
+        for (int i = 0; i < 20; ++i)
+        {
+            item.spawn_index[i] = static_cast<char>(pool[i]);
+            item.item_level[i] = static_cast<char>(rand() % 2);
+        }
+        item.item_count = 20;
+        item.zone_index = 0;
+
+        m_itemInfo[0] = item;
     }
 
-    //std::cout << "Item Index - " << static_cast<int>(item.spawn_index[19]) << std::endl;
-    //std::cout << "Item Level - " << static_cast<int>(item.item_level[19]) << std::endl;
+    {   // Zone2
+        SC_SPAWN_ITEM_PKT item;
 
-    m_itemInfo = item;
+        std::vector<int> pool;
+        pool.resize(49); ZeroMemory(pool.data(), sizeof(int) * 49);
+        std::iota(pool.begin(), pool.end(), 0);
+
+        std::mt19937_64 rng(std::chrono::steady_clock::now().time_since_epoch().count());
+        std::shuffle(pool.begin(), pool.end(), rng);
+
+        for (int i = 0; i < 10; ++i)
+        {
+            item.spawn_index[i] = static_cast<char>(pool[i]);
+            item.item_level[i] = static_cast<char>(rand() % 2);
+        }
+        item.item_count = 10;
+        item.zone_index = 1;
+
+        m_itemInfo[1] = item;
+    }
+
+    //{   // Zone3
+    //    SC_SPAWN_ITEM_PKT item;
+
+    //    std::vector<int> pool;
+    //    pool.resize(49); ZeroMemory(pool.data(), sizeof(int) * 49);
+    //    std::iota(pool.begin(), pool.end(), 0);
+
+    //    std::mt19937_64 rng(std::chrono::steady_clock::now().time_since_epoch().count());
+    //    std::shuffle(pool.begin(), pool.end(), rng);
+
+    //    for (int i = 0; i < 10; ++i)
+    //    {
+    //        item.spawn_index[i] = static_cast<char>(pool[i]);
+    //        item.item_level[i] = static_cast<char>(rand() % 2);
+    //    }
+    //    item.item_count = 10;
+    //    item.zone_index = 2;
+
+    //    m_itemInfo[2] = item;
+    //}
+
 }
 

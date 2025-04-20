@@ -178,6 +178,8 @@ namespace Protocol {
     };
     struct SC_SPAWN_ITEM_PKT
     {
+        uint16 zone_index;
+        uint16 item_count;
         char spawn_index[20];
         char item_level[20];
     };

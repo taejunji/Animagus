@@ -24,6 +24,8 @@
 #include "Runtime/Core/Tests/Containers/TestUtils.h"
 #include "../Actor/ItemBox/Item_Box_Base.h"
 #include "../Network/ClientPacketHandler.h"
+#include "../Actor/Zones/AttractionZone.h"
+#include <vector>
 
 
 ABattleGameMode::ABattleGameMode()
@@ -74,6 +76,12 @@ ABattleGameMode::ABattleGameMode()
     if (ItemboxBp.Succeeded())
     {
         ItemBoxBpclass = ItemboxBp.Class;
+    }
+
+    static ConstructorHelpers::FClassFinder<AAttractionZone> AttractionZoneBp(TEXT("/Game/WorkFolder/Bluprints/Spiders/BP_AttractionZone"));
+    if (AttractionZoneBp.Succeeded())
+    {
+        AttractionBpclass = AttractionZoneBp.Class;
     }
 
     // 플레이어 ID(0~3)와 스폰 위치를 매핑
@@ -140,7 +148,13 @@ void ABattleGameMode::InitBattleMode()
         //GetWorld()->GetTimerManager().SetTimer(CountdownTimerHandle, this, &ABattleGameMode::CountdownTimerUpdate, 1.0f, true);
     }
     
-    //InitializeArea1SpawnPoints();
+    AreaSpawnPoints.Empty();
+    SpawnedItems.Empty();
+
+    InitializeArea1SpawnPoints();
+    SpawnItemsInArea2();
+    //SpawnItemsInArea3();
+
     //SpawnItemsInArea1();
 }
 
@@ -228,6 +242,10 @@ void ABattleGameMode::SpawnPlayers()
         // 1초마다 CountdownTimerUpdate() 호출
         GetWorld()->GetTimerManager().SetTimer(CountdownTimerHandle, this, &ABattleGameMode::CountdownTimerUpdate, 1.0f, true);
 
+        FTransform AttractionSpawnTransform;
+        AttractionSpawnTransform.SetLocation(FVector(0.f, 0.f, 236.f));
+        AAttractionZone* AttractionZone = World->SpawnActor<AAttractionZone>(AttractionBpclass, AttractionSpawnTransform);
+        AttractionZone->OwnerCharacter = PlayerCharacter;
     }
 
     // "0"번 플레이어가 아닌 경우 AI 생성하지 않고 나가기
@@ -271,6 +289,11 @@ void ABattleGameMode::SpawnPlayers()
 
         //SpawnedPlayers.Add(AIChar);
         SpawnedPlayers.Add(static_cast<int32>(AIId), AIChar);
+
+        FTransform AttractionSpawnTransform;
+        AttractionSpawnTransform.SetLocation(FVector(0.f, 0.f, 236.f));
+        AAttractionZone* AttractionZone = World->SpawnActor<AAttractionZone>(AttractionBpclass, AttractionSpawnTransform);
+        AttractionZone->OwnerCharacter = AIChar;
 
         Protocol::CS_AI_ENTER_PKT AIPkt;
 
@@ -323,6 +346,11 @@ void ABattleGameMode::SpawnPlayer(Protocol::SC_SPAWN_PKT& pkt)
         NewPlayer->SetPlayerType(type);
 
         SpawnedPlayers.Add(static_cast<int32>(p_id), NewPlayer);
+
+        FTransform AttractionSpawnTransform;
+        AttractionSpawnTransform.SetLocation(FVector(0.f, 0.f, 236.f));
+        AAttractionZone* AttractionZone = World->SpawnActor<AAttractionZone>(AttractionBpclass, AttractionSpawnTransform);
+        AttractionZone->OwnerCharacter = NewPlayer;
 
         UE_LOG(LogTemp, Log, TEXT("SpawnPlayer: Spawned player %d at (%f, %f, %f)"),
             pkt.player_id, SpawnLocation.X, SpawnLocation.Y, SpawnLocation.Z);
@@ -476,10 +504,13 @@ void ABattleGameMode::SpawnSkill(Protocol::CS_USING_SKILL_PKT& pkt)
 
 void ABattleGameMode::SpawnItem(Protocol::SC_SPAWN_ITEM_PKT& pkt)
 {
+    uint16 ZoneIndex = pkt.zone_index;
+
     int32 SpawnIndex[20];
     int32 ItemLevel[20];
 
-    for (int32 i = 0; i < 20; ++i)
+    const uint16 Count = pkt.item_count;
+    for (int32 i = 0; i < Count; ++i)
     {
         SpawnIndex[i] = static_cast<int32>(pkt.spawn_index[i]);
         ItemLevel[i] = static_cast<int32>(pkt.item_level[i]);
@@ -487,14 +518,11 @@ void ABattleGameMode::SpawnItem(Protocol::SC_SPAWN_ITEM_PKT& pkt)
 
     //UE_LOG(LogTemp, Warning, TEXT("%d - %d"), SpawnIndex[19], ItemLevel[19]);
 
-    if (Area1SpawnPoints.Num() == 0)
+    if (AreaSpawnPoints[ZoneIndex].Num() == 0)
     {
         UE_LOG(LogTemp, Warning, TEXT("SpawnItemsInArea1: No spawn points available."));
         return;
     }
-
-    // SpawnedItems 배열 초기화
-    SpawnedItems.Empty();
 
     UWorld* World = GetWorld();
     if (!World)
@@ -504,14 +532,13 @@ void ABattleGameMode::SpawnItem(Protocol::SC_SPAWN_ITEM_PKT& pkt)
     }
 
     // 지역 spawn 포인트 배열 복사 및 셔플
-    const int32 NumItemsToSpawn = 20;
 
-    int32 ItemsToSpawn = FMath::Min(NumItemsToSpawn, Area1SpawnPoints.Num());
+    //int32 ItemsToSpawn = FMath::Min(NumItemsToSpawn, Area1SpawnPoints.Num());
 
-    for (int32 i = 0; i < ItemsToSpawn; i++)
+    for (int32 i = 0; i < Count; i++)
     {
         int32 index = SpawnIndex[i];
-        FVector SpawnLocation = Area1SpawnPoints[index];
+        FVector SpawnLocation = AreaSpawnPoints[ZoneIndex][index];
         FRotator SpawnRotation = FRotator::ZeroRotator;
 
         FActorSpawnParameters SpawnParams;
@@ -699,6 +726,8 @@ void ABattleGameMode::SpawnItemsInArea1()
 
 void ABattleGameMode::InitializeArea1SpawnPoints()
 {
+    // 90개
+
     // 기존 좌표 배열 초기화
     Area1SpawnPoints.Empty();
 
@@ -823,6 +852,69 @@ void ABattleGameMode::InitializeArea1SpawnPoints()
     Area1SpawnPoints.Add(FVector(-8151.f, 1855.f, 66.f));
     Area1SpawnPoints.Add(FVector(-8806.f, 2018.f, 66.f)); 
     Area1SpawnPoints.Add(FVector(-7416.f, 7377.f, 66.f)); 
+
+    AreaSpawnPoints.Add(Area1SpawnPoints);
     
     UE_LOG(LogTemp, Log, TEXT("InitializeRegion1SpawnPoints: Initialized %d spawn points."), Area1SpawnPoints.Num());
+}
+
+void ABattleGameMode::SpawnItemsInArea2()
+{
+    // 50개
+
+    Area2SpawnPoints.Empty();
+
+    Area2SpawnPoints.Add(FVector(-6077.f, -927.f, 777.f));
+    Area2SpawnPoints.Add(FVector(13000.f, 500.f, 66.f));
+    Area2SpawnPoints.Add(FVector(-11000.f, -1500.f, 66.f));
+    Area2SpawnPoints.Add(FVector(11500.f, 800.f, 66.f));
+    Area2SpawnPoints.Add(FVector(-5899.f, 5123.f, 777.f));
+    Area2SpawnPoints.Add(FVector(-3920.f, 5265.f, 777.f));
+    Area2SpawnPoints.Add(FVector(-4478.f, 369.f, 794.f));
+    Area2SpawnPoints.Add(FVector(-3231.f, -1757.f, 794.f));
+    Area2SpawnPoints.Add(FVector(-3142.f, -3502.f, 794.f));
+    Area2SpawnPoints.Add(FVector(-6257.f, -364.f, 787.f));
+    Area2SpawnPoints.Add(FVector(-3476.f, -5821.f, 789.f));
+    Area2SpawnPoints.Add(FVector(-1765.f, -3831.f, 776.f));
+    Area2SpawnPoints.Add(FVector(-983.f, -2645.f, 774.f));
+    Area2SpawnPoints.Add(FVector(969.f, -4282.f, 795.f));
+    Area2SpawnPoints.Add(FVector(-1219.f, -6058.f, 785.f));
+    Area2SpawnPoints.Add(FVector(-3985.f, -6539.f, 782.f));
+    Area2SpawnPoints.Add(FVector(-6207.f, -6474.f, 776.f));
+    Area2SpawnPoints.Add(FVector(1946.f, -4259.f, 780.f));
+    Area2SpawnPoints.Add(FVector(3020.f, -2534.f, 775.f));
+    Area2SpawnPoints.Add(FVector(4430.f, -6146.f, 790.f));
+    Area2SpawnPoints.Add(FVector(6063.f, -6193.f, 782.f));
+    Area2SpawnPoints.Add(FVector(3964.f, -1000.f, 797.f));
+    Area2SpawnPoints.Add(FVector(5653.f, -966.f, 797.f));
+    Area2SpawnPoints.Add(FVector(5897.f, 1365.f, 774.f));
+    Area2SpawnPoints.Add(FVector(3440.f, 1548.f, 774.f));
+    Area2SpawnPoints.Add(FVector(5723.f, 2800.f, 785.f));
+    Area2SpawnPoints.Add(FVector(5506.f, 5278.f, 790.f));
+    Area2SpawnPoints.Add(FVector(4697.f, 6289.f, 787.f));
+    Area2SpawnPoints.Add(FVector(2561.f, 5930.f, 775.f));
+    Area2SpawnPoints.Add(FVector(3346.f, 3769.f, 794.f));
+    Area2SpawnPoints.Add(FVector(1354.f, 3186.f, 785.f));
+    Area2SpawnPoints.Add(FVector(727.f, 6154.f, 779.f));
+    Area2SpawnPoints.Add(FVector(-1618.f, 5996.f, 774.f));
+    Area2SpawnPoints.Add(FVector(-2164.f, 3548.f, 779.f));
+    Area2SpawnPoints.Add(FVector(-3341.f, 6341.f, 773.f));
+    Area2SpawnPoints.Add(FVector(-6276.f, 5901.f, 773.f));
+    Area2SpawnPoints.Add(FVector(-5683.f, 4451.f, 795.f));
+    Area2SpawnPoints.Add(FVector(-5132.f, 2946.f, 787.f));
+    Area2SpawnPoints.Add(FVector(-3233.f, 2384.f, 776.f));
+    Area2SpawnPoints.Add(FVector(-1063.f, 2580.f, 782.f));
+    Area2SpawnPoints.Add(FVector(1627.f, 2849.f, 779.f));
+    Area2SpawnPoints.Add(FVector(2579.f, 865.f, 774.f));
+    Area2SpawnPoints.Add(FVector(2617.f, -2016.f, 774.f));
+    Area2SpawnPoints.Add(FVector(940.f, -2670.f, 774.f));
+    Area2SpawnPoints.Add(FVector(-1966.f, -3540.f, 774.f));
+    Area2SpawnPoints.Add(FVector(6068.f, 1640.f, 774.f));
+    Area2SpawnPoints.Add(FVector(6672.f, 5137.f, 775.f));
+    Area2SpawnPoints.Add(FVector(-1193.f, -4795.f, 1172.f));
+    Area2SpawnPoints.Add(FVector(-5025.f, -1134.f, 1172.f));
+    Area2SpawnPoints.Add(FVector(-1610.f, -4933.f, 1172.f));
+    Area2SpawnPoints.Add(FVector(4641.f, -253.f, 1172.f));
+
+    AreaSpawnPoints.Add(Area2SpawnPoints);
 }
