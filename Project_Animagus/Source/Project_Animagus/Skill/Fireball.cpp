@@ -51,62 +51,19 @@ void UFireball::ActiveSkill_Implementation()
     // 공격 애니메이션
     Owner->PlayAnimMontageByType(MontageType::DefaultAttack);
 
-#if 0
-    // 플레이어 컨트롤러를 통해 카메라 뷰포인트를 가져옵니다.
-    FVector CameraLocation;
-    FRotator CameraRotation;
-    if (Owner->GetController())
-    {
-        Owner->GetController()->GetPlayerViewPoint(CameraLocation, CameraRotation);
-    }
-    else
-    {
-        CameraLocation = Owner->GetActorLocation();
-        CameraRotation = Owner->GetActorRotation();
-    }
-
-    // 스폰 위치: 캐릭터의 전면 (예: 캐릭터 위치에서 전방으로 70cm)
-    FVector SpawnLocation = Owner->GetActorLocation() + Owner->GetActorForwardVector() * 80.f + Owner->GetActorRightVector() * 30.f;
-
-    // 진행 방향: 카메라 뷰 방향 사용
-    FRotator SpawnRotation = CameraRotation + FRotator(2.f, 0.f, 0.f); 
-    
-#endif
-
     // 투사체 스폰 위치
-    FVector SpawnLocation = Owner->GetActorLocation() + Owner->GetActorForwardVector() * 80.f + Owner->GetActorRightVector() * 30.f;
+    FVector SpawnLocation = Owner->GetActorLocation() + Owner->GetActorForwardVector() * 80.f + Owner->GetActorRightVector() * 30.f; 
     FRotator SpawnRotation;
 
-    // 플레이어와 AI 분기 처리
-    if (APlayerCharacter* player = Cast<APlayerCharacter>(Owner))
+    // AI가 호출한 경우
+    if (AMyAIController* AIController = Cast<AMyAIController>(Owner->GetController()))
     {
-        FVector CameraLocation;
-        FRotator CameraRotation;
-        if (player->GetController())
+        ABaseCharacter* TargetCharacter = nullptr; 
+        UBlackboardComponent* BBComp = AIController->GetBlackboardComponent();
+        if (BBComp && AIController->TargetKey.SelectedKeyName.IsValid())
         {
-            player->GetController()->GetPlayerViewPoint(CameraLocation, CameraRotation);
+            TargetCharacter = Cast<ABaseCharacter>(BBComp->GetValueAsObject(AIController->TargetKey.SelectedKeyName));
         }
-        else
-        {
-            // 컨트롤러가 없을 때
-            CameraLocation = player->GetActorLocation();
-            CameraRotation = player->GetActorRotation();
-        }
-        SpawnRotation = CameraRotation + FRotator(2.f, 0.f, 0.f);
-    }
-    else
-    {
-        ABaseCharacter* TargetCharacter = nullptr;
-
-        if (AMyAIController* AIController = Cast<AMyAIController>(Owner->GetController()))
-        {
-            UBlackboardComponent* BBComp = AIController->GetBlackboardComponent();
-            if (BBComp && AIController->TargetKey.SelectedKeyName.IsValid())
-            {
-                TargetCharacter = Cast<ABaseCharacter>(BBComp->GetValueAsObject(AIController->TargetKey.SelectedKeyName));
-            }
-        }
-
         if (TargetCharacter)
         {
             FVector DirectionToTarget = (TargetCharacter->GetActorLocation() - SpawnLocation).GetSafeNormal();
@@ -114,11 +71,28 @@ void UFireball::ActiveSkill_Implementation()
         }
         else
         {
-            // 타겟이 없다면 Panw이 바라보는 방향으로 발사
+            // 타겟이 없다면 AI Panw이 바라보는 방향으로 발사
             SpawnRotation = Owner->GetActorRotation();
         }
     }
+    else // Player 혹은 Network가 호출한 경우
+    {
+        // 플레이어 컨트롤러를 통해 카메라 뷰포인트를 가져옵니다.
+        FVector CameraLocation;
+        FRotator CameraRotation;
+        if (Owner->GetController())
+        {
+            Owner->GetController()->GetPlayerViewPoint(CameraLocation, CameraRotation);
+        }
+        else
+        {
+            CameraLocation = Owner->GetActorLocation();
+            CameraRotation = Owner->GetActorRotation();
+        }
 
+        // 진행 방향: 카메라 뷰 방향 사용
+        SpawnRotation = CameraRotation + FRotator(2.f, 0.f, 0.f);
+    }
 
     UE_LOG(LogTemp, Log, TEXT("Fireball Skill: OwnerLocation = %s"), *Owner->GetActorLocation().ToString());
     // UE_LOG(LogTemp, Log, TEXT("Fireball Skill: CameraRotation = %s"), *CameraRotation.ToString());
