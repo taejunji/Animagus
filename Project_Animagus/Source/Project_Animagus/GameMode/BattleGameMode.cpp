@@ -14,6 +14,7 @@
 #include "Project_Animagus/Item/BaseItem.h"
 #include "Project_Animagus/UI/MyPlayerHUDWidget.h"
 #include "Algo/RandomShuffle.h"
+#include "Project_Animagus/Actor/ItemBox/Item_Box_Base.h"
 #include "Project_Animagus/Item/PowerUpItem.h"
 #include "Runtime/Core/Tests/Containers/TestUtils.h"
 
@@ -51,6 +52,18 @@ ABattleGameMode::ABattleGameMode()
     if (Powerupitem.Succeeded())
     {
         PowerUpBpclass = Powerupitem.Class;    
+    }
+
+    static ConstructorHelpers::FClassFinder<AItem_Box_Base> ItemboxBp(TEXT("/Game/WorkFolder/Bluprints/Actor/MyItem_Box_Base"));
+    if (ItemboxBp.Succeeded())
+    {
+        ItemBoxBpclass = ItemboxBp.Class;    
+    }
+
+    static ConstructorHelpers::FClassFinder<AAttractionZone> AttractionZoneBp(TEXT("/Game/WorkFolder/Bluprints/Spiders/BP_AttractionZone"));
+    if (AttractionZoneBp.Succeeded())
+    {
+        AttractionBpclass = AttractionZoneBp.Class;    
     }
     
     // 플레이어 ID(0~3)와 스폰 위치를 매핑
@@ -123,7 +136,7 @@ void ABattleGameMode::SpawnPlayers()
         return;
     }
     
-#if 0
+#if 1
     APlayerController* PC = UGameplayStatics::GetPlayerController(World, 0);
     if (PC)
     {
@@ -362,7 +375,7 @@ void ABattleGameMode::RoundTimerUpdate()
 void ABattleGameMode::SpawnItemsInArea1()
 {
     // 예시로 영역1에 10개의 아이템 스폰
-    const int32 NumItemsToSpawn = 30;
+    const int32 NumItemsToSpawn = 20;
     if (Area1SpawnPoints.Num() == 0)
     {
         UE_LOG(LogTemp, Warning, TEXT("SpawnItemsInArea1: No spawn points available."));
@@ -396,12 +409,11 @@ void ABattleGameMode::SpawnItemsInArea1()
     {
         FVector SpawnLocation = LocalSpawnPoints[i];
         FRotator SpawnRotation = FRotator::ZeroRotator;
+        
 
-        FActorSpawnParameters SpawnParams;
-        // 필요에 따라 SpawnParams.Owner 또는 Instigator 설정
-
-        ABaseItem* NewItem = World->SpawnActor<ABaseItem>(PowerUpBpclass, SpawnLocation, SpawnRotation, SpawnParams);
-
+        AItem_Box_Base* NewItem = World->SpawnActor<AItem_Box_Base>(ItemBoxBpclass, SpawnLocation, SpawnRotation);
+        NewItem->SpawnItemType = 0;
+        
         if (NewItem)
         {
             SpawnedItems.Add(NewItem);
@@ -414,12 +426,87 @@ void ABattleGameMode::SpawnItemsInArea1()
     }
 }
 
+void ABattleGameMode::SpawnItemsInArea2()
+{
+    Area2SpawnPoints.Empty();
+
+    Area2SpawnPoints.Add(FVector(-6077.f, -927.f, 777.f));
+    Area2SpawnPoints.Add(FVector(13000.f, 500.f, 66.f));
+    Area2SpawnPoints.Add(FVector(-11000.f, -1500.f, 66.f));
+    Area2SpawnPoints.Add(FVector(11500.f, 800.f, 66.f));
+    Area2SpawnPoints.Add(FVector(-5899.f,  5123.f, 777.f));
+    Area2SpawnPoints.Add(FVector(-3920.f,  5265.f, 777.f));
+    Area2SpawnPoints.Add(FVector(-4478.f,   369.f, 794.f));
+    Area2SpawnPoints.Add(FVector(-3231.f, -1757.f, 794.f));
+    Area2SpawnPoints.Add(FVector(-3142.f, -3502.f, 794.f));
+    Area2SpawnPoints.Add(FVector(-6257.f,  -364.f, 787.f));
+    Area2SpawnPoints.Add(FVector(-3476.f, -5821.f, 789.f));
+    Area2SpawnPoints.Add(FVector(-1765.f, -3831.f, 776.f));
+    Area2SpawnPoints.Add(FVector(-983.f,  -2645.f, 774.f));
+    Area2SpawnPoints.Add(FVector( 969.f,  -4282.f, 795.f));
+    Area2SpawnPoints.Add(FVector(-1219.f, -6058.f, 785.f));
+    Area2SpawnPoints.Add(FVector(-3985.f, -6539.f, 782.f));
+    Area2SpawnPoints.Add(FVector(-6207.f, -6474.f, 776.f));
+    Area2SpawnPoints.Add(FVector( 1946.f, -4259.f, 780.f));
+    Area2SpawnPoints.Add(FVector( 3020.f, -2534.f, 775.f));
+    Area2SpawnPoints.Add(FVector( 4430.f, -6146.f, 790.f));
+    Area2SpawnPoints.Add(FVector( 6063.f, -6193.f, 782.f));
+    Area2SpawnPoints.Add(FVector( 3964.f, -1000.f, 797.f));
+    Area2SpawnPoints.Add(FVector( 5653.f,  -966.f, 797.f));
+    Area2SpawnPoints.Add(FVector( 5897.f,  1365.f, 774.f));
+    Area2SpawnPoints.Add(FVector( 3440.f,  1548.f, 774.f));
+    Area2SpawnPoints.Add(FVector( 5723.f,  2800.f, 785.f));
+    Area2SpawnPoints.Add(FVector( 5506.f,  5278.f, 790.f));
+    Area2SpawnPoints.Add(FVector( 4697.f,  6289.f, 787.f));
+    Area2SpawnPoints.Add(FVector( 2561.f,  5930.f, 775.f));
+    Area2SpawnPoints.Add(FVector( 3346.f,  3769.f, 794.f));
+    Area2SpawnPoints.Add(FVector( 1354.f,  3186.f, 785.f));
+    Area2SpawnPoints.Add(FVector(  727.f,  6154.f, 779.f));
+    Area2SpawnPoints.Add(FVector(-1618.f,  5996.f, 774.f));
+    Area2SpawnPoints.Add(FVector(-2164.f,  3548.f, 779.f));
+    Area2SpawnPoints.Add(FVector(-3341.f,  6341.f, 773.f));
+    Area2SpawnPoints.Add(FVector(-6276.f,  5901.f, 773.f));
+    Area2SpawnPoints.Add(FVector(-5683.f,  4451.f, 795.f));
+    Area2SpawnPoints.Add(FVector(-5132.f,  2946.f, 787.f));
+    Area2SpawnPoints.Add(FVector(-3233.f,  2384.f, 776.f));
+    Area2SpawnPoints.Add(FVector(-1063.f,  2580.f, 782.f));
+    Area2SpawnPoints.Add(FVector( 1627.f,  2849.f, 779.f));
+    Area2SpawnPoints.Add(FVector( 2579.f,   865.f, 774.f));
+    Area2SpawnPoints.Add(FVector( 2617.f, -2016.f, 774.f));
+    Area2SpawnPoints.Add(FVector(  940.f, -2670.f, 774.f));
+    Area2SpawnPoints.Add(FVector(-1966.f, -3540.f, 774.f));
+    Area2SpawnPoints.Add(FVector( 6068.f,  1640.f, 774.f));
+    Area2SpawnPoints.Add(FVector( 6672.f,  5137.f, 775.f));
+    Area2SpawnPoints.Add(FVector( -1193.f,  -4795.f, 1172.f));
+    Area2SpawnPoints.Add(FVector( -5025.f,  -1134.f, 1172.f));
+    Area2SpawnPoints.Add(FVector( -1610.f,  -4933.f, 1172.f));
+    Area2SpawnPoints.Add(FVector( 4641.f,  -253.f, 1172.f)); 
+}
+
+void ABattleGameMode::SpawnItemsInArea3()
+{
+    Area3SpawnPoints.Empty();
+
+    Area3SpawnPoints.Add(FVector(0.f, 0.f, 66.f));
+
+
+    (X=0.000000,Y=0.000000,Z=1443.472567)
+    (X=-380.515822,Y=946.657942,Z=200.376106)
+    (X=-154.165000,Y=-768.077126,Z=205.976750)
+    (X=866.872706,Y=-534.218836,Z=205.976750)
+    (X=-817.188800,Y=-121.909826,Z=205.976750)
+    (X=-4884.040763,Y=1854.548598,Z=2294.852368)
+    (X=-4266.582749,Y=6060.314442,Z=2297.977320)
+    (X=4251.484770,Y=2115.427654,Z=2297.977320)
+    (X=1305.054498,Y=-5556.764289,Z=2297.977320)
+}
+
 void ABattleGameMode::InitializeArea1SpawnPoints()
 {
     // 기존 좌표 배열 초기화
     Area1SpawnPoints.Empty();
 
-    // 예시로 몇 개의 하드코딩 좌표를 추가 (실제 프로젝트에서는 150개 정도의 좌표를 입력)
+    // 예시로 몇 개의 하드코딩 좌표를 추가 
     Area1SpawnPoints.Add(FVector(-12400.f, -600.f, 66.f));
     Area1SpawnPoints.Add(FVector(-13000.f, 500.f, 66.f));
     Area1SpawnPoints.Add(FVector(-11000.f, -1500.f, 66.f));
@@ -448,7 +535,6 @@ void ABattleGameMode::InitializeArea1SpawnPoints()
     Area1SpawnPoints.Add(FVector(-10195.f, -6392.f, 66.f));
     Area1SpawnPoints.Add(FVector(-9100.f, 6392.f, 66.f));
     
-  
     Area1SpawnPoints.Add(FVector(-8300.f, 8100.f, 66.f));
     Area1SpawnPoints.Add(FVector(-8300.f, 10800.f, 66.f));
     Area1SpawnPoints.Add(FVector(-8300.f, 13500.f, 66.f));

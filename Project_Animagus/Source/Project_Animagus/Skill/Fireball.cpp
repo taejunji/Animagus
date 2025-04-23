@@ -63,7 +63,7 @@ void UFireball::ActiveSkill_Implementation()
     FVector SpawnLocation = Owner->GetActorLocation() + Owner->GetActorForwardVector() * 80.f + Owner->GetActorRightVector() * 30.f;
 
     // 진행 방향: 카메라 뷰 방향 사용
-    FRotator SpawnRotation = CameraRotation + FRotator(2.f, 0.f, 0.f); 
+    FRotator SpawnRotation = CameraRotation + FRotator(1.f, 0.f, 0.f); 
     
     UE_LOG(LogTemp, Log, TEXT("Fireball Skill: OwnerLocation = %s"), *Owner->GetActorLocation().ToString());
     UE_LOG(LogTemp, Log, TEXT("Fireball Skill: CameraRotation = %s"), *CameraRotation.ToString());
@@ -82,6 +82,8 @@ void UFireball::ActiveSkill_Implementation()
         SpawnRotation,
         SpawnParams
     );
+
+   //FireballProj->CollisionSphere->IgnoreActorWhenMoving(Owner, true);
     
     // ProjectileBPClass가 유효한 경우, 블루프린트로 만든 투사체 액터를 스폰
     if (ProjectileBPClass)
