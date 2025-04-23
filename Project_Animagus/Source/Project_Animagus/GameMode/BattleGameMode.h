@@ -12,6 +12,8 @@
  */
 
 class ABaseCharacter;
+class AItem_Box_Base;
+class AAttractionZone;
 
 UCLASS()
 class PROJECT_ANIMAGUS_API ABattleGameMode : public AGameModeBase
@@ -56,7 +58,8 @@ private:
     TSubclassOf<class APawn> AIPlayerClass;
 
     TSubclassOf<class APowerUpItem> PowerUpBpclass;
-    
+    TSubclassOf<class AItem_Box_Base> ItemBoxBpclass;
+    TSubclassOf<class AAttractionZone> AttractionBpclass;
     // 라운드 경과 시간 출력
     FTimerHandle battle_timer_handle;
     float elasped_time;
@@ -92,12 +95,19 @@ public:
     TArray<FVector> Area3SpawnPoints;
 
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "PowerUp")
-    TArray<class ABaseItem*> SpawnedItems;
-    
+    TArray<class AItem_Box_Base*> SpawnedItems;
+
+
     // 영역1의 스폰 좌표들을 초기화하는 함수 
     UFUNCTION(BlueprintCallable, Category = "PowerUp")
     void InitializeArea1SpawnPoints();
 
     UFUNCTION(BlueprintCallable, Category = "PowerUp")
     void SpawnItemsInArea1();
+
+    UFUNCTION(BlueprintCallable, Category = "PowerUp")
+    void SpawnItemsInArea2();
+
+    UFUNCTION(BlueprintCallable, Category = "PowerUp")
+    void SpawnItemsInArea3(); 
 };

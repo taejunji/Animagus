@@ -5,6 +5,7 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Animation/AnimInstance.h"
 #include "AICharacter.h"
+#include "NiagaraComponent.h"
 #include "../AI/MyAIController.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "BehaviorTree/BehaviorTreeComponent.h"
@@ -16,6 +17,7 @@
 #include "Components/CapsuleComponent.h"
 #include "Project_Animagus/Skill/Bounce.h"
 #include "Project_Animagus/Skill/ChangeSkill.h"
+#include "Project_Animagus/Skill/HasteSkill.h"
 #include "Project_Animagus/Skill/RadialSkill.h"
 #include "Project_Animagus/Skill/ShieldSkill.h"
 #include "Project_Animagus/Skill/ShockwaveSkill.h"
@@ -142,10 +144,26 @@ ABaseCharacter::ABaseCharacter()
     {
         UE_LOG(LogTemp, Warning, TEXT("BaseCharacter: Failed to load ShockBPClassFinder!"));
     }
+
+    static ConstructorHelpers::FClassFinder<UHasteSkill> HasteSkillBpClassFinder(TEXT("/Game/WorkFolder/Bluprints/Skills/MyHasteSkill"));
+    if (HasteSkillBpClassFinder.Succeeded())
+    {
+        HasteBPClass = HasteSkillBpClassFinder.Class;
+        UE_LOG(LogTemp, Log, TEXT("BaseCharacter: Successfully loaded HasteBPClassFinder: %s"), *HasteBPClass -> GetName());
+    }
+    else
+    {
+        UE_LOG(LogTemp, Warning, TEXT("BaseCharacter: Failed to load HasteBPClassFinder!"));
+    }
     
     bIsStunned = false;
 
     GetCapsuleComponent()->SetCollisionResponseToChannel(ECollisionChannel::ECC_GameTraceChannel2, ECollisionResponse::ECR_Overlap);
+
+    SpeedBoostComponent = CreateDefaultSubobject<UNiagaraComponent>(TEXT("SpeedBoostComponent"));
+    SpeedBoostComponent->SetupAttachment(GetMesh());   // 메쉬에 딸려다니도록
+    SpeedBoostComponent->bAutoActivate = false;               // 기본 꺼진 상태
+    
 }
 
 void ABaseCharacter::BeginPlay()
@@ -173,7 +191,6 @@ void ABaseCharacter::BeginPlay()
 
     UE_LOG(LogTemp, Log, TEXT("BaseCharacter::BeginPlay() - Capsule Collision Response for Shockwave: %d"),
     (int)GetCapsuleComponent()->GetCollisionResponseToChannel(ECollisionChannel::ECC_GameTraceChannel2));
-
     
     InitializeSkills();
     
@@ -382,9 +399,9 @@ void ABaseCharacter::InitializeSkills()
 void ABaseCharacter::TestSkill_Change()
 {
     // 슬롯 0: UBounce 스킬 생성
-    if (BounceBPClass)
+    if (HasteBPClass)
     {
-        UBaseSkill* NewSkill = NewObject<UBounce>(this, BounceBPClass);
+        UBaseSkill* NewSkill = NewObject<UHasteSkill>(this, HasteBPClass);
         if (NewSkill)
         {
             NewSkill->Owner = this;

@@ -10,8 +10,8 @@ URadialSkill::URadialSkill()
     SkillName = "RadialSkill";           // 스킬 이름 설정
     CooldownTime = 8.0f;                 // 쿨타임 8초
     NumberOfProjectiles = 3;             // 7개의 투사체 발사
-    SpreadAngle = 180.0f;                 // 전체 90도 부채꼴
-    RadialDamage = 40.0f;                // 투사체 데미지
+    SpreadAngle = 190.0f;                 // 전체 90도 부채꼴
+    RadialDamage = 10.0f;                // 투사체 데미지
     RadialSpeed = 1600.f;                // 투사체 속도
 
     SpawnRadius = 80.f;                  // 캐릭터 기준으로 80cm 떨어진 위치에서 스폰
