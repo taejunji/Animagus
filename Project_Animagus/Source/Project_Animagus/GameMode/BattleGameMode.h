@@ -13,7 +13,7 @@
 
 class ABaseCharacter;
 class AItem_Box_Base;
-class AAttractionZone;
+
 
 UCLASS()
 class PROJECT_ANIMAGUS_API ABattleGameMode : public AGameModeBase
@@ -59,7 +59,7 @@ private:
 
     TSubclassOf<class APowerUpItem> PowerUpBpclass;
     TSubclassOf<class AItem_Box_Base> ItemBoxBpclass;
-    TSubclassOf<class AAttractionZone> AttractionBpclass;
+
     // 라운드 경과 시간 출력
     FTimerHandle battle_timer_handle;
     float elasped_time;

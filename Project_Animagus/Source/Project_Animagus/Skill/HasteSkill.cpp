@@ -16,7 +16,11 @@ UHasteSkill::UHasteSkill()
     Duration         = 5.0f;
     BoostedRunSpeed  = 1000.0f;
     CooldownTime     = 20.0f;
-    PostProcessSpeedThreshold = 500.0f; 
+    PostProcessSpeedThreshold = 500.0f;
+
+    BaseBoostedRunSpeed = BoostedRunSpeed;
+    BaseHasteColldown = CooldownTime;
+    
 }
 
 void UHasteSkill::ActiveSkill_Implementation()
@@ -136,5 +140,22 @@ void UHasteSkill::SetHastePostProcess(float NewWeight)
                 PPV->Settings.WeightedBlendables.Array[Index].Weight = NewWeight;
             }
         }
+    }
+}
+
+void UHasteSkill::UpgradeSkill(int32 NewPowerUpLevel)
+{
+   
+    int32 Level = FMath::Clamp(NewPowerUpLevel, 0, 14);
+
+    // 홀수 레벨이면 투사체 개수를 증가시키고, 짝수이면 데미지를 증가시킵니다.
+    if (Level % 2 == 1)
+    {
+        float CooldownMultiplier = FMath::Clamp(1.0f - (0.05f * NewPowerUpLevel), 0.5f, 1.0f);
+        CooldownTime = BaseHasteColldown * CooldownMultiplier;
+    }
+    else
+    {
+        BoostedRunSpeed = BaseBoostedRunSpeed + (Level * 100);
     }
 }
