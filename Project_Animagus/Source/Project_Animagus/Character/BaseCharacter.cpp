@@ -592,3 +592,21 @@ void ABaseCharacter::UpdateAuraColorBasedOnPowerUpLevel()
 
     UE_LOG(LogTemp, Log, TEXT("UpdateAuraColorBasedOnPowerUpLevel: Updated auracolor to %s for PowerUpLevel %d"), *NewColor.ToString(), PowerUpLevel);
 }
+
+void ABaseCharacter::PickHealingItem()
+{
+    float Heal  = max_hp / 3;
+    hp += Heal;
+    if (hp > max_hp) {
+        hp = max_hp;
+    }
+}
+
+void ABaseCharacter::PickHealingPlusItem()
+{
+    float Heal  = max_hp / 2;
+    hp += Heal;
+    if (hp > max_hp) {
+        hp = max_hp;
+    }
+}

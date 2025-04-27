@@ -151,6 +151,12 @@ public:
 
     UFUNCTION(BlueprintCallable, Category="PowerUp")
     void UpdateAuraColorBasedOnPowerUpLevel();
+
+    UFUNCTION(BlueprintCallable, Category="PowerUp")
+    void PickHealingItem();
+
+    UFUNCTION(BlueprintCallable, Category="PowerUp")
+    void PickHealingPlusItem();
     
     // 스턴 상태 변수: 스턴 중이면 true
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Status")

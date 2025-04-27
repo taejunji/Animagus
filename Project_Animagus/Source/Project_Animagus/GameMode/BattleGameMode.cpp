@@ -60,11 +60,7 @@ ABattleGameMode::ABattleGameMode()
         ItemBoxBpclass = ItemboxBp.Class;    
     }
 
-    static ConstructorHelpers::FClassFinder<AAttractionZone> AttractionZoneBp(TEXT("/Game/WorkFolder/Bluprints/Spiders/BP_AttractionZone"));
-    if (AttractionZoneBp.Succeeded())
-    {
-        AttractionBpclass = AttractionZoneBp.Class;    
-    }
+
     
     // 플레이어 ID(0~3)와 스폰 위치를 매핑
     spawn_transform.Add(0, FTransform(FRotator(0, 0, 0), FVector(-13500.0f, 0.0f, 800.f))); // Spawn_0
@@ -488,17 +484,7 @@ void ABattleGameMode::SpawnItemsInArea3()
     Area3SpawnPoints.Empty();
 
     Area3SpawnPoints.Add(FVector(0.f, 0.f, 66.f));
-
-
-    (X=0.000000,Y=0.000000,Z=1443.472567)
-    (X=-380.515822,Y=946.657942,Z=200.376106)
-    (X=-154.165000,Y=-768.077126,Z=205.976750)
-    (X=866.872706,Y=-534.218836,Z=205.976750)
-    (X=-817.188800,Y=-121.909826,Z=205.976750)
-    (X=-4884.040763,Y=1854.548598,Z=2294.852368)
-    (X=-4266.582749,Y=6060.314442,Z=2297.977320)
-    (X=4251.484770,Y=2115.427654,Z=2297.977320)
-    (X=1305.054498,Y=-5556.764289,Z=2297.977320)
+    
 }
 
 void ABattleGameMode::InitializeArea1SpawnPoints()
