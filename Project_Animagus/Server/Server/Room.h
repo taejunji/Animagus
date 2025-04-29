@@ -41,4 +41,4 @@ private:
     std::array<Protocol::SC_SPAWN_ITEM_PKT, 3> m_itemInfo;
 };
 
-extern RoomRef GRoom;       // 배열 or 벡터로 관리해 여러 게임룸을 생성
+extern std::array<RoomRef, ROOM_COUNT> GRoom;       // 배열 or 벡터로 관리해 여러 게임룸을 생성

@@ -30,7 +30,7 @@ bool Handle_CS_ENTER_GAME(SessionRef& session, CS_ENTER_GAME_PKT& pkt)
     PlayerRef player = PlayerFactory::CreatePlayer(std::static_pointer_cast<Session>(session));
 
     //GRoom->Enter(player);
-    GRoom->HandleEnterPlayer(player);
+    GRoom[pkt.room_id]->HandleEnterPlayer(player);
 
 #ifndef _DUMMYTEST
     std::cout << player->playerID << ": Enter Game" << std::endl;

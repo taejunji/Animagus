@@ -41,6 +41,7 @@
 constexpr int BUFSIZE = 1048;
 const int  MAX_NAME_SIZE = 20;
 const int  MAX_USER = 5000;
+const int  ROOM_COUNT = 5;
 
 struct PacketHeader
 {

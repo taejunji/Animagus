@@ -6,7 +6,8 @@
 #include "ServerPacketHandler.h"
 
 
-RoomRef GRoom = std::make_shared<Room>();
+// GRoom 의 각 요소들 초기생성
+std::array<RoomRef, ROOM_COUNT> GRoom{};
 
 Room::Room()
 {

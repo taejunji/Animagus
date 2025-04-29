@@ -5,6 +5,7 @@
 #include "Listener.h"
 #include "SocketUtils.h"
 #include "ServerPacketHandler.h"
+#include "Room.h"
 
 
 GameServer::GameServer() : m_running(false) 
@@ -30,6 +31,10 @@ bool GameServer::Initialize()
     }
     SocketUtils::Init();
     ServerPacketHandler::Init();
+
+    // Room array Initialize
+    for (int32 i = 0; i < ROOM_COUNT; ++i)
+        GRoom[i] = std::make_shared<Room>();
 
     m_iocpCore = std::make_shared<IocpCore>();
     if (!m_iocpCore || m_iocpCore->GetHandle() == nullptr)
