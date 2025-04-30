@@ -106,6 +106,10 @@ public:
 
     APlayerCharacter* PlayerCharacter; // 플레이어 캐릭터 포인터
 
+    // 관전 시 순회를 위한 배열
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Spawning", meta = (AllowPrivateAccess = "true"))
+    TArray<ABaseCharacter*> IndexingSpawnedPlayers;
+
 public:
     int16 RoomId = 0;
     int16 PlayerIndex = 0;

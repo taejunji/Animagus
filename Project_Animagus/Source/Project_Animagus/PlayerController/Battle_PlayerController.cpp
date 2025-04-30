@@ -343,7 +343,7 @@ void ABattle_PlayerController::Input_ConvertCamera(const FInputActionValue& Inpu
     int32 Direction = FMath::RoundToInt(InputValue.Get<float>()); 
     ABattleGameMode* BM = Cast<ABattleGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
 
-    if (Direction == 0 || BM->SpawnedPlayers.Num() == 0) return;
+    if (Direction == 0 || BM->IndexingSpawnedPlayers.Num() == 0) return;
 
     int32 StartIndex = current_camera_index;
 
@@ -351,9 +351,9 @@ void ABattle_PlayerController::Input_ConvertCamera(const FInputActionValue& Inpu
     {
         // 방향에 따라 인덱스 조정
         // (현재 인덱스 + 방향 + Num) % Num 구조는 항상 양수 인덱스를 보장하기 위한 패턴
-        current_camera_index = (current_camera_index + Direction + BM->SpawnedPlayers.Num()) % BM->SpawnedPlayers.Num();
+        current_camera_index = (current_camera_index + Direction + BM->IndexingSpawnedPlayers.Num()) % BM->IndexingSpawnedPlayers.Num();
 
-        ABaseCharacter* TargetPawn = BM->SpawnedPlayers[current_camera_index];
+        ABaseCharacter* TargetPawn = BM->IndexingSpawnedPlayers[current_camera_index];
         if (TargetPawn && !TargetPawn->GetIsDead())
         {
             SetViewTargetWithBlend(TargetPawn, 0.0f);

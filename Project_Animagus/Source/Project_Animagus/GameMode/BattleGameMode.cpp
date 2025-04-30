@@ -213,6 +213,8 @@ void ABattleGameMode::SpawnPlayers()
         {
             PlayerCharacter = Cast<APlayerCharacter>(NewCharacter);
             UE_LOG(LogTemp, Log, TEXT("BattleGameMode: 플레이어 %d 스폰됨, 위치: %s"), PossessIndex, *SpawnLocations[PossessIndex].ToString());
+
+            IndexingSpawnedPlayers.Add(PlayerCharacter);
         }
         else
         {
@@ -289,6 +291,8 @@ void ABattleGameMode::SpawnPlayers()
         //SpawnedPlayers.Add(AIChar);
         SpawnedPlayers.Add(static_cast<int32>(AIId), AIChar);
 
+        IndexingSpawnedPlayers.Add(AIChar);
+
         FTransform AttractionSpawnTransform;
         AttractionSpawnTransform.SetLocation(FVector(0.f, 0.f, 236.f));
         AAttractionZone* AttractionZone = World->SpawnActor<AAttractionZone>(AttractionBpclass, AttractionSpawnTransform);
@@ -345,6 +349,8 @@ void ABattleGameMode::SpawnPlayer(Protocol::SC_SPAWN_PKT& pkt)
         NewPlayer->SetPlayerType(type);
 
         SpawnedPlayers.Add(static_cast<int32>(p_id), NewPlayer);
+
+        IndexingSpawnedPlayers.Add(NewPlayer);
 
         FTransform AttractionSpawnTransform;
         AttractionSpawnTransform.SetLocation(FVector(0.f, 0.f, 236.f));
