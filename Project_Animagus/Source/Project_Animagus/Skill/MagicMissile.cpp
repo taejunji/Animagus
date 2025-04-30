@@ -7,7 +7,7 @@
 #include "../Character/BaseCharacter.h"
 #include "GameFramework/PlayerController.h"
 #include "GameFramework/ProjectileMovementComponent.h"
-
+#include "../AI/MyAIController.h"
 
 UMagicMissile::UMagicMissile()
 {
@@ -51,6 +51,9 @@ void UMagicMissile::ActiveSkill_Implementation()
     // 공격 애니메이션
     Owner->PlayAnimMontageByType(MontageType::DefaultAttack);
 
+    FVector SpawnLocation = Owner->GetActorLocation() + Owner->GetActorForwardVector() * 80.f + Owner->GetActorRightVector() * 30.f;
+    FRotator SpawnRotation;
+
     // TPS 기준: 스폰 위치는 캐릭터 전면(약간 위쪽)에서 생성하고,
     // 진행 방향은 플레이어 컨트롤러의 카메라 뷰포인트 방향을 사용합니다.
     FVector CameraLocation;
@@ -66,14 +69,11 @@ void UMagicMissile::ActiveSkill_Implementation()
         CameraRotation = Rotation;
     }
 
-    // 스폰 위치: 캐릭터 위치에서 전방 100cm, 동시에 Z축으로 50cm 올림
-    FVector SpawnLocation = Owner->GetActorLocation() + Owner->GetActorForwardVector() * 80.f + Owner->GetActorRightVector() * 30.f;
-
     // 진행 방향: 카메라 뷰 방향 사용
-    FRotator SpawnRotation = CameraRotation+ FRotator(2.f, 0.f, 0.f);
+    SpawnRotation = CameraRotation + FRotator(2.f, 0.f, 0.f);
 
     UE_LOG(LogTemp, Log, TEXT("MagicMissile: OwnerLocation = %s"), *Owner->GetActorLocation().ToString());
-    UE_LOG(LogTemp, Log, TEXT("MagicMissile: CameraRotation = %s"), *CameraRotation.ToString());
+    // UE_LOG(LogTemp, Log, TEXT("MagicMissile: CameraRotation = %s"), *CameraRotation.ToString());
     UE_LOG(LogTemp, Log, TEXT("MagicMissile: SpawnLocation = %s"), *SpawnLocation.ToString());
     UE_LOG(LogTemp, Log, TEXT("MagicMissile: SpawnRotation = %s"), *SpawnRotation.ToString());
 

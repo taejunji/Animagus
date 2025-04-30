@@ -9,6 +9,9 @@
 #include "Engine/World.h"
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "Project_Animagus/Character/BaseCharacter.h"
+#include "../AI/MyAIController.h"
+#include "BehaviorTree/BlackboardComponent.h"
+
 
 USmokeSkill::USmokeSkill()
 {
@@ -51,6 +54,9 @@ void USmokeSkill::ActiveSkill_Implementation()
     // 공격 애니메이션
     Owner->PlayAnimMontageByType(MontageType::DefaultAttack);
 
+    // 스폰 위치: 캐릭터의 전면 (예: 캐릭터 위치에서 전방으로 70cm)
+    FVector SpawnLocation = Owner->GetActorLocation() + Owner->GetActorForwardVector() * 80.f + Owner->GetActorRightVector() * 30.f;
+    FRotator SpawnRotation;
 
     // 플레이어(Owner)의 카메라 뷰포인트를 사용하여 스폰 위치 결정
     FVector CameraLocation;
@@ -66,11 +72,8 @@ void USmokeSkill::ActiveSkill_Implementation()
         CameraRotation = Rotation;
     }
 
-    // 스폰 위치: 캐릭터의 전면 (예: 캐릭터 위치에서 전방으로 70cm)
-    FVector SpawnLocation = Owner->GetActorLocation() + Owner->GetActorForwardVector() * 80.f + Owner->GetActorRightVector() * 30.f;
-
     // 진행 방향: 카메라 뷰 방향 사용
-    FRotator SpawnRotation = CameraRotation;
+    SpawnRotation = CameraRotation;
 
     FActorSpawnParameters SpawnParams;
     SpawnParams.Owner = Owner;

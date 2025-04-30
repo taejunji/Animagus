@@ -74,6 +74,8 @@ private:
 
     TSubclassOf<class AAttractionZone> AttractionBpclass;
     
+    TSubclassOf<class AItem_Box_Base> ItemBoxBpclass;
+
     // 라운드 경과 시간 출력
     FTimerHandle battle_timer_handle;
     float elasped_time;
@@ -123,6 +125,7 @@ public:
 
     TArray<TArray<FVector>> AreaSpawnPoints;
     
+
     // 영역1의 스폰 좌표들을 초기화하는 함수 
     UFUNCTION(BlueprintCallable, Category = "PowerUp")
     void InitializeArea1SpawnPoints();
@@ -132,4 +135,7 @@ public:
     
     UFUNCTION(BlueprintCallable, Category = "PowerUp")
     void SpawnItemsInArea2();
+
+    UFUNCTION(BlueprintCallable, Category = "PowerUp")
+    void SpawnItemsInArea3(); 
 };

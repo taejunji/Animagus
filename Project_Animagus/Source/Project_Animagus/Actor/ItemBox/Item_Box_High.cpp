@@ -54,7 +54,7 @@ void AItem_Box_High::BreakBox()
     
     if (ItemToSpawn)
     {
-        FVector SpawnLocation = GetActorLocation() + FVector(0.f, 0.f, 10.f);
+        FVector SpawnLocation = GetActorLocation();
         FRotator SpawnRotation = FRotator::ZeroRotator;
         FActorSpawnParameters SpawnParams;
         ABaseItem* SpawnedItem = GetWorld()->SpawnActor<ABaseItem>(ItemToSpawn, SpawnLocation, SpawnRotation, SpawnParams);

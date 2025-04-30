@@ -20,6 +20,7 @@
 #include "Project_Animagus/Item/BaseItem.h"
 #include "Project_Animagus/UI/MyPlayerHUDWidget.h"
 #include "Algo/RandomShuffle.h"
+#include "Project_Animagus/Actor/ItemBox/Item_Box_Base.h"
 #include "Project_Animagus/Item/PowerUpItem.h"
 #include "Runtime/Core/Tests/Containers/TestUtils.h"
 #include "../Actor/ItemBox/Item_Box_Base.h"
@@ -671,58 +672,91 @@ void ABattleGameMode::RoundTimerUpdate()
 
 void ABattleGameMode::SpawnItemsInArea1()
 {
-    //// 예시로 영역1에 10개의 아이템 스폰
-    //const int32 NumItemsToSpawn = 30;
-    //if (Area1SpawnPoints.Num() == 0)
-    //{
-    //    UE_LOG(LogTemp, Warning, TEXT("SpawnItemsInArea1: No spawn points available."));
-    //    return;
-    //}
-
-    //// 만약 NumItemsToSpawn이 전체 스폰 포인트보다 많으면, 경고 로그 출력
-    //if (NumItemsToSpawn > Area1SpawnPoints.Num())
-    //{
-    //    UE_LOG(LogTemp, Warning, TEXT("SpawnItemsInArea1: Not enough spawn points available. Reducing item count."));
-    //}
-
-    //// SpawnedItems 배열 초기화
-    //SpawnedItems.Empty();
-
-    //UWorld* World = GetWorld();
-    //if (!World)
-    //{
-    //    UE_LOG(LogTemp, Warning, TEXT("SpawnItemsInArea1: World is null."));
-    //    return;
-    //}
-
-    //// 지역 spawn 포인트 배열 복사 및 셔플
-    //TArray<FVector> LocalSpawnPoints = Area1SpawnPoints;
-    //
-    //Test::Shuffle(LocalSpawnPoints);
-    //
-    //int32 ItemsToSpawn = FMath::Min(NumItemsToSpawn, LocalSpawnPoints.Num());
-
-    //for (int32 i = 0; i < ItemsToSpawn; i++)
-    //{
-    //    FVector SpawnLocation = LocalSpawnPoints[i];
-    //    FRotator SpawnRotation = FRotator::ZeroRotator;
-
-    //    FActorSpawnParameters SpawnParams;
-    //    // 필요에 따라 SpawnParams.Owner 또는 Instigator 설정
-
-    //    ABaseItem* NewItem = World->SpawnActor<ABaseItem>(PowerUpBpclass, SpawnLocation, SpawnRotation, SpawnParams);
-
-    //    if (NewItem)
-    //    {
-    //        SpawnedItems.Add(NewItem);
-    //        UE_LOG(LogTemp, Log, TEXT("SpawnItemsInArea1: Spawned item at %s"), *SpawnLocation.ToString());
-    //    }
-    //    else
-    //    {
-    //        UE_LOG(LogTemp, Warning, TEXT("SpawnItemsInArea1: Failed to spawn item at index %d"), i);
-    //    }
-    //}
+//<<<<<<< HEAD
+//    //// 예시로 영역1에 10개의 아이템 스폰
+//    //const int32 NumItemsToSpawn = 30;
+//    //if (Area1SpawnPoints.Num() == 0)
+//    //{
+//    //    UE_LOG(LogTemp, Warning, TEXT("SpawnItemsInArea1: No spawn points available."));
+//    //    return;
+//    //}
+//=======
+//    // 예시로 영역1에 10개의 아이템 스폰
+//    const int32 NumItemsToSpawn = 20;
+//    if (Area1SpawnPoints.Num() == 0)
+//    {
+//        UE_LOG(LogTemp, Warning, TEXT("SpawnItemsInArea1: No spawn points available."));
+//        return;
+//    }
+//>>>>>>> main
+//
+//    //// 만약 NumItemsToSpawn이 전체 스폰 포인트보다 많으면, 경고 로그 출력
+//    //if (NumItemsToSpawn > Area1SpawnPoints.Num())
+//    //{
+//    //    UE_LOG(LogTemp, Warning, TEXT("SpawnItemsInArea1: Not enough spawn points available. Reducing item count."));
+//    //}
+//
+//    //// SpawnedItems 배열 초기화
+//    //SpawnedItems.Empty();
+//
+//    //UWorld* World = GetWorld();
+//    //if (!World)
+//    //{
+//    //    UE_LOG(LogTemp, Warning, TEXT("SpawnItemsInArea1: World is null."));
+//    //    return;
+//    //}
+//
+//    //// 지역 spawn 포인트 배열 복사 및 셔플
+//    //TArray<FVector> LocalSpawnPoints = Area1SpawnPoints;
+//    //
+//    //Test::Shuffle(LocalSpawnPoints);
+//    //
+//    //int32 ItemsToSpawn = FMath::Min(NumItemsToSpawn, LocalSpawnPoints.Num());
+//
+//<<<<<<< HEAD
+//    //for (int32 i = 0; i < ItemsToSpawn; i++)
+//    //{
+//    //    FVector SpawnLocation = LocalSpawnPoints[i];
+//    //    FRotator SpawnRotation = FRotator::ZeroRotator;
+//
+//    //    FActorSpawnParameters SpawnParams;
+//    //    // 필요에 따라 SpawnParams.Owner 또는 Instigator 설정
+//
+//    //    ABaseItem* NewItem = World->SpawnActor<ABaseItem>(PowerUpBpclass, SpawnLocation, SpawnRotation, SpawnParams);
+//
+//    //    if (NewItem)
+//    //    {
+//    //        SpawnedItems.Add(NewItem);
+//    //        UE_LOG(LogTemp, Log, TEXT("SpawnItemsInArea1: Spawned item at %s"), *SpawnLocation.ToString());
+//    //    }
+//    //    else
+//    //    {
+//    //        UE_LOG(LogTemp, Warning, TEXT("SpawnItemsInArea1: Failed to spawn item at index %d"), i);
+//    //    }
+//    //}
+//=======
+//    for (int32 i = 0; i < ItemsToSpawn; i++)
+//    {
+//        FVector SpawnLocation = LocalSpawnPoints[i];
+//        FRotator SpawnRotation = FRotator::ZeroRotator;
+//        
+//
+//        AItem_Box_Base* NewItem = World->SpawnActor<AItem_Box_Base>(ItemBoxBpclass, SpawnLocation, SpawnRotation);
+//        NewItem->SpawnItemType = 0;
+//        
+//        if (NewItem)
+//        {
+//            SpawnedItems.Add(NewItem);
+//            UE_LOG(LogTemp, Log, TEXT("SpawnItemsInArea1: Spawned item at %s"), *SpawnLocation.ToString());
+//        }
+//        else
+//        {
+//            UE_LOG(LogTemp, Warning, TEXT("SpawnItemsInArea1: Failed to spawn item at index %d"), i);
+//        }
+//    }
+//>>>>>>> main
 }
+
 
 void ABattleGameMode::InitializeArea1SpawnPoints()
 {
@@ -731,7 +765,7 @@ void ABattleGameMode::InitializeArea1SpawnPoints()
     // 기존 좌표 배열 초기화
     Area1SpawnPoints.Empty();
 
-    // 예시로 몇 개의 하드코딩 좌표를 추가 (실제 프로젝트에서는 150개 정도의 좌표를 입력)
+    // 예시로 몇 개의 하드코딩 좌표를 추가 
     Area1SpawnPoints.Add(FVector(-12400.f, -600.f, 66.f));
     Area1SpawnPoints.Add(FVector(-13000.f, 500.f, 66.f));
     Area1SpawnPoints.Add(FVector(-11000.f, -1500.f, 66.f));
@@ -760,7 +794,6 @@ void ABattleGameMode::InitializeArea1SpawnPoints()
     Area1SpawnPoints.Add(FVector(-10195.f, -6392.f, 66.f));
     Area1SpawnPoints.Add(FVector(-9100.f, 6392.f, 66.f));
     
-  
     Area1SpawnPoints.Add(FVector(-8300.f, 8100.f, 66.f));
     Area1SpawnPoints.Add(FVector(-8300.f, 10800.f, 66.f));
     Area1SpawnPoints.Add(FVector(-8300.f, 13500.f, 66.f));
@@ -917,4 +950,13 @@ void ABattleGameMode::SpawnItemsInArea2()
     Area2SpawnPoints.Add(FVector(4641.f, -253.f, 1172.f));
 
     AreaSpawnPoints.Add(Area2SpawnPoints);
+}
+
+void ABattleGameMode::SpawnItemsInArea3()
+{
+    Area3SpawnPoints.Empty();
+
+    Area3SpawnPoints.Add(FVector(0.f, 0.f, 66.f));
+
+    AreaSpawnPoints.Add(Area3SpawnPoints);
 }

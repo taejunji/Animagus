@@ -19,6 +19,7 @@ AProjectile_FireBall::AProjectile_FireBall()
 {
     // KnockbackForce 기본값 설정 (필요에 따라 조정)
     KnockbackForce = 3000.f;
+   
 }
 
 

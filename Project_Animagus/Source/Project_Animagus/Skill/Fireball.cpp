@@ -2,6 +2,11 @@
 #include "../Projectile/Projectile_FireBall.h"
 #include "Kismet/GameplayStatics.h"
 #include "../Character/BaseCharacter.h"
+#include "../Character/PlayerCharacter.h"
+
+#include "../AI/MyAIController.h"
+#include "BehaviorTree/BlackboardComponent.h"
+
 #include "GameFramework/PlayerController.h"
 #include "GameFramework/ProjectileMovementComponent.h"
 
@@ -49,7 +54,10 @@ void UFireball::ActiveSkill_Implementation()
     // 공격 애니메이션
     Owner->PlayAnimMontageByType(MontageType::DefaultAttack);
 
-    // 플레이어 컨트롤러를 통해 카메라 뷰포인트를 가져옵니다.
+    // 투사체 스폰 위치
+    FVector SpawnLocation = Owner->GetActorLocation() + Owner->GetActorForwardVector() * 80.f + Owner->GetActorRightVector() * 30.f; 
+    FRotator SpawnRotation;
+
     FVector CameraLocation;
     FRotator CameraRotation;
     if (Owner->GetController())
@@ -59,21 +67,13 @@ void UFireball::ActiveSkill_Implementation()
     else
     {
         CameraLocation = Owner->GetActorLocation();
-
-        //if (AIPlayer)
-            //CameraRotation = Owner->GetActorRotation();
-        //else (NetworkPlayer)
         CameraRotation = Rotation;
     }
 
-    // 스폰 위치: 캐릭터의 전면 (예: 캐릭터 위치에서 전방으로 70cm)
-    FVector SpawnLocation = Owner->GetActorLocation() + Owner->GetActorForwardVector() * 80.f + Owner->GetActorRightVector() * 30.f;
+    SpawnRotation = CameraRotation + FRotator(1.f, 0.f, 0.f);
 
-    // 진행 방향: 카메라 뷰 방향 사용
-    FRotator SpawnRotation = CameraRotation + FRotator(2.f, 0.f, 0.f); 
-    
     UE_LOG(LogTemp, Log, TEXT("Fireball Skill: OwnerLocation = %s"), *Owner->GetActorLocation().ToString());
-    UE_LOG(LogTemp, Log, TEXT("Fireball Skill: CameraRotation = %s"), *CameraRotation.ToString());
+    // UE_LOG(LogTemp, Log, TEXT("Fireball Skill: CameraRotation = %s"), *CameraRotation.ToString());
     UE_LOG(LogTemp, Log, TEXT("Fireball Skill: SpawnLocation = %s"), *SpawnLocation.ToString());
     UE_LOG(LogTemp, Log, TEXT("Fireball Skill: SpawnRotation = %s"), *SpawnRotation.ToString());
 
@@ -89,6 +89,8 @@ void UFireball::ActiveSkill_Implementation()
         SpawnRotation,
         SpawnParams
     );
+
+   //FireballProj->CollisionSphere->IgnoreActorWhenMoving(Owner, true);
     
     // ProjectileBPClass가 유효한 경우, 블루프린트로 만든 투사체 액터를 스폰
     if (ProjectileBPClass)
@@ -139,3 +141,50 @@ void UFireball::UpgradeSkill(int32 NewPowerUpLevel)
     UE_LOG(LogTemp, Log, TEXT("Fireball upgraded: PowerUpLevel %d, Damage: %f, Cooldown: %f"), 
         NewPowerUpLevel, FireballDamage, CooldownTime);
 }
+
+
+
+//// 투사체 스폰 위치
+//FVector SpawnLocation = Owner->GetActorLocation() + Owner->GetActorForwardVector() * 80.f + Owner->GetActorRightVector() * 30.f;
+//FRotator SpawnRotation;
+//
+//// 플레이어와 AI 분기 처리
+//if (Owner->IsPlayerControlled())
+//{
+//    FVector CameraLocation;
+//    FRotator CameraRotation;
+//    if (Owner->GetController())
+//    {
+//        Owner->GetController()->GetPlayerViewPoint(CameraLocation, CameraRotation);
+//    }
+//    else
+//    {
+//        CameraLocation = Owner->GetActorLocation();
+//        CameraRotation = Owner->GetActorRotation();
+//    }
+//    SpawnRotation = CameraRotation + FRotator(2.f, 0.f, 0.f);
+//}
+//else
+//{
+//    AMyAIController* AIController = Cast<AMyAIController>(Owner->GetController());
+//    ABaseCharacter* TargetCharacter = nullptr;
+//
+//    if (AIController)
+//    {
+//        UBlackboardComponent* BBComp = AIController->GetBlackboardComponent();
+//        if (BBComp && AIController->TargetKey.SelectedKeyName.IsValid())
+//        {
+//            TargetCharacter = Cast<ABaseCharacter>(BBComp->GetValueAsObject(AIController->TargetKey.SelectedKeyName));
+//        }
+//    }
+//
+//    if (TargetCharacter)
+//    {
+//        FVector DirectionToTarget = (TargetCharacter->GetActorLocation() - SpawnLocation).GetSafeNormal();
+//        SpawnRotation = DirectionToTarget.Rotation();
+//    }
+//    else
+//    {
+//        SpawnRotation = Owner->GetActorRotation();
+//    }
+//}

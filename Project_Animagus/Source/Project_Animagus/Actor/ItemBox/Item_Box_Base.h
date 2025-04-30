@@ -19,16 +19,17 @@ public:
     AItem_Box_Base();
 
 public:
+    // 아이템 스폰 타입: 0이면 BaseItem, 1이면 BaseItemPlus
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Box")
+    int32 SpawnItemType;
+    
+protected:
     virtual void BeginPlay() override;
     virtual void Tick(float DeltaTime) override;
 
     // 상자의 체력. 초기값: 50
     UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Box")
     float HP;
-
-    // 아이템 스폰 타입: 0이면 BaseItem, 1이면 BaseItemPlus
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Box")
-    int32 SpawnItemType;
 
     // 정적 메쉬 컴포넌트 (intact 상태)
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")

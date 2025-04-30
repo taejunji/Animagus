@@ -5,6 +5,7 @@
 
 #include "NiagaraFunctionLibrary.h"
 #include "Components/PointLightComponent.h"
+#include "Components/SphereComponent.h"
 #include "Engine/Engine.h"
 #include "GameFramework/Character.h"
 #include "Kismet/GameplayStatics.h"

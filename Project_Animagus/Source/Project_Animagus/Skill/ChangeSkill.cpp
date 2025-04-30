@@ -7,6 +7,8 @@
 #include "../Character/BaseCharacter.h"
 #include "GameFramework/PlayerController.h"
 #include "GameFramework/ProjectileMovementComponent.h"
+#include "../AI/MyAIController.h"
+#include "BehaviorTree/BlackboardComponent.h"
 
 UChangeSkill::UChangeSkill()
 {
@@ -51,28 +53,25 @@ void UChangeSkill::ActiveSkill_Implementation()
     // 공격 애니메이션
     Owner->PlayAnimMontageByType(MontageType::DefaultAttack);
 
+    // 투사체 스폰 위치
+    FVector SpawnLocation = Owner->GetActorLocation() + Owner->GetActorForwardVector() * 80.f + Owner->GetActorRightVector() * 20.f;
+    FRotator SpawnRotation;
 
-    // 스폰 위치: 캐릭터 위치에서 전방 80cm, 위로 20cm 오프셋
-    FVector SpawnLocation = Owner->GetActorLocation() 
-                            + Owner->GetActorForwardVector() * 80.f 
-                            + FVector(0.f, 0.f, 20.f);
-                            
-    // 진행 방향: 카메라의 뷰포인트를 사용
+    // 플레이어 컨트롤러를 통해 카메라 뷰포인트를 가져옵니다.
     FVector CameraLocation;
     FRotator CameraRotation;
     if (Owner->GetController())
     {
         Owner->GetController()->GetPlayerViewPoint(CameraLocation, CameraRotation);
-        UE_LOG(LogTemp, Log, TEXT("UChangeSkill: CameraLocation = %s, CameraRotation = %s"), *CameraLocation.ToString(), *CameraRotation.ToString());
     }
     else
     {
-        //CameraRotation = Owner->GetActorRotation();
+        CameraLocation = Owner->GetActorLocation();
         CameraRotation = Rotation;
-        UE_LOG(LogTemp, Log, TEXT("UChangeSkill: Controller 없음, CameraRotation = %s"), *CameraRotation.ToString());
     }
-    
-    FRotator SpawnRotation = CameraRotation;  // 진행 방향은 카메라의 회전값 사용
+
+    // 진행 방향: 카메라 뷰 방향 사용
+    SpawnRotation = CameraRotation;
 
     UE_LOG(LogTemp, Log, TEXT("UChangeSkill: SpawnLocation = %s, SpawnRotation = %s"), *SpawnLocation.ToString(), *SpawnRotation.ToString());
 
