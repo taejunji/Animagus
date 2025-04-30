@@ -4,6 +4,8 @@
 #include "../Character/BaseCharacter.h"
 #include "GameFramework/PlayerController.h"
 #include "GameFramework/ProjectileMovementComponent.h"
+#include "../AI/MyAIController.h"
+#include "BehaviorTree/BlackboardComponent.h"
 
 URadialSkill::URadialSkill()
 {
@@ -43,45 +45,71 @@ void URadialSkill::ActiveSkill_Implementation()
     // 공격 애니메이션
     Owner->PlayAnimMontageByType(MontageType::DefaultAttack);
 
-    // 진행 방향: 카메라가 바라보는 중심 방향을 사용
-    FVector CameraLocation;
-    FRotator CameraRotation;
-    if (Owner->GetController())
+    FVector CharacterLocation = Owner->GetActorLocation();
+    FRotator BaseRotation;
+
+    // --- 회전 방향 결정 (AI or Player)
+    if (AMyAIController* AIController = Cast<AMyAIController>(Owner->GetController()))
     {
-        Owner->GetController()->GetPlayerViewPoint(CameraLocation, CameraRotation);
-        UE_LOG(LogTemp, Log, TEXT("URadialSkill: CameraLocation = %s, CameraRotation = %s"), *CameraLocation.ToString(), *CameraRotation.ToString());
+        ABaseCharacter* TargetCharacter = nullptr;
+        UBlackboardComponent* BBComp = AIController->GetBlackboardComponent();
+        if (BBComp && AIController->TargetKey.SelectedKeyName.IsValid())
+        {
+            TargetCharacter = Cast<ABaseCharacter>(BBComp->GetValueAsObject(AIController->TargetKey.SelectedKeyName));
+        }
+
+        if (TargetCharacter)
+        {
+            FVector DirectionToTarget = (TargetCharacter->GetActorLocation() - CharacterLocation).GetSafeNormal();
+            BaseRotation = DirectionToTarget.Rotation();
+        }
+        else
+        {
+            BaseRotation = Owner->GetActorRotation();
+        }
+
+        // UE_LOG(LogTemp, Log, TEXT("URadialSkill: AI 사용, BaseRotation = %s"), *BaseRotation.ToString());
     }
     else
     {
-        CameraRotation = Owner->GetActorRotation();
-        UE_LOG(LogTemp, Log, TEXT("URadialSkill: Controller 없음, CameraRotation = %s"), *CameraRotation.ToString());
+        FVector CameraLocation;
+        FRotator CameraRotation;
+        if (Owner->GetController())
+        {
+            Owner->GetController()->GetPlayerViewPoint(CameraLocation, CameraRotation);
+            BaseRotation = CameraRotation;
+        }
+        else
+        {
+            BaseRotation = Owner->GetActorRotation();
+        }
+
+        // UE_LOG(LogTemp, Log, TEXT("URadialSkill: Player 사용, BaseRotation = %s"), *BaseRotation.ToString());
     }
-    
-    // 각 투사체의 발사 각도 계산
-    float BaseYaw = CameraRotation.Yaw;
+
+    // --- 회전 스프레드 계산
+    float BaseYaw = BaseRotation.Yaw;
     float AngleStep = (NumberOfProjectiles > 1) ? SpreadAngle / (NumberOfProjectiles - 1) : 0.f;
     float StartYaw = BaseYaw - (SpreadAngle * 0.5f);
+
     UE_LOG(LogTemp, Log, TEXT("URadialSkill: BaseYaw = %f, AngleStep = %f, StartYaw = %f"), BaseYaw, AngleStep, StartYaw);
-    
-    // 캐릭터의 위치를 기준으로 투사체의 스폰 위치 계산
-    FVector CharacterLocation = Owner->GetActorLocation();
-    
-    // 한 번에 모든 투사체 생성
-    for (int32 i = 0; i < NumberOfProjectiles; i++)
+
+    // --- 투사체 생성 루프
+    for (int32 i = 0; i < NumberOfProjectiles; ++i)
     {
-        // 현재 투사체의 Yaw 계산
         float CurrentYaw = StartYaw + i * AngleStep;
+
         // 수평 스폰 위치: 캐릭터 위치에서 현재 각도에 따른 단위 벡터에 SpawnRadius를 곱함
-        FRotator HorizontalRot(0.f, CurrentYaw, 0.f);
-        FVector SpawnLocation = CharacterLocation + HorizontalRot.Vector() * SpawnRadius + FVector(0.f, 0.f, VerticalOffset);
-        FRotator SpawnRotation = FRotator(CameraRotation.Pitch, CurrentYaw, CameraRotation.Roll);
-        
+        FRotator HorizontalRot(0.f, CurrentYaw, 0.f); 
+        FVector SpawnLocation = CharacterLocation + HorizontalRot.Vector() * SpawnRadius + FVector(0.f, 0.f, VerticalOffset); 
+        FRotator SpawnRotation = FRotator(BaseRotation.Pitch, CurrentYaw, BaseRotation.Roll);
+
         UE_LOG(LogTemp, Log, TEXT("URadialSkill: %d번째 투사체 스폰, SpawnLocation = %s, SpawnRotation = %s"), i, *SpawnLocation.ToString(), *SpawnRotation.ToString());
 
         FActorSpawnParameters SpawnParams;
         SpawnParams.Owner = Owner;
         SpawnParams.Instigator = Owner->GetInstigator();
-    
+
         // 투사체 액터 스폰: 이때 SpawnParams를 전달하면, 액터가 생성되는 순간부터 Owner와 Instigator 값이 설정됨
         AProjectileBase* Projectile = World->SpawnActor<AProjectileBase>(
             ProjectileBPClass,
@@ -89,18 +117,20 @@ void URadialSkill::ActiveSkill_Implementation()
             SpawnRotation,
             SpawnParams
         );
-        
+
         if (ProjectileBPClass)
         {
             if (Projectile)
             {
                 Projectile->Shooter = Owner;
                 Projectile->DamageValue = RadialDamage;
+
                 if (Projectile->ProjectileMovement)
                 {
                     Projectile->ProjectileMovement->InitialSpeed = RadialSpeed;
                     Projectile->ProjectileMovement->MaxSpeed = RadialSpeed;
                 }
+
                 UE_LOG(LogTemp, Log, TEXT("URadialSkill: %d번째 투사체 스폰 성공: %s"), i, *Projectile->GetName());
             }
             else
@@ -114,7 +144,7 @@ void URadialSkill::ActiveSkill_Implementation()
             break;
         }
     }
-    
+
     // 첫 사용이면 플래그 변경
     if (bFirstUse)
     {

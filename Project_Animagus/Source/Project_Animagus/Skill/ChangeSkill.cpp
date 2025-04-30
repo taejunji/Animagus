@@ -7,6 +7,8 @@
 #include "../Character/BaseCharacter.h"
 #include "GameFramework/PlayerController.h"
 #include "GameFramework/ProjectileMovementComponent.h"
+#include "../AI/MyAIController.h"
+#include "BehaviorTree/BlackboardComponent.h"
 
 UChangeSkill::UChangeSkill()
 {
@@ -39,27 +41,48 @@ void UChangeSkill::ActiveSkill_Implementation()
     // 공격 애니메이션
     Owner->PlayAnimMontageByType(MontageType::DefaultAttack);
 
+    // 투사체 스폰 위치
+    FVector SpawnLocation = Owner->GetActorLocation() + Owner->GetActorForwardVector() * 80.f + Owner->GetActorRightVector() * 20.f;
+    FRotator SpawnRotation;
 
-    // 스폰 위치: 캐릭터 위치에서 전방 80cm, 위로 20cm 오프셋
-    FVector SpawnLocation = Owner->GetActorLocation() 
-                            + Owner->GetActorForwardVector() * 80.f 
-                            + FVector(0.f, 0.f, 20.f);
-                            
-    // 진행 방향: 카메라의 뷰포인트를 사용
-    FVector CameraLocation;
-    FRotator CameraRotation;
-    if (Owner->GetController())
+    // AI가 호출한 경우
+    if (AMyAIController* AIController = Cast<AMyAIController>(Owner->GetController()))
     {
-        Owner->GetController()->GetPlayerViewPoint(CameraLocation, CameraRotation);
-        UE_LOG(LogTemp, Log, TEXT("UChangeSkill: CameraLocation = %s, CameraRotation = %s"), *CameraLocation.ToString(), *CameraRotation.ToString());
+        ABaseCharacter* TargetCharacter = nullptr;
+        UBlackboardComponent* BBComp = AIController->GetBlackboardComponent();
+        if (BBComp && AIController->TargetKey.SelectedKeyName.IsValid())
+        {
+            TargetCharacter = Cast<ABaseCharacter>(BBComp->GetValueAsObject(AIController->TargetKey.SelectedKeyName));
+        }
+        if (TargetCharacter)
+        {
+            FVector DirectionToTarget = (TargetCharacter->GetActorLocation() - SpawnLocation).GetSafeNormal();
+            SpawnRotation = DirectionToTarget.Rotation();
+        }
+        else
+        {
+            // 타겟이 없다면 AI Panw이 바라보는 방향으로 발사
+            SpawnRotation = Owner->GetActorRotation();
+        }
     }
-    else
+    else // Player 혹은 Network가 호출한 경우
     {
-        CameraRotation = Owner->GetActorRotation();
-        UE_LOG(LogTemp, Log, TEXT("UChangeSkill: Controller 없음, CameraRotation = %s"), *CameraRotation.ToString());
+        // 플레이어 컨트롤러를 통해 카메라 뷰포인트를 가져옵니다.
+        FVector CameraLocation;
+        FRotator CameraRotation;
+        if (Owner->GetController())
+        {
+            Owner->GetController()->GetPlayerViewPoint(CameraLocation, CameraRotation);
+        }
+        else
+        {
+            CameraLocation = Owner->GetActorLocation();
+            CameraRotation = Owner->GetActorRotation();
+        }
+
+        // 진행 방향: 카메라 뷰 방향 사용
+        SpawnRotation = CameraRotation;
     }
-    
-    FRotator SpawnRotation = CameraRotation;  // 진행 방향은 카메라의 회전값 사용
 
     UE_LOG(LogTemp, Log, TEXT("UChangeSkill: SpawnLocation = %s, SpawnRotation = %s"), *SpawnLocation.ToString(), *SpawnRotation.ToString());
 

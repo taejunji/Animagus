@@ -4,6 +4,9 @@
 #include "../Character/BaseCharacter.h"
 #include "GameFramework/PlayerController.h"
 #include "GameFramework/ProjectileMovementComponent.h"
+#include "../AI/MyAIController.h"
+#include "BehaviorTree/BlackboardComponent.h"
+
 
 UBounce::UBounce()
 {
@@ -33,26 +36,49 @@ void UBounce::ActiveSkill_Implementation()
     // 공격 애니메이션
     Owner->PlayAnimMontageByType(MontageType::DefaultAttack);
 
-    FVector CameraLocation;
-    FRotator CameraRotation;
-
-    if (Owner->GetController())
-    {
-        Owner->GetController()->GetPlayerViewPoint(CameraLocation, CameraRotation);
-    }
-    else
-    {
-        CameraLocation = Owner->GetActorLocation();
-        CameraRotation = Owner->GetActorRotation();
-    }
-    
-    // 스폰 위치: 캐릭터의 전면 오프셋 + 약간 위쪽 (예: 전방 80cm, Z축 20cm)
+    // 투사체 스폰 위치
     FVector SpawnLocation = Owner->GetActorLocation() + Owner->GetActorForwardVector() * 80.f + Owner->GetActorRightVector() * 30.f;
+    FRotator SpawnRotation;
 
+    // AI가 호출한 경우
+    if (AMyAIController* AIController = Cast<AMyAIController>(Owner->GetController()))
+    {
+        ABaseCharacter* TargetCharacter = nullptr;
+        UBlackboardComponent* BBComp = AIController->GetBlackboardComponent();
+        if (BBComp && AIController->TargetKey.SelectedKeyName.IsValid())
+        {
+            TargetCharacter = Cast<ABaseCharacter>(BBComp->GetValueAsObject(AIController->TargetKey.SelectedKeyName));
+        }
+        if (TargetCharacter)
+        {
+            FVector DirectionToTarget = (TargetCharacter->GetActorLocation() - SpawnLocation).GetSafeNormal();
+            SpawnRotation = DirectionToTarget.Rotation();
+        }
+        else
+        {
+            // 타겟이 없다면 AI Panw이 바라보는 방향으로 발사
+            SpawnRotation = Owner->GetActorRotation();
+        }
+    }
+    else // Player 혹은 Network가 호출한 경우
+    {
+        // 플레이어 컨트롤러를 통해 카메라 뷰포인트를 가져옵니다.
+        FVector CameraLocation;
+        FRotator CameraRotation;
+        if (Owner->GetController())
+        {
+            Owner->GetController()->GetPlayerViewPoint(CameraLocation, CameraRotation);
+        }
+        else
+        {
+            CameraLocation = Owner->GetActorLocation();
+            CameraRotation = Owner->GetActorRotation();
+        }
 
-    // 진행 방향: 캐릭터의 회전(또는 필요시 카메라 뷰 방향)을 사용할 수 있습니다.
-    // 여기서는 캐릭터의 회전을 사용합니다.
-    FRotator SpawnRotation = CameraRotation;
+        // 진행 방향: 카메라 뷰 방향 사용
+        SpawnRotation = CameraRotation;
+    }
+
 
     UE_LOG(LogTemp, Log, TEXT("UBounce: OwnerLocation = %s"), *Owner->GetActorLocation().ToString());
     UE_LOG(LogTemp, Log, TEXT("UBounce: SpawnLocation = %s, SpawnRotation = %s"), *SpawnLocation.ToString(), *SpawnRotation.ToString());
