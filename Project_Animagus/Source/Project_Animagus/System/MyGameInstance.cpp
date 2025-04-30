@@ -189,11 +189,11 @@ void UMyGameInstance::HandleEnterGame(Protocol::SC_ENTER_GAME_PKT& pkt)
             //GameMode->SetPlayerIndex(pkt.player_id);
             //GameMode->SetPlayerType(pkt.player_type);
             //GameMode->SetPlayerName(pkt.player_name);
-
+            GameMode->PossessIndex = pkt.spawn_index;
             GameMode->AmIHost = pkt.host;
             if (pkt.host == true)
-            UE_LOG(LogTemp, Warning, TEXT("I AM THE HOST: %d"), pkt.player_id);
-
+                UE_LOG(LogTemp, Warning, TEXT("I AM THE HOST: %d"), pkt.player_id);
+                
             GameMode->SpawnPlayers();
 
             APlayerController* PC = UGameplayStatics::GetPlayerController(GetWorld(), 0);

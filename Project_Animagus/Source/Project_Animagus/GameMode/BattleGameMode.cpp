@@ -168,7 +168,7 @@ void ABattleGameMode::SpawnPlayers()
         UE_LOG(LogTemp, Warning, TEXT("BattleGameMode: World가 null임."));
         return;
     }
-    
+
     APlayerController* PC = UGameplayStatics::GetPlayerController(World, 0);
     if (PC)
     {
@@ -179,7 +179,7 @@ void ABattleGameMode::SpawnPlayers()
             AutoPawn->Destroy();
         }
     }
-    
+
     // 플레이어 캐릭터들을 SpawnLocations 배열에 따라 스폰함
     SpawnedPlayers.Empty();
     if (!World)
@@ -187,23 +187,21 @@ void ABattleGameMode::SpawnPlayers()
         UE_LOG(LogTemp, Warning, TEXT("BattleGameMode: World가 null임."));
         return;
     }
-    
+
     //SpawnLocations 배열에 최소 4개가 있어야 함.
     if (SpawnLocations.Num() < 4)
     {
         UE_LOG(LogTemp, Warning, TEXT("BattleGameMode: SpawnLocations 수가 충분하지 않음."));
         return;
     }
-    
-    for (int32 i = 0; i < 1; i++)
+
     {
         FTransform SpawnTransform;
-        SpawnTransform.SetLocation(SpawnLocations[i]);
-        SpawnTransform.SetLocation(SpawnLocations[i]);
+        SpawnTransform.SetLocation(SpawnLocations[PossessIndex]);
         // 회전값은 SpawnRotations 배열의 값을 사용함 (있으면)
-        if (SpawnRotations.IsValidIndex(i))
+        if (SpawnRotations.IsValidIndex(PossessIndex))
         {
-            SpawnTransform.SetRotation(SpawnRotations[i].Quaternion());
+            SpawnTransform.SetRotation(SpawnRotations[PossessIndex].Quaternion());
         }
         else
         {
@@ -214,11 +212,11 @@ void ABattleGameMode::SpawnPlayers()
         if (NewCharacter)
         {
             PlayerCharacter = Cast<APlayerCharacter>(NewCharacter);
-            UE_LOG(LogTemp, Log, TEXT("BattleGameMode: 플레이어 %d 스폰됨, 위치: %s"), i, *SpawnLocations[i].ToString());
+            UE_LOG(LogTemp, Log, TEXT("BattleGameMode: 플레이어 %d 스폰됨, 위치: %s"), PossessIndex, *SpawnLocations[PossessIndex].ToString());
         }
         else
         {
-            UE_LOG(LogTemp, Warning, TEXT("BattleGameMode: 플레이어 %d 스폰 실패"), i);
+            UE_LOG(LogTemp, Warning, TEXT("BattleGameMode: 플레이어 %d 스폰 실패"), PossessIndex);
         }
 
         PC = UGameplayStatics::GetPlayerController(World, 0);
@@ -377,7 +375,7 @@ void ABattleGameMode::ActivateInput()
     }
 
     // "0"번 플레이어가 아닌 경우 AI 생성하지 않고 나가기
-    if (PossessIndex != 0) return;
+    if (AmIHost == false) return;
 
     // **AI들의 Behavior Tree 실행**
     for (auto& Item : SpawnedPlayers)
@@ -408,8 +406,8 @@ void ABattleGameMode::MoveOtherPlayer(Protocol::CS_MOVE_PKT& pkt)
     if (SpawnedPlayers.Find(playerId) == nullptr)
         return;
 
-    if (playerId == PossessIndex)
-        return;
+    //if (playerId == PossessIndex)
+    //    return;
 
     Protocol::PlayerInfo Info = pkt.player_info;
     FVector Location(Info.x, Info.y, Info.z);
@@ -546,7 +544,7 @@ void ABattleGameMode::SpawnItem(Protocol::SC_SPAWN_ITEM_PKT& pkt)
         // 필요에 따라 SpawnParams.Owner 또는 Instigator 설정
 
         AItem_Box_Base* NewItem = World->SpawnActor<AItem_Box_Base>(ItemBoxBpclass, SpawnLocation, SpawnRotation, SpawnParams);
-        NewItem->SpawnItemType = ItemLevel[i];
+        //NewItem->SpawnItemType = ItemLevel[i];
 
         if (NewItem)
         {

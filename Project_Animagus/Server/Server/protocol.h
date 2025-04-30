@@ -125,8 +125,9 @@ namespace Protocol {
     {
         uint16 player_id;
         bool host;
-        float x, y, z;
-        float rotation;
+        //float x, y, z;
+        //float rotation;
+        int16 spawn_index;
     };
     struct SC_LEAVE_PKT
     {   // 로비로 보내기

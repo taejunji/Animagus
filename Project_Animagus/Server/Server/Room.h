@@ -33,7 +33,7 @@ private:
     std::mutex m_mutex;
 
     uint16 m_roomID;
-    uint16 m_playerCount;
+    std::atomic<uint16> m_playerCount;
     std::unordered_map<uint16/*player_id*/, PlayerRef> m_players; // thread safe 한 자료구조로?
     std::unordered_map<uint16/*ai_id*/, AIPlayerRef> m_aiPlayers;
 

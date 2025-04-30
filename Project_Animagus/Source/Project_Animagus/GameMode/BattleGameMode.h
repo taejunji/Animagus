@@ -74,8 +74,6 @@ private:
 
     TSubclassOf<class AAttractionZone> AttractionBpclass;
     
-    TSubclassOf<class AItem_Box_Base> ItemBoxBpclass;
-
     // 라운드 경과 시간 출력
     FTimerHandle battle_timer_handle;
     float elasped_time;

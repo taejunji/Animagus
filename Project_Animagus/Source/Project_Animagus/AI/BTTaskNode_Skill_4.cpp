@@ -3,6 +3,7 @@
 
 #include "BTTaskNode_Skill_4.h"
 #include "AIController.h"
+#include "MyAIController.h"
 #include "../Character/AICharacter.h"
 #include "Project_Animagus/Skill/BaseSkill.h"
 
@@ -37,9 +38,30 @@ EBTNodeResult::Type UBTTaskNode_Skill_4::ExecuteTask(UBehaviorTreeComponent& Own
     if (Character && Character->Skills.IsValidIndex(4) && Character->Skills[4]) 
     {
         UBaseSkill* Skill = Character->Skills[4];
-        Skill->ActiveSkill();
+        FRotator Rotation;
 
-        FRotator Rotation = Character->GetViewRotation();
+        if (AMyAIController* AIController = Cast<AMyAIController>(Character->GetController()))
+        {
+            ABaseCharacter* TargetCharacter = nullptr;
+            UBlackboardComponent* BBComp = AIController->GetBlackboardComponent();
+            if (BBComp && AIController->TargetKey.SelectedKeyName.IsValid())
+            {
+                TargetCharacter = Cast<ABaseCharacter>(BBComp->GetValueAsObject(AIController->TargetKey.SelectedKeyName));
+            }
+            if (TargetCharacter)
+            {
+                FVector DirectionToTarget = (TargetCharacter->GetActorLocation() - Character->GetActorLocation()).GetSafeNormal();
+                Rotation = DirectionToTarget.Rotation();
+            }
+            else
+            {
+                // 타겟이 없다면 AI Panw이 바라보는 방향으로 발사
+                Rotation = Character->GetActorRotation();
+            }
+        }
+
+        Skill->SetSkillRotation(Rotation.Pitch, Rotation.Yaw, Rotation.Roll);
+        Skill->ActiveSkill();
 
         Protocol::CS_AI_USING_SKILL_PKT SkillPkt;
         SkillPkt.ai_id = Character->GetPlayerId();

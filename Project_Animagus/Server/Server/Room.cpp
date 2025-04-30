@@ -72,10 +72,11 @@ bool Room::HandleEnterPlayer(PlayerRef player)
     {
         SC_ENTER_GAME_PKT newPlayer;
         newPlayer.player_id = player->playerID;
-        newPlayer.x = player->x;
-        newPlayer.y = player->y;
-        newPlayer.z = player->z;
-        newPlayer.rotation = player->rotation;
+        //newPlayer.x = player->x;
+        //newPlayer.y = player->y;
+        //newPlayer.z = player->z;
+        //newPlayer.rotation = player->rotation;
+        newPlayer.spawn_index = m_playerCount % 4;
         newPlayer.host = (m_playerCount % 2) == 1;   // TODO: host 기준 만들기
         SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(newPlayer);
         if (auto session = player->ownerSession.lock())
@@ -84,7 +85,7 @@ bool Room::HandleEnterPlayer(PlayerRef player)
         n_pid = player->playerID;
 
 #ifndef _DUMMYTEST
-        std::cout << "Send Enter Game Packet to " << player->playerID << std::endl;
+        std::cout << "Send Enter Game Packet to " << player->playerID << " , Spawn Index: " << newPlayer.spawn_index << std::endl;
 #endif
 
         if (newPlayer.host == true)
@@ -341,7 +342,7 @@ bool Room::HandleDamageLocked(Protocol::CS_DAMAGE_PKT& pkt, const uint16 ownerID
     //player->isAlive = pkt.isAlive;
 
 #ifndef _DUMMYTEST
-    std::cout << player_id << " Got Damage - HP: " << pkt.hp << std::endl;
+    std::cout << "Player#" << player_id << " Got Damage - HP: " << pkt.hp << std::endl;
 #endif
 
     SC_UPDATE_HP_PKT updateHpPkt;
