@@ -19,6 +19,8 @@
 */
 
 enum class MontageType { DefaultAttack, Hit };
+class UNiagaraComponent;
+class UNiagaraSystem;
 
 UCLASS()
 class PROJECT_ANIMAGUS_API ABaseCharacter : public ACharacter
@@ -119,11 +121,19 @@ public:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Skills")
     TSubclassOf<class UShockwaveSkill> ShockwaveBPClass;
 
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Skills")
+    TSubclassOf<class UHasteSkill> HasteBPClass;
+
+
+    
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Visual")
     UMaterialInstanceDynamic* AuraMaterialInstance;
 
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Visual")
     UMaterialInterface* BaseAuraMaterial;
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Effects")
+    UNiagaraComponent* SpeedBoostComponent;
     
     // 지정 슬롯에 스킬을 장착하는 함수
     UFUNCTION(BlueprintCallable, Category="Skills")
@@ -141,6 +151,12 @@ public:
 
     UFUNCTION(BlueprintCallable, Category="PowerUp")
     void UpdateAuraColorBasedOnPowerUpLevel();
+
+    UFUNCTION(BlueprintCallable, Category="PowerUp")
+    void PickHealingItem();
+
+    UFUNCTION(BlueprintCallable, Category="PowerUp")
+    void PickHealingPlusItem();
     
     // 스턴 상태 변수: 스턴 중이면 true
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Status")
