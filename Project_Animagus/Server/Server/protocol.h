@@ -57,21 +57,26 @@ namespace Protocol {
     enum class PacketID : uint16
     {
         DCS_TEST,
+
         CS_LOGIN,
+        CS_START_GAME,
         CS_ENTER_GAME,
         CS_LEAVE,
-        SC_ENTER_GAME,
-        SC_LEAVE,
         CS_SPAWN,
-        SC_SPAWN,
         CS_MOVE,
         CS_SELECT_CHARACTER,
         CS_USING_SKILL,
         CS_AI_ENTER,
         CS_AI_MOVE,
         CS_AI_USING_SKILL,
-        SC_SPAWN_ITEM,
         CS_DAMAGE,
+
+        SC_UR_HOST,
+        SC_START_GAME,
+        SC_ENTER_GAME,
+        SC_LEAVE,
+        SC_SPAWN,
+        SC_SPAWN_ITEM,
         SC_UPDATE_HP,
     };
 

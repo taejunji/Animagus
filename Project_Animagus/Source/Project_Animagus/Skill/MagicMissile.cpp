@@ -58,7 +58,7 @@ void UMagicMissile::ActiveSkill_Implementation()
     // 진행 방향은 플레이어 컨트롤러의 카메라 뷰포인트 방향을 사용합니다.
     FVector CameraLocation;
     FRotator CameraRotation;
-    if (Owner->GetController())
+    if (Owner->GetPawnType() == PawnType::PLAYER)
     {
         Owner->GetController()->GetPlayerViewPoint(CameraLocation, CameraRotation);
     }

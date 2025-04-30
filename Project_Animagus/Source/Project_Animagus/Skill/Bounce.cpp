@@ -55,7 +55,7 @@ void UBounce::ActiveSkill_Implementation()
     // 플레이어 컨트롤러를 통해 카메라 뷰포인트를 가져옵니다.
     FVector CameraLocation;
     FRotator CameraRotation;
-    if (Owner->GetController())
+    if (Owner->GetPawnType() == PawnType::PLAYER)
     {
         Owner->GetController()->GetPlayerViewPoint(CameraLocation, CameraRotation);
     }

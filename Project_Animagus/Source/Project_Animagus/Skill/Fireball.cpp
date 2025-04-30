@@ -60,7 +60,7 @@ void UFireball::ActiveSkill_Implementation()
 
     FVector CameraLocation;
     FRotator CameraRotation;
-    if (Owner->GetController())
+    if (Owner->GetPawnType() == PawnType::PLAYER)
     {
         Owner->GetController()->GetPlayerViewPoint(CameraLocation, CameraRotation);
     }

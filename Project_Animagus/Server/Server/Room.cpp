@@ -322,6 +322,8 @@ bool Room::HandleAISkillLocked(Protocol::CS_AI_USING_SKILL_PKT& pkt, const uint1
     aiSkillPkt.roll = pkt.roll;
     aiSkillPkt.s_type = pkt.s_type;
 
+    //std::cout << "AI Using Skill " << static_cast<int>(aiSkillPkt.s_type) << " Rotation: " << aiSkillPkt.pitch << ", " << aiSkillPkt.yaw << ", " << aiSkillPkt.roll << std::endl;
+
     SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(aiSkillPkt);
     Broadcast(sendBuffer, ownerID);
 
