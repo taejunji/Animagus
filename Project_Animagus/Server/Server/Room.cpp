@@ -76,6 +76,7 @@ bool Room::HandleEnterPlayer(PlayerRef player)
         //newPlayer.y = player->y;
         //newPlayer.z = player->z;
         //newPlayer.rotation = player->rotation;
+        //newPlayer.spawn_index = 0;
         newPlayer.spawn_index = m_playerCount % 4;
         newPlayer.host = (m_playerCount % 2) == 1;   // TODO: host 기준 만들기
         SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(newPlayer);
@@ -381,7 +382,8 @@ void Room::InitItemInfo()
         for (int i = 0; i < 20; ++i)
         {
             item.spawn_index[i] = static_cast<char>(pool[i]);
-            item.item_level[i] = static_cast<char>(rand() % 2);
+            //item.item_level[i] = static_cast<char>(rand() % 2);
+            item.item_level[i] = static_cast<char>(1);
         }
         item.item_count = 20;
         item.zone_index = 0;

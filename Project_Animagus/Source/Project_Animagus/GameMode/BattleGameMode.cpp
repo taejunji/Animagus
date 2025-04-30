@@ -540,7 +540,7 @@ void ABattleGameMode::SpawnItem(Protocol::SC_SPAWN_ITEM_PKT& pkt)
 
     //int32 ItemsToSpawn = FMath::Min(NumItemsToSpawn, Area1SpawnPoints.Num());
 
-    for (int32 i = 0; i < Count; i++)
+    for (int32 i = 0; i < Count; ++i)
     {
         int32 index = SpawnIndex[i];
         FVector SpawnLocation = AreaSpawnPoints[ZoneIndex][index];
@@ -550,7 +550,8 @@ void ABattleGameMode::SpawnItem(Protocol::SC_SPAWN_ITEM_PKT& pkt)
         // 필요에 따라 SpawnParams.Owner 또는 Instigator 설정
 
         AItem_Box_Base* NewItem = World->SpawnActor<AItem_Box_Base>(ItemBoxBpclass, SpawnLocation, SpawnRotation, SpawnParams);
-        //NewItem->SpawnItemType = ItemLevel[i];
+        //if (ItemLevel[i] < 2)
+        NewItem->SpawnItemType = ItemLevel[i];
 
         if (NewItem)
         {
