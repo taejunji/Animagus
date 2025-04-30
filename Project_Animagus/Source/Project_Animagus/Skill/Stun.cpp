@@ -7,6 +7,8 @@
 #include "../Character/BaseCharacter.h"
 #include "GameFramework/PlayerController.h"
 #include "GameFramework/ProjectileMovementComponent.h"
+#include "../AI/MyAIController.h"
+#include "BehaviorTree/BlackboardComponent.h"
 
 UStun::UStun()
 {
@@ -41,28 +43,49 @@ void UStun::ActiveSkill_Implementation()
     // 공격 애니메이션
     Owner->PlayAnimMontageByType(MontageType::DefaultAttack);
 
-    FVector CameraLocation;
-    FRotator CameraRotation;
+    // 투사체 스폰 위치
+    FVector SpawnLocation = Owner->GetActorLocation() + Owner->GetActorForwardVector() * 80.f + Owner->GetActorRightVector() * 30.f;
+    FRotator SpawnRotation;
 
-    if (Owner->GetController())
+    // AI가 호출한 경우
+    if (AMyAIController* AIController = Cast<AMyAIController>(Owner->GetController()))
     {
-        Owner->GetController()->GetPlayerViewPoint(CameraLocation, CameraRotation);
+        ABaseCharacter* TargetCharacter = nullptr;
+        UBlackboardComponent* BBComp = AIController->GetBlackboardComponent();
+        if (BBComp && AIController->TargetKey.SelectedKeyName.IsValid())
+        {
+            TargetCharacter = Cast<ABaseCharacter>(BBComp->GetValueAsObject(AIController->TargetKey.SelectedKeyName));
+        }
+        if (TargetCharacter)
+        {
+            FVector DirectionToTarget = (TargetCharacter->GetActorLocation() - SpawnLocation).GetSafeNormal();
+            SpawnRotation = DirectionToTarget.Rotation();
+        }
+        else
+        {
+            // 타겟이 없다면 AI Panw이 바라보는 방향으로 발사
+            SpawnRotation = Owner->GetActorRotation();
+        }
     }
-    else
+    else // Player 혹은 Network가 호출한 경우
     {
-        CameraLocation = Owner->GetActorLocation();
-        CameraRotation = Owner->GetActorRotation();
+        // 플레이어 컨트롤러를 통해 카메라 뷰포인트를 가져옵니다.
+        FVector CameraLocation;
+        FRotator CameraRotation;
+        if (Owner->GetController())
+        {
+            Owner->GetController()->GetPlayerViewPoint(CameraLocation, CameraRotation);
+        }
+        else
+        {
+            CameraLocation = Owner->GetActorLocation();
+            CameraRotation = Owner->GetActorRotation();
+        }
+
+        // 진행 방향: 카메라 뷰 방향 사용
+        SpawnRotation = CameraRotation;
     }
-    
-    // 스폰 위치: 캐릭터의 위치에서 전방으로 100cm, 추가로 Z축 50cm 올림 (예시)
-    FVector SpawnLocation = Owner->GetActorLocation() 
-                            + Owner->GetActorForwardVector() * 80.f 
-                            + Owner->GetActorRightVector() * 30.f;
-    // FVector SpawnLocation = Owner->GetActorLocation() + Owner->GetActorForwardVector() * 200.f + Owner->GetActorRightVector() * 30.f;
 
-
-    // 진행 방향: 캐릭터의 회전을 사용 (또는 필요시 카메라 뷰 방향)
-    FRotator SpawnRotation = CameraRotation;
 
     UE_LOG(LogTemp, Log, TEXT("UStunSkill: SpawnLocation = %s, SpawnRotation = %s"), *SpawnLocation.ToString(), *SpawnRotation.ToString());
 
