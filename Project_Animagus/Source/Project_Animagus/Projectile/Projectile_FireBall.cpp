@@ -57,9 +57,6 @@ void AProjectile_FireBall::OnHit(UPrimitiveComponent* OverlappedComponent, AActo
     if (OtherActor == Shooter )
     {
         return;
-       // ProjectileLight->SetIntensity(0.0f);
-       //  DestroySkill();
-        
     }
     
     

@@ -67,8 +67,6 @@ void AProjectile_MagicMissile::OnHit(UPrimitiveComponent* OverlappedComponent, A
     if (OtherActor == Shooter )
     {
         return;
-        // ProjectileLight->SetIntensity(0.0f);
-        // DestroySkill();
     }
     
     if (OtherActor && OtherActor != this && OtherActor != Shooter)
