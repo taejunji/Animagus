@@ -18,6 +18,8 @@ void AProjectile_Smoke::OnHit(UPrimitiveComponent* OverlappedComponent, AActor* 
     // OtherActor가 유효하며, 자기 자신 및 발사자(Shooter)가 아닌 경우 처리
     if (OtherActor && OtherActor != this && OtherActor != Shooter)
     {
+        PlayHitSound(Hit.Location);
+        
         // 충돌 시 HitEffect (연막 효과) Niagara 시스템이 할당되어 있다면 스폰
         if (HitEffect)
         {

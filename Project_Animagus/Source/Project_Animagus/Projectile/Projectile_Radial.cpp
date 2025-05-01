@@ -44,7 +44,8 @@ void AProjectile_Radial::OnHit(UPrimitiveComponent* OverlappedComponent, AActor*
         
         // 충돌 지점의 법선 벡터를 회전값으로 변환 (충돌 표면의 외부 방향)
       
-
+        PlayHitSound(Hit.Location);
+        
         // HitEffect 이펙트 스폰
         if (HitEffect)
         {

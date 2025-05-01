@@ -6,6 +6,9 @@
 #include "GameFramework/Actor.h"
 #include "ShieldActor.generated.h"
 
+class USoundBase;
+class USoundAttenuation;
+
 UCLASS()
 class PROJECT_ANIMAGUS_API AShieldActor : public AActor
 {
@@ -36,9 +39,14 @@ public:
     UPROPERTY(BlueprintReadOnly, Category = "Shield")
     AActor* ShieldOwner;
 
-    // 보호막이 담당할 투사체들만 충돌하도록 설정된 충돌 채널 처리 등은 기존 코드대로 설정
+    UPROPERTY(EditAnywhere, Category="Audio")
+    USoundBase* LaunchSound;
+    
+    UPROPERTY(EditAnywhere, Category="Audio")
+    USoundBase* HitSound;
 
-    // 보호막 액터가 투사체와 충돌했을 때 처리할 함수
+    UPROPERTY(EditAnywhere, Category="Audio")
+    USoundAttenuation* AttenuationSettings;
 
     UFUNCTION()
     void OnShieldOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,

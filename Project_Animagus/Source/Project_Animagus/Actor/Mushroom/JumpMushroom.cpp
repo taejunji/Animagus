@@ -48,6 +48,18 @@ void AJumpMushroom::OnTriggerOverlapBegin(UPrimitiveComponent* OverlappedComp, A
         ACharacter* Character = Cast<ACharacter>(OtherActor);
         if (Character)
         {
+            if (JumpSound)
+            {
+                UGameplayStatics::PlaySoundAtLocation(
+                    this,
+                    JumpSound,
+                    this->GetActorLocation(),
+                    FRotator::ZeroRotator,
+                    1.f, 1.f, 0.f,
+                    AttenuationSettings
+                );
+            }
+            
             Character->LaunchCharacter(JumpImpulse, true, true);
             UE_LOG(LogTemp, Log, TEXT("JumpMushroom: %s triggered jump with impulse %s"), *Character->GetName(), *JumpImpulse.ToString());
         }
