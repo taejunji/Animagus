@@ -101,6 +101,11 @@ public:
 
     UPROPERTY(EditAnywhere, Category = "Blackboard")
     TArray<FBlackboardKeySelector> Skill_isCoolTime_Key;
+
+    UPROPERTY(EditAnywhere, Category = "Blackboard")
+    FBlackboardKeySelector patrol_pos_key;
+
+    bool bFailedToFindNavMesh;
     
     bool bCanChangeTarget = true; // 타겟 변경 가능 여부
     FTimerHandle TargetChangeTimerHandle; // 타겟 변경 타이머
@@ -149,4 +154,6 @@ protected:
     // Dirty Flag Test
     FVector2D LastDesiredInput;
 
+    // NavMesh 복귀 
+    void CheckAndRecoverFromNavMesh();
 };

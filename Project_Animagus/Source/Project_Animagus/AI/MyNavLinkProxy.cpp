@@ -15,5 +15,5 @@ void AMyNavLinkProxy::OnSmartLinkReached(AActor* MovingActor)
     AAICharacter* AI = Cast<AAICharacter>(MovingActor);
     if (AI == nullptr) return;
 
-    AI->Jump(); 
+    AI->JumpAI(); 
 }

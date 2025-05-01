@@ -40,7 +40,7 @@ EBTNodeResult::Type UBTTaskNode_FindPatrolPos::ExecuteTask(UBehaviorTreeComponen
         SearchRadius,
         NextPatrol))
     {
-        //DrawDebugSphere(GetWorld(), NextPatrol, 100, 16, FColor::Emerald, false, 0.2f);
+        // DrawDebugSphere(GetWorld(), NextPatrol, 300, 16, FColor::Magenta, false, 0.2f);
 
         OwnerComp.GetBlackboardComponent()->SetValueAsVector(patrol_pos_key.SelectedKeyName, NextPatrol);
         return EBTNodeResult::Succeeded;

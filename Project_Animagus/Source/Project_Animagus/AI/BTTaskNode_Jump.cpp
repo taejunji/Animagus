@@ -21,13 +21,13 @@ EBTNodeResult::Type UBTTaskNode_Jump::ExecuteTask(UBehaviorTreeComponent& OwnerC
         return EBTNodeResult::Failed;
     }
 
-    ABaseCharacter* Character = Cast<ABaseCharacter>(OwnerComp.GetAIOwner()->GetPawn());
-    if (Character == nullptr)
+    AAICharacter* AICharacter = Cast<AAICharacter>(OwnerComp.GetAIOwner()->GetPawn());
+    if (AICharacter == nullptr)
     {
         return EBTNodeResult::Failed;
     }
 
-    Character->Jump();
+    AICharacter->JumpAI();
 
     return EBTNodeResult::Succeeded;
 }
