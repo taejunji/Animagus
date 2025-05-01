@@ -21,6 +21,7 @@ void AProjectile_Stun::OnHit(UPrimitiveComponent* OverlappedComponent, AActor* O
     // 충돌 대상이 유효하고, 자신 및 발사자(Shooter)는 제외
     if (OtherActor && OtherActor != this && OtherActor != Shooter)
     {
+        PlayHitSound(Hit.Location);
         // 대상이 캐릭터인 경우
         if (ACharacter* HitCharacter = Cast<ACharacter>(OtherActor))
         {

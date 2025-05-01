@@ -63,8 +63,6 @@ void AProjectile_MagicMissile::OnHit(UPrimitiveComponent* OverlappedComponent, A
                                       UPrimitiveComponent* OtherComp, FVector NormalImpulse,
                                       const FHitResult& Hit)
 {
-
-
     
     if (OtherActor == Shooter )
     {
@@ -75,6 +73,9 @@ void AProjectile_MagicMissile::OnHit(UPrimitiveComponent* OverlappedComponent, A
     
     if (OtherActor && OtherActor != this && OtherActor != Shooter)
     {
+
+        PlayHitSound(Hit.Location);
+        
         // 적용할 데미지: UGameplayStatics::ApplyDamage
         UGameplayStatics::ApplyDamage(OtherActor, DamageValue, GetInstigatorController(), this, nullptr);
 

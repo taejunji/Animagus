@@ -10,6 +10,9 @@ class UPointLightComponent;
 class UProjectileMovementComponent;
 class UNiagaraSystem;
 class UNiagaraComponent;
+class USoundBase;
+class USoundAttenuation;
+class UAudioComponent;
 
 UCLASS()
 class PROJECT_ANIMAGUS_API AProjectileBase : public AActor
@@ -103,8 +106,21 @@ public:
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Effects")
     float EffectScale;
+
+    UPROPERTY(EditAnywhere, Category="Audio")
+    USoundBase* LaunchSound;
+    
+    UPROPERTY(EditAnywhere, Category="Audio")
+    USoundBase* HitSound;
+
+    UPROPERTY(EditAnywhere, Category="Audio")
+    USoundAttenuation* AttenuationSettings;
     
     /** 투사체를 소멸시키는 함수 (타이머에서 호출) */
     UFUNCTION()
     void DestroySkill();
+
+    UFUNCTION()
+    virtual void PlayHitSound(const FVector& Location);
+  
 };

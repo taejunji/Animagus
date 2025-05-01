@@ -9,7 +9,8 @@ class UGeometryCollectionComponent;
 class UNiagaraSystem;
 class ABaseItem;
 class AProjectileBase;
-
+class USoundBase;
+class USoundAttenuation;
 UCLASS()
 class PROJECT_ANIMAGUS_API AItem_Box_Base : public AActor
 {
@@ -50,6 +51,18 @@ protected:
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Box|Items")
     TSubclassOf<ABaseItem> BaseItemPlusClass;
 
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Box|Items")
+    TSubclassOf<ABaseItem> HealItemClass;
+
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Box|Items")
+    TSubclassOf<ABaseItem> HealItemPlusClass;
+    
+    UPROPERTY(EditAnywhere, Category="Audio")
+    USoundBase* BreakSound;
+
+    UPROPERTY(EditAnywhere, Category="Audio")
+    USoundAttenuation* AttenuationSettings;
+    
     // 충돌 이벤트 핸들러
     UFUNCTION()
     void OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, 

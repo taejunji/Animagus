@@ -35,6 +35,11 @@ void UHasteSkill::ActiveSkill_Implementation()
         Char->default_run_speed     = BoostedRunSpeed;
         Char->SetWalkSpeed(BoostedRunSpeed);
 
+        if (LanchedSound && Char->IsLocallyControlled())
+        {
+            UGameplayStatics::PlaySound2D(this, LanchedSound);
+        }
+        
         // Niagara 이펙트 켜기
         if (Char->SpeedBoostComponent)
             Char->SpeedBoostComponent->Activate();
@@ -107,6 +112,7 @@ void UHasteSkill::CheckSpeed()
     if (!(Ctrl && Ctrl->IsLocalController()))
         return;
 
+
     // current_speed 기준으로 PostProcess 토글
     if (Char->current_speed >= PostProcessSpeedThreshold)
     {
@@ -147,8 +153,7 @@ void UHasteSkill::UpgradeSkill(int32 NewPowerUpLevel)
 {
    
     int32 Level = FMath::Clamp(NewPowerUpLevel, 0, 14);
-
-    // 홀수 레벨이면 투사체 개수를 증가시키고, 짝수이면 데미지를 증가시킵니다.
+    
     if (Level % 2 == 1)
     {
         float CooldownMultiplier = FMath::Clamp(1.0f - (0.05f * NewPowerUpLevel), 0.5f, 1.0f);
@@ -156,6 +161,8 @@ void UHasteSkill::UpgradeSkill(int32 NewPowerUpLevel)
     }
     else
     {
-        BoostedRunSpeed = BaseBoostedRunSpeed + (Level * 100);
+        BoostedRunSpeed = BaseBoostedRunSpeed + (Level * 100.f);
     }
+
+    UE_LOG(LogTemp, Log, TEXT("BoostedRunSpeed upgraded: Level %d, BoostedRunSpeed: %f, CooldownTime: %f"), Level, BoostedRunSpeed, CooldownTime);
 }

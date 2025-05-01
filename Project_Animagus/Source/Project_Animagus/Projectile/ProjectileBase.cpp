@@ -6,6 +6,7 @@
 #include "NiagaraComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "TimerManager.h"
+#include "Components/AudioComponent.h"
 #include "Project_Animagus/Actor/Shield/ShieldActor.h"
 
 AProjectileBase::AProjectileBase()
@@ -53,7 +54,8 @@ AProjectileBase::AProjectileBase()
     ProjectileMovement->bRotationFollowsVelocity = true;
     ProjectileMovement->bShouldBounce = false;
     ProjectileMovement->ProjectileGravityScale = 0.f;
-
+    
+    
     // 기본 값 설정
     DamageValue = 50.0f;
     Lifetime = 10.0f;  // 예를 들어, 5초 후 자동 소멸
@@ -76,6 +78,18 @@ void AProjectileBase::BeginPlay()
         CollisionSphere->IgnoreActorWhenMoving(Shooter, true);
     }
 
+    // 발사 사운드
+    if (LaunchSound)
+    {
+        UGameplayStatics::PlaySoundAtLocation(
+            this, LaunchSound, GetActorLocation(),
+            FRotator::ZeroRotator, 1.f, 1.f, 0.f,
+            AttenuationSettings
+        );
+    }
+    
+
+    
     // 스폰 시 FlashEffect 이펙트 재생
     if (FlashEffect && ProjectileEffectComponent)
     {
@@ -87,6 +101,8 @@ void AProjectileBase::BeginPlay()
         );
     }
 
+
+    
     if (ProjectileEffectComponent && ProjectileEffectComponent->GetAsset())
     {
         ProjectileEffectComponent->SetFloatParameter(FName("Scale"), EffectScale);
@@ -202,4 +218,19 @@ void AProjectileBase::DestroySkill()
     }
     
     Destroy();
+}
+
+void AProjectileBase::PlayHitSound(const FVector& Location)
+{
+    if (HitSound)
+    {
+        UGameplayStatics::PlaySoundAtLocation(
+            this,
+            HitSound,
+            Location,
+            FRotator::ZeroRotator,
+            1.f, 1.f, 0.f,
+            AttenuationSettings
+        );
+    }
 }

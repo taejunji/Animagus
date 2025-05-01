@@ -22,6 +22,8 @@ void APowerUpPlusItem::OnPickedUp(ABaseCharacter* Picker)
         // 플레이어의 파워업 상태 증가 처리
         Picker->IncreasePowerUpLevel();
         Picker->IncreasePowerUpLevel();
+        Picker->IncreasePowerUpLevel();
+
         
         // 피크업 이펙트 재생
         if (PickupEffect)

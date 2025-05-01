@@ -9,7 +9,7 @@
 class ABaseCharacter;
 class APlayerCharacter;
 struct FTimerHandle;
-
+class USoundBase;
 
 /**
  * 
@@ -40,7 +40,8 @@ public:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Haste")
     float PostProcessSpeedThreshold;
 
-
+    UPROPERTY(EditAnywhere, Category="Audio")
+    USoundBase* LanchedSound;
     
     /** 스킬 활성화 구현 */
     virtual void ActiveSkill_Implementation() override;

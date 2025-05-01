@@ -17,10 +17,7 @@ public:
     AItem_Box_High();
 
 protected:
-    // 파괴 시 스폰할 아이템의 타입에 따른 추가 변수 (예: 0이면 기존, 1이면 새로운 아이템)
-    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Box|Items")
-    int32 ItemSpawnVariant;
-
+    
     // 오버라이드된 BreakBox 함수: 다른 Mesh/GC, 그리고 스폰 로직을 처리
     virtual void BreakBox() override;
 };

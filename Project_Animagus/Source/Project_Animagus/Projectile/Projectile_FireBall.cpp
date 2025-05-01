@@ -54,6 +54,15 @@ void AProjectile_FireBall::OnHit(UPrimitiveComponent* OverlappedComponent, AActo
         return;
     }
 
+    if (OtherActor == Shooter )
+    {
+        return;
+       // ProjectileLight->SetIntensity(0.0f);
+       //  DestroySkill();
+        
+    }
+    
+    
     // 기본 AProjectileBase의 충돌 처리 전에, 충돌 대상이 유효하고, 자신과 발사자(Shooter)와 충돌하지 않을 때 처리
     if (OtherActor && OtherActor != this && OtherActor != Shooter)
     {
@@ -69,7 +78,9 @@ void AProjectile_FireBall::OnHit(UPrimitiveComponent* OverlappedComponent, AActo
             FRotator Rotation = Hit.Normal.Rotation();
             UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), HitEffect, Hit.Location, Rotation);
         }
-
+        
+        PlayHitSound(Hit.Location);
+        
         // PointLight 강도 0으로 감소
         if (ProjectileLight)
         {

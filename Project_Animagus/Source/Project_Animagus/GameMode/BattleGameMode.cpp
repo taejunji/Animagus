@@ -687,7 +687,6 @@ void ABattleGameMode::RoundTimerUpdate()
 
 void ABattleGameMode::SpawnItemsInArea1()
 {
-//<<<<<<< HEAD
 //    //// 예시로 영역1에 10개의 아이템 스폰
 //    //const int32 NumItemsToSpawn = 30;
 //    //if (Area1SpawnPoints.Num() == 0)
@@ -695,7 +694,6 @@ void ABattleGameMode::SpawnItemsInArea1()
 //    //    UE_LOG(LogTemp, Warning, TEXT("SpawnItemsInArea1: No spawn points available."));
 //    //    return;
 //    //}
-//=======
 //    // 예시로 영역1에 10개의 아이템 스폰
 //    const int32 NumItemsToSpawn = 20;
 //    if (Area1SpawnPoints.Num() == 0)
@@ -703,7 +701,6 @@ void ABattleGameMode::SpawnItemsInArea1()
 //        UE_LOG(LogTemp, Warning, TEXT("SpawnItemsInArea1: No spawn points available."));
 //        return;
 //    }
-//>>>>>>> main
 //
 //    //// 만약 NumItemsToSpawn이 전체 스폰 포인트보다 많으면, 경고 로그 출력
 //    //if (NumItemsToSpawn > Area1SpawnPoints.Num())
@@ -728,7 +725,6 @@ void ABattleGameMode::SpawnItemsInArea1()
 //    //
 //    //int32 ItemsToSpawn = FMath::Min(NumItemsToSpawn, LocalSpawnPoints.Num());
 //
-//<<<<<<< HEAD
 //    //for (int32 i = 0; i < ItemsToSpawn; i++)
 //    //{
 //    //    FVector SpawnLocation = LocalSpawnPoints[i];
@@ -749,7 +745,6 @@ void ABattleGameMode::SpawnItemsInArea1()
 //    //        UE_LOG(LogTemp, Warning, TEXT("SpawnItemsInArea1: Failed to spawn item at index %d"), i);
 //    //    }
 //    //}
-//=======
 //    for (int32 i = 0; i < ItemsToSpawn; i++)
 //    {
 //        FVector SpawnLocation = LocalSpawnPoints[i];
@@ -769,9 +764,7 @@ void ABattleGameMode::SpawnItemsInArea1()
 //            UE_LOG(LogTemp, Warning, TEXT("SpawnItemsInArea1: Failed to spawn item at index %d"), i);
 //        }
 //    }
-//>>>>>>> main
 }
-
 
 void ABattleGameMode::InitializeArea1SpawnPoints()
 {

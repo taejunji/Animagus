@@ -13,8 +13,8 @@ AItem_Box_Base::AItem_Box_Base()
 {
     PrimaryActorTick.bCanEverTick = true;
 
-    HP = 50.f;
-    SpawnItemType = 0; // 기본값
+    HP = 30.f;
+    SpawnItemType = 2; // 기본값
 
     // 정적 메쉬 컴포넌트 생성 (intact 상태)
     MeshComp = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("MeshComp"));
@@ -58,6 +58,29 @@ AItem_Box_Base::AItem_Box_Base()
     {
         UE_LOG(LogTemp, Warning, TEXT("Item_Box_Base: Failed to load BaseItemPlusClass."));
     }
+
+    static ConstructorHelpers::FClassFinder<ABaseItem> HealItemBP(TEXT("/Game/WorkFolder/Bluprints/Item/MyHealItem")); // 실제 경로로 변경
+    if (HealItemBP.Succeeded())
+    {
+        HealItemClass = HealItemBP.Class;
+        UE_LOG(LogTemp, Log, TEXT("Item_Box_Base: Successfully loaded BaseItemPlusClass: %s"), *HealItemClass->GetName());
+    }
+    else
+    {
+        UE_LOG(LogTemp, Warning, TEXT("Item_Box_Base: Failed to load BaseItemPlusClass."));
+    }
+    
+    static ConstructorHelpers::FClassFinder<ABaseItem> HealItemPlusBP(TEXT("/Game/WorkFolder/Bluprints/Item/MyHealPlusItem")); // 실제 경로로 변경
+    if (HealItemPlusBP.Succeeded())
+    {
+        HealItemPlusClass = HealItemPlusBP.Class;
+        UE_LOG(LogTemp, Log, TEXT("Item_Box_Base: Successfully loaded BaseItemPlusClass: %s"), *HealItemPlusClass->GetName());
+    }
+    else
+    {
+        UE_LOG(LogTemp, Warning, TEXT("Item_Box_Base: Failed to load BaseItemPlusClass."));
+    }
+    
 }
 
 void AItem_Box_Base::BeginPlay()
@@ -115,6 +138,18 @@ void AItem_Box_Base::BreakBox()
         MeshComp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
     }
 
+    if (BreakSound)
+    {
+        UGameplayStatics::PlaySoundAtLocation(
+            this,
+            BreakSound,
+            this->GetActorLocation(),
+            FRotator::ZeroRotator,
+            1.f, 1.f, 0.f,
+            AttenuationSettings
+        );
+    } 
+    
     // 3. Geometry Collection 컴포넌트를 활성화하여 파괴 효과 적용
     if (FracturedComp)
     {
@@ -128,7 +163,20 @@ void AItem_Box_Base::BreakBox()
     }
 
     // 4. 아이템 스폰 처리 (SpawnItemType에 따라 BaseItemClass 또는 BaseItemPlusClass)
-    TSubclassOf<ABaseItem> ItemToSpawn = (SpawnItemType == 0) ? BaseItemClass : BaseItemPlusClass;
+    TSubclassOf<ABaseItem> ItemToSpawn = nullptr;
+    if (SpawnItemType == 0)
+    {
+        ItemToSpawn = BaseItemClass;
+    }
+    else if (SpawnItemType == 1)
+    {
+        ItemToSpawn = HealItemClass;
+    }
+    else 
+    {
+        return;
+    }
+    
     if (ItemToSpawn)
     {
         FVector SpawnLocation = GetActorLocation();
