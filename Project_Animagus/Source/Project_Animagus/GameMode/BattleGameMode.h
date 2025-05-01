@@ -136,8 +136,10 @@ public:
     void SpawnItemsInArea1();
     
     UFUNCTION(BlueprintCallable, Category = "PowerUp")
-    void SpawnItemsInArea2();
+    void InitializeArea2SpawnPoints();
 
     UFUNCTION(BlueprintCallable, Category = "PowerUp")
-    void SpawnItemsInArea3(); 
+    void InitializeArea3SpawnPoints();
+
+    void SpawnItemsInArea3(Protocol::SC_SPAWN_ITEM_PKT& pkt);
 };

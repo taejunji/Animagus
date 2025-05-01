@@ -382,8 +382,8 @@ void Room::InitItemInfo()
         for (int i = 0; i < 20; ++i)
         {
             item.spawn_index[i] = static_cast<char>(pool[i]);
-            //item.item_level[i] = static_cast<char>(rand() % 2);
-            item.item_level[i] = static_cast<char>(1);
+            item.item_level[i] = static_cast<char>(rand() % 3);
+            //item.item_level[i] = static_cast<char>(1);
         }
         item.item_count = 20;
         item.zone_index = 0;
@@ -404,7 +404,7 @@ void Room::InitItemInfo()
         for (int i = 0; i < 10; ++i)
         {
             item.spawn_index[i] = static_cast<char>(pool[i]);
-            item.item_level[i] = static_cast<char>(rand() % 2);
+            item.item_level[i] = static_cast<char>(rand() % 3);
         }
         item.item_count = 10;
         item.zone_index = 1;
@@ -412,26 +412,19 @@ void Room::InitItemInfo()
         m_itemInfo[1] = item;
     }
 
-    //{   // Zone3
-    //    SC_SPAWN_ITEM_PKT item;
+    {   // Zone3
+        SC_SPAWN_ITEM_PKT item;
 
-    //    std::vector<int> pool;
-    //    pool.resize(49); ZeroMemory(pool.data(), sizeof(int) * 49);
-    //    std::iota(pool.begin(), pool.end(), 0);
+        for (int i = 0; i < 10; ++i)
+        {
+            item.spawn_index[i] = static_cast<char>(0);
+            item.item_level[i] = static_cast<char>(rand() % 3);
+        }
+        item.item_count = 10;
+        item.zone_index = 2;
 
-    //    std::mt19937_64 rng(std::chrono::steady_clock::now().time_since_epoch().count());
-    //    std::shuffle(pool.begin(), pool.end(), rng);
-
-    //    for (int i = 0; i < 10; ++i)
-    //    {
-    //        item.spawn_index[i] = static_cast<char>(pool[i]);
-    //        item.item_level[i] = static_cast<char>(rand() % 2);
-    //    }
-    //    item.item_count = 10;
-    //    item.zone_index = 2;
-
-    //    m_itemInfo[2] = item;
-    //}
+        m_itemInfo[2] = item;
+    }
 
 }
 

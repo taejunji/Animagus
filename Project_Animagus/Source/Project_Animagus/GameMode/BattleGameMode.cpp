@@ -153,10 +153,11 @@ void ABattleGameMode::InitBattleMode()
     SpawnedItems.Empty();
 
     InitializeArea1SpawnPoints();
-    SpawnItemsInArea2();
-    //SpawnItemsInArea3();
+    InitializeArea2SpawnPoints();
+    InitializeArea3SpawnPoints();
 
     //SpawnItemsInArea1();
+    //SpawnItemsInArea3();
 }
 
 void ABattleGameMode::SpawnPlayers()
@@ -514,6 +515,11 @@ void ABattleGameMode::SpawnSkill(Protocol::CS_USING_SKILL_PKT& pkt)
 void ABattleGameMode::SpawnItem(Protocol::SC_SPAWN_ITEM_PKT& pkt)
 {
     uint16 ZoneIndex = pkt.zone_index;
+    if (ZoneIndex >= 2)
+    {
+        SpawnItemsInArea3(pkt);
+        return;
+    }
 
     int32 SpawnIndex[20];
     int32 ItemLevel[20];
@@ -900,7 +906,7 @@ void ABattleGameMode::InitializeArea1SpawnPoints()
     UE_LOG(LogTemp, Log, TEXT("InitializeRegion1SpawnPoints: Initialized %d spawn points."), Area1SpawnPoints.Num());
 }
 
-void ABattleGameMode::SpawnItemsInArea2()
+void ABattleGameMode::InitializeArea2SpawnPoints()
 {
     // 50개
 
@@ -961,11 +967,25 @@ void ABattleGameMode::SpawnItemsInArea2()
     AreaSpawnPoints.Add(Area2SpawnPoints);
 }
 
-void ABattleGameMode::SpawnItemsInArea3()
+void ABattleGameMode::InitializeArea3SpawnPoints()
 {
     Area3SpawnPoints.Empty();
 
-    Area3SpawnPoints.Add(FVector(0.f, 0.f, 66.f));
+    Area3SpawnPoints.Add(FVector(-4914.f, 1825.f, 2294.f));
+    Area3SpawnPoints.Add(FVector(-4276.f, 6075.f, 2297.f));
+    Area3SpawnPoints.Add(FVector(4237.f, 2158.f, 2297.f));
+    Area3SpawnPoints.Add(FVector(1315.f, -5571.f, 2297.f));
+    Area3SpawnPoints.Add(FVector(-4627.f, -3477.f, 1768.f));
+    Area3SpawnPoints.Add(FVector(0.f, 0.f, 1443.f));
+    Area3SpawnPoints.Add(FVector(624.f, 669.f, 197.f));
+    Area3SpawnPoints.Add(FVector(-576.f, 380.f, 204.f));
+    Area3SpawnPoints.Add(FVector(-271.f, -782.f, 204.f));
+    Area3SpawnPoints.Add(FVector(-424.f, -183.f, 209.f));
 
     AreaSpawnPoints.Add(Area3SpawnPoints);
+}
+
+void ABattleGameMode::SpawnItemsInArea3(Protocol::SC_SPAWN_ITEM_PKT& pkt)
+{
+
 }
