@@ -32,6 +32,8 @@ namespace Protocol {
         STUN,           // 기절
         RADIAL,         // 방사형
         CHANGE,         // 초동역학위치변환기
+        HASTE,          // 헤이스트
+
     };
 
     enum class StatusType : uint16

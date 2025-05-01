@@ -10,4 +10,4 @@
 #include "ShockwaveSkill.h"
 #include "SmokeSkill.h"
 #include "Stun.h"
-
+#include "HasteSkill.h"

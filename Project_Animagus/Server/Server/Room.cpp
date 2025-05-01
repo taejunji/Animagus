@@ -76,8 +76,8 @@ bool Room::HandleEnterPlayer(PlayerRef player)
         //newPlayer.y = player->y;
         //newPlayer.z = player->z;
         //newPlayer.rotation = player->rotation;
-        //newPlayer.spawn_index = 0;
-        newPlayer.spawn_index = m_playerCount % 4;
+        newPlayer.spawn_index = 0;
+        //newPlayer.spawn_index = m_playerCount % 4;
         newPlayer.host = (m_playerCount % 2) == 1;   // TODO: host 기준 만들기
         SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(newPlayer);
         if (auto session = player->ownerSession.lock())

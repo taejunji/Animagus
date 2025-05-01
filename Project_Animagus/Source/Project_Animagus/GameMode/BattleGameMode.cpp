@@ -455,50 +455,54 @@ void ABattleGameMode::SpawnSkill(Protocol::CS_USING_SKILL_PKT& pkt)
     switch (pkt.s_type)
     {
     case Protocol::SkillType::NONE:
-            UE_LOG(LogTemp, Error, TEXT("SpawnSkill: Skill type is NONE"));
-            return;
+        UE_LOG(LogTemp, Error, TEXT("SpawnSkill: Skill type is NONE"));
+        return;
     case Protocol::SkillType::FIREBALL:
-            Skill = NewObject<UFireball>(this, UFireball::StaticClass());
-            Skill->SetSkillRotation(pkt.pitch, pkt.yaw, pkt.roll);
-            Skill->UpgradeSkill(Player->PowerUpLevel);
-            break;
+        Skill = NewObject<UFireball>(this, UFireball::StaticClass());
+        Skill->SetSkillRotation(pkt.pitch, pkt.yaw, pkt.roll);
+        Skill->UpgradeSkill(Player->PowerUpLevel);
+        break;
     case Protocol::SkillType::SHIELD:
-            Skill = NewObject<UShieldSkill>(this, UShieldSkill::StaticClass());
-            Skill->UpgradeSkill(Player->PowerUpLevel);
-            break;
+        Skill = NewObject<UShieldSkill>(this, UShieldSkill::StaticClass());
+        Skill->UpgradeSkill(Player->PowerUpLevel);
+        break;
     case Protocol::SkillType::BOUNCE:
-            Skill = NewObject<UBounce>(this, UBounce::StaticClass());
-            Skill->SetSkillRotation(pkt.pitch, pkt.yaw, pkt.roll);
-            Skill->UpgradeSkill(Player->PowerUpLevel);
-            break;
+        Skill = NewObject<UBounce>(this, UBounce::StaticClass());
+        Skill->SetSkillRotation(pkt.pitch, pkt.yaw, pkt.roll);
+        Skill->UpgradeSkill(Player->PowerUpLevel);
+        break;
     case Protocol::SkillType::MAGICMISSILE:
-            Skill = NewObject<UMagicMissile>(this, UMagicMissile::StaticClass());
-            Skill->SetSkillRotation(pkt.pitch, pkt.yaw, pkt.roll);
-            Skill->UpgradeSkill(Player->PowerUpLevel);
-            break;
+        Skill = NewObject<UMagicMissile>(this, UMagicMissile::StaticClass());
+        Skill->SetSkillRotation(pkt.pitch, pkt.yaw, pkt.roll);
+        Skill->UpgradeSkill(Player->PowerUpLevel);
+        break;
     case Protocol::SkillType::SMOKE:
-            Skill = NewObject<USmokeSkill>(this, USmokeSkill::StaticClass());
-            Skill->SetSkillRotation(pkt.pitch, pkt.yaw, pkt.roll);
-            Skill->UpgradeSkill(Player->PowerUpLevel);
-            break;
+        Skill = NewObject<USmokeSkill>(this, USmokeSkill::StaticClass());
+        Skill->SetSkillRotation(pkt.pitch, pkt.yaw, pkt.roll);
+        Skill->UpgradeSkill(Player->PowerUpLevel);
+        break;
     case Protocol::SkillType::RADIAL:
-            Skill = NewObject<URadialSkill>(this, URadialSkill::StaticClass());
-            Skill->SetSkillRotation(pkt.pitch, pkt.yaw, pkt.roll);
-            Skill->UpgradeSkill(Player->PowerUpLevel);
-            break;
+        Skill = NewObject<URadialSkill>(this, URadialSkill::StaticClass());
+        Skill->SetSkillRotation(pkt.pitch, pkt.yaw, pkt.roll);
+        Skill->UpgradeSkill(Player->PowerUpLevel);
+        break;
     case Protocol::SkillType::CHANGE:
-            Skill = NewObject<UChangeSkill>(this, UChangeSkill::StaticClass());
-            Skill->SetSkillRotation(pkt.pitch, pkt.yaw, pkt.roll);
-            Skill->UpgradeSkill(Player->PowerUpLevel);
-            break;
+        Skill = NewObject<UChangeSkill>(this, UChangeSkill::StaticClass());
+        Skill->SetSkillRotation(pkt.pitch, pkt.yaw, pkt.roll);
+        Skill->UpgradeSkill(Player->PowerUpLevel);
+        break;
     case Protocol::SkillType::STUN:
-            Skill = NewObject<UStun>(this, UStun::StaticClass());
-            Skill->SetSkillRotation(pkt.pitch, pkt.yaw, pkt.roll);
-            Skill->UpgradeSkill(Player->PowerUpLevel);
-            break;
+        Skill = NewObject<UStun>(this, UStun::StaticClass());
+        Skill->SetSkillRotation(pkt.pitch, pkt.yaw, pkt.roll);
+        Skill->UpgradeSkill(Player->PowerUpLevel);
+        break;
+    case Protocol::SkillType::HASTE:
+        Skill = NewObject<UHasteSkill>(this, UHasteSkill::StaticClass());
+        Skill->UpgradeSkill(Player->PowerUpLevel);
+        break;
     default:
-            UE_LOG(LogTemp, Error, TEXT("SpawnSkill: Unknown skill type"));
-            return;
+        UE_LOG(LogTemp, Error, TEXT("SpawnSkill: Unknown skill type"));
+        return;
     }
 
     if (Skill) {
