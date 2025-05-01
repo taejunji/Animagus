@@ -516,6 +516,12 @@ void AMyAIController::CheckAndRecoverFromNavMesh()
             AICharacter->JumpAI();
         }
 
+        // 포커스를 해제하는데, 현재 타겟과만 관련된 포커스 해제
+        // ClearFocus(EAIFocusPriority::Gameplay);  // Focus 해제 
+        //GetBlackboardComponent()->ClearValue(TargetKey.SelectedKeyName);  // Blackboard에서 타겟 제거 
+        //GetWorld()->GetTimerManager().ClearTimer(TargetChangeTimerHandle);
+        //bCanChangeTarget = true;
+
         // 네비메시를 찾지 못한 상태를 기록
         // bFailedToFindNavMesh = true;
     }
