@@ -482,8 +482,16 @@ void ABattleGameMode::SpawnItemsInArea2()
 void ABattleGameMode::SpawnItemsInArea3()
 {
     Area3SpawnPoints.Empty();
-
-    Area3SpawnPoints.Add(FVector(0.f, 0.f, 66.f));
+    Area3SpawnPoints.Add(FVector(-4914.f, 1825.f, 2294.f));
+    Area3SpawnPoints.Add(FVector(-4276.f, 6075.f, 2297.f));
+    Area3SpawnPoints.Add(FVector(4237.f, 2158.f, 2297.f));
+    Area3SpawnPoints.Add(FVector(1315.f, -5571.f, 2297.f));
+    Area3SpawnPoints.Add(FVector(-4627.f, -3477.f, 1768.f));
+    Area3SpawnPoints.Add(FVector(0.f, 0.f, 1443.f));
+    Area3SpawnPoints.Add(FVector(624.f, 669.f, 197.f));
+    Area3SpawnPoints.Add(FVector(-576.f, 380.f, 204.f));
+    Area3SpawnPoints.Add(FVector(-271.f, -782.f, 204.f));
+    Area3SpawnPoints.Add(FVector(-424.f, -183.f, 209.f));
     
 }
 

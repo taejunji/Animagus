@@ -9,6 +9,8 @@
 class USphereComponent;
 class UNiagaraComponent;
 class UNiagaraSystem;
+class USoundBase;
+class USoundAttenuation;
 
 UCLASS(Abstract, Blueprintable)
 class PROJECT_ANIMAGUS_API ABaseItem : public AActor
@@ -39,6 +41,12 @@ protected:
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Item")
     UNiagaraComponent* ItemEffect;
 
+    UPROPERTY(EditAnywhere, Category="Audio")
+    USoundBase* PickSound;
+
+    UPROPERTY(EditAnywhere, Category="Audio")
+    USoundAttenuation* AttenuationSettings;
+
     // 아이템이 이미 획득되었는지 판별하는 플래그
     bool bIsPickedUp;
 
@@ -57,5 +65,5 @@ public:
     /** 아이템 소멸 및 정리 */
     UFUNCTION(BlueprintCallable, Category = "Item")
     virtual void DestroyItem();
-
+    
 };

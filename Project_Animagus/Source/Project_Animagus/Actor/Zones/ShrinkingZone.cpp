@@ -24,6 +24,7 @@ AShrinkingZone::AShrinkingZone()
 	// Niagara Component 생성 및 연결
 	NiagaraComp = CreateDefaultSubobject<UNiagaraComponent>(TEXT("NiagaraComp"));
 	NiagaraComp->SetupAttachment(RootComponent);
+    
 }
 
 void AShrinkingZone::BeginPlay()
@@ -72,7 +73,7 @@ void AShrinkingZone::Tick(float DeltaTime)
 		DrawDebugSphere(GetWorld(), ZoneCenter, 50.0f, 12, FColor::Red, false, 0.2f);
 	}
 
-	// 모든 플레이어에 대해 안전 영역 판별 및 데미지 적용
+
 	TArray<AActor*> PlayerActors;
 	UGameplayStatics::GetAllActorsOfClass(GetWorld(), APawn::StaticClass(), PlayerActors);
 	for (AActor* Actor : PlayerActors)
@@ -84,8 +85,15 @@ void AShrinkingZone::Tick(float DeltaTime)
 			{
 			    if (!Is_in)
 			    {
+			        if (EnterZoneSound)
+			        {
+			            UGameplayStatics::PlaySound2D(this, EnterZoneSound);
+			            UE_LOG(LogTemp, Log, TEXT("SHRINKSOUND ON") );
+			        }
+			        
 			        Is_in = true;
 			        SetFogPostProcess(1);
+
 			    }
 			    
 				ApplyGasDamage(Pawn, DeltaTime);

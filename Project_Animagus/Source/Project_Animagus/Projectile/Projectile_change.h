@@ -11,6 +11,8 @@
  * 투사체가 캐릭터와 충돌 시, 발사자와 충돌한 캐릭터의 위치를 교환하는 투사체 클래스.
  * Owner가 없는 경우, 충돌한 캐릭터를 월드 원점으로 이동시킴.
  */
+class USoundBase;
+
 UCLASS()
 class PROJECT_ANIMAGUS_API AProjectile_change : public AProjectileBase
 {
@@ -23,5 +25,7 @@ protected:
     virtual void OnHit(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
                          UPrimitiveComponent* OtherComp, FVector NormalImpulse,
                          const FHitResult& Hit) override;
-    
+   public:
+    UPROPERTY(EditAnywhere, Category="Audio")
+    USoundBase* HitSound_noPlayer;
 };

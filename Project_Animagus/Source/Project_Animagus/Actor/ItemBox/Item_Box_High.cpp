@@ -12,10 +12,7 @@
 
 AItem_Box_High::AItem_Box_High()
 {
-
     
-    // 새로운 아이템 스폰 변수를 기본값으로 설정 (예: 1이면 새로운 아이템을 스폰)
-    ItemSpawnVariant = 1;
 }
 
 void AItem_Box_High::BreakBox()
@@ -29,6 +26,18 @@ void AItem_Box_High::BreakBox()
         MeshComp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
     }
 
+    if (BreakSound)
+    {
+        UGameplayStatics::PlaySoundAtLocation(
+            this,
+            BreakSound,
+            this->GetActorLocation(),
+            FRotator::ZeroRotator,
+            1.f, 1.f, 0.f,
+            AttenuationSettings
+        );
+    } 
+    
     // 3. Geometry Collection 컴포넌트 활성화 (부서진 상태로 전환)
     if (FracturedComp)
     {
@@ -43,13 +52,18 @@ void AItem_Box_High::BreakBox()
 
     // 4. 아이템 스폰 처리: ItemSpawnVariant 값에 따라 다른 아이템을 스폰합니다.
     TSubclassOf<ABaseItem> ItemToSpawn = nullptr;
-    if (ItemSpawnVariant == 0)
-    {
-        ItemToSpawn = BaseItemClass;
-    }
-    else if (ItemSpawnVariant == 1)
+    if (SpawnItemType == 0)
     {
         ItemToSpawn = BaseItemPlusClass;
+    }
+    else if (SpawnItemType == 1)
+    {
+        ItemToSpawn = HealItemPlusClass;
+    }
+
+    else 
+    {
+        return;
     }
     
     if (ItemToSpawn)
