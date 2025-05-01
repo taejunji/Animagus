@@ -162,7 +162,7 @@ bool Room::HandleEnterPlayer(PlayerRef player)
     }
 
     // 신입 플레이어에게 아이템 정보 전송
-    for (uint16 i = 0; i < 2; ++i)
+    for (uint16 i = 0; i < 3; ++i)
     {
         SC_SPAWN_ITEM_PKT item = m_itemInfo[i];
 
@@ -417,9 +417,10 @@ void Room::InitItemInfo()
 
         for (int i = 0; i < 10; ++i)
         {
-            item.spawn_index[i] = static_cast<char>(0);
+            item.spawn_index[i] = static_cast<char>(i);
             item.item_level[i] = static_cast<char>(rand() % 3);
         }
+        
         item.item_count = 10;
         item.zone_index = 2;
 

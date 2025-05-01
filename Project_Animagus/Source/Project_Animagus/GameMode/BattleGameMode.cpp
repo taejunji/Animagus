@@ -18,15 +18,13 @@
 
 #include "GameFramework/NavMovementComponent.h"
 #include "Project_Animagus/Item/BaseItem.h"
-#include "Project_Animagus/UI/MyPlayerHUDWidget.h"
 #include "Algo/RandomShuffle.h"
 #include "Project_Animagus/Actor/ItemBox/Item_Box_Base.h"
+#include "Project_Animagus/Actor/ItemBox/Item_Box_High.h"
 #include "Project_Animagus/Item/PowerUpItem.h"
 #include "Runtime/Core/Tests/Containers/TestUtils.h"
-#include "../Actor/ItemBox/Item_Box_Base.h"
 #include "../Network/ClientPacketHandler.h"
 #include "../Actor/Zones/AttractionZone.h"
-#include <vector>
 
 
 ABattleGameMode::ABattleGameMode()
@@ -61,29 +59,42 @@ ABattleGameMode::ABattleGameMode()
     {
         AIControllerClass = AIController.Class;
     }
+    else UE_LOG(LogTemp, Warning, TEXT("AI 컨트롤러 로드 실패"));
+
     static ConstructorHelpers::FClassFinder<APawn> AIPawn(TEXT("/Game/WorkFolder/AI/AIPlayer/BP_AIPlayer.BP_AIPlayer_C"));
-    if (AIPawn.Succeeded()) 
+    if (AIPawn.Succeeded())
     {
-        AIPlayerClass = AIPawn.Class; 
+        AIPlayerClass = AIPawn.Class;
     }
+    else UE_LOG(LogTemp, Warning, TEXT("AI 폰 로드 실패"));
 
     static ConstructorHelpers::FClassFinder<APowerUpItem> Powerupitem(TEXT("/Game/WorkFolder/Bluprints/Item/MyPowerUpItem"));
     if (Powerupitem.Succeeded())
     {
-        PowerUpBpclass = Powerupitem.Class;    
+        PowerUpBpclass = Powerupitem.Class;
     }
+    else UE_LOG(LogTemp, Warning, TEXT("파워업 아이템 로드 실패"));
 
     static ConstructorHelpers::FClassFinder<AItem_Box_Base> ItemboxBp(TEXT("/Game/WorkFolder/Bluprints/Actor/MyItem_Box_Base"));
     if (ItemboxBp.Succeeded())
     {
         ItemBoxBpclass = ItemboxBp.Class;
     }
+    else UE_LOG(LogTemp, Warning, TEXT("아이템박스_기본 로드 실패"));
 
     static ConstructorHelpers::FClassFinder<AAttractionZone> AttractionZoneBp(TEXT("/Game/WorkFolder/Bluprints/Spiders/BP_AttractionZone"));
     if (AttractionZoneBp.Succeeded())
     {
         AttractionBpclass = AttractionZoneBp.Class;
     }
+    else UE_LOG(LogTemp, Warning, TEXT("거미존 로드 실패"));
+
+    static ConstructorHelpers::FClassFinder<AItem_Box_High> ItemboxplusBp(TEXT("/Game/WorkFolder/Bluprints/Actor/MyItem_Box_High"));
+    if (ItemboxplusBp.Succeeded())
+    {
+        ItemBoxHighBpclass = ItemboxplusBp.Class;
+    }
+    else UE_LOG(LogTemp, Warning, TEXT("아이템박스_노랑 로드 실패"));
 
     // 플레이어 ID(0~3)와 스폰 위치를 매핑
     spawn_transform.Add(0, FTransform(FRotator(0, 0, 0), FVector(-13500.0f, 0.0f, 800.f))); // Spawn_0
@@ -980,5 +991,55 @@ void ABattleGameMode::InitializeArea3SpawnPoints()
 
 void ABattleGameMode::SpawnItemsInArea3(Protocol::SC_SPAWN_ITEM_PKT& pkt)
 {
+    uint16 ZoneIndex = pkt.zone_index;
+
+    int32 SpawnIndex[10];
+    int32 ItemLevel[10];
+
+    const uint16 Count = pkt.item_count;
+    for (int32 i = 0; i < Count; ++i)
+    {
+        SpawnIndex[i] = static_cast<int32>(pkt.spawn_index[i]);
+        ItemLevel[i] = static_cast<int32>(pkt.item_level[i]);
+    }
+
+    //UE_LOG(LogTemp, Warning, TEXT("%d - %d"), SpawnIndex[9], ItemLevel[9]);
+
+    if (AreaSpawnPoints[ZoneIndex].Num() == 0)
+    {
+        UE_LOG(LogTemp, Warning, TEXT("SpawnItemsInArea1: No spawn points available."));
+        return;
+    }
+
+    UWorld* World = GetWorld();
+    if (!World)
+    {
+        UE_LOG(LogTemp, Warning, TEXT("SpawnItemsInArea1: World is null."));
+        return;
+    }
+
+    for (int32 i = 0; i < Count; ++i)
+    {
+        int32 index = SpawnIndex[i];
+        FVector SpawnLocation = AreaSpawnPoints[ZoneIndex][index];
+        FRotator SpawnRotation = FRotator::ZeroRotator;
+
+        FActorSpawnParameters SpawnParams;
+        // 필요에 따라 SpawnParams.Owner 또는 Instigator 설정
+
+        AItem_Box_High* NewItem = World->SpawnActor<AItem_Box_High>(ItemBoxHighBpclass, SpawnLocation, SpawnRotation, SpawnParams);
+        //if (ItemLevel[i] < 2)
+
+        if (NewItem)
+        {
+            NewItem->SpawnItemType = ItemLevel[i];
+            //SpawnedItems.Add(NewItem);
+            UE_LOG(LogTemp, Log, TEXT("SpawnItemsInArea1: Spawned item at %s"), *SpawnLocation.ToString());
+        }
+        else
+        {
+            UE_LOG(LogTemp, Warning, TEXT("SpawnItemsInArea1: Failed to spawn item at index %d"), i);
+        }
+    }
 
 }
