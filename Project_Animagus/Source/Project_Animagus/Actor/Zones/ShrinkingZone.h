@@ -4,6 +4,8 @@
 #include "GameFramework/Actor.h"
 #include "ShrinkingZone.generated.h"
 
+class USoundBase;
+
 UCLASS()
 class PROJECT_ANIMAGUS_API AShrinkingZone : public AActor
 {
@@ -41,6 +43,9 @@ public:
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Zone")
     class UNiagaraComponent* NiagaraComp;
 
+    UPROPERTY(EditAnywhere, Category="Audio")
+    USoundBase* EnterZoneSound;
+    
     // 플레이어에게 데미지를 적용하는 함수
     void ApplyGasDamage(AActor* AffectedActor, float DeltaTime);
 

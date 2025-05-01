@@ -65,6 +65,17 @@ void ABaseItem::OnItemOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* 
         ABaseCharacter* Character = Cast<ABaseCharacter>(OtherActor);
         if (Character)
         {
+            if (PickSound)
+            {
+                UGameplayStatics::PlaySoundAtLocation(
+                    this,
+                    PickSound,
+                    this->GetActorLocation(),
+                    FRotator::ZeroRotator,
+                    1.f, 1.f, 0.f,
+                    AttenuationSettings
+                );
+            } 
             OnPickedUp(Character);
         }
     }
@@ -96,3 +107,5 @@ void ABaseItem::DestroyItem()
     }
     Destroy();
 }
+
+

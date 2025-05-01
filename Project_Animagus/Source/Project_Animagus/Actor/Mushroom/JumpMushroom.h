@@ -9,6 +9,10 @@
  * 캐릭터가 밟으면 평소 점프보다 강한 임펄스를 주는 점프 버섯 액터.
  * 물리 충돌용 박스와 점프 효과를 위한 트리거 박스를 별도로 사용함.
  */
+
+class USoundBase;
+class USoundAttenuation;
+
 UCLASS()
 class PROJECT_ANIMAGUS_API AJumpMushroom : public AActor
 {
@@ -35,7 +39,13 @@ protected:
     // 점프 임펄스 값.
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="JumpMushroom")
     FVector JumpImpulse;
+    
+    UPROPERTY(EditAnywhere, Category="Audio")
+    USoundBase* JumpSound;
 
+    UPROPERTY(EditAnywhere, Category="Audio")
+    USoundAttenuation* AttenuationSettings;
+    
     // 트리거 박스 오버랩 이벤트 핸들러.
     UFUNCTION()
     void OnTriggerOverlapBegin(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor,

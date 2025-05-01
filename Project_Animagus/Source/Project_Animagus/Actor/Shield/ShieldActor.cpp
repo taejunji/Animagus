@@ -44,12 +44,26 @@ void AShieldActor::BeginPlay()
 {
 	Super::BeginPlay();
 
+    if (LaunchSound)
+    {
+        UGameplayStatics::PlaySoundAtLocation(
+            this,
+            LaunchSound,
+            this->GetActorLocation(),
+            FRotator::ZeroRotator,
+            1.f, 1.f, 0.f,
+            AttenuationSettings
+        );
+    }
+    
 	// 보호막 지속 시간 후에 자동으로 파괴되도록 타이머 설정
 	FTimerHandle TempHandle;
     GetWorld()->GetTimerManager().SetTimer(TempHandle, FTimerDelegate::CreateLambda([this]()
     {
         this->Destroy();
     }), ShieldDuration, false);
+
+
     
 }
 
@@ -95,14 +109,24 @@ void AShieldActor::OnShieldOverlapBegin(UPrimitiveComponent* OverlappedComp, AAc
         else
         {
             UE_LOG(LogTemp, Warning, TEXT("ShieldActor: Overlap with projectile from other player: %s"), *OtherActor->GetName());
-            // 다른 플레이어의 투사체와 충돌하면 투사체를 Destroy() 시킵니다.
+            if (HitSound)
+            {
+                UGameplayStatics::PlaySoundAtLocation(
+                    this,
+                    HitSound,
+                    this->GetActorLocation(),
+                    FRotator::ZeroRotator,
+                    1.f, 1.f, 0.f,
+                    AttenuationSettings
+                );
+            } 
             // Projectile->DestroySkill();
         }
     }
     else
     {
         UE_LOG(LogTemp, Warning, TEXT("ShieldActor: Overlap with non-projectile actor: %s"), *OtherActor->GetName());
-        // 필요에 따라 추가 처리 (예: 일반 액터 제거 등)
+        
     }
 }
 
