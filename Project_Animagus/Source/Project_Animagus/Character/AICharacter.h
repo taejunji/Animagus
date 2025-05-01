@@ -25,6 +25,9 @@ public:
     virtual void ApplyStun(float Duration);
 
     virtual void RemoveStun();
+
+    void JumpAI();
+
 private:
     void InitPlayerMesh();
 };
