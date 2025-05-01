@@ -66,12 +66,12 @@ void UMagicMissile::ActiveSkill_Implementation()
         if (TargetCharacter)
         {
             FVector DirectionToTarget = (TargetCharacter->GetActorLocation() - SpawnLocation).GetSafeNormal();
-            SpawnRotation = DirectionToTarget.Rotation();
+            SpawnRotation = DirectionToTarget.Rotation() + FRotator(2.f, 0.f, 0.f);
         }
         else
         {
             // 타겟이 없다면 AI Panw이 바라보는 방향으로 발사
-            SpawnRotation = Owner->GetActorRotation();
+            SpawnRotation = Owner->GetActorRotation() + FRotator(2.f, 0.f, 0.f);
         }
     }
     else // Player 혹은 Network가 호출한 경우
