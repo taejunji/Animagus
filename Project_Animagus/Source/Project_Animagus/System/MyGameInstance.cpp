@@ -11,11 +11,40 @@ UMyGameInstance::UMyGameInstance(const FObjectInitializer& ObjectInitializer)
 
     // 메쉬 애셋 저장 -> ConstructorHelpers는 생성자에서만 호출해야한다.
     static ConstructorHelpers::FObjectFinder<USkeletalMesh> SM_Monkey(TEXT("/Game/WorkFolder/Assets/Monkey/Character134_RiggedMonkey.Character134_RiggedMonkey"));
+    if (SM_Monkey.Succeeded())
+    {
+        UE_LOG(LogTemp, Warning, TEXT("SkeltalMonkeySucceeded"));
+    }
+    else UE_LOG(LogTemp, Warning, TEXT("SkeltalMonkeyFailed"));
+    
     static ConstructorHelpers::FObjectFinder<USkeletalMesh> SM_Tiger(TEXT("/Game/WorkFolder/Assets/Tiger/Character128_RiggedTiger.Character128_RiggedTiger"));
+    if (SM_Tiger.Succeeded())
+    {
+        UE_LOG(LogTemp, Warning, TEXT("SM_TigerSucceeded"));
+    }
+    else UE_LOG(LogTemp, Warning, TEXT("SM_TigerFailed"));
+    
     static ConstructorHelpers::FObjectFinder<USkeletalMesh> SM_Koala(TEXT("/Game/WorkFolder/Assets/Koala/Character139_RiggedKoala.Character139_RiggedKoala"));
+    if (SM_Koala.Succeeded())
+    {
+        UE_LOG(LogTemp, Warning, TEXT("SM_KoalaSucceeded"));
+    }
+    else UE_LOG(LogTemp, Warning, TEXT("SM_KoalaFailed"));
+    
     static ConstructorHelpers::FObjectFinder<USkeletalMesh> SM_Sheep(TEXT("/Game/WorkFolder/Assets/Sheep/Character144_RiggedSheep.Character144_RiggedSheep"));
+    if (SM_Sheep.Succeeded())
+    {
+        UE_LOG(LogTemp, Warning, TEXT("SM_SheepSucceeded"));
+    }
+    else UE_LOG(LogTemp, Warning, TEXT("SM_SheepFailed"));
+    
     static ConstructorHelpers::FObjectFinder<USkeletalMesh> SM_Fox(TEXT("/Game/WorkFolder/Assets/Fox/Character131_RiggedFox.Character131_RiggedFox"));
-
+    if (SM_Fox.Succeeded())
+    {
+        UE_LOG(LogTemp, Warning, TEXT("SM_FoxSucceeded"));
+    }
+    else UE_LOG(LogTemp, Warning, TEXT("SM_FoxFailed"));
+    
     if (SM_Monkey.Succeeded()) CharacterMeshes.Add(TEXT("SM_Monkey"), SM_Monkey.Object);
     if (SM_Tiger.Succeeded()) CharacterMeshes.Add(TEXT("SM_Tiger"), SM_Tiger.Object);
     if (SM_Koala.Succeeded()) CharacterMeshes.Add(TEXT("SM_Koala"), SM_Koala.Object);
@@ -42,7 +71,7 @@ void UMyGameInstance::InitGameInstance()
 {
     // 배틀 처음 시작 시 -> 라운드 0, 레벨 Battle로 설정
     round_count = 0;
-    current_level = LevelType::Battle;
+    // current_level = LevelType::Battle;
 }
 
 void UMyGameInstance::SwitchLevel(LevelType level)
@@ -50,15 +79,15 @@ void UMyGameInstance::SwitchLevel(LevelType level)
     switch (level)
     {
     case LevelType::Login:
-        UGameplayStatics::OpenLevel(GetWorld(), FName("Login"));
+        UGameplayStatics::OpenLevel(GetWorld(), FName("/Game/WorkFolder/Levels/Login"));
         break;
 
     case LevelType::Lobby:
-        UGameplayStatics::OpenLevel(GetWorld(), FName("Lobby"));
+        UGameplayStatics::OpenLevel(GetWorld(), FName("/Game/WorkFolder/Levels/Lobby"));
         break;
 
     case LevelType::Battle:
-        UGameplayStatics::OpenLevel(GetWorld(), FName("L_Map"));
+        UGameplayStatics::OpenLevel(GetWorld(), FName("/Game/WorkFolder/Levels/L_Map"));
         break;
     }
 }
