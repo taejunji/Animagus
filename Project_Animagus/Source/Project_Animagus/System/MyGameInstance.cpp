@@ -28,7 +28,6 @@ UMyGameInstance::UMyGameInstance(const FObjectInitializer& ObjectInitializer)
     static ConstructorHelpers::FObjectFinder<USkeletalMesh> SM_Zebra(TEXT("/Game/WorkFolder/Assets/Zebra/Character142_RiggedZebra.Character142_RiggedZebra")); 
     static ConstructorHelpers::FObjectFinder<USkeletalMesh> SM_Donkey(TEXT("/Game/WorkFolder/Assets/Donkey/Character148_RiggedDonkey.Character148_RiggedDonkey")); 
 
-
     if (SM_Monkey.Succeeded()) CharacterMeshes.Add(TEXT("SM_Monkey"), SM_Monkey.Object);
     if (SM_Koala.Succeeded()) CharacterMeshes.Add(TEXT("SM_Koala"), SM_Koala.Object);
     if (SM_Sheep.Succeeded()) CharacterMeshes.Add(TEXT("SM_Sheep"), SM_Sheep.Object);
@@ -65,7 +64,7 @@ void UMyGameInstance::InitGameInstance()
 {
     // 배틀 처음 시작 시 -> 라운드 0, 레벨 Battle로 설정
     round_count = 0;
-    current_level = LevelType::Battle;
+    // current_level = LevelType::Battle;
 }
 
 void UMyGameInstance::SwitchLevel(LevelType level)
@@ -73,15 +72,15 @@ void UMyGameInstance::SwitchLevel(LevelType level)
     switch (level)
     {
     case LevelType::Login:
-        UGameplayStatics::OpenLevel(GetWorld(), FName("Login"));
+        UGameplayStatics::OpenLevel(GetWorld(), FName("/Game/WorkFolder/Levels/Login"));
         break;
 
     case LevelType::Lobby:
-        UGameplayStatics::OpenLevel(GetWorld(), FName("Lobby"));
+        UGameplayStatics::OpenLevel(GetWorld(), FName("/Game/WorkFolder/Levels/Lobby"));
         break;
 
     case LevelType::Battle:
-        UGameplayStatics::OpenLevel(GetWorld(), FName("L_Map"));
+        UGameplayStatics::OpenLevel(GetWorld(), FName("/Game/WorkFolder/Levels/L_Map"));
         break;
     }
 }

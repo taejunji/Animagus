@@ -52,12 +52,18 @@ protected:
     void CountdownTimerUpdate();
     void RoundTimerUpdate();
     
-private:
+public:
     // BP_AI 애셋
-    TSubclassOf<class AAIController> AIControllerClass;
+    UPROPERTY(EditAnywhere, Category="AI")
+    TSoftClassPtr<class AAIController> AIControllerClass;
+
+    UPROPERTY(EditAnywhere, Category="AI")
     TSubclassOf<class APawn> AIPlayerClass;
 
+    UPROPERTY(EditAnywhere, Category="Item")
     TSubclassOf<class APowerUpItem> PowerUpBpclass;
+
+    UPROPERTY(EditAnywhere, Category="Item")
     TSubclassOf<class AItem_Box_Base> ItemBoxBpclass;
 
     // 라운드 경과 시간 출력

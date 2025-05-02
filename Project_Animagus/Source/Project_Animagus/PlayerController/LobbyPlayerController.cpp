@@ -3,8 +3,10 @@
 
 #include "LobbyPlayerController.h"
 #include "Blueprint/UserWidget.h"
-#include "EnhancedInputComponent.h"
+#include "Components/Button.h"
+#include "Kismet/GameplayStatics.h"
 #include "EnhancedInputSubsystems.h"
+#include "EnhancedInputComponent.h"
 
 void ALobbyPlayerController::BeginPlay()
 {
@@ -24,6 +26,16 @@ void ALobbyPlayerController::BeginPlay()
         if (LobbyHUD)
         {
             LobbyHUD->AddToViewport();
+
+            // 3) Start_Button 찾아서 클릭 이벤트 바인딩
+            if (UButton* StartButton = Cast<UButton>(LobbyHUD->GetWidgetFromName(TEXT("Start_Button"))))
+            {
+                StartButton->OnClicked.AddDynamic(this, &ALobbyPlayerController::OnStartButtonClicked);
+            }
+            else
+            {
+                UE_LOG(LogTemp, Warning, TEXT("LobbyPlayerController: Start_Button 위젯을 찾지 못했습니다."));
+            }
         }
     }
 }
@@ -43,3 +55,12 @@ void ALobbyPlayerController::Tick(float DeltaTime)
     // 별도의 게임 내 이동이나 액션 입력은 필요하지 않으므로 Tick()에서 특별한 처리는 하지 않습니다.
 }
 
+void ALobbyPlayerController::OnStartButtonClicked()
+{
+    // 버튼 클릭 시 L_Map 레벨로 전환
+    static const FName TargetLevelName = TEXT("L_Map");
+    UE_LOG(LogTemp, Log, TEXT("Start 버튼 클릭! 레벨 '%s' 로 전환합니다."), *TargetLevelName.ToString());
+    
+    // OpenLevel 호출:
+    UGameplayStatics::OpenLevel(this, TargetLevelName);
+}
