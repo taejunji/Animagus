@@ -8,9 +8,11 @@
 #include "BehaviorTree/BehaviorTreeComponent.h"
 #include "BehaviorTree/BehaviorTree.h"
 #include "BehaviorTree/BlackboardData.h"
+#include "NavigationSystem.h"
 
 #include "Navigation/PathFollowingComponent.h"
 #include "../Character/BaseCharacter.h"
+#include "../Character/AICharacter.h"
 #include "GameFramework/CharacterMovementComponent.h"
 
 #include "../Skill/BaseSkill.h"
@@ -66,6 +68,9 @@ void AMyAIController::BeginPlay()
             // AIStateKey.SelectedKeyName = FName(TEXT("AIState"));
             // BlackboardPtr->SetValueAsEnum(AIStateKey.SelectedKeyName, static_cast<uint8>(EAIState::Patrol));
 
+            can_set_target_key.SelectedKeyName = FName(TEXT("CanSetTarget"));
+            BlackboardPtr->SetValueAsBool(can_set_target_key.SelectedKeyName, true);
+
             DefendRadiusKey.SelectedKeyName = FName(TEXT("DefendRadius"));
             BlackboardPtr->SetValueAsFloat(DefendRadiusKey.SelectedKeyName, 600.f); // 350
 
@@ -78,6 +83,8 @@ void AMyAIController::BeginPlay()
             Skill_isCoolTime_Key[2].SelectedKeyName = FName(TEXT("Skill_2_Ready"));
             Skill_isCoolTime_Key[3].SelectedKeyName = FName(TEXT("Skill_3_Ready"));
             Skill_isCoolTime_Key[4].SelectedKeyName = FName(TEXT("Skill_4_Ready"));
+
+            patrol_pos_key.SelectedKeyName = FName(TEXT("PatrolLocation"));
         }
 
         if (AIPerceptionComponent) 
@@ -184,6 +191,8 @@ void AMyAIController::Tick(float DeltaTime)
 
     if (AI->GetIsDead()) return;
 
+    CheckAndRecoverFromNavMesh();
+
     // 타겟이 죽었는지 확인
     CheckAndDisableTargetIfDead();
 
@@ -267,7 +276,9 @@ void AMyAIController::CheckAndDisableTargetIfDead()
 
 void AMyAIController::OnPerceptionUpdated(const TArray<AActor*>& UpdatedActors)
 {
-    if (bCanChangeTarget == false) return; // 타겟 변경이 불가능한 경우 나가기
+    bool bCanSet = GetBlackboardComponent()->GetValueAsBool(can_set_target_key.SelectedKeyName);
+
+    if (bCanSet == false) return; // 타겟 변경이 불가능한 경우 나가기
 
     TSet<AActor*> NewlySensedActors; 
     TSet<AActor*> CandidateTargets; // 후보군 타겟들을 저장할 집합 (중복 방지) 
@@ -418,7 +429,8 @@ float AMyAIController::CalculateTargetPriority(ABaseCharacter* TargetCharacter)
 
 void AMyAIController::ResetTargetChange()
 {
-    bCanChangeTarget = true;
+    GetBlackboardComponent()->SetValueAsBool(can_set_target_key.SelectedKeyName, true);
+    // bCanChangeTarget = true;
 }
 
 void AMyAIController::RememberLostTarget(AActor* Target)
@@ -471,11 +483,61 @@ void AMyAIController::SetAITarget(ABaseCharacter* NewTarget)
         GetBlackboardComponent()->SetValueAsObject(TargetKey.SelectedKeyName, NewTarget);
 
         // 3초 동안 타겟 변경 불가능
-        bCanChangeTarget = false;
+        // bCanChangeTarget = false;
+        GetBlackboardComponent()->SetValueAsBool(can_set_target_key.SelectedKeyName, false);
+
         GetWorld()->GetTimerManager().SetTimer(TargetChangeTimerHandle, this, &AMyAIController::ResetTargetChange, 10.0f, false);
     }
     else
     {
         GetBlackboardComponent()->ClearValue(TargetKey.SelectedKeyName);
+    }
+}
+
+void AMyAIController::CheckAndRecoverFromNavMesh()
+{
+    UNavigationSystemV1* NavSys = FNavigationSystem::GetCurrent<UNavigationSystemV1>(GetWorld());
+    if (nullptr == NavSys) return;
+
+    FVector CurrentLocation = GetPawn()->GetActorLocation();
+    FNavLocation ProjectedLocation;
+
+    // 월드상의 임의의 위치가 내비게이션 메시(NavMesh) 위에 있는지 확인하고,
+    // 가장 가까운 네비 메시 위의 위치를 반환
+    bool bOnNavMesh = NavSys->ProjectPointToNavigation(CurrentLocation, ProjectedLocation, FVector(30.f, 30.f, 100.f));
+
+    if (false == bOnNavMesh && false == bFailedToFindNavMesh)
+    {
+        FVector PatrolLoc = GetBlackboardComponent()->GetValueAsVector(patrol_pos_key.SelectedKeyName); 
+
+        // 결과 위치에 디버그 구를 그립니다.
+        // DrawDebugSphere(GetWorld(), PatrolLoc, 200.f, 12, FColor::Red, false, 0.5f);
+
+        // 가까운 네비 위치 방향으로 걸어가게 명령
+        FVector Direction = (PatrolLoc - CurrentLocation);
+        Direction.Z = 0; // Z 제거
+        Direction = Direction.GetSafeNormal();
+
+        if (AAICharacter* AICharacter = Cast<AAICharacter>(GetPawn()))
+        {
+            AICharacter->AddMovementInput(Direction, 1.0f);
+            AICharacter->JumpAI();
+        }
+
+        // 포커스를 해제하는데, 현재 타겟과만 관련된 포커스 해제
+        // ClearFocus(EAIFocusPriority::Gameplay);  // Focus 해제 
+        //GetBlackboardComponent()->ClearValue(TargetKey.SelectedKeyName);  // Blackboard에서 타겟 제거 
+        //GetWorld()->GetTimerManager().ClearTimer(TargetChangeTimerHandle);
+        //bCanChangeTarget = true;
+
+        // 네비메시를 찾지 못한 상태를 기록
+        bFailedToFindNavMesh = true;
+    }
+    else {
+        // 디버그 구 그리기
+        // DrawDebugSphere(GetWorld(), ProjectedLocation.Location, 200.f, 12, FColor::Blue, false, 0.5f);
+
+        // 네비메시가 발견되면 다시 실패 토글을 리셋
+        bFailedToFindNavMesh = false;
     }
 }

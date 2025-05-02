@@ -33,7 +33,7 @@ EBTNodeResult::Type UBTTaskNode_SetPatrolOriginRadius::ExecuteTask(UBehaviorTree
     // 2. 랜덤하게 한 스폰 지역을 선택
     int32 RandomIndex = FMath::RandRange(0, SpawnOrigins.Num() - 1); 
     FVector OriginVector = SpawnOrigins[RandomIndex]; 
-    float SearchRadius = FMath::RandRange(100.0f, SpawnRadii[RandomIndex]);  
+    float SearchRadius = FMath::RandRange(600.0f, SpawnRadii[RandomIndex]);  
 
     // 3. BB에 Origin과 Radius 저장
     BlackboardComp->SetValueAsVector(random_patrol_pos_key.SelectedKeyName, OriginVector);

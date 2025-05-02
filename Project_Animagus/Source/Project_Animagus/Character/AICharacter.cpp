@@ -58,6 +58,15 @@ void AAICharacter::RemoveStun()
     }
 }
 
+void AAICharacter::JumpAI()
+{
+    // 서버 내용 추가 위치임니당
+
+
+
+    Jump();
+}
+
 void AAICharacter::InitPlayerMesh()
 {
     if (auto* GameInstance = Cast<UMyGameInstance>(GetGameInstance()))
