@@ -76,21 +76,7 @@ ABattleGameMode::ABattleGameMode()
     // }
     // else UE_LOG(LogTemp, Warning, TEXT("AI 폰 로드 실패")); 
 
-    static ConstructorHelpers::FClassFinder<AAIController> AIController(TEXT("/Game/WorkFolder/AI/AIPlayer/BP_AIController.BP_AIController_C"));
-    if (AIController.Succeeded())
-    {
-        AIControllerClass = AIController.Class;
-    }
-    else UE_LOG(LogTemp, Warning, TEXT("AI 컨트롤러 로드 실패"));
-
-    static ConstructorHelpers::FClassFinder<APawn> AIPawn(TEXT("/Game/WorkFolder/AI/AIPlayer/BP_AIPlayer.BP_AIPlayer_C"));
-    if (AIPawn.Succeeded())
-    {
-        AIPlayerClass = AIPawn.Class;
-    }
-    else UE_LOG(LogTemp, Warning, TEXT("AI 폰 로드 실패"));
-
-    UE_LOG(LogTemp, Warning, TEXT("AI 폰 로드 후/파워 아이템 로드 전 "));
+    UE_LOG(LogTemp, Warning, TEXT("AI 폰 로드 후/파워 아이템 로드 전"));
     
     static ConstructorHelpers::FClassFinder<APowerUpItem> Powerupitem(TEXT("/Game/WorkFolder/Bluprints/Item/MyPowerUpItem"));
     if (Powerupitem.Succeeded())
@@ -98,9 +84,6 @@ ABattleGameMode::ABattleGameMode()
         PowerUpBpclass = Powerupitem.Class;
     }
     else UE_LOG(LogTemp, Warning, TEXT("파워업 아이템 로드 실패"));
-        UE_LOG(LogTemp, Warning, TEXT("파워 아이템 로드 성공"));
-    }
-    else UE_LOG(LogTemp, Warning, TEXT("파워 아이템 로드 실패")); 
 
     UE_LOG(LogTemp, Warning, TEXT("파워 아이템 로드 후 / 아이템 박스 로드 전"));
     
@@ -124,10 +107,6 @@ ABattleGameMode::ABattleGameMode()
         ItemBoxHighBpclass = ItemboxplusBp.Class;
     }
     else UE_LOG(LogTemp, Warning, TEXT("아이템박스_노랑 로드 실패"));
-        ItemBoxBpclass = ItemboxBp.Class;    
-        UE_LOG(LogTemp, Warning, TEXT("아이템 박스 로드 성공"));
-    }
-    else UE_LOG(LogTemp, Warning, TEXT("아이템 박스 로드 실패")); 
 
     UE_LOG(LogTemp, Warning, TEXT("아이템 박스 로드 후"));
     

@@ -21,6 +21,7 @@ UHasteSkill::UHasteSkill()
     BaseBoostedRunSpeed = BoostedRunSpeed;
     BaseHasteColldown = CooldownTime;
     
+    SkillType = Protocol::SkillType::HASTE;
 }
 
 void UHasteSkill::ActiveSkill_Implementation()
