@@ -53,7 +53,9 @@ public:
     // 캐릭터 메쉬 에셋 데이터를 Map으로 저장 
     // -> 로비, 배틀 레벨에서 공통된 메쉬 데이터 사용하기 위해서 인스턴스에서 메쉬 정보를 기억하도록 한다
     // -> 애셋 데이터를 인스턴스 생성시 한번만 로드해서 데이터를 갖도록 한다
+    
 
+    
 public:
     UMyGameInstance(const FObjectInitializer& ObjectInitializer);
 

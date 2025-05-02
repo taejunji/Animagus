@@ -11,7 +11,7 @@ void AAICharacter::BeginPlay()
 {
     Super::BeginPlay();
 
-    //InitPlayerMesh();
+    InitPlayerMesh();
     
     // 생성자에서 메쉬를 초기화했을 때는 문제가 생겼음 -> GameInstance가 초기화되지 않았는데 포인터 접근해서 프로젝트가 터짐 -> 게임 시작 시( BeginPlay )에 메쉬를 설정하도록 수정
     // 에디터에서 메쉬가 없는것처럼 보이지만 정상동작이다.
