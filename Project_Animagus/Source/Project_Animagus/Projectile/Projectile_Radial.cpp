@@ -30,9 +30,6 @@ void AProjectile_Radial::OnHit(UPrimitiveComponent* OverlappedComponent, AActor*
     {
         return;
         
-        ProjectileLight->SetIntensity(0.0f);
-        DestroySkill();
-        
     }
     
     
