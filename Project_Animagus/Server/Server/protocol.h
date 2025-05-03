@@ -5,10 +5,19 @@ namespace Protocol {
     enum class PlayerType : uint16
     {
         NONE,
-        TIGER,
+        //TIGER,
         RAM,
         MONKEY,
         KOALA,
+        FOX,
+        SLOTH,
+        ELEPHANT,
+        RACCOON,
+        DEER,
+        COW,
+        UNICORN,
+        ZEBRA,
+        DONKEY,
     };
 
     enum class SkillType : uint16
