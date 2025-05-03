@@ -35,7 +35,7 @@ void ALobbyGameMode::Tick(float DeltaTime)
 {
     Super::Tick(DeltaTime);
 
-    //Cast<UMyGameInstance>(GWorld->GetGameInstance())->HandleRecvPackets();
+    Cast<UMyGameInstance>(GWorld->GetGameInstance())->HandleRecvPackets();
 }
 
 void ALobbyGameMode::ActiveStartButton()

@@ -102,7 +102,7 @@ void AMyAIController::BeginPlay()
             AIPerceptionComponent->OnPerceptionUpdated.AddDynamic(this, &AMyAIController::OnPerceptionUpdated);
         }
     }
-#if 1
+#if 0
     StartBehaviorTree(); 
 #endif
 
@@ -239,16 +239,20 @@ void AMyAIController::Tick(float DeltaTime)
         LastDesiredInput = DesiredInput;
     }
 
-    // State 정보
-    if (DesiredInput == FVector2D::Zero())
-        AI->SetMoveState(Protocol::PlayerState::MOVE_STATE_IDLE);
-    else
-        AI->SetMoveState(Protocol::PlayerState::MOVE_STATE_RUN);
-
     MovePacketSendTimer -= DeltaTime;
 
     if (MovePacketSendTimer <= 0 || ForceSendPacket)
     {
+        // State 설정
+
+        if (AI->GetMovementComponent()->IsFalling() == false)
+        {
+            AI->SetMoveState(Protocol::PlayerState::MOVE_STATE_RUN);
+
+            if (AI->GetVelocity().Size2D() <= 0.3f)
+                AI->SetMoveState(Protocol::PlayerState::MOVE_STATE_IDLE);
+        }
+
         MovePacketSendTimer = MOVE_PACKET_SEND_DELAY;
 
         Protocol::CS_AI_MOVE_PKT MovePkt;
@@ -262,6 +266,8 @@ void AMyAIController::Tick(float DeltaTime)
             Info.player_id = AI->GetPlayerId();
             //Info.player_type = AI->GetPlayerType();
             Info.player_state = AI->GetMoveState();
+            Info.speed_2d = AI->GetMovementComponent()->Velocity.Size2D();
+            Info.speed_z = AI->GetMovementComponent()->Velocity.Z;
 
             MovePkt.player_info = Info;
         }

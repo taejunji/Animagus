@@ -61,11 +61,9 @@ void AAICharacter::RemoveStun()
 
 void AAICharacter::JumpAI()
 {
-    // 서버 내용 추가 위치임니당
-
-
-
     Jump();
+
+    SetMoveState(Protocol::PlayerState::MOVE_STATE_JUMP);
 }
 
 void AAICharacter::InitPlayerMesh()

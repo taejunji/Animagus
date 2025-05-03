@@ -113,7 +113,8 @@ namespace Protocol {
         float x, y, z;
         float rotation;
         PlayerState player_state;
-        float speed;
+        float speed_2d;
+        float speed_z;
     };
 
     struct DCS_TEST_PKT

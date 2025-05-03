@@ -282,7 +282,7 @@ void ABattleGameMode::SpawnPlayers()
 
     uint16 AIId = 101;
     // ** AI를 추가할 경우 -> 0번 플레이어만 만들 것임 ** AI 플레이어 수 설정
-    for (int32 i = 1; i < 4; ++i)
+    for (int32 i = 1; i < 2; ++i)
     {
         // AI 플레이어 생성 (임의의 `ABaseCharacter`로 가정)
         // FVector AI_SpawnLocation = spawn_transform[i].GetLocation();
@@ -440,7 +440,7 @@ void ABattleGameMode::MoveOtherPlayer(Protocol::CS_MOVE_PKT& pkt)
 
     Player->SetActorLocation(Location);
     Player->SetActorRotation(Rotation);
-    Player->GetCharacterMovement()->Velocity = FVector(0, Info.speed, 0);
+    Player->GetCharacterMovement()->Velocity = FVector(0, Info.speed_2d, Info.speed_z);
 
     if (Player->GetPlayerId() < 100) {
         //UE_LOG(LogTemp, Warning, TEXT("OtherAccel: %f - %d"), Player->GetCharacterMovement()->GetCurrentAcceleration().Size2D(), Player->GetPlayerId());
@@ -448,8 +448,10 @@ void ABattleGameMode::MoveOtherPlayer(Protocol::CS_MOVE_PKT& pkt)
 
     if (State == Protocol::PlayerState::MOVE_STATE_JUMP)
         Player->GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_Falling);
-    else
+    else if (State == Protocol::PlayerState::MOVE_STATE_RUN)
         Player->GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_Walking);
+    else if (State == Protocol::PlayerState::MOVE_STATE_IDLE)
+        Player->GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_None);
 
 }
 
@@ -465,6 +467,7 @@ void ABattleGameMode::SpawnSkill(Protocol::CS_USING_SKILL_PKT& pkt)
     if (SpawnedPlayers.Contains(static_cast<int32>(pkt.player_id)) == false) return;
     ABaseCharacter* Player = SpawnedPlayers[static_cast<int32>(pkt.player_id)];
     //if (static_cast<int32>(pkt.player_id) == PlayerId) return;    // 자신이 쏜 스킬은 스폰X
+    if (Player == nullptr) return;
 
     UBaseSkill* Skill = nullptr;
 
@@ -514,6 +517,7 @@ void ABattleGameMode::SpawnSkill(Protocol::CS_USING_SKILL_PKT& pkt)
         break;
     case Protocol::SkillType::HASTE:
         Skill = NewObject<UHasteSkill>(this, UHasteSkill::StaticClass());
+        Skill->SetSkillRotation(pkt.pitch, pkt.yaw, pkt.roll);
         Skill->UpgradeSkill(Player->PowerUpLevel);
         break;
     default:

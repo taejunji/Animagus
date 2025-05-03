@@ -216,9 +216,15 @@ bool Room::HandleMoveLocked(Protocol::CS_MOVE_PKT& pkt)
     //std::cout << info.x << " " << info.y << " " << info.z << std::endl;
     //std::cout << pkt.player_info.speed << std::endl;
 
-    //if (pkt.player_info.player_state == Protocol::PlayerState::MOVE_STATE_JUMP)
-    //    std::cout << "Jump" << std::endl;
-    
+    //if (pkt.player_info.player_id == 1) {
+    //    if (pkt.player_info.player_state == Protocol::PlayerState::MOVE_STATE_JUMP)
+    //        std::cout << "Jump" << std::endl;
+    //    if (pkt.player_info.player_state == Protocol::PlayerState::MOVE_STATE_RUN)
+    //        std::cout << "RUN" << std::endl;
+    //    if (pkt.player_info.player_state == Protocol::PlayerState::MOVE_STATE_IDLE)
+    //        std::cout << "IDLE" << std::endl;
+    //}
+
     // 이동 
     SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(pkt);
     Broadcast(sendBuffer, playerId);
@@ -300,6 +306,19 @@ bool Room::HandleAIMoveLocked(Protocol::CS_AI_MOVE_PKT& pkt, const uint16 ownerI
     movePkt.player_info.z = player->z;
     movePkt.player_info.rotation = player->rotation;
     movePkt.player_info.player_id = player->aiID;
+    movePkt.player_info.player_state = pkt.player_info.player_state;
+    movePkt.player_info.speed_2d = pkt.player_info.speed_2d;
+    movePkt.player_info.speed_z = pkt.player_info.speed_z;
+
+    //if (movePkt.player_info.player_id == 101)
+    //{
+    //    if (pkt.player_info.player_state == Protocol::PlayerState::MOVE_STATE_JUMP)
+    //        std::cout << "Jump" << std::endl;
+    //    if (pkt.player_info.player_state == Protocol::PlayerState::MOVE_STATE_RUN)
+    //        std::cout << "RUN" << std::endl;
+    //    if (pkt.player_info.player_state == Protocol::PlayerState::MOVE_STATE_IDLE)
+    //        std::cout << "IDLE" << std::endl;
+    //}
 
     // host 에게는 전송 X
     SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(movePkt);

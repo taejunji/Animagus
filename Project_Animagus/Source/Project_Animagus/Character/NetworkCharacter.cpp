@@ -113,7 +113,7 @@ void ANetworkCharacter::InitPlayerMesh()
         case Protocol::PlayerType::SLOTH:
             if (GameInstance->CharacterMeshes.Contains(TEXT("SM_Sloth"))) GetMesh()->SetSkeletalMesh(GameInstance->CharacterMeshes[TEXT("SM_Sloth")]);
             break;
-        case CProtocol::PlayerType::ELEPHANT:
+        case Protocol::PlayerType::ELEPHANT:
             if (GameInstance->CharacterMeshes.Contains(TEXT("SM_Elephant"))) GetMesh()->SetSkeletalMesh(GameInstance->CharacterMeshes[TEXT("SM_Elephant")]);
             break;
         case Protocol::PlayerType::RACCOON:

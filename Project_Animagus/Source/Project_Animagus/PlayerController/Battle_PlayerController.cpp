@@ -171,7 +171,11 @@ void ABattle_PlayerController::Tick(float DeltaTime)
         {
             // State 설정
             if (MyPlayer->GetMovementComponent()->IsFalling() == false)
+            {
                 MyPlayer->SetMoveState(Protocol::PlayerState::MOVE_STATE_RUN);
+                if (MyPlayer->GetVelocity().Size2D() == 0.0f)
+                    MyPlayer->SetMoveState(Protocol::PlayerState::MOVE_STATE_IDLE);
+            }
 
             MovePacketSendTimer = MOVE_PACKET_SEND_DELAY;
 
@@ -188,7 +192,8 @@ void ABattle_PlayerController::Tick(float DeltaTime)
                 Info.player_id = MyPlayer->GetPlayerId();
                 //Info.player_type = MyPlayer->GetPlayerType();
                 Info.player_state = MyPlayer->GetMoveState();
-                Info.speed = MyPlayer->GetMovementComponent()->Velocity.Size2D();
+                Info.speed_2d = MyPlayer->GetMovementComponent()->Velocity.Size2D();
+                Info.speed_z = MyPlayer->GetMovementComponent()->Velocity.Z;
                 //UE_LOG(LogTemp, Warning, TEXT("MySpeed: %f - %d"), Info.speed, MyPlayer->GetPlayerId());
 
                 MovePkt.player_info = Info;
