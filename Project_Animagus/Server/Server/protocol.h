@@ -61,6 +61,7 @@ namespace Protocol {
         DCS_TEST,
 
         CS_LOGIN,
+        CS_ENTER_ROOM,
         CS_START_GAME,
         CS_ENTER_GAME,
         CS_LEAVE,
@@ -106,7 +107,6 @@ namespace Protocol {
         float speed;
     };
 
-
     struct DCS_TEST_PKT
     {
         uint16 player_id;
@@ -114,10 +114,18 @@ namespace Protocol {
         char msg[128];
         int8 len;
     };
+
     struct CS_LOGIN_PKT
     {
         int16 player_id;
         //std::string name;
+    };
+    struct CS_ENTER_ROOM_PKT
+    {
+        uint16 room_id;
+    };
+    struct CS_START_GAME_PKT
+    {
     };
     struct CS_ENTER_GAME_PKT
     {
@@ -127,24 +135,6 @@ namespace Protocol {
     {
         uint16 player_id;
         uint16 room_id;
-    };
-    struct SC_ENTER_GAME_PKT
-    {
-        uint16 player_id;
-        bool host;
-        //float x, y, z;
-        //float rotation;
-        int16 spawn_index;
-    };
-    struct SC_LEAVE_PKT
-    {   // 로비로 보내기
-    };
-    struct SC_SPAWN_PKT
-    {
-        uint16 player_id;
-        PlayerType p_type;
-        float x, y, z;
-        float rotation;
     };
     struct CS_AI_ENTER_PKT
     {
@@ -184,19 +174,44 @@ namespace Protocol {
         float x, y, z;
         float pitch, yaw, roll;
     };
-    struct SC_SPAWN_ITEM_PKT
-    {
-        uint16 zone_index;
-        uint16 item_count;
-        char spawn_index[20];
-        char item_level[20];
-    };
     struct CS_DAMAGE_PKT
     {
         uint16 player_id;
         uint16 room_id;
         float hp;
         bool isAlive;
+    };
+
+    struct SC_UR_HOST_PKT
+    {
+    };
+    struct SC_START_GAME_PKT
+    {
+    };
+    struct SC_ENTER_GAME_PKT
+    {
+        uint16 player_id;
+        bool host;
+        //float x, y, z;
+        //float rotation;
+        int16 spawn_index;
+    };
+    struct SC_LEAVE_PKT
+    {   // 로비로 보내기
+    };
+    struct SC_SPAWN_PKT
+    {
+        uint16 player_id;
+        PlayerType p_type;
+        float x, y, z;
+        float rotation;
+    };
+    struct SC_SPAWN_ITEM_PKT
+    {
+        uint16 zone_index;
+        uint16 item_count;
+        char spawn_index[20];
+        char item_level[20];
     };
     struct SC_UPDATE_HP_PKT
     {

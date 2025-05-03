@@ -8,6 +8,7 @@
 #include "EnhancedInputSubsystems.h"
 #include "EnhancedInputComponent.h"
 
+
 void ALobbyPlayerController::BeginPlay()
 {
     Super::BeginPlay();
@@ -19,25 +20,7 @@ void ALobbyPlayerController::BeginPlay()
     InputMode.SetLockMouseToViewportBehavior(EMouseLockMode::DoNotLock);
     SetInputMode(InputMode);
 
-    // 로비 HUD 위젯 생성 및 Viewport에 추가합니다.
-    if (LobbyHUDClass)
-    {
-        LobbyHUD = CreateWidget<UUserWidget>(this, LobbyHUDClass);
-        if (LobbyHUD)
-        {
-            LobbyHUD->AddToViewport();
-
-            // 3) Start_Button 찾아서 클릭 이벤트 바인딩
-            if (UButton* StartButton = Cast<UButton>(LobbyHUD->GetWidgetFromName(TEXT("Start_Button"))))
-            {
-                StartButton->OnClicked.AddDynamic(this, &ALobbyPlayerController::OnStartButtonClicked);
-            }
-            else
-            {
-                UE_LOG(LogTemp, Warning, TEXT("LobbyPlayerController: Start_Button 위젯을 찾지 못했습니다."));
-            }
-        }
-    }
+    ActiveStartButton();
 }
 
 void ALobbyPlayerController::SetupInputComponent()
@@ -53,6 +36,49 @@ void ALobbyPlayerController::Tick(float DeltaTime)
 
     // 로비 레벨에서는 UI 상호작용(예: 버튼 클릭, 커서 움직임)만 처리하면 됩니다.
     // 별도의 게임 내 이동이나 액션 입력은 필요하지 않으므로 Tick()에서 특별한 처리는 하지 않습니다.
+}
+
+void ALobbyPlayerController::ActiveStartButton()
+{
+    // 로비 HUD 위젯 생성 및 Viewport에 추가합니다.
+    if (LobbyHUDClass)
+    {
+        LobbyHUD = CreateWidget<UUserWidget>(this, LobbyHUDClass);
+        if (LobbyHUD)
+        {
+            LobbyHUD->AddToViewport();
+            LobbyHUD->SetIsEnabled(false);
+
+            if (UButton* StartButton = Cast<UButton>(LobbyHUD->GetWidgetFromName(TEXT("Start_Button"))))
+            {
+                StartButton->OnClicked.AddDynamic(this, &ALobbyPlayerController::OnStartButtonClicked);
+            }
+            else
+            {
+                UE_LOG(LogTemp, Warning, TEXT("LobbyPlayerController: Start_Button 위젯을 찾지 못했습니다."));
+            }
+
+            FTimerHandle tempHandle;
+            // 5초 뒤에 EnableStartButton 호출
+            GetWorld()->GetTimerManager().SetTimer(
+                tempHandle,
+                this,
+                &ALobbyPlayerController::EnableStartButton,
+                3.0f,
+                false
+            );
+
+        }
+    }
+}
+
+void ALobbyPlayerController::EnableStartButton()
+{
+    if (LobbyHUD)
+    {
+        UE_LOG(LogTemp, Log, TEXT("Start 버튼 활성화"));
+        LobbyHUD->SetIsEnabled(true);
+    }
 }
 
 void ALobbyPlayerController::OnStartButtonClicked()

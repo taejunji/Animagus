@@ -20,4 +20,15 @@ public:
     // 로비 레벨에서 사용할 HUD 위젯 클래스 (에디터에서 할당)
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "UI")
     TSubclassOf<class UUserWidget> LobbyHUDClass;
+
+public:
+    virtual void StartPlay() override;
+    virtual void Tick(float DeltaTime) override;
+
+public:
+    void ActiveStartButton();
+
+public:
+    bool AmIHost = false;
+
 };

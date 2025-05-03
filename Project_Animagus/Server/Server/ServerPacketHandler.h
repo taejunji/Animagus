@@ -9,6 +9,8 @@ extern PacketHandlerFunc GServerPacketHandler[1024];
 
 bool Handle_INVALID(SessionRef& session, BYTE* buffer, int32 len);
 bool Handle_DCS_TEST(SessionRef& session, DCS_TEST_PKT& pkt);
+bool Handle_CS_ENTER_ROOM(SessionRef& session, CS_ENTER_ROOM_PKT& pkt);
+bool Handle_CS_START_GAME(SessionRef& session, CS_START_GAME_PKT& pkt);
 bool Handle_CS_ENTER_GAME(SessionRef& session, CS_ENTER_GAME_PKT& pkt);
 bool Handle_CS_LEAVE(SessionRef& session, CS_LEAVE_PKT& pkt);
 bool Handle_CS_MOVE(SessionRef& session, CS_MOVE_PKT& pkt);
@@ -26,6 +28,8 @@ public:
     {
         for (uint16 i = 0; i < 1024; ++i) GServerPacketHandler[i] = Handle_INVALID;
         GServerPacketHandler[(int32)PacketID::DCS_TEST] = [](SessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<DCS_TEST_PKT>(Handle_DCS_TEST, session, buffer, len); };
+        GServerPacketHandler[(int32)PacketID::CS_ENTER_ROOM] = [](SessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<CS_ENTER_ROOM_PKT>(Handle_CS_ENTER_ROOM, session, buffer, len); };
+        GServerPacketHandler[(int32)PacketID::CS_START_GAME] = [](SessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<CS_START_GAME_PKT>(Handle_CS_START_GAME, session, buffer, len); };
         GServerPacketHandler[(int32)PacketID::CS_ENTER_GAME] = [](SessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<CS_ENTER_GAME_PKT>(Handle_CS_ENTER_GAME, session, buffer, len); };
         GServerPacketHandler[(int32)PacketID::CS_LEAVE] = [](SessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<CS_LEAVE_PKT>(Handle_CS_LEAVE, session, buffer, len); };
         GServerPacketHandler[(int32)PacketID::CS_MOVE] = [](SessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<CS_MOVE_PKT>(Handle_CS_MOVE, session, buffer, len); };
@@ -45,6 +49,8 @@ public:
 
     static SendBufferRef MakeSendBuffer(DCS_TEST_PKT& pkt) { return MakeSendBuffer(pkt, (uint16)PacketID::DCS_TEST); }
     static SendBufferRef MakeSendBuffer(SC_SPAWN_PKT& pkt) { return MakeSendBuffer(pkt, (uint16)PacketID::SC_SPAWN); }
+    static SendBufferRef MakeSendBuffer(SC_UR_HOST_PKT& pkt) { return MakeSendBuffer(pkt, (uint16)PacketID::SC_UR_HOST); }
+    static SendBufferRef MakeSendBuffer(SC_START_GAME_PKT& pkt) { return MakeSendBuffer(pkt, (uint16)PacketID::SC_START_GAME); }
     static SendBufferRef MakeSendBuffer(SC_ENTER_GAME_PKT& pkt) { return MakeSendBuffer(pkt, (uint16)PacketID::SC_ENTER_GAME); }
     static SendBufferRef MakeSendBuffer(CS_MOVE_PKT& pkt) { return MakeSendBuffer(pkt, (uint16)PacketID::CS_MOVE); }
     static SendBufferRef MakeSendBuffer(CS_USING_SKILL_PKT& pkt) { return MakeSendBuffer(pkt, (uint16)PacketID::CS_USING_SKILL); }

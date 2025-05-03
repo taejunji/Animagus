@@ -25,6 +25,21 @@ bool Handle_DCS_TEST(SessionRef& session, DCS_TEST_PKT& pkt)
     return true;
 }
 
+bool Handle_CS_ENTER_ROOM(SessionRef& session, CS_ENTER_ROOM_PKT& pkt)
+{
+
+    //Handle_CS_ENTER_GAME 내용 잘라서 여기 붙이기
+
+
+    return true;
+}
+
+bool Handle_CS_START_GAME(SessionRef& session, CS_START_GAME_PKT& pkt)
+{
+
+    return true;
+}
+
 bool Handle_CS_ENTER_GAME(SessionRef& session, CS_ENTER_GAME_PKT& pkt)
 {
     PlayerRef player = PlayerFactory::CreatePlayer(std::static_pointer_cast<Session>(session));

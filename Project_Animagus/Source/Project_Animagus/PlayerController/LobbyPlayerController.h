@@ -26,7 +26,11 @@ protected:
     // 생성된 로비 UI 위젯 인스턴스
     UPROPERTY()
     class UUserWidget* LobbyHUD;
-    
+
+public:
+    void ActiveStartButton();
+    void EnableStartButton();
+
     // 버튼 클릭 핸들러
     UFUNCTION()
     void OnStartButtonClicked();
