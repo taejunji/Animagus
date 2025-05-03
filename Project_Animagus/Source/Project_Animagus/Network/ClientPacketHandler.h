@@ -47,6 +47,7 @@ public:
 
     static SendBufferRef MakeSendBuffer(Protocol::DCS_TEST_PKT& pkt) { return MakeSendBuffer(pkt, (uint16)Protocol::PacketID::DCS_TEST); }
     static SendBufferRef MakeSendBuffer(Protocol::CS_LEAVE_PKT& pkt) { return MakeSendBuffer(pkt, (uint16)Protocol::PacketID::CS_LEAVE); }
+    static SendBufferRef MakeSendBuffer(Protocol::CS_ENTER_ROOM_PKT& pkt) { return MakeSendBuffer(pkt, (uint16)Protocol::PacketID::CS_ENTER_ROOM); }
     static SendBufferRef MakeSendBuffer(Protocol::CS_ENTER_GAME_PKT& pkt) { return MakeSendBuffer(pkt, (uint16)Protocol::PacketID::CS_ENTER_GAME); }
     static SendBufferRef MakeSendBuffer(Protocol::CS_MOVE_PKT& pkt) { return MakeSendBuffer(pkt, (uint16)Protocol::PacketID::CS_MOVE); }
     static SendBufferRef MakeSendBuffer(Protocol::CS_USING_SKILL_PKT& pkt) { return MakeSendBuffer(pkt, (uint16)Protocol::PacketID::CS_USING_SKILL); }
