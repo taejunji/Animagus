@@ -95,6 +95,8 @@ bool Room::HandleEnterPlayer(PlayerRef player)
 
 bool Room::HandleStartGame(PlayerRef player)
 {
+    std::lock_guard lock(m_mutex);
+
     int n_pid = 0;
     // 신입 플레이어 스폰 위치, 회전각 서버에서 지정해주고 해당 정보 플레이어에게 전송
     {
