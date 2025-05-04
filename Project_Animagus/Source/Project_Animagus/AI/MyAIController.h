@@ -107,19 +107,15 @@ public:
 
     bool bFailedToFindNavMesh;
     
-    //bool bCanChangeTarget = true; // 타겟 변경 가능 여부
     UPROPERTY(EditAnywhere, Category = "Blackboard")
     FBlackboardKeySelector can_set_target_key;
 
-
     FTimerHandle TargetChangeTimerHandle; // 타겟 변경 타이머
 
-    // AI Perception Component
     UPROPERTY(VisibleAnywhere)
     class UAIPerceptionComponent* AIPerceptionComponent;
 
     TSet<AActor*> SensedActors; // 현재 감지된 액터 목록
-    TSet<AActor*> LostTargets; // 현재 감지된 액터 목록
 
 public:
     void StartBehaviorTree();
@@ -141,11 +137,11 @@ public:
 
     float CalculateTargetPriority(class ABaseCharacter* TargetCharacter);
     void ResetTargetChange();
-    void RememberLostTarget(AActor* Target);
-    void RemoveLostTarget(AActor* Target);
     ABaseCharacter* SelectBestTarget(const TSet<AActor*>& Candidates);
     void SetAITarget(ABaseCharacter* NewTarget);
 
     // NavMesh 복귀 
     void CheckAndRecoverFromNavMesh();
+
+    void ClearFocusTarget();
 };
