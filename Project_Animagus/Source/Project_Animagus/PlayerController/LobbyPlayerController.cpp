@@ -8,6 +8,9 @@
 #include "EnhancedInputSubsystems.h"
 #include "EnhancedInputComponent.h"
 
+#include "../System//MyGameInstance.h"
+#include "../Network/ClientPacketHandler.h"
+
 
 void ALobbyPlayerController::BeginPlay()
 {
@@ -58,15 +61,15 @@ void ALobbyPlayerController::ActiveStartButton()
                 UE_LOG(LogTemp, Warning, TEXT("LobbyPlayerController: Start_Button 위젯을 찾지 못했습니다."));
             }
 
-            FTimerHandle tempHandle;
-            // 5초 뒤에 EnableStartButton 호출
-            GetWorld()->GetTimerManager().SetTimer(
-                tempHandle,
-                this,
-                &ALobbyPlayerController::EnableStartButton,
-                3.0f,
-                false
-            );
+            //FTimerHandle tempHandle;
+            //// 5초 뒤에 EnableStartButton 호출
+            //GetWorld()->GetTimerManager().SetTimer(
+            //    tempHandle,
+            //    this,
+            //    &ALobbyPlayerController::EnableStartButton,
+            //    3.0f,
+            //    false
+            //);
 
         }
     }
@@ -83,10 +86,15 @@ void ALobbyPlayerController::EnableStartButton()
 
 void ALobbyPlayerController::OnStartButtonClicked()
 {
-    // 버튼 클릭 시 L_Map 레벨로 전환
-    static const FName TargetLevelName = TEXT("L_Map");
-    UE_LOG(LogTemp, Log, TEXT("Start 버튼 클릭! 레벨 '%s' 로 전환합니다."), *TargetLevelName.ToString());
-    
-    // OpenLevel 호출:
-    UGameplayStatics::OpenLevel(this, TargetLevelName);
+    //// 버튼 클릭 시 L_Map 레벨로 전환
+    //static const FName TargetLevelName = TEXT("L_Map");
+    //UE_LOG(LogTemp, Log, TEXT("Start 버튼 클릭! 레벨 '%s' 로 전환합니다."), *TargetLevelName.ToString());
+    //
+    //// OpenLevel 호출:
+    //UGameplayStatics::OpenLevel(this, TargetLevelName);
+
+    Protocol::CS_START_GAME_PKT OnClickBtnPkt;
+
+    SendBufferRef SendBuffer = ClientPacketHandler::MakeSendBuffer(OnClickBtnPkt);
+    Cast<UMyGameInstance>(GWorld->GetGameInstance())->SendPacket(SendBuffer);
 }

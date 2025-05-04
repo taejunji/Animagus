@@ -14,6 +14,7 @@ public:
 
 public:
     bool HandleEnterPlayer(PlayerRef player);
+    bool HandleStartGame(PlayerRef player);
     bool HandleLeavePlayer(PlayerRef player);
     bool HandleMoveLocked(Protocol::CS_MOVE_PKT& pkt);
     bool HandleSkillLocked(Protocol::CS_USING_SKILL_PKT& pkt);
@@ -29,13 +30,16 @@ public:
     void InitializeGame();
     void InitItemInfo();
 
+public:
+    uint16 m_roomID;
+
 private:
     std::mutex m_mutex;
 
-    uint16 m_roomID;
     std::atomic<uint16> m_playerCount;
     std::unordered_map<uint16/*player_id*/, PlayerRef> m_players; // thread safe 한 자료구조로?
     std::unordered_map<uint16/*ai_id*/, AIPlayerRef> m_aiPlayers;
+    uint16 m_maxPlayerCount = 8;
 
     PlayerRef m_hostPlayer = nullptr;
     std::array<Protocol::SC_SPAWN_ITEM_PKT, 3> m_itemInfo;

@@ -24,6 +24,26 @@ bool Handle_DCS_TEST(SessionRef& session, Protocol::DCS_TEST_PKT& pkt)
     return true;
 }
 
+bool Handle_SC_UR_HOST(SessionRef& session, Protocol::SC_UR_HOST_PKT& pkt)
+{
+    if (auto* GameInstance = Cast<UMyGameInstance>(GWorld->GetGameInstance()))
+    {
+        GameInstance->HandleLobbyHost(pkt);
+    }
+
+    return true;
+}
+
+bool Handle_SC_START_GAME(SessionRef& session, Protocol::SC_START_GAME_PKT& pkt)
+{
+    if (auto* GameInstance = Cast<UMyGameInstance>(GWorld->GetGameInstance()))
+    {
+        GameInstance->HandleStartGame(pkt);
+    }
+
+    return true;
+}
+
 bool Handle_SC_ENTER_GAME(SessionRef& session, Protocol::SC_ENTER_GAME_PKT& pkt)
 {
     if (auto* GameInstance = Cast<UMyGameInstance>(GWorld->GetGameInstance()))

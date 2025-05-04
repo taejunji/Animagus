@@ -6,7 +6,6 @@
 #include "../Character/PlayerCharacter.h"
 #include "../Project_Animagus.h"
 #include "GameFramework/PlayerController.h"
-#include "Kismet/GameplayStatics.h"
 
 #include "Sockets.h"
 #include "Common/TcpSocketBuilder.h"
@@ -16,6 +15,7 @@
 #include "../Network/ClientPacketHandler.h"
 #include "../Character/NetworkCharacter.h"
 #include "../GameMode/BattleGameMode.h"
+#include "../GameMode/LobbyGameMode.h"
 #include "../Animation/CharacterAnimInstance.h"
 #include "GameFramework/CharacterMovementComponent.h"
 
@@ -134,8 +134,8 @@ void UMyGameInstance::ConnectToGameServer()
         ClientSession->Run();
 
         {
-            // TODO : 일단 인스턴스 시작하자마자 게임 입장 패킷 보냄. 로그인 패킷으로 변경 필요
-            Protocol::CS_ENTER_GAME_PKT pkt;
+            // TODO : 일단 인스턴스 시작하자마자 룸 입장 패킷 보냄. 로그인 패킷으로 변경 필요
+            Protocol::CS_ENTER_ROOM_PKT pkt;
             pkt.room_id = 0;
             SendBufferRef sendBuffer = ClientPacketHandler::MakeSendBuffer(pkt);
             SendPacket(sendBuffer);
@@ -187,6 +187,52 @@ void UMyGameInstance::PrintGameInstanceData()
     GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Red, DebugMessage);
 }
 
+
+void UMyGameInstance::HandleLobbyHost(Protocol::SC_UR_HOST_PKT& pkt)
+{
+    if (Socket == nullptr || ClientSession == nullptr)
+        return;
+
+    auto* World = GetWorld();
+    if (World == nullptr)
+        return;
+    AGameModeBase* BaseGameMode = UGameplayStatics::GetGameMode(World);
+    if (BaseGameMode)
+    {
+        ALobbyGameMode* GameMode = Cast<ALobbyGameMode>(BaseGameMode);
+        if (GameMode)
+        {
+            GameMode->AmIHost = true;
+            GameMode->ActiveStartButton();
+        }
+    }
+}
+
+void UMyGameInstance::HandleStartGame(Protocol::SC_START_GAME_PKT& pkt)
+{
+    if (Socket == nullptr || ClientSession == nullptr)
+        return;
+
+    auto* World = GetWorld();
+    if (World == nullptr)
+        return;
+    AGameModeBase* BaseGameMode = UGameplayStatics::GetGameMode(World);
+    if (BaseGameMode)
+    {
+        ALobbyGameMode* GameMode = Cast<ALobbyGameMode>(BaseGameMode);
+        if (GameMode == nullptr) return;
+    }
+
+    static const FName TargetLevelName = TEXT("L_Map");
+    UE_LOG(LogTemp, Log, TEXT("레벨 '%s' 로 전환합니다."), *TargetLevelName.ToString());
+
+    // OpenLevel 호출:
+    UGameplayStatics::OpenLevel(this, TargetLevelName);
+
+    Protocol::CS_ENTER_GAME_PKT enterGamePkt;
+    SendBufferRef sendBuffer = ClientPacketHandler::MakeSendBuffer(enterGamePkt);
+    SendPacket(sendBuffer);
+}
 
 void UMyGameInstance::HandleEnterGame(Protocol::SC_ENTER_GAME_PKT& pkt)
 {

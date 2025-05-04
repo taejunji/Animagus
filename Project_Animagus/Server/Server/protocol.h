@@ -201,10 +201,11 @@ namespace Protocol {
     struct SC_ENTER_GAME_PKT
     {
         uint16 player_id;
-        bool host;
         //float x, y, z;
         //float rotation;
+        bool host;
         int16 spawn_index;
+        int16 ai_count;
     };
     struct SC_LEAVE_PKT
     {   // 로비로 보내기

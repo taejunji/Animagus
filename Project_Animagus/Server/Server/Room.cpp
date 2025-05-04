@@ -64,10 +64,38 @@ bool Room::HandleEnterPlayer(PlayerRef player)
 
     bool success = Enter(player);
     if (success == false)
-        std::cout << "Error" << std::endl;
+        std::cout << "Enter Room Error" << std::endl;
 
-    int n_pid = 0;
+
+#ifndef _DUMMYTEST
+    std::cout << "Room#" << m_roomID << " Player Enter :" << player->playerID << std::endl;
+#endif
+
+    std::cout << "Player Count - " << m_playerCount << std::endl;
+
     bool isHost = false;
+    int n_pid = 0;
+    if (m_playerCount % 2 == 0)
+    {
+        SC_UR_HOST_PKT ur_host;
+        m_hostPlayer = player;
+        isHost = true;
+
+#ifndef _DUMMYTEST
+        std::cout << n_pid << " is Host" << std::endl;
+#endif
+
+        SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(ur_host);
+        if (auto session = player->ownerSession.lock())
+            session->Send(sendBuffer);
+    }
+
+    return success;
+}
+
+bool Room::HandleStartGame(PlayerRef player)
+{
+    int n_pid = 0;
     // 신입 플레이어 스폰 위치, 회전각 서버에서 지정해주고 해당 정보 플레이어에게 전송
     {
         SC_ENTER_GAME_PKT newPlayer;
@@ -76,9 +104,9 @@ bool Room::HandleEnterPlayer(PlayerRef player)
         //newPlayer.y = player->y;
         //newPlayer.z = player->z;
         //newPlayer.rotation = player->rotation;
+        newPlayer.host = (player->playerID == m_hostPlayer->playerID);
         newPlayer.spawn_index = 0;
         //newPlayer.spawn_index = m_playerCount % 4;
-        newPlayer.host = (m_playerCount % 2) == 1;   // TODO: host 기준 만들기
         SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(newPlayer);
         if (auto session = player->ownerSession.lock())
             session->Send(sendBuffer);
@@ -86,18 +114,9 @@ bool Room::HandleEnterPlayer(PlayerRef player)
         n_pid = player->playerID;
 
 #ifndef _DUMMYTEST
-        std::cout << "Send Enter Game Packet to " << player->playerID << " , Spawn Index: " << newPlayer.spawn_index << std::endl;
+        //std::cout << "Send Enter Game Packet to " << player->playerID << " , Spawn Index: " << newPlayer.spawn_index << std::endl;
 #endif
 
-        if (newPlayer.host == true)
-        {
-            m_hostPlayer = player;
-            isHost = true;
-
-#ifndef _DUMMYTEST
-            std::cout << n_pid << " is Host" << std::endl;
-#endif
-        }
         //std::cout << n_pid << std::endl;
     }
 
@@ -122,7 +141,7 @@ bool Room::HandleEnterPlayer(PlayerRef player)
                 session->Send(sendBuffer);
 
 #ifndef _DUMMYTEST
-            std::cout << item.first << "'s info Send Spawn Packet to " << n_pid << std::endl;
+            //std::cout << item.first << "'s info Send Spawn Packet to " << n_pid << std::endl;
 #endif
         }
 
@@ -142,7 +161,7 @@ bool Room::HandleEnterPlayer(PlayerRef player)
             if (auto session = player->ownerSession.lock())
                 session->Send(sendBuffer);
 
-            std::cout << "AI info Send Spawn Packet to " << n_pid << std::endl;
+            //std::cout << "AI info Send Spawn Packet to " << n_pid << std::endl;
         }
 
     }
@@ -171,7 +190,8 @@ bool Room::HandleEnterPlayer(PlayerRef player)
             session->Send(sendBuffer);
     }
 
-    return success;
+
+    return true;
 }
 
 bool Room::HandleLeavePlayer(PlayerRef player)

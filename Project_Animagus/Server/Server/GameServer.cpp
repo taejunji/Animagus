@@ -34,7 +34,10 @@ bool GameServer::Initialize()
 
     // Room array Initialize
     for (int32 i = 0; i < ROOM_COUNT; ++i)
+    {
         GRoom[i] = std::make_shared<Room>();
+        GRoom[i]->m_roomID = i;
+    }
 
     m_iocpCore = std::make_shared<IocpCore>();
     if (!m_iocpCore || m_iocpCore->GetHandle() == nullptr)
@@ -63,7 +66,7 @@ void GameServer::Run()  // 메인 스레드도 이 함수 돌리는게 나을듯
     unsigned int workerCount = std::thread::hardware_concurrency() - 1;
     if (workerCount == 0)
     {
-        workerCount = 4; // 기본값
+        workerCount = 4; // default
     }
     m_workerThreads.resize(workerCount);
 

@@ -27,21 +27,7 @@ bool Handle_DCS_TEST(SessionRef& session, DCS_TEST_PKT& pkt)
 
 bool Handle_CS_ENTER_ROOM(SessionRef& session, CS_ENTER_ROOM_PKT& pkt)
 {
-
     //Handle_CS_ENTER_GAME 내용 잘라서 여기 붙이기
-
-
-    return true;
-}
-
-bool Handle_CS_START_GAME(SessionRef& session, CS_START_GAME_PKT& pkt)
-{
-
-    return true;
-}
-
-bool Handle_CS_ENTER_GAME(SessionRef& session, CS_ENTER_GAME_PKT& pkt)
-{
     PlayerRef player = PlayerFactory::CreatePlayer(std::static_pointer_cast<Session>(session));
 
     //GRoom->Enter(player);
@@ -50,6 +36,40 @@ bool Handle_CS_ENTER_GAME(SessionRef& session, CS_ENTER_GAME_PKT& pkt)
 #ifndef _DUMMYTEST
     std::cout << player->playerID << ": Enter Game" << std::endl;
 #endif
+
+    return true;
+}
+
+bool Handle_CS_START_GAME(SessionRef& session, CS_START_GAME_PKT& pkt)
+{
+    std::cout << "Host Request to Start Game" << std::endl;
+
+    PlayerRef player = session->m_player.load();
+    if (player == nullptr)
+        return false;
+
+    RoomRef room = player->room.load().lock();
+    if (room == nullptr)
+        return false;
+
+    SC_START_GAME_PKT start_pkt;
+    SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(start_pkt);
+    room->Broadcast(sendBuffer, 0);
+
+    return true;
+}
+
+bool Handle_CS_ENTER_GAME(SessionRef& session, CS_ENTER_GAME_PKT& pkt)
+{
+    PlayerRef player = session->m_player.load();
+    if (player == nullptr)
+        return false;
+
+    RoomRef room = player->room.load().lock();
+    if (room == nullptr)
+        return false;
+
+    room->HandleStartGame(player);
 
     return true;
 }

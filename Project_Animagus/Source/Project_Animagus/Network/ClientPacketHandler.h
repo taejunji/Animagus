@@ -15,6 +15,8 @@ extern PacketHandlerFunc GClientPacketHandler[1024];
 
 bool Handle_INVALID(SessionRef& session, BYTE* buffer, int32 len);
 bool Handle_DCS_TEST(SessionRef& session, Protocol::DCS_TEST_PKT& pkt);
+bool Handle_SC_UR_HOST(SessionRef& session, Protocol::SC_UR_HOST_PKT& pkt);
+bool Handle_SC_START_GAME(SessionRef& session, Protocol::SC_START_GAME_PKT& pkt);
 bool Handle_SC_ENTER_GAME(SessionRef& session, Protocol::SC_ENTER_GAME_PKT& pkt);
 bool Handle_SC_SPAWN(SessionRef& session, Protocol::SC_SPAWN_PKT& pkt);
 bool Handle_CS_MOVE(SessionRef& session, Protocol::CS_MOVE_PKT& pkt);
@@ -29,6 +31,8 @@ public:
     {
         for (uint16 i = 0; i < 1024; ++i) GClientPacketHandler[i] = Handle_INVALID;
         GClientPacketHandler[(int32)Protocol::PacketID::DCS_TEST] = [](SessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<Protocol::DCS_TEST_PKT>(Handle_DCS_TEST, session, buffer, len); };
+        GClientPacketHandler[(int32)Protocol::PacketID::SC_UR_HOST] = [](SessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<Protocol::SC_UR_HOST_PKT>(Handle_SC_UR_HOST, session, buffer, len); };
+        GClientPacketHandler[(int32)Protocol::PacketID::SC_START_GAME] = [](SessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<Protocol::SC_START_GAME_PKT>(Handle_SC_START_GAME, session, buffer, len); };
         GClientPacketHandler[(int32)Protocol::PacketID::SC_ENTER_GAME] = [](SessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<Protocol::SC_ENTER_GAME_PKT>(Handle_SC_ENTER_GAME, session, buffer, len); };
         GClientPacketHandler[(int32)Protocol::PacketID::SC_SPAWN] = [](SessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<Protocol::SC_SPAWN_PKT>(Handle_SC_SPAWN, session, buffer, len); };
         GClientPacketHandler[(int32)Protocol::PacketID::CS_MOVE] = [](SessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<Protocol::CS_MOVE_PKT>(Handle_CS_MOVE, session, buffer, len); };
@@ -48,6 +52,7 @@ public:
     static SendBufferRef MakeSendBuffer(Protocol::DCS_TEST_PKT& pkt) { return MakeSendBuffer(pkt, (uint16)Protocol::PacketID::DCS_TEST); }
     static SendBufferRef MakeSendBuffer(Protocol::CS_LEAVE_PKT& pkt) { return MakeSendBuffer(pkt, (uint16)Protocol::PacketID::CS_LEAVE); }
     static SendBufferRef MakeSendBuffer(Protocol::CS_ENTER_ROOM_PKT& pkt) { return MakeSendBuffer(pkt, (uint16)Protocol::PacketID::CS_ENTER_ROOM); }
+    static SendBufferRef MakeSendBuffer(Protocol::CS_START_GAME_PKT& pkt) { return MakeSendBuffer(pkt, (uint16)Protocol::PacketID::CS_START_GAME); }
     static SendBufferRef MakeSendBuffer(Protocol::CS_ENTER_GAME_PKT& pkt) { return MakeSendBuffer(pkt, (uint16)Protocol::PacketID::CS_ENTER_GAME); }
     static SendBufferRef MakeSendBuffer(Protocol::CS_MOVE_PKT& pkt) { return MakeSendBuffer(pkt, (uint16)Protocol::PacketID::CS_MOVE); }
     static SendBufferRef MakeSendBuffer(Protocol::CS_USING_SKILL_PKT& pkt) { return MakeSendBuffer(pkt, (uint16)Protocol::PacketID::CS_USING_SKILL); }

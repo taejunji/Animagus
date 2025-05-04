@@ -40,23 +40,23 @@ void ALobbyGameMode::Tick(float DeltaTime)
 
 void ALobbyGameMode::ActiveStartButton()
 {
-    //UE_LOG(LogTemp, Warning, TEXT("ActiveStartButton 시작"));
+    UE_LOG(LogTemp, Warning, TEXT("ActiveStartButton 시작"));
 
-    //UWorld* World = GetWorld();
-    //if (!World)
-    //{
-    //    UE_LOG(LogTemp, Warning, TEXT("LobbyGameMode: World가 null임."));
-    //    return;
-    //}
+    UWorld* World = GetWorld();
+    if (!World)
+    {
+        UE_LOG(LogTemp, Warning, TEXT("LobbyGameMode: World가 null임."));
+        return;
+    }
 
-    //ALobbyPlayerController* PC = Cast<ALobbyPlayerController>(UGameplayStatics::GetPlayerController(World, 0));
-    //if (PC == nullptr)
-    //{
-    //    UE_LOG(LogTemp, Warning, TEXT("LobbyGameMode: World가 null임."));
-    //    return;
-    //}
+    ALobbyPlayerController* PC = Cast<ALobbyPlayerController>(UGameplayStatics::GetPlayerController(World, 0));
+    if (PC == nullptr)
+    {
+        UE_LOG(LogTemp, Warning, TEXT("LobbyGameMode: World가 null임."));
+        return;
+    }
 
-    //PC->ActiveStartButton();
+    PC->EnableStartButton();
 }
 
 

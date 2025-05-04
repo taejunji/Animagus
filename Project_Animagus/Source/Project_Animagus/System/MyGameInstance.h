@@ -87,6 +87,8 @@ public:
 
 
 public:
+    void HandleLobbyHost(Protocol::SC_UR_HOST_PKT& pkt);
+    void HandleStartGame(Protocol::SC_START_GAME_PKT& pkt);
     void HandleEnterGame(Protocol::SC_ENTER_GAME_PKT& pkt);
     void HandleSpawn(Protocol::SC_SPAWN_PKT& pkt);
     void HandleMove(Protocol::CS_MOVE_PKT& pkt);
