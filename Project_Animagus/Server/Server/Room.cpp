@@ -80,6 +80,7 @@ bool Room::HandleEnterPlayer(PlayerRef player)
         SC_UR_HOST_PKT ur_host;
         m_hostPlayer = player;
         isHost = true;
+        n_pid = player->playerID;
 
 #ifndef _DUMMYTEST
         std::cout << n_pid << " is Host" << std::endl;

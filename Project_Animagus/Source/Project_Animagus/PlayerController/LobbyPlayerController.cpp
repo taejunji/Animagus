@@ -15,7 +15,9 @@
 void ALobbyPlayerController::BeginPlay()
 {
     Super::BeginPlay();
-    
+
+    UE_LOG(LogTemp, Warning, TEXT("로비 컨트롤러 BeginPlay"));
+
     // 마우스 커서를 보이게 하고, UI 전용 입력 모드로 전환합니다.
     bShowMouseCursor = true;
     FInputModeUIOnly InputMode;
@@ -60,16 +62,6 @@ void ALobbyPlayerController::ActiveStartButton()
             {
                 UE_LOG(LogTemp, Warning, TEXT("LobbyPlayerController: Start_Button 위젯을 찾지 못했습니다."));
             }
-
-            //FTimerHandle tempHandle;
-            //// 5초 뒤에 EnableStartButton 호출
-            //GetWorld()->GetTimerManager().SetTimer(
-            //    tempHandle,
-            //    this,
-            //    &ALobbyPlayerController::EnableStartButton,
-            //    3.0f,
-            //    false
-            //);
 
         }
     }

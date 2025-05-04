@@ -36,7 +36,7 @@ void UHasteSkill::ActiveSkill_Implementation()
         Char->default_run_speed     = BoostedRunSpeed;
         Char->SetWalkSpeed(BoostedRunSpeed);
 
-        if (LanchedSound && Char->IsLocallyControlled())
+        if (LanchedSound && Char->IsLocallyControlled() && Char->GetPawnType() == PawnType::PLAYER)
         {
             UGameplayStatics::PlaySound2D(this, LanchedSound);
         }
@@ -82,7 +82,7 @@ void UHasteSkill::DeactiveSkill_Implementation()
     if (Owner == nullptr) return;
 
     ABaseCharacter* Char = Cast<ABaseCharacter>(Owner);
-    if (Char)
+    if (Char && Char->GetPawnType() == PawnType::PLAYER)
     {
         // 속도 원복
         Char->default_run_speed = OriginalRunSpeed;

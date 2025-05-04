@@ -5,6 +5,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "GameFramework/Pawn.h"
 #include "DrawDebugHelpers.h"
+#include "../../Character/BaseCharacter.h"
 
 AShrinkingZone::AShrinkingZone()
 {
@@ -74,40 +75,41 @@ void AShrinkingZone::Tick(float DeltaTime)
 	}
 
 
-    APawn* MyPawn = GetWorld()->GetFirstPlayerController()->GetPawn();
-		if (MyPawn && MyPawn->IsLocallyControlled())
+    APawn* tempPawn = GetWorld()->GetFirstPlayerController()->GetPawn();
+    ABaseCharacter* MyPawn = Cast<ABaseCharacter>(tempPawn);
+	if (MyPawn && MyPawn->IsLocallyControlled() && MyPawn->GetPawnType() == PawnType::PLAYER)
+	{
+		if (!IsActorInsideZone(MyPawn))
 		{
-			if (!IsActorInsideZone(MyPawn))
+			if (!Is_in)
 			{
-			    if (!Is_in)
+			    if (EnterZoneSound)
 			    {
-			        if (EnterZoneSound)
-			        {
-			            UGameplayStatics::PlaySound2D(this, EnterZoneSound);
-			            UE_LOG(LogTemp, Log, TEXT("SHRINKSOUND ON") );
-			        }
-			        
-			        Is_in = true;
-			        SetFogPostProcess(1);
-
+			        UGameplayStatics::PlaySound2D(this, EnterZoneSound);
+			        UE_LOG(LogTemp, Log, TEXT("SHRINKSOUND ON") );
 			    }
-                else
-                {
-                    UE_LOG(LogTemp, Log, TEXT("SHRINKIn and Is_in true") ); 
-                } 
-				ApplyGasDamage(MyPawn, DeltaTime);
-			   
+			        
+			    Is_in = true;
+			    SetFogPostProcess(1);
+
 			}
-		    else
+            else
+            {
+                UE_LOG(LogTemp, Log, TEXT("SHRINKIn and Is_in true") ); 
+            } 
+			ApplyGasDamage(MyPawn, DeltaTime);
+			   
+		}
+		else
+		{
+		    if (Is_in)
 		    {
-		        if (Is_in)
-		        {
-		            UE_LOG(LogTemp, Log, TEXT("SHRINKout and Is_in true") ); 
-		            Is_in = false;
-		            SetFogPostProcess(0);
-		        }
+		        UE_LOG(LogTemp, Log, TEXT("SHRINKout and Is_in true") ); 
+		        Is_in = false;
+		        SetFogPostProcess(0);
 		    }
 		}
+	}
 	
 }
 

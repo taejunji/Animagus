@@ -40,7 +40,7 @@ void ALobbyGameMode::Tick(float DeltaTime)
 
 void ALobbyGameMode::ActiveStartButton()
 {
-    UE_LOG(LogTemp, Warning, TEXT("ActiveStartButton 시작"));
+    UE_LOG(LogTemp, Warning, TEXT("내가 Host 임. Button 활성화"));
 
     UWorld* World = GetWorld();
     if (!World)
