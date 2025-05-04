@@ -108,6 +108,10 @@ void ABattleGameMode::StartPlay()
 
     InitBattleMode();
     
+    if (BackgroundMusic)
+    {
+        UGameplayStatics::PlaySound2D(GetWorld(), BackgroundMusic);
+    }
 }
 
 void ABattleGameMode::Tick(float DeltaTime)

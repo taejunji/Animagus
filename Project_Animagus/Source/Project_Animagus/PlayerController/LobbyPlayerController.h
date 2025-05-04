@@ -6,6 +6,7 @@
 #include "GameFramework/PlayerController.h"
 #include "LobbyPlayerController.generated.h"
 
+class UButton;
 /**
  * 
  */
@@ -21,13 +22,23 @@ public:
 protected:
     // 로비 UI 위젯 클래스 (에디터에서 할당)
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "UI")
-    TSubclassOf<class UUserWidget> LobbyHUDClass;
+    TSubclassOf<class UUserWidget> LobbyWidgetClass;
 
     // 생성된 로비 UI 위젯 인스턴스
     UPROPERTY()
-    class UUserWidget* LobbyHUD;
+    class UUserWidget* LobbyWidget;
     
     // 버튼 클릭 핸들러
     UFUNCTION()
     void OnStartButtonClicked();
+
+    // 버튼 위젯 참조
+    UPROPERTY(meta=(BindWidget))
+    UButton* Start_Button;
+
+    FTimerHandle StartButtonTimerHandle;
+    
+public:
+    UFUNCTION()
+    void EnableStartButton();
 };
