@@ -63,6 +63,8 @@ protected:
     void CountdownTimerUpdate();
     void RoundTimerUpdate();
     
+    UPROPERTY(EditAnywhere, Category="Audio")
+    USoundBase* BackgroundMusic;
 public:
     // BP_AI 애셋
     UPROPERTY(EditAnywhere, Category="AI")

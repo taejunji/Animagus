@@ -137,6 +137,10 @@ void ABattleGameMode::StartPlay()
 
     InitBattleMode();
     
+    if (BackgroundMusic)
+    {
+        UGameplayStatics::PlaySound2D(GetWorld(), BackgroundMusic);
+    }
 }
 
 void ABattleGameMode::Tick(float DeltaTime)
@@ -296,9 +300,11 @@ void ABattleGameMode::SpawnPlayers()
         AAICharacter* AIChar = GetWorld()->SpawnActor<AAICharacter>(AIPlayerClass,SpawnTransform);
         if (!AIChar) continue;
 
-        auto Movement = AIChar->GetCharacterMovement();
-        Movement->bUseControllerDesiredRotation = true;
-        Movement->bOrientRotationToMovement = false; 
+        AIChar->bUseControllerRotationYaw = false;
+
+        auto Movement = AIChar->GetCharacterMovement(); 
+        Movement->bOrientRotationToMovement = true; 
+        Movement->bUseControllerDesiredRotation = false; 
         //Movement->bUseAccelerationForPaths = false; // MoveTo가 목적지 가까워져도 감속 없이 직선 고속 이동
         
         AIChar->SetPlayerId(AIId);

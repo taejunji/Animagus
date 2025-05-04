@@ -36,8 +36,8 @@ void UBTService_CheckMovementStuck::TickNode(UBehaviorTreeComponent& OwnerComp, 
     if (!Character || !bInitialized) return;
 
     ElapsedTime += DeltaSeconds;
-
-    float DistanceMoved = FVector::Dist2D(Character->GetActorLocation(), InitialLocation);
+     
+    float DistanceMoved = FVector::Dist(Character->GetActorLocation(), InitialLocation); 
 
     if (ElapsedTime >= TimeThreshold && Character->bIsStunned == false) 
     {
