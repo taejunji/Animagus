@@ -5,6 +5,7 @@
 #include "Blueprint/UserWidget.h"
 #include "Components/Button.h"
 #include "Kismet/GameplayStatics.h"
+#include "TimerManager.h"
 #include "EnhancedInputSubsystems.h"
 #include "EnhancedInputComponent.h"
 
@@ -20,23 +21,41 @@ void ALobbyPlayerController::BeginPlay()
     SetInputMode(InputMode);
 
     // 로비 HUD 위젯 생성 및 Viewport에 추가합니다.
-    if (LobbyHUDClass)
+    if (LobbyWidgetClass)
     {
-        LobbyHUD = CreateWidget<UUserWidget>(this, LobbyHUDClass);
-        if (LobbyHUD)
-        {
-            LobbyHUD->AddToViewport();
+        LobbyWidget = CreateWidget<UUserWidget>(this, LobbyWidgetClass);
+        UE_LOG(LogTemp, Log, TEXT("LobbyWidget 생성: %s"), LobbyWidget ? TEXT("성공") : TEXT("실패"));
 
-            // 3) Start_Button 찾아서 클릭 이벤트 바인딩
-            if (UButton* StartButton = Cast<UButton>(LobbyHUD->GetWidgetFromName(TEXT("Start_Button"))))
+        if (LobbyWidget)
+        {
+            LobbyWidget->AddToViewport();
+
+            // StartButton 위젯 찾아서 바인딩
+            Start_Button = Cast<UButton>(LobbyWidget->GetWidgetFromName(TEXT("Start_Button")));
+            UE_LOG(LogTemp, Log, TEXT("StartButton 찾기: %s"), Start_Button ? TEXT("성공") : TEXT("실패"));
+            if (Start_Button)
             {
-                StartButton->OnClicked.AddDynamic(this, &ALobbyPlayerController::OnStartButtonClicked);
-            }
-            else
-            {
-                UE_LOG(LogTemp, Warning, TEXT("LobbyPlayerController: Start_Button 위젯을 찾지 못했습니다."));
+                // 클릭 이벤트에 OnStartButtonClicked 연결
+                Start_Button->OnClicked.AddDynamic(this, &ALobbyPlayerController::OnStartButtonClicked);
+
+                // 처음에는 비활성화
+                Start_Button->SetIsEnabled(false);
+
+                // 5초 뒤에 EnableStartButton 호출
+                GetWorld()->GetTimerManager().SetTimer(
+                    StartButtonTimerHandle,
+                    this,
+                    &ALobbyPlayerController::EnableStartButton,
+                    5.0f,
+                    false
+                );
+                UE_LOG(LogTemp, Log, TEXT("EnableStartButton 타이머 설정 완료"));
             }
         }
+    }
+    else
+    {
+        UE_LOG(LogTemp, Warning, TEXT("LobbyWidgetClass가 바인딩되지 않음"));
     }
 }
 
@@ -63,4 +82,12 @@ void ALobbyPlayerController::OnStartButtonClicked()
     
     // OpenLevel 호출:
     UGameplayStatics::OpenLevel(this, TargetLevelName);
+}
+
+void ALobbyPlayerController::EnableStartButton()
+{
+    if (Start_Button)
+    {
+        Start_Button->SetIsEnabled(true);
+    } 
 }

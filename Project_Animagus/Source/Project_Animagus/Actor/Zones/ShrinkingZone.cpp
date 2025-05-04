@@ -74,14 +74,10 @@ void AShrinkingZone::Tick(float DeltaTime)
 	}
 
 
-	TArray<AActor*> PlayerActors;
-	UGameplayStatics::GetAllActorsOfClass(GetWorld(), APawn::StaticClass(), PlayerActors);
-	for (AActor* Actor : PlayerActors)
-	{
-		APawn* Pawn = Cast<APawn>(Actor);
-		if (Pawn && Pawn->IsLocallyControlled())
+    APawn* MyPawn = GetWorld()->GetFirstPlayerController()->GetPawn();
+		if (MyPawn && MyPawn->IsLocallyControlled())
 		{
-			if (!IsActorInsideZone(Pawn))
+			if (!IsActorInsideZone(MyPawn))
 			{
 			    if (!Is_in)
 			    {
@@ -95,19 +91,24 @@ void AShrinkingZone::Tick(float DeltaTime)
 			        SetFogPostProcess(1);
 
 			    }
-			    
-				ApplyGasDamage(Pawn, DeltaTime);
+                else
+                {
+                    UE_LOG(LogTemp, Log, TEXT("SHRINKIn and Is_in true") ); 
+                } 
+				ApplyGasDamage(MyPawn, DeltaTime);
+			   
 			}
 		    else
 		    {
 		        if (Is_in)
 		        {
+		            UE_LOG(LogTemp, Log, TEXT("SHRINKout and Is_in true") ); 
 		            Is_in = false;
 		            SetFogPostProcess(0);
 		        }
 		    }
 		}
-	}
+	
 }
 
 bool AShrinkingZone::IsActorInsideZone(AActor* OtherActor) const
