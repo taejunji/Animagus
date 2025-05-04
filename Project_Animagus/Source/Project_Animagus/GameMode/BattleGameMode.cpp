@@ -246,9 +246,11 @@ void ABattleGameMode::SpawnPlayers()
         AAICharacter* AIChar = GetWorld()->SpawnActor<AAICharacter>(AIPlayerClass,SpawnTransform);
         if (!AIChar) continue;
 
+        AIChar->bUseControllerRotationYaw = false;
+
         auto Movement = AIChar->GetCharacterMovement(); 
-        Movement->bUseControllerDesiredRotation = true; 
-        Movement->bOrientRotationToMovement = false; 
+        Movement->bOrientRotationToMovement = true; 
+        Movement->bUseControllerDesiredRotation = false; 
         //Movement->bUseAccelerationForPaths = false; // MoveTo가 목적지 가까워져도 감속 없이 직선 고속 이동
 
 

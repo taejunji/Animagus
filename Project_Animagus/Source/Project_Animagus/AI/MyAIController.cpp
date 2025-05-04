@@ -95,7 +95,7 @@ void AMyAIController::BeginPlay()
             AIPerceptionComponent->OnPerceptionUpdated.AddDynamic(this, &AMyAIController::OnPerceptionUpdated);
         }
     }
-#if 1
+#if 0
     StartBehaviorTree(); 
 #endif
 
@@ -225,50 +225,22 @@ void AMyAIController::Tick(float DeltaTime)
     
     if (ControlMode != AIControlMode::AIController) return;
 
-#if 0
-    // [ 보이는지 확인해서 쫓아가서 쏘거나 마지막으로 발견한 위치에 가기 ] : BT 
-    // 플레이어 시야에 들어오면 쳐다보기 
-    APawn* PlayerPawn = UGameplayStatics::GetPlayerPawn(GetWorld(), 0);
-    //
-    if (LineOfSightTo(PlayerPawn))
-    {
-        // Actor 쳐다보고 따라오는거
-    //    MoveToActor(PlayerPawn, AcceptanceRadius);
-    //    SetFocus(PlayerPawn);
-        SetFocalPoint(PlayerPawn->GetActorLocation() + FVector(0, 0, 50)); // 플레이어 중앙(50cm 위)를 바라보게 하기
-
-        // 시야에 보이면 Plaeyr 따라가고 아니면 지우기 
-        GetBlackboardComponent()->SetValueAsVector(TEXT("PlayerLocation"), PlayerPawn->GetActorLocation());
-        GetBlackboardComponent()->SetValueAsVector(TEXT("LastKnownPlayerLocation"), PlayerPawn->GetActorLocation());
-        // 발사 방향 디버깅
-    //    DrawDebugLine(GetWorld(), GetOwner()->GetActorLocation(), PlayerPawn->GetActorLocation(), FColor::Blue, false, 2.0f, 0, 2.0f);
-    }
-    else
-    {
-        ClearFocus(EAIFocusPriority::Gameplay);
-    //    StopMovement();
-
-        // 해당 키의 값을 제거하고, 블랙보드에서 "존재하지 않는 상태"로 만든다.
-        GetBlackboardComponent()->ClearValue(TEXT("PlayerLocation"));
-    }
-#endif
-
 }
 
 void AMyAIController::CheckAndDisableTargetIfDead()
 {
     // Blackboard에서 TargetKey에 해당하는 타겟 객체를 가져옵니다
     ABaseCharacter* TargetCharacter = Cast<ABaseCharacter>(GetBlackboardComponent()->GetValueAsObject(TargetKey.SelectedKeyName));
-    if (TargetCharacter == nullptr)
-    {
-        // 타겟이 없다면 아무것도 하지 않음
-        return;
-    }
 
     // 타겟이 죽었는지 확인
-    if (TargetCharacter->GetIsDead())
+    if (TargetCharacter == nullptr || TargetCharacter->GetIsDead())
     {
-        // 포커스를 해제하는데, 현재 타겟과만 관련된 포커스 해제
+        if (ABaseCharacter* AI = Cast<ABaseCharacter>(GetPawn())) {
+            AI->bUseControllerRotationYaw = false;
+            AI->GetCharacterMovement()->bOrientRotationToMovement = true;
+            AI->GetCharacterMovement()->bUseControllerDesiredRotation = false;
+        }
+
         ClearFocus(EAIFocusPriority::Gameplay);  // Focus 해제
         GetBlackboardComponent()->ClearValue(TargetKey.SelectedKeyName);  // Blackboard에서 타겟 제거
     }
@@ -311,13 +283,13 @@ void AMyAIController::OnPerceptionUpdated(const TArray<AActor*>& UpdatedActors)
     }
 
     // 기존 감지 목록에서 사라진 액터 처리
-    for (AActor* PreviouslySensedActor : SensedActors)
-    {
-        if (!NewlySensedActors.Contains(PreviouslySensedActor))
-        {
-            RememberLostTarget(PreviouslySensedActor);
-        }
-    }
+    //for (AActor* PreviouslySensedActor : SensedActors)
+    //{
+    //    if (!NewlySensedActors.Contains(PreviouslySensedActor))
+    //    {
+    //        RememberLostTarget(PreviouslySensedActor);
+    //    }
+    //}
 
     // 현재 감지된 액터 목록 업데이트
     SensedActors = NewlySensedActors;
@@ -394,6 +366,12 @@ void AMyAIController::HandleSensedSight(AActor* Actor, bool bSensed, FAIStimulus
      
     if (TargetCharacter->GetIsDead()) 
     {
+        if (ABaseCharacter* AI = Cast<ABaseCharacter>(GetPawn())) {
+            AI->bUseControllerRotationYaw = false;
+            AI->GetCharacterMovement()->bOrientRotationToMovement = true;
+            AI->GetCharacterMovement()->bUseControllerDesiredRotation = false;
+        }
+
         LostTargets.Remove(TargetCharacter);  
         ClearFocus(EAIFocusPriority::Gameplay); 
         GetBlackboardComponent()->ClearValue(TargetKey.SelectedKeyName); 
@@ -490,10 +468,18 @@ void AMyAIController::SetAITarget(ABaseCharacter* NewTarget)
     }
     else
     {
+        if (ABaseCharacter* AI = Cast<ABaseCharacter>(GetPawn())) {
+            AI->bUseControllerRotationYaw = false;
+            AI->GetCharacterMovement()->bOrientRotationToMovement = true;
+            AI->GetCharacterMovement()->bUseControllerDesiredRotation = false;
+        }
+
+        ClearFocus(EAIFocusPriority::Gameplay);  // Focus 해제
         GetBlackboardComponent()->ClearValue(TargetKey.SelectedKeyName);
     }
 }
 
+// 보완 필요
 void AMyAIController::CheckAndRecoverFromNavMesh()
 {
     UNavigationSystemV1* NavSys = FNavigationSystem::GetCurrent<UNavigationSystemV1>(GetWorld());
@@ -511,7 +497,7 @@ void AMyAIController::CheckAndRecoverFromNavMesh()
         FVector PatrolLoc = GetBlackboardComponent()->GetValueAsVector(patrol_pos_key.SelectedKeyName); 
 
         // 결과 위치에 디버그 구를 그립니다.
-        // DrawDebugSphere(GetWorld(), PatrolLoc, 200.f, 12, FColor::Red, false, 0.5f);
+        DrawDebugSphere(GetWorld(), PatrolLoc, 200.f, 12, FColor::Red, false, 0.5f);
 
         // 가까운 네비 위치 방향으로 걸어가게 명령
         FVector Direction = (PatrolLoc - CurrentLocation);
@@ -529,6 +515,14 @@ void AMyAIController::CheckAndRecoverFromNavMesh()
         //GetBlackboardComponent()->ClearValue(TargetKey.SelectedKeyName);  // Blackboard에서 타겟 제거 
         //GetWorld()->GetTimerManager().ClearTimer(TargetChangeTimerHandle);
         //bCanChangeTarget = true;
+
+
+        //GEngine->AddOnScreenDebugMessage(
+        //    -1,
+        //    2.0f,
+        //    FColor::Red,
+        //    FString::Printf(TEXT("Failed To Find NavMesh => True "))
+        //);
 
         // 네비메시를 찾지 못한 상태를 기록
         bFailedToFindNavMesh = true;
