@@ -55,6 +55,9 @@ protected:
 
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Box|Items")
     TSubclassOf<ABaseItem> HealItemPlusClass;
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "AI")
+    class UAIPerceptionStimuliSourceComponent* StimuliSource;
     
     UPROPERTY(EditAnywhere, Category="Audio")
     USoundBase* BreakSound;
