@@ -4,6 +4,8 @@
 #include "NiagaraFunctionLibrary.h"
 #include "Kismet/GameplayStatics.h"
 #include "Project_Animagus/Character/BaseCharacter.h"
+#include "Perception/AIPerceptionStimuliSourceComponent.h"
+#include "Perception/AISense_Sight.h"
 
 ABaseItem::ABaseItem()
 {
@@ -20,12 +22,16 @@ ABaseItem::ABaseItem()
     CollisionComp->SetCollisionResponseToChannel(ECC_Pawn, ECollisionResponse::ECR_Overlap);
     
     CollisionComp->SetCollisionResponseToChannel(ECC_GameTraceChannel1, ECollisionResponse::ECR_Ignore);
+    CollisionComp->SetCollisionResponseToChannel(ECC_Visibility, ECR_Block); // 추가 
 
     RootComponent = CollisionComp;
 
     // 충돌 이벤트 바인딩: OnItemOverlapBegin 함수 호출
     CollisionComp->OnComponentBeginOverlap.AddDynamic(this, &ABaseItem::OnItemOverlapBegin);
     
+    // 시야 시스템에 인식하도록
+    StimuliSource = CreateDefaultSubobject<UAIPerceptionStimuliSourceComponent>(TEXT("StimuliSource")); 
+
     // Niagara 컴포넌트 생성 (상시 이펙트)
     ItemEffect = CreateDefaultSubobject<UNiagaraComponent>(TEXT("ItemEffect"));
     ItemEffect->SetupAttachment(RootComponent);
@@ -47,6 +53,13 @@ void ABaseItem::BeginPlay()
     if (ItemEffect && ItemEffect->GetAsset())
     {
         ItemEffect->Activate();
+    }
+
+    // 시야 시스템 감지 등록
+    if (StimuliSource)
+    {
+        StimuliSource->RegisterForSense(UAISense_Sight::StaticClass());  // 시각 감지에 등록
+        StimuliSource->RegisterWithPerceptionSystem();  // 감지 시스템에 등록
     }
 }
 

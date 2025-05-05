@@ -50,6 +50,9 @@ protected:
     // 아이템이 이미 획득되었는지 판별하는 플래그
     bool bIsPickedUp;
 
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "AI")
+    class UAIPerceptionStimuliSourceComponent* StimuliSource;
+
     /** 충돌 이벤트: 다른 액터와 Overlap 시 호출 */
     UFUNCTION()
     virtual void OnItemOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,

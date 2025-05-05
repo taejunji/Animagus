@@ -2,19 +2,24 @@
 
 
 #include "BaseCharacter.h"
-#include "GameFramework/CharacterMovementComponent.h"
-#include "Animation/AnimInstance.h"
 #include "AICharacter.h"
-#include "NiagaraComponent.h"
 #include "../AI/MyAIController.h"
+#include "Animation/AnimInstance.h"
+#include "Components/CapsuleComponent.h"
+#include "GameFramework/CharacterMovementComponent.h"
+
 #include "BehaviorTree/BlackboardComponent.h"
 #include "BehaviorTree/BehaviorTreeComponent.h"
+#include "Perception/AISense_Damage.h"
 
+#include "NiagaraComponent.h"
+
+#include "../Projectile/ProjectileBase.h"
 
 #include "../Skill/BaseSkill.h"
 #include "../Skill/Fireball.h"
 #include "../Skill/MagicMissile.h"
-#include "Components/CapsuleComponent.h"
+
 #include "Project_Animagus/Skill/Bounce.h"
 #include "Project_Animagus/Skill/ChangeSkill.h"
 #include "Project_Animagus/Skill/HasteSkill.h"
@@ -253,6 +258,34 @@ float ABaseCharacter::TakeDamage(float DamageAmount, struct FDamageEvent const& 
 
     PlayAnimMontageByType(MontageType::Hit);
     hp -= ActualDamage;
+
+    // AI에게 데미지를 알림
+    if (AAICharacter* AI = Cast<AAICharacter>(this))
+    {
+        if (AProjectileBase* skillCauser = Cast<AProjectileBase>(DamageCauser)) 
+        {
+            if (AActor* InstigatorActor = skillCauser->Shooter)  
+            {
+                AMyAIController* AIC = Cast<AMyAIController>(AI->GetController());
+                    
+                auto* Target = AIC->GetBlackboardComponent()->GetValueAsObject(AIC->TargetKey.SelectedKeyName); 
+
+                if (nullptr == Target)
+                {
+                    AIC->GetBlackboardComponent()->SetValueAsBool(AIC->can_set_target_key.SelectedKeyName, true);
+
+                    UAISense_Damage::ReportDamageEvent( 
+                        GetWorld(), 
+                        this,
+                        InstigatorActor, 
+                        ActualDamage, 
+                        InstigatorActor->GetActorLocation(), 
+                        GetActorLocation()  
+                    );
+                }
+            }
+        }
+    }
 
     if (hp <= 0)
     {

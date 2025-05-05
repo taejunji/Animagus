@@ -8,6 +8,8 @@
 #include "../../Projectile/ProjectileBase.h"
 #include "../../Item/BaseItem.h"
 #include "UObject/ConstructorHelpers.h"
+#include "Perception/AIPerceptionStimuliSourceComponent.h"
+#include "Perception/AISense_Sight.h"
 
 AItem_Box_Base::AItem_Box_Base()
 {
@@ -30,6 +32,9 @@ AItem_Box_Base::AItem_Box_Base()
     FracturedComp->SetVisibility(false);
     FracturedComp->SetSimulatePhysics(false);
     FracturedComp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+
+    // 시야 시스템에 인식하도록
+    StimuliSource = CreateDefaultSubobject<UAIPerceptionStimuliSourceComponent>(TEXT("StimuliSource"));
 
     ImpactNiagaraEffect = nullptr; // 에디터에서 할당
 
@@ -86,6 +91,13 @@ AItem_Box_Base::AItem_Box_Base()
 void AItem_Box_Base::BeginPlay()
 {
     Super::BeginPlay();
+
+    // 시야 시스템 감지 등록
+    if (StimuliSource)
+    {
+        StimuliSource->RegisterForSense(UAISense_Sight::StaticClass());  // 시각 감지에 등록
+        StimuliSource->RegisterWithPerceptionSystem();  // 감지 시스템에 등록
+    }
 }
 
 void AItem_Box_Base::Tick(float DeltaTime)
