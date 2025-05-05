@@ -191,4 +191,21 @@ bool Handle_CS_DAMAGE(SessionRef& session, CS_DAMAGE_PKT& pkt)
     return true;
 }
 
+bool Handle_CS_TIME_OVER(SessionRef& session, CS_TIME_OVER_PKT& pkt)
+{
+    auto gameSession = static_pointer_cast<Session>(session);
+
+    PlayerRef player = gameSession->m_player.load();
+    if (player == nullptr)
+        return false;
+
+    RoomRef room = player->room.load().lock();
+    if (room == nullptr)
+        return false;
+
+    room->HandleTimeOverLocked(pkt);
+
+    return true;
+}
+
 // 브랜치 보호용 커밋

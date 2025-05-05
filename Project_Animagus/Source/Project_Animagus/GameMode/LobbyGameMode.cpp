@@ -52,7 +52,7 @@ void ALobbyGameMode::ActiveStartButton()
     ALobbyPlayerController* PC = Cast<ALobbyPlayerController>(UGameplayStatics::GetPlayerController(World, 0));
     if (PC == nullptr)
     {
-        UE_LOG(LogTemp, Warning, TEXT("LobbyGameMode: World가 null임."));
+        UE_LOG(LogTemp, Warning, TEXT("LobbyGameMode: Controller가 null임."));
         return;
     }
 

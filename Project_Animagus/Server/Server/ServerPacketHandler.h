@@ -19,6 +19,7 @@ bool Handle_CS_AI_ENTER(SessionRef& session, CS_AI_ENTER_PKT& pkt);
 bool Handle_CS_AI_MOVE(SessionRef& session, CS_AI_MOVE_PKT& pkt);
 bool Handle_CS_AI_USING_SKILL(SessionRef& session, CS_AI_USING_SKILL_PKT& pkt);
 bool Handle_CS_DAMAGE(SessionRef& session, CS_DAMAGE_PKT& pkt);
+bool Handle_CS_TIME_OVER(SessionRef& session, CS_TIME_OVER_PKT& pkt);
 
 
 class ServerPacketHandler
@@ -38,6 +39,7 @@ public:
         GServerPacketHandler[(int32)PacketID::CS_AI_MOVE] = [](SessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<CS_AI_MOVE_PKT>(Handle_CS_AI_MOVE, session, buffer, len); };
         GServerPacketHandler[(int32)PacketID::CS_AI_USING_SKILL] = [](SessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<CS_AI_USING_SKILL_PKT>(Handle_CS_AI_USING_SKILL, session, buffer, len); };
         GServerPacketHandler[(int32)PacketID::CS_DAMAGE] = [](SessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<CS_DAMAGE_PKT>(Handle_CS_DAMAGE, session, buffer, len); };
+        GServerPacketHandler[(int32)PacketID::CS_TIME_OVER] = [](SessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<CS_TIME_OVER_PKT>(Handle_CS_TIME_OVER, session, buffer, len); };
 
     }
 

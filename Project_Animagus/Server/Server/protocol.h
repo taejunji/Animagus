@@ -82,6 +82,7 @@ namespace Protocol {
         CS_AI_MOVE,
         CS_AI_USING_SKILL,
         CS_DAMAGE,
+        CS_TIME_OVER,
 
         SC_UR_HOST,
         SC_START_GAME,
@@ -190,6 +191,9 @@ namespace Protocol {
         uint16 room_id;
         float hp;
         bool isAlive;
+    };
+    struct CS_TIME_OVER_PKT
+    {
     };
 
     struct SC_UR_HOST_PKT

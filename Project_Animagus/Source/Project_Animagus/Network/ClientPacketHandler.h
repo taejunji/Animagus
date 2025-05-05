@@ -60,6 +60,7 @@ public:
     static SendBufferRef MakeSendBuffer(Protocol::CS_AI_MOVE_PKT& pkt) { return MakeSendBuffer(pkt, (uint16)Protocol::PacketID::CS_AI_MOVE); }
     static SendBufferRef MakeSendBuffer(Protocol::CS_AI_USING_SKILL_PKT& pkt) { return MakeSendBuffer(pkt, (uint16)Protocol::PacketID::CS_AI_USING_SKILL); }
     static SendBufferRef MakeSendBuffer(Protocol::CS_DAMAGE_PKT& pkt) { return MakeSendBuffer(pkt, (uint16)Protocol::PacketID::CS_DAMAGE); }
+    static SendBufferRef MakeSendBuffer(Protocol::CS_TIME_OVER_PKT& pkt) { return MakeSendBuffer(pkt, (uint16)Protocol::PacketID::CS_TIME_OVER); }
 
 private:
     template<typename PacketType, typename ProcessFunc>

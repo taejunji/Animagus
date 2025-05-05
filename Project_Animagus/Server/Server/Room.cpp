@@ -50,6 +50,7 @@ void Room::Broadcast(SendBufferRef sendBuffer, uint16 execptID)
     {
         PlayerRef player = p.second;
         if (player->playerID == execptID) continue;
+        if (player->playerID == 0) continue;
 
         SessionRef session = player->ownerSession.lock();
         session->Send(sendBuffer);
@@ -150,7 +151,7 @@ bool Room::HandleStartGame(PlayerRef player)
 
         for (auto& item : m_aiPlayers)
         {
-            if ((m_playerCount % 2) == 1) break;  // host 에게 ai 정보는 필요 없음
+            if (m_hostPlayer->playerID == player->playerID) break;  // host 에게 ai 정보는 필요 없음
 
             AIPlayerRef ai_player = item.second;
             oldPlayer.x = ai_player->x;
@@ -215,6 +216,8 @@ bool Room::HandleLeavePlayer(PlayerRef player)
         //SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(pkt);
         //Broadcast(sendBuffer, 0);
     }
+
+    m_aiPlayers.clear();
 
     return success;
 }
@@ -288,9 +291,10 @@ bool Room::HandleEnterAIPlayer(Protocol::CS_AI_ENTER_PKT& pkt)
 
     AIPlayerRef ai = std::make_shared<AIPlayer>(pkt.x, pkt.y, pkt.z, pkt.rotation);
     ai->aiID = aiID;
+    ai->playerID = aiID;
     ai->type = pkt.p_type;
 
-    m_aiPlayers.insert(make_pair(ai->aiID, ai));
+    m_aiPlayers.insert(make_pair(aiID, ai));
     ai->room.store(shared_from_this());
 
     m_playerCount++;
@@ -398,6 +402,36 @@ bool Room::HandleDamageLocked(Protocol::CS_DAMAGE_PKT& pkt, const uint16 ownerID
 
     SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(updateHpPkt);
     Broadcast(sendBuffer, ownerID);
+
+    return true;
+}
+
+bool Room::HandleTimeOverLocked(Protocol::CS_TIME_OVER_PKT& pkt)
+{
+#ifndef _DUMMYTEST
+    std::cout << "Room#" << m_roomID << " Time Over" << std::endl;
+#endif
+
+    std::lock_guard lock(m_mutex);
+
+    std::vector<PlayerRef> sortedPlayers;
+    sortedPlayers.reserve(m_players.size() + m_aiPlayers.size());
+
+    for (auto& kv : m_players)
+        sortedPlayers.emplace_back(kv.second);
+    for (auto& kv : m_aiPlayers)
+        sortedPlayers.emplace_back(kv.second);
+
+    std::sort(sortedPlayers.begin(), sortedPlayers.end(),
+        [](const PlayerRef& a, const PlayerRef& b) {
+            return a->playerHP > b->playerHP;
+        });
+
+#ifndef _DUMMYTEST
+    for (auto& player : sortedPlayers) {
+        std::cout << player->playerID << ":" << player->playerHP << ", ";
+    }
+#endif
 
     return true;
 }

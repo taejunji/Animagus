@@ -112,6 +112,7 @@ public:
     int32 PossessIndex;
 
     bool AmIHost = false;
+    float TIME_OVER = 10.0f;
 
     APlayerCharacter* PlayerCharacter; // 플레이어 캐릭터 포인터
 

@@ -82,7 +82,7 @@ void UHasteSkill::DeactiveSkill_Implementation()
     if (Owner == nullptr) return;
 
     ABaseCharacter* Char = Cast<ABaseCharacter>(Owner);
-    if (Char && Char->GetPawnType() == PawnType::PLAYER)
+    if (Char)
     {
         // 속도 원복
         Char->default_run_speed = OriginalRunSpeed;
@@ -110,8 +110,8 @@ void UHasteSkill::CheckSpeed()
 
     // 로컬 플레이어 캐릭터인지 확인
     AController* Ctrl = Char->GetController();
-    if (!(Ctrl && Ctrl->IsLocalController()))
-        return;
+    if (Ctrl == nullptr) return;
+    if (Char->GetPawnType() != PawnType::PLAYER) return;
 
 
     // current_speed 기준으로 PostProcess 토글

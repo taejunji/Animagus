@@ -708,6 +708,15 @@ void ABattleGameMode::RoundTimerUpdate()
     }
 
     UE_LOG(LogTemp, Log, TEXT("Round Time: %.0f"), CurrentRoundTime);
+
+    if (AmIHost == false) return;
+    if (CurrentRoundTime == TIME_OVER)
+    {
+        Protocol::CS_TIME_OVER_PKT timeOverPkt;
+
+        SendBufferRef SendBuffer = ClientPacketHandler::MakeSendBuffer(timeOverPkt);
+        Cast<UMyGameInstance>(GWorld->GetGameInstance())->SendPacket(SendBuffer);
+    }
 }
 
 void ABattleGameMode::SpawnItemsInArea1()
