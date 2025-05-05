@@ -81,15 +81,24 @@ public:
     //UPROPERTY(EditAnywhere, Category = "Blackboard")
     //FBlackboardKeySelector AIStateKey;
 
+public:
     UPROPERTY(EditAnywhere, Category = "Blackboard")
     FBlackboardKeySelector TargetKey;
 
+    UPROPERTY(EditAnywhere, Category = "Blackboard")
+    FBlackboardKeySelector BoxTargetKey;
+
+    UPROPERTY(EditAnywhere, Category = "Blackboard")
+    FBlackboardKeySelector ItemTargetKey;
+
+public:
     UPROPERTY(EditAnywhere, Category = "Blackboard")
     FBlackboardKeySelector DefendRadiusKey;
 
     UPROPERTY(EditAnywhere, Category = "Blackboard")
     FBlackboardKeySelector AttackRadiusKey;
 
+public:
     UPROPERTY(EditAnywhere, Category = "Blackboard")
     FBlackboardKeySelector Skill_1_CoolTime_Key;
     UPROPERTY(EditAnywhere, Category = "Blackboard")
@@ -101,6 +110,7 @@ public:
 
     UPROPERTY(EditAnywhere, Category = "Blackboard")
     TArray<FBlackboardKeySelector> Skill_isCoolTime_Key;
+public:
 
     UPROPERTY(EditAnywhere, Category = "Blackboard")
     FBlackboardKeySelector patrol_pos_key;
@@ -118,30 +128,47 @@ public:
     TSet<AActor*> SensedActors; // 현재 감지된 액터 목록
 
 public:
+    UFUNCTION(BlueprintCallable)
+    void ResumeBehaviorTree(); // BT 재개
+
     void StartBehaviorTree();
 
     void SetControlMode(AIControlMode mode);
 
     void SetSkillCoolTime();
 
-    UFUNCTION(BlueprintCallable)
-    void ResumeBehaviorTree(); // BT 재개
-
-    void CheckAndDisableTargetIfDead();
-
+public:
     UFUNCTION()
     void OnPerceptionUpdated(const TArray<AActor*>& UpdatedActors);
 
+    void CheckAndDisableTargetIfDead();
+    
     struct FAIStimulus CanSenseActor(AActor* Actor, EAIPerceptionSense AIPerceptionSense);
+    
     void HandleSensedSight(AActor* Actor, bool bSensed, FAIStimulus Stimulus);
+   
+    class ABaseCharacter* SelectBestTarget(const TSet<AActor*>& Candidates);
 
-    float CalculateTargetPriority(class ABaseCharacter* TargetCharacter);
-    void ResetTargetChange();
-    ABaseCharacter* SelectBestTarget(const TSet<AActor*>& Candidates);
+    void SelectBestItemTarget(const TSet<AActor*>& Candidates);
+
+    void SelectBestBoxTarget(const TSet<AActor*>& Candidates);
+
+    float CalculateTargetPriority(class ABaseCharacter* TargetCharacter);    
+    
     void SetAITarget(ABaseCharacter* NewTarget);
+ 
+    void ResetTargetChange();
+
+    void ClearFocusTarget();
 
     // NavMesh 복귀 
     void CheckAndRecoverFromNavMesh();
 
-    void ClearFocusTarget();
+    void CheckFindPathFromNavMesh();
+
+    void CheckSkillCoolTime(ABaseCharacter* AI);
+
+    void SetAIRunSpeed(ABaseCharacter* AI, float DeltaTime);
+
+    void SetStaticActorRotation();
 };

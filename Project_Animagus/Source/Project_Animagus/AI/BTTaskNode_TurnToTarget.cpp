@@ -58,7 +58,6 @@ void UBTTaskNode_TurnToTarget::TickTask(UBehaviorTreeComponent& OwnerComp, uint8
     // ✅ 현재 Yaw와 목표 Yaw 사이의 최소 회전 각도(±180도 범위)를 반환해.
     // 예: 현재 10도, 목표 350도 → - 20도(왼쪽으로 20도 회전이 가장 짧은 거리)
     
-    // float InterpSpeed = FMath::GetMappedRangeValueClamped(FVector2D(0.f, 180.f), FVector2D(35.f, 35.f), YawDifference);
     // ✅ 특정 범위의 값을 다른 범위로 선형 매핑해주는 함수야.
     //  200도든 360도든 결과는 50.0f로 동일
 

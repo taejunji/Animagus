@@ -14,7 +14,6 @@
 #include "../Character/BaseCharacter.h"
 #include "../Character/AICharacter.h"
 #include "GameFramework/CharacterMovementComponent.h"
-
 #include "../Skill/BaseSkill.h"
 #include "TimerManager.h"
 
@@ -24,6 +23,9 @@
 #include "Perception/AISense_Hearing.h"
 #include "Perception/AISense_Damage.h"
 #include "Perception/AIPerceptionSystem.h"
+
+#include "../Actor/ItemBox/Item_Box_Base.h"
+#include "../Item/BaseItem.h"
 
 AMyAIController::AMyAIController(const FObjectInitializer& ObjectInitializer)
     : Super(ObjectInitializer)
@@ -70,6 +72,12 @@ void AMyAIController::BeginPlay()
 
             can_set_target_key.SelectedKeyName = FName(TEXT("CanSetTarget"));
             BlackboardPtr->SetValueAsBool(can_set_target_key.SelectedKeyName, true);
+
+            ItemTargetKey.SelectedKeyName = FName(TEXT("ItemTarget"));
+            BlackboardPtr->SetValueAsObject(ItemTargetKey.SelectedKeyName, nullptr);
+
+            BoxTargetKey.SelectedKeyName = FName(TEXT("BoxTarget"));
+            BlackboardPtr->SetValueAsObject(BoxTargetKey.SelectedKeyName, nullptr);
 
             DefendRadiusKey.SelectedKeyName = FName(TEXT("DefendRadius"));
             BlackboardPtr->SetValueAsFloat(DefendRadiusKey.SelectedKeyName, 600.f); // 350
@@ -178,47 +186,30 @@ void AMyAIController::Tick(float DeltaTime)
     Super::Tick(DeltaTime);
 
     ABaseCharacter* AI = Cast<ABaseCharacter>(GetPawn());
-    if (AI == nullptr) return;
+    if (AI == nullptr || AI->GetIsDead()) return;
     
     UBlackboardComponent* BlackboardComponent = GetBlackboardComponent();
     if (!BlackboardComponent) return;
 
-    if (AI->GetIsDead()) return;
-
+    // 유요한 네비 경로 확인
     CheckAndRecoverFromNavMesh();
+
+    // 유효한 네비 경로 확인
+    CheckFindPathFromNavMesh();
 
     // 타겟이 죽었는지 확인
     CheckAndDisableTargetIfDead();
 
     // 스킬 쿨타임 확인
-    for (int32 i = 0; i < AI->Skills.Num(); i++) 
-    {
-        if (AI->Skills.IsValidIndex(i) && AI->Skills[i] != nullptr)
-        {
-            BlackboardComponent->SetValueAsBool(Skill_isCoolTime_Key[i].SelectedKeyName, AI->Skills[i]->bIsCooldown);
-        }
-    }
+    CheckSkillCoolTime(AI);
 
-    // Blackboard에서 키의 FKey를 가져옴
-    FBlackboard::FKey IsRunningKeyID = BlackboardComponent->GetKeyID(IsRunningKey.SelectedKeyName); 
+    // 달리기 속도 설정
+    SetAIRunSpeed(AI, DeltaTime);
 
-    bool bIsRunning = false;
-    if (IsRunningKeyID != FBlackboard::InvalidKey) {
-        bIsRunning = BlackboardComponent->GetValueAsBool(IsRunningKey.SelectedKeyName);
-    }
+    // 고정 액터 회전
+    SetStaticActorRotation();
 
-    // 목표 속도 설정 (달리기 상태에 따라 달라짐)
-    float TargetSpeed = bIsRunning ? AI->default_run_speed : AI->default_walk_speed;
-
-    // 현재 속도를 목표 속도로 점진적으로 변경
-    AI->current_speed = FMath::FInterpTo(AI->current_speed, TargetSpeed, DeltaTime, AI->speed_change_rate);
-
-    // 캐릭터의 이동 속도 업데이트
-    AI->SetWalkSpeed(AI->current_speed);
-
-    
-    if (ControlMode != AIControlMode::AIController) return;
-
+    // if (ControlMode != AIControlMode::AIController) return;
 }
 
 void AMyAIController::CheckAndDisableTargetIfDead()
@@ -231,41 +222,71 @@ void AMyAIController::CheckAndDisableTargetIfDead()
     {
         ClearFocusTarget();
     }
+
+    AItem_Box_Base* TargetBox = Cast<AItem_Box_Base>(GetBlackboardComponent()->GetValueAsObject(BoxTargetKey.SelectedKeyName));
+    if (TargetBox && TargetBox->GetHp() <= 0.f) {
+        if (ABaseCharacter* AI = Cast<ABaseCharacter>(GetPawn())) { 
+            AI->bUseControllerRotationYaw = false; 
+            AI->GetCharacterMovement()->bOrientRotationToMovement = true; 
+            AI->GetCharacterMovement()->bUseControllerDesiredRotation = false; 
+        } 
+
+        ClearFocus(EAIFocusPriority::Gameplay);  // Focus 해제 
+        GetBlackboardComponent()->ClearValue(BoxTargetKey.SelectedKeyName); 
+    }
 }
 
 void AMyAIController::OnPerceptionUpdated(const TArray<AActor*>& UpdatedActors)
 {
-    bool bCanSet = GetBlackboardComponent()->GetValueAsBool(can_set_target_key.SelectedKeyName);
-
-    if (bCanSet == false) return; // 타겟 변경이 불가능한 경우 나가기
-
     TSet<AActor*> CandidateTargets; // 후보군 타겟들을 저장할 집합 (중복 방지) 
+    TSet<AActor*> CandidateItemTargets; // 후보군 타겟들을 저장할 집합 (중복 방지) 
+    TSet<AActor*> CandidateBoxTargets; // 후보군 타겟들을 저장할 집합 (중복 방지) 
     FAIStimulus AIStimulus;
 
     for (AActor* UpdatedActor : UpdatedActors)
     {        
         // 시각 감지
-        AIStimulus = CanSenseActor(UpdatedActor, EAIPerceptionSense::EPS_Sight);
+        AIStimulus = CanSenseActor(UpdatedActor, EAIPerceptionSense::EPS_Sight); 
         if (AIStimulus.WasSuccessfullySensed())
         {
-            CandidateTargets.Add(UpdatedActor);
-            // HandleSensedSight(UpdatedActor, true, AIStimulus);
-        }
+            if (ABaseCharacter* character = Cast<ABaseCharacter>(UpdatedActor)) {
+                CandidateTargets.Add(character);
+            }
 
-        // 청각 감지
-        //AIStimulus = CanSenseActor(UpdatedActor, EAIPerceptionSense::EPS_Hearing);
-        //if (AIStimulus.WasSuccessfullySensed())
-        //{
-        //    // HandleSensedHearing(AIStimulus.StimulusLocation);
-        //}
+            if (ABaseItem* Item = Cast<ABaseItem>(UpdatedActor)) {
+                CandidateItemTargets.Add(Item);       
+            }
+
+            if (AItem_Box_Base* Box = Cast<AItem_Box_Base>(UpdatedActor)) {
+                UObject* ItemTarget = GetBlackboardComponent()->GetValueAsObject(ItemTargetKey.SelectedKeyName); 
+                UObject* BoxTarget = GetBlackboardComponent()->GetValueAsObject(BoxTargetKey.SelectedKeyName); 
+                if (ItemTarget == nullptr && BoxTarget == nullptr) { 
+                    CandidateBoxTargets.Add(Box); 
+                }
+            }
+
+            UE_LOG(LogTemp, Warning, TEXT("시야에 감지됐습니다: %s"), *UpdatedActor->GetName());
+        }
 
         // 피해 감지
         AIStimulus = CanSenseActor(UpdatedActor, EAIPerceptionSense::EPS_Damage);
         if (AIStimulus.WasSuccessfullySensed())
         {
-            CandidateTargets.Add(UpdatedActor);
+            if (ABaseCharacter* character = Cast<ABaseCharacter>(UpdatedActor)) {
+                CandidateTargets.Add(character);
+            }
+
+            UE_LOG(LogTemp, Warning, TEXT("타격을 감지했습니다: %s"), *UpdatedActor->GetName());
         }
     }
+
+    SelectBestItemTarget(CandidateItemTargets);
+
+    SelectBestBoxTarget(CandidateBoxTargets); 
+
+    bool bCanSet = GetBlackboardComponent()->GetValueAsBool(can_set_target_key.SelectedKeyName);
+
+    if (bCanSet == false) return; // 타겟 변경이 불가능한 경우 나가기
 
     ABaseCharacter* BestTarget = SelectBestTarget(CandidateTargets); 
 
@@ -283,23 +304,13 @@ FAIStimulus AMyAIController::CanSenseActor(AActor* Actor, EAIPerceptionSense AIP
 	switch (AIPerceptionSense)
 	{
 
-	//case EAIPerceptionSense::EPS_None:
-	//	break;
-
 	case EAIPerceptionSense::EPS_Sight:
 		QuerySenseClass = UAISense_Sight::StaticClass();
-		break;
-
-	case EAIPerceptionSense::EPS_Hearing:
-		QuerySenseClass = UAISense_Hearing::StaticClass();
 		break;
 
 	case EAIPerceptionSense::EPS_Damage: 
 		QuerySenseClass = UAISense_Damage::StaticClass(); 
 		break;
-
-	//case EAIPerceptionSense::EPS_MAX:
-	//	break;
 
 	default:
 		break;
@@ -322,8 +333,6 @@ FAIStimulus AMyAIController::CanSenseActor(AActor* Actor, EAIPerceptionSense AIP
 
 void AMyAIController::HandleSensedSight(AActor* Actor, bool bSensed, FAIStimulus Stimulus)
 {
-    // 1. 시야에 들어올 때, 2. 시야에 안들어올 때
-
     ABaseCharacter* TargetCharacter = Cast<ABaseCharacter>(Actor);
     if (TargetCharacter == nullptr) return;
      
@@ -358,7 +367,7 @@ float AMyAIController::CalculateTargetPriority(ABaseCharacter* TargetCharacter)
     return (Distance * DistanceWeight) + (HP * HPWeight); 
 }
 
-ABaseCharacter* AMyAIController::SelectBestTarget(const TSet<AActor*>& Candidates)
+ABaseCharacter* AMyAIController::SelectBestTarget(const TSet<AActor*>& Candidates) 
 {
     ABaseCharacter* BestTarget = nullptr;
     float BestPriority = FLT_MAX;
@@ -377,6 +386,84 @@ ABaseCharacter* AMyAIController::SelectBestTarget(const TSet<AActor*>& Candidate
     }
 
     return BestTarget;
+}
+
+void AMyAIController::SelectBestItemTarget(const TSet<AActor*>& CandidateItems)
+{
+    // 가장 가까운 접근 가능한 아이템 찾기
+    ABaseItem* NearestItem = nullptr;
+    float MinDistance = FLT_MAX;
+
+    APawn* ControlledPawn = GetPawn();
+    if (!ControlledPawn) return;
+
+    UNavigationSystemV1* NavSys = UNavigationSystemV1::GetCurrent(GetWorld());
+    if (nullptr == NavSys) return; 
+
+    for (AActor* Item : CandidateItems)
+    {
+        ABaseItem* BaseItem = Cast<ABaseItem>(Item); 
+        if (!BaseItem) continue; 
+
+        const float Distance = FVector::Dist(BaseItem->GetActorLocation(), ControlledPawn->GetActorLocation()); 
+
+        // 현재 위치에서 목적지까지 경로가 실제로 존재하는지 "테스트"하는 함수
+        // 🔁 내부적으로 A* 같은 경로 탐색을 함 🔍 "길이 막혀 있는지" 확인할 때 적합
+        if (Distance < MinDistance && 
+            NavSys->TestPathSync(FPathFindingQuery(this, *NavSys->GetDefaultNavDataInstance(), ControlledPawn->GetActorLocation(), BaseItem->GetActorLocation()))) 
+        {
+            MinDistance = Distance; 
+            NearestItem = BaseItem; 
+        } 
+    }
+
+    if (NearestItem)
+    {
+        // Blackboard 값이 새로 설정된 아이템과 다를 경우에만 업데이트
+        if (NearestItem != Cast<ABaseItem>(GetBlackboardComponent()->GetValueAsObject(ItemTargetKey.SelectedKeyName))) 
+        {
+            GetBlackboardComponent()->SetValueAsObject(ItemTargetKey.SelectedKeyName, NearestItem);
+            UE_LOG(LogTemp, Warning, TEXT("가장 가까운 접근 가능한 아이템 설정됨: %s"), *NearestItem->GetName());
+        }
+    }
+}
+
+void AMyAIController::SelectBestBoxTarget(const TSet<AActor*>& CandidateBoxs)
+{
+    // 가장 가까운 접근 가능한 아이템 찾기
+    AItem_Box_Base* NearestBox = nullptr;
+    float MinDistance = FLT_MAX;
+
+    APawn* ControlledPawn = GetPawn();
+    if (!ControlledPawn) return;
+
+    UNavigationSystemV1* NavSys = UNavigationSystemV1::GetCurrent(GetWorld());
+    if (nullptr == NavSys) return;
+
+    for (AActor* Box : CandidateBoxs)
+    {
+        AItem_Box_Base* BaseBox = Cast<AItem_Box_Base>(Box);
+        if (!BaseBox) continue;
+
+        const float Distance = FVector::Dist(BaseBox->GetActorLocation(), ControlledPawn->GetActorLocation());
+
+        if (Distance < MinDistance &&
+            NavSys->TestPathSync(FPathFindingQuery(this, *NavSys->GetDefaultNavDataInstance(), ControlledPawn->GetActorLocation(), BaseBox->GetActorLocation())))
+        {
+            MinDistance = Distance;
+            NearestBox = BaseBox;
+        }
+    }
+
+    if (NearestBox)
+    {
+        // Blackboard 값이 새로 설정된 아이템과 다를 경우에만 업데이트
+        if (NearestBox != Cast<AItem_Box_Base>(GetBlackboardComponent()->GetValueAsObject(BoxTargetKey.SelectedKeyName)))
+        {
+            GetBlackboardComponent()->SetValueAsObject(BoxTargetKey.SelectedKeyName, NearestBox);
+            UE_LOG(LogTemp, Warning, TEXT("가장 가까운 접근 가능한 박스 설정됨: %s"), *NearestBox->GetName());
+        }
+    }
 }
 
 void AMyAIController::SetAITarget(ABaseCharacter* NewTarget)
@@ -451,6 +538,80 @@ void AMyAIController::CheckAndRecoverFromNavMesh()
     }
 }
 
+void AMyAIController::CheckFindPathFromNavMesh()
+{
+    ABaseCharacter* TargetCharacter = Cast<ABaseCharacter>(GetBlackboardComponent()->GetValueAsObject(TargetKey.SelectedKeyName));
+
+    // NavMesh 경로 검사
+    APawn* ControlledPawn = GetPawn(); 
+    UNavigationSystemV1* NavSys = UNavigationSystemV1::GetCurrent(GetWorld()); 
+
+    if (NavSys && ControlledPawn && TargetCharacter)
+    {
+        FPathFindingQuery Query(this, *NavSys->GetDefaultNavDataInstance(), ControlledPawn->GetActorLocation(), TargetCharacter->GetActorLocation()); 
+        FPathFindingResult Result = NavSys->FindPathSync(Query); 
+
+        if (!Result.IsSuccessful())
+        {
+            // 경로가 없으면 타겟 무효화
+            ClearFocusTarget();
+        }
+    }
+}
+
+void AMyAIController::CheckSkillCoolTime(ABaseCharacter* AI)
+{
+    for (int32 i = 0; i < AI->Skills.Num(); i++)
+    {
+        if (AI->Skills.IsValidIndex(i) && AI->Skills[i] != nullptr)
+        {
+            GetBlackboardComponent()->SetValueAsBool(Skill_isCoolTime_Key[i].SelectedKeyName, AI->Skills[i]->bIsCooldown);
+        }
+    }
+}
+
+void AMyAIController::SetAIRunSpeed(ABaseCharacter* AI, float DeltaTime)
+{
+    // Blackboard에서 키의 FKey를 가져옴
+    FBlackboard::FKey IsRunningKeyID = GetBlackboardComponent()->GetKeyID(IsRunningKey.SelectedKeyName);
+
+    bool bIsRunning = false;
+    if (IsRunningKeyID != FBlackboard::InvalidKey) {
+        bIsRunning = GetBlackboardComponent()->GetValueAsBool(IsRunningKey.SelectedKeyName);
+    }
+
+    // 목표 속도 설정 (달리기 상태에 따라 달라짐)
+    float TargetSpeed = bIsRunning ? AI->default_run_speed : AI->default_walk_speed;
+
+    // 현재 속도를 목표 속도로 점진적으로 변경
+    AI->current_speed = FMath::FInterpTo(AI->current_speed, TargetSpeed, DeltaTime, AI->speed_change_rate);
+
+    // 캐릭터의 이동 속도 업데이트
+    AI->SetWalkSpeed(AI->current_speed);
+}
+
+void AMyAIController::SetStaticActorRotation()
+{
+    UObject* TargetObject = GetBlackboardComponent()->GetValueAsObject(TargetKey.SelectedKeyName); 
+    UObject* ItemObject = GetBlackboardComponent()->GetValueAsObject(ItemTargetKey.SelectedKeyName); 
+    AItem_Box_Base* TargetBox = Cast<AItem_Box_Base>(GetBlackboardComponent()->GetValueAsObject(BoxTargetKey.SelectedKeyName)); 
+
+    if (TargetObject == nullptr && ItemObject == nullptr && TargetBox) 
+    { 
+        FVector TargetLocation = TargetBox->GetActorLocation(); 
+        FVector AIForwardVector = GetPawn()->GetActorForwardVector(); 
+
+        // AI의 현재 위치에서 타겟 위치까지의 벡터를 계산
+        FVector DirectionToTarget = (TargetLocation - GetPawn()->GetActorLocation()).GetSafeNormal(); 
+
+        // AI가 바라봐야 할 방향으로 회전
+        FRotator NewRotation = DirectionToTarget.Rotation();
+
+        // AI의 회전 설정
+        GetPawn()->SetActorRotation(NewRotation);
+    }
+}
+
 void AMyAIController::ClearFocusTarget()
 {
     if (ABaseCharacter* AI = Cast<ABaseCharacter>(GetPawn())) {
@@ -462,5 +623,4 @@ void AMyAIController::ClearFocusTarget()
     ClearFocus(EAIFocusPriority::Gameplay);  // Focus 해제
     GetBlackboardComponent()->ClearValue(TargetKey.SelectedKeyName);
     GetBlackboardComponent()->SetValueAsBool(can_set_target_key.SelectedKeyName, true);
-
 }
