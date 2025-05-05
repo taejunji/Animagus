@@ -24,6 +24,8 @@ void ABattle_PlayerController::BeginPlay()
 {
     Super::BeginPlay();
 
+    Skilltest = 0;
+    
     // 마우스 커서를 숨기고 UI에서 잠금
     bShowMouseCursor = false; 
     SetInputMode(FInputModeGameOnly()); // 게임 입력 전용 모드 -> 죽으면 UI만 입력 가능하도록
@@ -220,8 +222,16 @@ void ABattle_PlayerController::Input_Ready(const FInputActionValue& InputValue)
     if (APawn* MyPawn  = GetPawn())
     {
         ABaseCharacter* MyCharacter = Cast<ABaseCharacter>(MyPawn);
-        MyCharacter->TestSkill_Change();
-    } 
+        if (Skilltest == 0){
+            MyCharacter->TestSkill_Change();
+            Skilltest = 1;
+        }
+        else if (Skilltest == 1)
+        {
+            MyCharacter->InitializeSkills();
+            Skilltest = 0;
+        }
+    }
 }
 
 void ABattle_PlayerController::Input_ConvertCamera(const FInputActionValue& InputValue)

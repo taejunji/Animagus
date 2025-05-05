@@ -157,25 +157,14 @@ void URadialSkill::ActiveSkill_Implementation()
 void URadialSkill::UpgradeSkill(int32 NewPowerUpLevel)
 {
     int32 Level = FMath::Clamp(NewPowerUpLevel, 0, 14);
+    
+    int32 ExtraProjectiles = (Level+1) / 2; 
+    NumberOfProjectiles = BaseNumberOfProjectiles + ExtraProjectiles;
+    
+    int32 EvenLevelSteps = Level;
+    float DamageMultiplier = 1.0f * EvenLevelSteps; 
+    RadialDamage = BaseRadialDamage  + (NewPowerUpLevel * 1.f);
 
-    // 홀수 레벨이면 투사체 개수를 증가시키고, 짝수이면 데미지를 증가시킵니다.
-    if (Level % 2 == 1)
-    {
-        // 예를 들어, 홀수 단계마다 투사체 개수를 1씩 증가시킴.
-        int32 ExtraProjectiles = (Level + 1) / 2; // Level 1 → +1, Level 3 → +2, ...
-        NumberOfProjectiles = BaseNumberOfProjectiles + ExtraProjectiles;
-        // 데미지는 기본값 유지
-        // RadialDamage = BaseRadialDamage;
-    }
-    else
-    {
-        // 짝수 단계이면, 데미지를 10%씩 증가 (짝수 단계마다 1단계 상승)
-        int32 EvenLevelSteps = Level / 2;
-        float DamageMultiplier = 1.0f + 0.10f * EvenLevelSteps; // Level 2 → +10%, Level 4 → +20%, ...
-        RadialDamage = BaseRadialDamage * DamageMultiplier;
-        // 투사체 개수는 기본값 유지
-       // NumberOfProjectiles = BaseNumberOfProjectiles;
-    }
 
     UE_LOG(LogTemp, Log, TEXT("RadialSkill upgraded: Level %d, Projectiles: %d, Damage: %f"), Level, NumberOfProjectiles, RadialDamage);
 }

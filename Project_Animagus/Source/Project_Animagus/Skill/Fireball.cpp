@@ -15,7 +15,7 @@ UFireball::UFireball()
 {
     SkillName = "Fireball";
     SkillDescription = "가장 기본적인 스킬";
-    CooldownTime = 1.f;
+    CooldownTime = 3.f;
     FireballDamage = 5.0f;
     FireballSpeed = 1500.f;
     static ConstructorHelpers::FClassFinder<AProjectile_FireBall> FireballBPFinder(TEXT("/Game/WorkFolder/Bluprints/Projectiles/MyProjectile_FireBall"));
@@ -159,11 +159,10 @@ void UFireball::ActiveSkill_Implementation()
 
 void UFireball::UpgradeSkill(int32 NewPowerUpLevel)
 {
-    // 예시: 매 단계마다 데미지는 10%씩 증가, 쿨타임은 5%씩 단축 (최소 50%까지 단축)
-    float DamageMultiplier = 1.0f + (0.10f * NewPowerUpLevel);
+
     float CooldownMultiplier = FMath::Clamp(1.0f - (0.05f * NewPowerUpLevel), 0.5f, 1.0f);
 
-    FireballDamage = BaseFireballDamage * DamageMultiplier;
+    FireballDamage = BaseFireballDamage + (3.f * NewPowerUpLevel);
     CooldownTime = BaseCooldownTime * CooldownMultiplier;
 
     UE_LOG(LogTemp, Log, TEXT("Fireball upgraded: PowerUpLevel %d, Damage: %f, Cooldown: %f"), 
