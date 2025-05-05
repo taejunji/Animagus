@@ -57,13 +57,16 @@ protected:
                         UPrimitiveComponent* OtherComp, int32 OtherBodyIndex,
                         bool bFromSweep, const FHitResult & SweepResult);
     
-    /** 충돌 시 상대 플레이어에게 적용할 Knockback Force (충돌 방향 반대 방향으로 밀어내는 힘) */
-    UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Knockback")
-    float KnockbackForce;
+
 
 
     
 public:
+
+    /** 충돌 시 상대 플레이어에게 적용할 Knockback Force (충돌 방향 반대 방향으로 밀어내는 힘) */
+    UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Knockback")
+    float KnockbackForce;
+    
     /** 타이머 핸들->LifeTime 시간을 계산해서 카메라 쉐이크 적용 안되도록 함 */
     struct FTimerHandle LifetimeHandle;
     

@@ -13,8 +13,8 @@
 UChangeSkill::UChangeSkill()
 {
     SkillName = "ChangeSkill";  // 스킬 이름 설정
-    CooldownTime = 5.0f;        // 쿨타임 5초
-    ChangeDamage = 0.0f;        // 데미지 없음(교환 효과 목적)
+    CooldownTime = 10.0f;        // 쿨타임 5초
+    ChangeDamage = 1.0f;        // 데미지 없음(교환 효과 목적)
     ChangeSpeed = 1000.f;       // 투사체 속도
 
     BaseCooldownTime = CooldownTime;
@@ -29,8 +29,10 @@ UChangeSkill::UChangeSkill()
         UE_LOG(LogTemp, Warning, TEXT("Failed to load Change BP class!"));
     }
 
-    SkillType = Protocol::SkillType::CHANGE;
+    BaseChangeSpeed = ChangeSpeed;
+    ProjectileBPClass = nullptr;  // 에디터에서 할당할 것
 
+    SkillType = Protocol::SkillType::CHANGE;
 }
 
 void UChangeSkill::ActiveSkill_Implementation()
@@ -97,6 +99,8 @@ void UChangeSkill::ActiveSkill_Implementation()
             {
                 Projectile->ProjectileMovement->InitialSpeed = ChangeSpeed;
                 Projectile->ProjectileMovement->MaxSpeed = ChangeSpeed;
+                FVector Dir = Projectile->ProjectileMovement->Velocity.GetSafeNormal();
+                Projectile->ProjectileMovement->Velocity = Dir * ChangeSpeed;
             }
             UE_LOG(LogTemp, Log, TEXT("UChangeSkill: Spawned projectile: %s"), *Projectile->GetName());
         }
@@ -122,10 +126,13 @@ void UChangeSkill::ActiveSkill_Implementation()
 
 void UChangeSkill::UpgradeSkill(int32 NewPowerUpLevel)
 {
-    // 예시: 매 단계마다 데미지는 10%씩 증가, 쿨타임은 5%씩 단축 (최소 50%까지 단축)
-    // float DamageMultiplier = 1.0f + (0.10f * NewPowerUpLevel);
+    int32 Level = FMath::Clamp(NewPowerUpLevel, 0, 14);
+
     float CooldownMultiplier = FMath::Clamp(1.0f - (0.05f * NewPowerUpLevel), 0.5f, 1.0f);
-    
     CooldownTime = BaseCooldownTime * CooldownMultiplier;
 
+    ChangeSpeed = BaseChangeSpeed + (Level * 100.f);
+   
+    UE_LOG(LogTemp, Warning, TEXT("changeSpeed %f"), ChangeSpeed);
+    
 }

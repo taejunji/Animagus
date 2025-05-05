@@ -111,6 +111,11 @@ public:
     UPROPERTY()
     class UMyPlayerHUDWidget* PlayerHUD;
 
+    // Dirty Flag Test
+    FVector2D LastDesiredInput;
+    UPROPERTY()
+    int32 Skilltest;
+
 protected:
     const float MOVE_PACKET_SEND_DELAY = 1.0f / 20.0f;
     float MovePacketSendTimer = MOVE_PACKET_SEND_DELAY;
@@ -120,6 +125,4 @@ protected:
     FVector DesiredMoveDirection;
     float DesiredYaw;
 
-    // Dirty Flag Test
-    FVector2D LastDesiredInput;
 };

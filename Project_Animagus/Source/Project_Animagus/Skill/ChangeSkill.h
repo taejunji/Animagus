@@ -29,9 +29,8 @@ public:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Change|Movement")
     float ChangeSpeed;
 
-    // 기본값을 저장하기 위한 변수 (옵션)
-    // UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Fireball")
-    // float BaseChange;
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Change")
+    float BaseChangeSpeed;
 
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Change")
     float BaseCooldownTime;

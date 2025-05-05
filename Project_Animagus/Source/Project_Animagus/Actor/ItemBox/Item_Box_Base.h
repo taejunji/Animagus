@@ -56,6 +56,9 @@ protected:
 
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Box|Items")
     TSubclassOf<ABaseItem> HealItemPlusClass;
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "AI")
+    class UAIPerceptionStimuliSourceComponent* StimuliSource;
     
     UPROPERTY(EditAnywhere, Category="Audio")
     USoundBase* BreakSound;
@@ -78,4 +81,6 @@ protected:
 public:
     // 데미지를 적용하는 함수
     void ApplyDamage(float DamageAmount);
+
+    float GetHp() const { return HP;  }
 };

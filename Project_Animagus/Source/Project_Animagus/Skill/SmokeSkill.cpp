@@ -16,7 +16,7 @@
 USmokeSkill::USmokeSkill()
 {
     SkillName = "SmokeSkill";
-    CooldownTime = 5.0f;
+    CooldownTime = 20.0f;
     SmokeProjectileSpeed = 1000.f; // 기본값, 필요에 따라 조정 가능
 
     //SmokeProjectileBPClass = nullptr;  // 에디터에서 할당할 것
