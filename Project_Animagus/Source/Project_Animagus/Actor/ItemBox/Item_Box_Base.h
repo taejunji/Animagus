@@ -80,4 +80,6 @@ protected:
 public:
     // 데미지를 적용하는 함수
     void ApplyDamage(float DamageAmount);
+
+    float GetHp() const { return HP;  }
 };
