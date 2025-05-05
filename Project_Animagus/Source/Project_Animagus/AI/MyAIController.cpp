@@ -346,25 +346,33 @@ void AMyAIController::HandleSensedSight(AActor* Actor, bool bSensed, FAIStimulus
     }
 }
 
-float AMyAIController::CalculateTargetPriority(ABaseCharacter* TargetCharacter) 
+float AMyAIController::CalculateTargetPriority(ABaseCharacter* TargetCharacter)
 {
-    const float DistanceWeight = 1.0f; 
-    const float HPWeight = 0.5f; 
+    const float DistanceWeight = 1.0f;
+    const float HPWeight = 0.5f;
+    const float AngleWeight = 10.0f; // 각도에 대한 가중치 (크게 하면 정면을 더 우선시)
 
-    if (!IsValid(GetPawn()) || !IsValid(TargetCharacter)) return FLT_MAX; // 기본 우선순위 반환 
-    // 1. 가장 가까운 적 (거리 계산)
+    if (!IsValid(GetPawn()) || !IsValid(TargetCharacter)) return FLT_MAX;
+
+    // 1. 거리 계산
     float Distance = FVector::Dist(GetPawn()->GetActorLocation(), TargetCharacter->GetActorLocation());
 
-    // 2. 자신을 때린 적 (혹은 해당 조건)
-    //if (TargetCharacter->HasRecentlyAttacked(GetPawn()))
-    //{
-    //    Priority -= 50.0f; // 자신을 때린 적에게 우선순위 부여
-    //}
-
-    // 3. HP가 적은 적
+    // 2. HP 값
     float HP = TargetCharacter->GetHP();
 
-    return (Distance * DistanceWeight) + (HP * HPWeight); 
+    // 3. 각도 차이 계산
+    FVector ToTarget = (TargetCharacter->GetActorLocation() - GetPawn()->GetActorLocation()).GetSafeNormal();
+    FVector Forward = GetPawn()->GetActorForwardVector();
+
+    float Dot = FVector::DotProduct(Forward, ToTarget);
+    float AngleRadians = FMath::Acos(FMath::Clamp(Dot, -1.f, 1.f));
+    // 1.0: 두 벡터가 완전히 같은 방향 (0도)
+    // 0.0: 두 벡터가 직각(90도)
+    // - 1.0 : 두 벡터가 완전히 반대 방향(180도)
+    float AngleDegrees = FMath::RadiansToDegrees(AngleRadians); // 0도가 정면
+
+    // 총 우선순위 = 거리 + 체력 + 각도
+    return (Distance * DistanceWeight) + (HP * HPWeight) + (AngleDegrees * AngleWeight);
 }
 
 ABaseCharacter* AMyAIController::SelectBestTarget(const TSet<AActor*>& Candidates) 
