@@ -110,4 +110,7 @@ public:
     // 생성된 HUD 위젯 인스턴스
     UPROPERTY()
     class UMyPlayerHUDWidget* PlayerHUD;
+
+    UPROPERTY()
+    int32 Skilltest;
 };

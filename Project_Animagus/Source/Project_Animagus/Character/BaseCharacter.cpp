@@ -425,8 +425,15 @@ void ABaseCharacter::InitializeSkills()
     else
     {
         UE_LOG(LogTemp, Warning, TEXT("InitializeSkills: smokeBPClass is not assigned."));
-    } 
+    }
     
+    for (UBaseSkill* Skill : Skills)
+    {
+        if (Skill)
+        {
+            Skill->UpgradeSkill(PowerUpLevel);
+        }
+    } 
 }
 
 void ABaseCharacter::TestSkill_Change()
@@ -509,6 +516,14 @@ void ABaseCharacter::TestSkill_Change()
     else
     {
         UE_LOG(LogTemp, Warning, TEXT("TestSkill_Change: SmokeBPClass is not assigned."));
+    }
+
+    for (UBaseSkill* Skill : Skills)
+    {
+        if (Skill)
+        {
+            Skill->UpgradeSkill(PowerUpLevel);
+        }
     }
 }
 

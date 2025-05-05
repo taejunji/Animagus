@@ -31,7 +31,11 @@ public:
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="MagicMissile")
     float BaseCooldownTime;
 
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="MagicMissile")
+    float knockbackForce;
 
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="MagicMissile")
+    float BaseknockbackForce;
     
     /** 스폰할 매직 미사일 투사체 블루프린트 클래스 */
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="MagicMissile")
