@@ -76,13 +76,13 @@ void UMyPlayerHUDWidget::UpdateCountdown(float CountdownValue)
     }
 }
 
-void UMyPlayerHUDWidget::UpdateRoundTime(float RoundTimeValue)
+void UMyPlayerHUDWidget::UpdateRoundTime(int64 RoundTimeValue)
 {
     if (RoundTimeText)
     {
-        int32 TotalSeconds = FMath::FloorToInt(RoundTimeValue);
-        int32 Minutes = TotalSeconds / 60;
-        int32 Seconds = TotalSeconds % 60;
+        int64 TotalSeconds = RoundTimeValue;
+        int64 Minutes = TotalSeconds / 60;
+        int64 Seconds = TotalSeconds % 60;
         FString NewText = FString::Printf(TEXT("%d : %02d"), Minutes, Seconds);
         RoundTimeText->SetText(FText::FromString(NewText));
     }

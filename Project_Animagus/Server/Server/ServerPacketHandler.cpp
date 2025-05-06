@@ -69,7 +69,7 @@ bool Handle_CS_ENTER_GAME(SessionRef& session, CS_ENTER_GAME_PKT& pkt)
     if (room == nullptr)
         return false;
 
-    room->HandleStartGame(player);
+    room->HandleEnterGame();
 
     return true;
 }

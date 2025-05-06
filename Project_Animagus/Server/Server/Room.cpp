@@ -95,6 +95,19 @@ bool Room::HandleEnterPlayer(PlayerRef player)
     return success;
 }
 
+bool Room::HandleEnterGame()
+{
+    m_loadingOverCount++;
+    if (m_loadingOverCount == m_maxPlayerCount)
+    {
+        m_gameStartTickCount = GetTickCount64();
+        for (auto& item : m_players)
+            HandleStartGame(item.second);
+    }
+
+    return true;
+}
+
 bool Room::HandleStartGame(PlayerRef player)
 {
     std::lock_guard lock(m_mutex);
@@ -119,6 +132,7 @@ bool Room::HandleStartGame(PlayerRef player)
         newPlayer.host = (player->playerID == m_hostPlayer->playerID);
         //newPlayer.spawn_index = 0;
         newPlayer.spawn_index = m_indexGen++ % 8;
+        newPlayer.server_time = m_gameStartTickCount;
         SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(newPlayer);
         if (auto session = player->ownerSession.lock())
             session->Send(sendBuffer);
@@ -247,6 +261,8 @@ bool Room::HandleMoveLocked(Protocol::CS_MOVE_PKT& pkt)
     player->x = info.x; player->y = info.y; player->z = info.z;
     player->rotation = info.rotation;
 
+    pkt.server_time = GetTickCount64();
+
     //std::cout << info.x << " " << info.y << " " << info.z << std::endl;
     //std::cout << pkt.player_info.speed << std::endl;
 
@@ -261,7 +277,7 @@ bool Room::HandleMoveLocked(Protocol::CS_MOVE_PKT& pkt)
 
     // 이동 
     SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(pkt);
-    Broadcast(sendBuffer, playerId);
+    Broadcast(sendBuffer, 0);
 
     return true;
 }
@@ -439,6 +455,7 @@ bool Room::HandleTimeOverLocked(Protocol::CS_TIME_OVER_PKT& pkt)
     for (auto& item : sortedPlayers) {
         std::cout << item.first << ":" << item.second << ", ";
     }
+    std::cout << std::endl;
 #endif
 
     if (m_roundCount++ < 3)

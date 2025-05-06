@@ -160,6 +160,7 @@ namespace Protocol {
     struct CS_MOVE_PKT
     {
         PlayerInfo player_info;
+        uint64 server_time;
     };
     struct CS_SELECT_CHARACTER_PKT
     {
@@ -211,6 +212,7 @@ namespace Protocol {
         bool host;
         int16 spawn_index;
         int16 ai_count;
+        uint64 server_time;
     };
     struct SC_LEAVE_PKT
     {   // 로비로 보내기

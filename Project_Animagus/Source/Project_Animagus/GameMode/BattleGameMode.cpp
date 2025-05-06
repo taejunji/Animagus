@@ -147,10 +147,6 @@ void ABattleGameMode::StartPlay()
 
     InitBattleMode();
     
-    if (BackgroundMusic)
-    {
-        UGameplayStatics::PlaySound2D(GetWorld(), BackgroundMusic);
-    }
 }
 
 void ABattleGameMode::Tick(float DeltaTime)
@@ -182,7 +178,7 @@ void ABattleGameMode::InitBattleMode()
         // TDOO: 서버에 배틀모드 입장 알림
 
         CurrentCountdownTime = start_time;
-        CurrentRoundTime = 0.0f;
+        CurrentRoundTime = 0;
 
         // 1초마다 CountdownTimerUpdate() 호출
         //GetWorld()->GetTimerManager().SetTimer(CountdownTimerHandle, this, &ABattleGameMode::CountdownTimerUpdate, 1.0f, true);
@@ -204,6 +200,14 @@ void ABattleGameMode::InitBattleMode()
 
 void ABattleGameMode::SpawnPlayers()
 {
+    if (BackgroundMusic)
+    {
+        UGameplayStatics::PlaySound2D(GetWorld(), BackgroundMusic);
+    }
+
+    GetWorld()->GetTimerManager().SetTimer(RoundTimerHandle, this, &ABattleGameMode::RoundTimerUpdate, 0.2f, true);
+
+
     // 먼저 자동으로 생성된 Pawn이 있다면 제거함
     UWorld* World = GetWorld();
     if (!World)
@@ -350,6 +354,9 @@ void ABattleGameMode::SpawnPlayers()
 
         AIId++;
     }
+
+
+    // TODO: -> 여기서 로딩화면 해제
 }
 
 void ABattleGameMode::SpawnPlayer(Protocol::SC_SPAWN_PKT& pkt)
@@ -451,6 +458,23 @@ void ABattleGameMode::ActivateInput()
 
 void ABattleGameMode::MoveOtherPlayer(Protocol::CS_MOVE_PKT& pkt)
 {
+    uint16 my_id = Cast<UMyGameInstance>(GWorld->GetGameInstance())->MyPlayerId;
+
+    if (pkt.player_info.player_id == my_id)
+    {
+        uint64 NowMs = pkt.server_time;
+        uint64 ElapsedMs = NowMs - StartTime2Server;
+        uint64 ElapsedSecInt = ElapsedMs / 1000;
+        if (ElapsedSecInt >= 0 && (ElapsedSecInt - CurrentRoundTime) <= 10)
+        {
+            if (ElapsedSecInt >= 5) CurrentRoundTime = ElapsedSecInt - 5;
+            UE_LOG(LogTemp, Warning, TEXT("%d - Time to Server: %d sec"), PossessIndex, ElapsedSecInt);
+        }
+
+        return;
+    }
+
+
     const uint16 playerId = pkt.player_info.player_id;
     if (SpawnedPlayers.Find(playerId) == nullptr)
         return;
@@ -696,9 +720,12 @@ void ABattleGameMode::CountdownTimerUpdate()
             PC->PlayerHUD->UpdateCountdown(0.0f);
         }
 
-        GetWorld()->GetTimerManager().ClearTimer(CountdownTimerHandle);
-        // 라운드 진행 타이머 시작
-        GetWorld()->GetTimerManager().SetTimer(RoundTimerHandle, this, &ABattleGameMode::RoundTimerUpdate, 1.0f, true);
+        if (CountdownTimerHandle.IsValid())
+        {
+            GetWorld()->GetTimerManager().ClearTimer(CountdownTimerHandle);
+        }
+        // 라운드 진행 타이머 시작 -> SpawnPlayers 부터 타이머 시작
+        //GetWorld()->GetTimerManager().SetTimer(RoundTimerHandle, this, &ABattleGameMode::RoundTimerUpdate, 1.0f, true);
         return;
     }
 
@@ -711,7 +738,7 @@ void ABattleGameMode::CountdownTimerUpdate()
 
 void ABattleGameMode::RoundTimerUpdate()
 {
-    CurrentRoundTime += 1.0f;
+    //CurrentRoundTime += 1.0f;
     //for (auto& Item : SpawnedPlayers)
     //{
     //    ABaseCharacter* Player = Item.Value;
@@ -734,10 +761,10 @@ void ABattleGameMode::RoundTimerUpdate()
         }
     }
 
-    UE_LOG(LogTemp, Log, TEXT("Round Time: %.0f"), CurrentRoundTime);
+    UE_LOG(LogTemp, Log, TEXT("Round Time: %d"), CurrentRoundTime);
 
     if (AmIHost == false) return;
-    if (CurrentRoundTime == TIME_OVER)
+    if (CurrentRoundTime >= TIME_OVER)
     {
         Protocol::CS_TIME_OVER_PKT timeOverPkt;
 

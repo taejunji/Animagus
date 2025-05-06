@@ -37,7 +37,7 @@ public:
     void UpdateCountdown(float CountdownValue);
 
     UFUNCTION(BlueprintCallable, Category="UI")
-    void UpdateRoundTime(float RoundTimeValue);
+    void UpdateRoundTime(int64 RoundTimeValue);
 
     UFUNCTION(BlueprintCallable, Category="UI")
     void UpdateSelectedSkillOutline(int32 SelectedIndex);

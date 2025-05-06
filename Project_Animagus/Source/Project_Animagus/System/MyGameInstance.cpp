@@ -229,10 +229,6 @@ void UMyGameInstance::HandleStartGame(Protocol::SC_START_GAME_PKT& pkt)
 
     // OpenLevel 호출:
     UGameplayStatics::OpenLevel(this, TargetLevelName);
-
-    Protocol::CS_ENTER_GAME_PKT enterGamePkt;
-    SendBufferRef sendBuffer = ClientPacketHandler::MakeSendBuffer(enterGamePkt);
-    SendPacket(sendBuffer);
 }
 
 void UMyGameInstance::HandleEnterGame(Protocol::SC_ENTER_GAME_PKT& pkt)
@@ -256,6 +252,7 @@ void UMyGameInstance::HandleEnterGame(Protocol::SC_ENTER_GAME_PKT& pkt)
             //GameMode->SetPlayerName(pkt.player_name);
             GameMode->PossessIndex = pkt.spawn_index;
             GameMode->AmIHost = pkt.host;
+            GameMode->StartTime2Server = pkt.server_time;
             if (pkt.host == true)
                 UE_LOG(LogTemp, Warning, TEXT("I AM THE HOST: %d"), pkt.player_id);
                 

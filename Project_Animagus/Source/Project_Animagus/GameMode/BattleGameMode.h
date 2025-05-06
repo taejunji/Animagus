@@ -53,7 +53,7 @@ protected:
     float CurrentCountdownTime;
 
     // 현재 라운드 진행 시간 (카운트다운 종료 후)
-    float CurrentRoundTime;
+    uint64 CurrentRoundTime;
 
     // 타이머 핸들들
     FTimerHandle CountdownTimerHandle;
@@ -120,6 +120,7 @@ public:
 
     bool AmIHost = false;
     float TIME_OVER = 90.0f;
+    uint64 StartTime2Server = 0;
 
     APlayerCharacter* PlayerCharacter; // 플레이어 캐릭터 포인터
 
