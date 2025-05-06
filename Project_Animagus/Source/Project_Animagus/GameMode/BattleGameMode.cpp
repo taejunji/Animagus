@@ -117,16 +117,26 @@ ABattleGameMode::ABattleGameMode()
     spawn_transform.Add(3, FTransform(FRotator(0, 270, 0), FVector(0.0f, 13500.0f, 800.f))); // Spawn_3
     
     // SpawnLocations 기본값 설정 (에디터에서 재조정 가능)
-    SpawnLocations.Add(FVector(-13500.0f, 0.0f, 800.f));
-    SpawnLocations.Add(FVector(0.0f, -13500.0f, 800.f));
-    SpawnLocations.Add(FVector(13500.0f, 0.0f, 800.f));
-    SpawnLocations.Add(FVector(0.0f, 13500.0f, 800.f));
+    SpawnLocations.Add(FVector(-12850.0f, -2000.0f, 800.f));
+    SpawnLocations.Add(FVector(2000.0f, -12850.0f, 800.f));
+    SpawnLocations.Add(FVector(12850.0f, 2000.0f, 800.f));
+    SpawnLocations.Add(FVector(2000.0f, 12850.0f, 800.f));
+
+    SpawnLocations.Add(FVector(-12850.0f, 2000.0f, 800.f));
+    SpawnLocations.Add(FVector(-2000.0f, -12850.0f, 800.f));
+    SpawnLocations.Add(FVector(12850.0f, -2000.0f, 800.f));
+    SpawnLocations.Add(FVector(-2000.0f, 12850.0f, 800.f));
 
     SpawnRotations.Add(FRotator(0.f, 0.f, 0.f));
     SpawnRotations.Add(FRotator(0.f, 90.f, 0.f));
     SpawnRotations.Add(FRotator(0.f, 180.f, 0.f));
     SpawnRotations.Add(FRotator(0.f, 270.f, 0.f));
-    
+
+    SpawnRotations.Add(FRotator(0.f, 0.f, 0.f));
+    SpawnRotations.Add(FRotator(0.f, 90.f, 0.f));
+    SpawnRotations.Add(FRotator(0.f, 180.f, 0.f));
+    SpawnRotations.Add(FRotator(0.f, 270.f, 0.f));
+
     PossessIndex = 0; // 기본적으로 0번 플레이어를 소유하도록 설정
 
 }
@@ -221,14 +231,16 @@ void ABattleGameMode::SpawnPlayers()
         return;
     }
 
-    //SpawnLocations 배열에 최소 4개가 있어야 함.
-    if (SpawnLocations.Num() < 4)
+    //SpawnLocations 배열에 최소 8개가 있어야 함.
+    if (SpawnLocations.Num() < 8)
     {
         UE_LOG(LogTemp, Warning, TEXT("BattleGameMode: SpawnLocations 수가 충분하지 않음."));
         return;
     }
 
     {
+        UE_LOG(LogTemp, Warning, TEXT("PossessIndex: %d"), PossessIndex);
+
         FTransform SpawnTransform;
         SpawnTransform.SetLocation(SpawnLocations[PossessIndex]);
         // 회전값은 SpawnRotations 배열의 값을 사용함 (있으면)
@@ -955,56 +967,54 @@ void ABattleGameMode::InitializeArea2SpawnPoints()
     Area2SpawnPoints.Empty();
 
     Area2SpawnPoints.Add(FVector(-6077.f, -927.f, 760.f));
-    Area2SpawnPoints.Add(FVector(13000.f, 500.f, 760.f));
-    Area2SpawnPoints.Add(FVector(-11000.f, -1500.f, 760.f));
-    Area2SpawnPoints.Add(FVector(11500.f, 800.f, 760.f));
     Area2SpawnPoints.Add(FVector(-5899.f, 5123.f, 760.f));
-    Area2SpawnPoints.Add(FVector(-3920.f, 5265.f, 777.f));
-    Area2SpawnPoints.Add(FVector(-4478.f, 369.f, 794.f));
-    Area2SpawnPoints.Add(FVector(-3231.f, -1757.f, 794.f));
-    Area2SpawnPoints.Add(FVector(-3142.f, -3502.f, 794.f));
-    Area2SpawnPoints.Add(FVector(-6257.f, -364.f, 787.f));
-    Area2SpawnPoints.Add(FVector(-3476.f, -5821.f, 789.f));
-    Area2SpawnPoints.Add(FVector(-1765.f, -3831.f, 776.f));
-    Area2SpawnPoints.Add(FVector(-983.f, -2645.f, 774.f));
-    Area2SpawnPoints.Add(FVector(969.f, -4282.f, 795.f));
-    Area2SpawnPoints.Add(FVector(-1219.f, -6058.f, 785.f));
-    Area2SpawnPoints.Add(FVector(-3985.f, -6539.f, 782.f));
-    Area2SpawnPoints.Add(FVector(-6207.f, -6474.f, 776.f));
-    Area2SpawnPoints.Add(FVector(1946.f, -4259.f, 780.f));
-    Area2SpawnPoints.Add(FVector(3020.f, -2534.f, 775.f));
-    Area2SpawnPoints.Add(FVector(4430.f, -6146.f, 790.f));
-    Area2SpawnPoints.Add(FVector(6063.f, -6193.f, 782.f));
-    Area2SpawnPoints.Add(FVector(3964.f, -1000.f, 797.f));
-    Area2SpawnPoints.Add(FVector(5653.f, -966.f, 797.f));
-    Area2SpawnPoints.Add(FVector(5897.f, 1365.f, 774.f));
-    Area2SpawnPoints.Add(FVector(3440.f, 1548.f, 774.f));
-    Area2SpawnPoints.Add(FVector(5723.f, 2800.f, 785.f));
-    Area2SpawnPoints.Add(FVector(5506.f, 5278.f, 790.f));
-    Area2SpawnPoints.Add(FVector(4697.f, 6289.f, 787.f));
-    Area2SpawnPoints.Add(FVector(2561.f, 5930.f, 775.f));
-    Area2SpawnPoints.Add(FVector(3346.f, 3769.f, 794.f));
-    Area2SpawnPoints.Add(FVector(1354.f, 3186.f, 785.f));
-    Area2SpawnPoints.Add(FVector(727.f, 6154.f, 779.f));
-    Area2SpawnPoints.Add(FVector(-1618.f, 5996.f, 774.f));
-    Area2SpawnPoints.Add(FVector(-2164.f, 3548.f, 779.f));
-    Area2SpawnPoints.Add(FVector(-3341.f, 6341.f, 773.f));
-    Area2SpawnPoints.Add(FVector(-6276.f, 5901.f, 773.f));
-    Area2SpawnPoints.Add(FVector(-5683.f, 4451.f, 795.f));
-    Area2SpawnPoints.Add(FVector(-5132.f, 2946.f, 787.f));
-    Area2SpawnPoints.Add(FVector(-3233.f, 2384.f, 776.f));
-    Area2SpawnPoints.Add(FVector(-1063.f, 2580.f, 782.f));
-    Area2SpawnPoints.Add(FVector(1627.f, 2849.f, 779.f));
-    Area2SpawnPoints.Add(FVector(2579.f, 865.f, 774.f));
-    Area2SpawnPoints.Add(FVector(2617.f, -2016.f, 774.f));
-    Area2SpawnPoints.Add(FVector(940.f, -2670.f, 774.f));
-    Area2SpawnPoints.Add(FVector(-1966.f, -3540.f, 774.f));
-    Area2SpawnPoints.Add(FVector(6068.f, 1640.f, 774.f));
-    Area2SpawnPoints.Add(FVector(6672.f, 5137.f, 775.f));
+    Area2SpawnPoints.Add(FVector(-3920.f, 5265.f, 760.f));
+    Area2SpawnPoints.Add(FVector(-4478.f, 369.f, 760.f));
+    Area2SpawnPoints.Add(FVector(-3231.f, -1757.f, 760.f));
+    Area2SpawnPoints.Add(FVector(-3142.f, -3502.f, 760.f));
+    Area2SpawnPoints.Add(FVector(-6257.f, -364.f, 760.f));
+    Area2SpawnPoints.Add(FVector(-3476.f, -5821.f, 760.f));
+    Area2SpawnPoints.Add(FVector(-1765.f, -3831.f, 760.f));
+    Area2SpawnPoints.Add(FVector(-983.f, -2645.f, 760.f));
+    Area2SpawnPoints.Add(FVector(969.f, -4282.f, 760.f));
+    Area2SpawnPoints.Add(FVector(-1219.f, -6058.f, 760.f));
+    Area2SpawnPoints.Add(FVector(-3985.f, -6539.f, 760.f));
+    Area2SpawnPoints.Add(FVector(-6207.f, -6474.f, 760.f));
+    Area2SpawnPoints.Add(FVector(1946.f, -4259.f, 760.f));
+    Area2SpawnPoints.Add(FVector(3020.f, -2534.f, 760.f));
+    Area2SpawnPoints.Add(FVector(4430.f, -6146.f, 760.f));
+    Area2SpawnPoints.Add(FVector(6063.f, -6193.f, 760.f));
+    Area2SpawnPoints.Add(FVector(3964.f, -1000.f, 760.f));
+    Area2SpawnPoints.Add(FVector(5653.f, -966.f, 760.f));
+    Area2SpawnPoints.Add(FVector(5897.f, 1365.f, 760.f));
+    Area2SpawnPoints.Add(FVector(3440.f, 1548.f, 760.f));
+    Area2SpawnPoints.Add(FVector(5723.f, 2800.f, 760.f));
+    Area2SpawnPoints.Add(FVector(5506.f, 5278.f, 760.f));
+    Area2SpawnPoints.Add(FVector(4697.f, 6289.f, 760.f));
+    Area2SpawnPoints.Add(FVector(2561.f, 5930.f, 760.f));
+    Area2SpawnPoints.Add(FVector(3346.f, 3769.f, 760.f));
+    Area2SpawnPoints.Add(FVector(1354.f, 3186.f, 760.f));
+    Area2SpawnPoints.Add(FVector(727.f, 6154.f, 760.f));
+    Area2SpawnPoints.Add(FVector(-1618.f, 5996.f, 760.f));
+    Area2SpawnPoints.Add(FVector(-2164.f, 3548.f, 760.f));
+    Area2SpawnPoints.Add(FVector(-3341.f, 6341.f, 760.f));
+    Area2SpawnPoints.Add(FVector(-6276.f, 5901.f, 760.f));
+    Area2SpawnPoints.Add(FVector(-5683.f, 4451.f, 760.f));
+    Area2SpawnPoints.Add(FVector(-5132.f, 2946.f, 760.f));
+    Area2SpawnPoints.Add(FVector(-3233.f, 2384.f, 760.f));
+    Area2SpawnPoints.Add(FVector(-1063.f, 2580.f, 760.f));
+    Area2SpawnPoints.Add(FVector(1627.f, 2849.f, 760.f));
+    Area2SpawnPoints.Add(FVector(2579.f, 865.f, 760.f));
+    Area2SpawnPoints.Add(FVector(2617.f, -2016.f, 760.f));
+    Area2SpawnPoints.Add(FVector(940.f, -2670.f, 760.f));
+    Area2SpawnPoints.Add(FVector(-1966.f, -3540.f, 760.f));
+    Area2SpawnPoints.Add(FVector(6068.f, 1640.f, 760.f));
+    Area2SpawnPoints.Add(FVector(6672.f, 5137.f, 760.f));
     Area2SpawnPoints.Add(FVector(-1193.f, -4795.f, 1172.f));
     Area2SpawnPoints.Add(FVector(-5025.f, -1134.f, 1172.f));
     Area2SpawnPoints.Add(FVector(-1610.f, -4933.f, 1172.f));
     Area2SpawnPoints.Add(FVector(4641.f, -253.f, 1172.f));
+
 
     AreaSpawnPoints.Add(Area2SpawnPoints);
 }
@@ -1018,7 +1028,7 @@ void ABattleGameMode::InitializeArea3SpawnPoints()
     Area3SpawnPoints.Add(FVector(4237.f, 2158.f, 2297.f));
     Area3SpawnPoints.Add(FVector(1315.f, -5571.f, 2297.f));
     Area3SpawnPoints.Add(FVector(-4627.f, -3477.f, 1768.f));
-    Area3SpawnPoints.Add(FVector(0.f, 0.f, 1443.f));
+    //Area3SpawnPoints.Add(FVector(0.f, 0.f, 1443.f));
     Area3SpawnPoints.Add(FVector(624.f, 669.f, 197.f));
     Area3SpawnPoints.Add(FVector(-576.f, 380.f, 204.f));
     Area3SpawnPoints.Add(FVector(-271.f, -782.f, 204.f));

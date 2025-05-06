@@ -117,8 +117,8 @@ bool Room::HandleStartGame(PlayerRef player)
         //newPlayer.z = player->z;
         //newPlayer.rotation = player->rotation;
         newPlayer.host = (player->playerID == m_hostPlayer->playerID);
-        newPlayer.spawn_index = 0;
-        //newPlayer.spawn_index = m_playerCount % 4;
+        //newPlayer.spawn_index = 0;
+        newPlayer.spawn_index = m_indexGen++ % 8;
         SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(newPlayer);
         if (auto session = player->ownerSession.lock())
             session->Send(sendBuffer);
@@ -496,7 +496,7 @@ void Room::InitItemInfo()
         SC_SPAWN_ITEM_PKT item;
 
         std::vector<int> pool;
-        pool.resize(49); ZeroMemory(pool.data(), sizeof(int) * 49);
+        pool.resize(49); ZeroMemory(pool.data(), sizeof(int) * 47);
         std::iota(pool.begin(), pool.end(), 0);
 
         std::mt19937_64 rng(std::chrono::steady_clock::now().time_since_epoch().count());
@@ -516,13 +516,13 @@ void Room::InitItemInfo()
     {   // Zone3
         SC_SPAWN_ITEM_PKT item;
 
-        for (int i = 0; i < 10; ++i)
+        for (int i = 0; i < 9; ++i)
         {
             item.spawn_index[i] = static_cast<char>(i);
             item.item_level[i] = static_cast<char>(rand() % 3);
         }
         
-        item.item_count = 10;
+        item.item_count = 9;
         item.zone_index = 2;
 
         m_itemInfo[2] = item;
