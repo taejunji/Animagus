@@ -68,12 +68,12 @@ void UBTService_CheckMovementStuck::TickNode(UBehaviorTreeComponent& OwnerComp, 
             OwnerComp.GetBlackboardComponent()->SetValueAsBool(can_set_target_key.SelectedKeyName, true);
             OwnerComp.GetBlackboardComponent()->SetValueAsBool(bMoveStuckKey.SelectedKeyName, true);
 
-            GEngine->AddOnScreenDebugMessage(
-                -1,
-                2.0f,
-                FColor::Red,
-                FString::Printf(TEXT("can_set_target_key => True "))
-            );
+            //GEngine->AddOnScreenDebugMessage(
+            //    -1,
+            //    2.0f,
+            //    FColor::Red,
+            //    FString::Printf(TEXT("can_set_target_key => True "))
+            //);
         }
         else
         {
