@@ -73,7 +73,7 @@ void UChangeSkill::ActiveSkill_Implementation()
     }
 
     // 진행 방향: 카메라 뷰 방향 사용
-    SpawnRotation = CameraRotation;
+    SpawnRotation = CameraRotation + FRotator(1.f, 0.f, 0.f);;
 
     UE_LOG(LogTemp, Log, TEXT("UChangeSkill: SpawnLocation = %s, SpawnRotation = %s"), *SpawnLocation.ToString(), *SpawnRotation.ToString());
 

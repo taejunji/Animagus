@@ -16,10 +16,10 @@ UShockwaveSkill::UShockwaveSkill()
     bFirstUse = true;
     
     // 충격파 스킬 관련 기본 파라미터
-    ShockwaveDamage = 30.f;
+    ShockwaveDamage = 10.f;
     KnockbackForce = 1500.f;
-    ExpansionSpeed = 1000.f;  // cm/s
-    MaxRadius = 5000.f;       // cm
+    ExpansionSpeed = 600.f;  // cm/s
+    MaxRadius = 600.f;       // cm
 
     BaseCooldownTime = CooldownTime;
     BaseKnockbackForce = KnockbackForce;
@@ -56,7 +56,7 @@ void UShockwaveSkill::ActiveSkill_Implementation()
     FRotator SpawnRotation = FRotator::ZeroRotator;
 
     // ShockwaveActor 스폰
-    AShockwaveActor* ShockwaveActor = World->SpawnActor<AShockwaveActor>(ShockwaveActorBPClass, SpawnLocation, SpawnRotation);
+    AShockwaveActor* ShockwaveActor = World->SpawnActor<AShockwaveActor>(ShockwaveActorBPClass, SpawnLocation - FVector(0.f,20.f,0.f), SpawnRotation);
     if (ShockwaveActor)
     {
         // 스폰된 ShockwaveActor에 스킬 관련 파라미터 전달

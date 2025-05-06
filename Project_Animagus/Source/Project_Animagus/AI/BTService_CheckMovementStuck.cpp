@@ -21,6 +21,7 @@ void UBTService_CheckMovementStuck::OnBecomeRelevant(UBehaviorTreeComponent& Own
     {
         InitialLocation = Pawn->GetActorLocation();
         ElapsedTime = 0.f;
+        TimeThreshold = 5.f;
         bInitialized = true;
 
         // 초기화
@@ -34,10 +35,22 @@ void UBTService_CheckMovementStuck::TickNode(UBehaviorTreeComponent& OwnerComp, 
 
     ABaseCharacter* Character = Cast<ABaseCharacter>(OwnerComp.GetAIOwner()->GetPawn());
     if (!Character || !bInitialized) return;
+     
+    const FVector MyLoc = Character->GetActorLocation();
+
+    // DeadZone 여부 판단
+    //bool bInDeadZone = (
+    //    FMath::Abs(MyLoc.X) <= 2450.f &&
+    //    FMath::Abs(MyLoc.Y) <= 2450.f &&
+    //    MyLoc.Z <= 600.f
+    //    );
+
+    //// DeadZone일 경우 TimeThreshold 짧게 조정
+    //TimeThreshold = bInDeadZone ? 1.0f : 5.0f; 
 
     ElapsedTime += DeltaSeconds;
-     
-    float DistanceMoved = FVector::Dist(Character->GetActorLocation(), InitialLocation); 
+
+    float DistanceMoved = FVector::Dist(MyLoc, InitialLocation);
 
     if (ElapsedTime >= TimeThreshold && Character->bIsStunned == false) 
     {
@@ -55,18 +68,20 @@ void UBTService_CheckMovementStuck::TickNode(UBehaviorTreeComponent& OwnerComp, 
             OwnerComp.GetBlackboardComponent()->SetValueAsBool(can_set_target_key.SelectedKeyName, true);
             OwnerComp.GetBlackboardComponent()->SetValueAsBool(bMoveStuckKey.SelectedKeyName, true);
 
-            GEngine->AddOnScreenDebugMessage(
-                -1,
-                2.0f,
-                FColor::Red,
-                FString::Printf(TEXT("can_set_target_key => True "))
-            );
+            //GEngine->AddOnScreenDebugMessage(
+            //    -1,
+            //    2.0f,
+            //    FColor::Red,
+            //    FString::Printf(TEXT("can_set_target_key => True "))
+            //);
         }
         else
         {
             // 이동 중이면 다시 초기화
             InitialLocation = Character->GetActorLocation();
             ElapsedTime = 0.f;
+            OwnerComp.GetBlackboardComponent()->SetValueAsBool(bMoveStuckKey.SelectedKeyName, false);
+
         }
     }
 }

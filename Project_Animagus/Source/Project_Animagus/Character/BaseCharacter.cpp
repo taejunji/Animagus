@@ -429,26 +429,6 @@ void ABaseCharacter::InitializeSkills()
     {
         UE_LOG(LogTemp, Warning, TEXT("InitializeSkills: ShieldBPClass is not assigned."));
     }
-
-    // 4번 슬롯 테스트용임
-    if (SmokeBPClass)
-    {
-        UBaseSkill* NewSkill = NewObject<USmokeSkill>(this, SmokeBPClass);
-        if (NewSkill)
-        {
-            NewSkill->Owner = this;
-            Skills[4] = NewSkill;
-            UE_LOG(LogTemp, Log, TEXT("InitializeSkills: Successfully created smoke skill for slot 4: %s"), *NewSkill->GetName());
-        }
-        else
-        {
-            UE_LOG(LogTemp, Warning, TEXT("InitializeSkills: Failed to create Change skill for slot 4"));
-        }
-    }
-    else
-    {
-        UE_LOG(LogTemp, Warning, TEXT("InitializeSkills: smokeBPClass is not assigned."));
-    }
     
     for (UBaseSkill* Skill : Skills)
     {
@@ -541,6 +521,85 @@ void ABaseCharacter::TestSkill_Change()
         UE_LOG(LogTemp, Warning, TEXT("TestSkill_Change: SmokeBPClass is not assigned."));
     }
 
+    for (UBaseSkill* Skill : Skills)
+    {
+        if (Skill)
+        {
+            Skill->UpgradeSkill(PowerUpLevel);
+        }
+    }
+}
+
+void ABaseCharacter::AIchar_SkillSet()
+{
+    // PowerUpLevel 적용 전 리셋
+    Skills.Empty();
+    Skills.SetNum(5);
+    // 1) 사용할 수 있는 스킬 BP 클래스를 TArray로 모은다
+    TArray<TSubclassOf<UBaseSkill>> AllSkillClasses = {
+        FireballBPClass,
+        MagicMissileBPClass,
+        StunBPClass,
+        RadialBPClass,
+        ChangeBPClass,
+        SmokeBPClass,
+        ShieldBPClass
+        // ShockwaveBPClass
+        // HasteBPClass
+    };
+
+    // 2) 올바르게 설정된(널이 아닌) 클래스만 필터링
+    AllSkillClasses.RemoveAll([](TSubclassOf<UBaseSkill> Cls) { return Cls == nullptr; });
+
+    // 3) 랜덤 셔플
+    const int32 NumToPick = FMath::Min(5, AllSkillClasses.Num());
+    for (int32 i = AllSkillClasses.Num() - 1; i > 0; --i)
+    {
+        int32 j = FMath::RandRange(0, i);
+        AllSkillClasses.Swap(i, j);
+    }
+
+    // 4) 앞에서부터 4개를 순서대로 슬롯에 NewObject로 생성
+    for (int32 Slot = 0; Slot < NumToPick; ++Slot)
+    {
+        TSubclassOf<UBaseSkill> SkillClass = AllSkillClasses[Slot];
+        if (SkillClass)
+        {
+            // UObject::NewObject<>() 템플릿으로 생성
+            UBaseSkill* NewSkill = NewObject<UBaseSkill>(this, SkillClass);
+            if (NewSkill)
+            {
+                NewSkill->Owner = this;
+                Skills[Slot] = NewSkill;
+                UE_LOG(LogTemp, Log, TEXT("InitializeSkills: Slot %d -> %s"), Slot, *NewSkill->GetName());
+            }
+            else
+            {
+                UE_LOG(LogTemp, Warning, TEXT("InitializeSkills: Failed to NewObject for slot %d"), Slot);
+            }
+        }
+    }
+    
+    if (FireballBPClass)
+    {
+        UBaseSkill* NewSkill = NewObject<UFireball>(this, FireballBPClass);
+        if (NewSkill)
+        {
+            NewSkill->Owner = this;
+            Skills[0] = NewSkill;
+            UE_LOG(LogTemp, Log, TEXT("InitializeSkills: Successfully created MagicMissile skill for slot 0: %s"), *NewSkill->GetName());
+        }
+        else
+        {
+            UE_LOG(LogTemp, Warning, TEXT("InitializeSkills: Failed to create MagicMissile skill for slot 0"));
+        }
+    }
+    else
+    {
+        UE_LOG(LogTemp, Warning, TEXT("InitializeSkills: FireballBPClass is not assigned."));
+    }
+    
+    // 5) PowerUpLevel에 따른 강화 적용
     for (UBaseSkill* Skill : Skills)
     {
         if (Skill)

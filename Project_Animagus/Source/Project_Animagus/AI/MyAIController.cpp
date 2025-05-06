@@ -201,7 +201,7 @@ void AMyAIController::Tick(float DeltaTime)
     CheckAndRecoverFromNavMesh();
 
     // 유효한 네비 경로 확인
-    CheckFindPathFromNavMesh();
+    // CheckFindPathFromNavMesh();
 
     // 타겟이 죽었는지 확인
     CheckAndDisableTargetIfDead();
@@ -335,6 +335,9 @@ void AMyAIController::OnPerceptionUpdated(const TArray<AActor*>& UpdatedActors)
     SelectBestItemTarget(CandidateItemTargets);
 
     SelectBestBoxTarget(CandidateBoxTargets); 
+
+    UObject* Target = GetBlackboardComponent()->GetValueAsObject(TargetKey.SelectedKeyName);
+    if (nullptr == Target) GetBlackboardComponent()->SetValueAsBool(can_set_target_key.SelectedKeyName, true);
 
     bool bCanSet = GetBlackboardComponent()->GetValueAsBool(can_set_target_key.SelectedKeyName);
 
@@ -549,7 +552,7 @@ void AMyAIController::ResetTargetChange()
     GetBlackboardComponent()->SetValueAsBool(can_set_target_key.SelectedKeyName, true);
 }
 
-// 보완 필요
+// 보완 필요 -> 이놈이 원흉이다
 void AMyAIController::CheckAndRecoverFromNavMesh()
 {
     UNavigationSystemV1* NavSys = FNavigationSystem::GetCurrent<UNavigationSystemV1>(GetWorld());
@@ -559,7 +562,7 @@ void AMyAIController::CheckAndRecoverFromNavMesh()
     FNavLocation ProjectedLocation;
 
     // 월드상의 임의의 위치가 내비게이션 메시(NavMesh) 위에 있는지 확인하고, 가장 가까운 네비 메시 위의 위치를 반환
-    bool bOnNavMesh = NavSys->ProjectPointToNavigation(CurrentLocation, ProjectedLocation, FVector(30.f, 30.f, 100.f));
+    bool bOnNavMesh = NavSys->ProjectPointToNavigation(CurrentLocation, ProjectedLocation, FVector(30.f, 30.f, 500.f));
 
     if (false == bOnNavMesh && false == bFailedToFindNavMesh)
     {

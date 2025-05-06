@@ -394,6 +394,7 @@ void ABattleGameMode::SpawnPlayer(Protocol::SC_SPAWN_PKT& pkt)
 void ABattleGameMode::ActivateInput()
 {
     ABattle_PlayerController* PlayerController = Cast<ABattle_PlayerController>(PlayerCharacter->GetController()); // 첫 번째 플레이어 컨트롤러 가져오기
+    
     if (PlayerController)
     {
         PlayerController->EnableInput(PlayerController);
@@ -428,6 +429,11 @@ void ABattleGameMode::ActivateInput()
             //    MovementComp->SetMovementMode(EMovementMode::MOVE_Walking);
             //}
         }
+    }
+
+    if (StartSound)
+    {
+        UGameplayStatics::PlaySound2D(GetWorld(), StartSound);
     }
 }
 
@@ -658,12 +664,15 @@ void ABattleGameMode::CountdownTimerUpdate()
     float DisplayTime = FMath::CeilToFloat(CurrentCountdownTime);
     if (DisplayTime > 0)
     {
-        // 자신의 HUD도 업데이트
         ABattle_PlayerController* PC = Cast<ABattle_PlayerController>(PlayerCharacter->GetController());
         if (PC && PC->PlayerHUD)
+        if (CountSound)
         {
-            PC->PlayerHUD->UpdateCountdown(DisplayTime);
+            UGameplayStatics::PlaySound2D(GetWorld(), CountSound);
         }
+        
+        // 플레이어의 HUD 업데이트
+        PC->PlayerHUD->UpdateCountdown(DisplayTime);
 
         UE_LOG(LogTemp, Log, TEXT("Countdown: %.0f"), DisplayTime);
     }
@@ -681,8 +690,11 @@ void ABattleGameMode::CountdownTimerUpdate()
         return;
     }
 
+ 
+    
     // 1초 경과 후 CountdownTime 감소
     CurrentCountdownTime -= 1.0f;
+    
 }
 
 void ABattleGameMode::RoundTimerUpdate()
@@ -942,11 +954,11 @@ void ABattleGameMode::InitializeArea2SpawnPoints()
 
     Area2SpawnPoints.Empty();
 
-    Area2SpawnPoints.Add(FVector(-6077.f, -927.f, 777.f));
-    Area2SpawnPoints.Add(FVector(13000.f, 500.f, 66.f));
-    Area2SpawnPoints.Add(FVector(-11000.f, -1500.f, 66.f));
-    Area2SpawnPoints.Add(FVector(11500.f, 800.f, 66.f));
-    Area2SpawnPoints.Add(FVector(-5899.f, 5123.f, 777.f));
+    Area2SpawnPoints.Add(FVector(-6077.f, -927.f, 760.f));
+    Area2SpawnPoints.Add(FVector(13000.f, 500.f, 760.f));
+    Area2SpawnPoints.Add(FVector(-11000.f, -1500.f, 760.f));
+    Area2SpawnPoints.Add(FVector(11500.f, 800.f, 760.f));
+    Area2SpawnPoints.Add(FVector(-5899.f, 5123.f, 760.f));
     Area2SpawnPoints.Add(FVector(-3920.f, 5265.f, 777.f));
     Area2SpawnPoints.Add(FVector(-4478.f, 369.f, 794.f));
     Area2SpawnPoints.Add(FVector(-3231.f, -1757.f, 794.f));

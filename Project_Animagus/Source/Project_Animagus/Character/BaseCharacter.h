@@ -147,6 +147,9 @@ public:
 
     UFUNCTION(BlueprintCallable, Category="Skills")
     void TestSkill_Change();
+
+    UFUNCTION(BlueprintCallable, Category="Skills")
+    void AIchar_SkillSet();
     
     UFUNCTION(BlueprintCallable, Category = "PowerUp")
     void IncreasePowerUpLevel();

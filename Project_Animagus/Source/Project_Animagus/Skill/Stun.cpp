@@ -15,7 +15,7 @@ UStun::UStun()
     SkillName = "Stun";
     CooldownTime = 8.0f; // 예시 쿨타임
     StunDamage = 10.0f;  // 예시 데미지
-    StunSpeed = 1500.f;  // 예시 이동 속도
+    StunSpeed = 2500.f;  // 예시 이동 속도
     StunDuration = 1.67f; // 예시 스턴 지속 시간
 
     // ProjectileBPClass는 에디터에서 할당 (예: MyProjectile_Stun_BP)
@@ -73,8 +73,7 @@ void UStun::ActiveSkill_Implementation()
     }
 
     // 진행 방향: 카메라 뷰 방향 사용
-    SpawnRotation = CameraRotation;
-
+    SpawnRotation = CameraRotation + FRotator(1.f, 0.f, 0.f);;
 
     UE_LOG(LogTemp, Log, TEXT("UStunSkill: SpawnLocation = %s, SpawnRotation = %s"), *SpawnLocation.ToString(), *SpawnRotation.ToString());
 
@@ -99,6 +98,8 @@ void UStun::ActiveSkill_Implementation()
             {
                 StunProj->ProjectileMovement->InitialSpeed = StunSpeed;
                 StunProj->ProjectileMovement->MaxSpeed = StunSpeed;
+                FVector Dir = StunProj->ProjectileMovement->Velocity.GetSafeNormal();
+                StunProj->ProjectileMovement->Velocity = Dir * StunSpeed;
             }
             // 투사체의 OnHit()에서 대상 캐릭터에 대해 ApplyStun(StunDuration)를 호출하도록 설계합니다.
             UE_LOG(LogTemp, Log, TEXT("UStunSkill: Stun projectile spawned successfully: %s"), *StunProj->GetName());
