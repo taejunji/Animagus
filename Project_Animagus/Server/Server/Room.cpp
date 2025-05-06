@@ -414,31 +414,48 @@ bool Room::HandleTimeOverLocked(Protocol::CS_TIME_OVER_PKT& pkt)
 
     std::lock_guard lock(m_mutex);
 
-    std::vector<PlayerRef> sortedPlayers;
+    std::vector<std::pair<int16, int16>> sortedPlayers; // (id, HP) 쌍으로 저장
     sortedPlayers.reserve(m_players.size() + m_aiPlayers.size());
 
     for (auto& kv : m_players)
-        sortedPlayers.emplace_back(kv.second);
+        sortedPlayers.emplace_back(std::make_pair(kv.second->playerID, kv.second->playerHP));
     for (auto& kv : m_aiPlayers)
-        sortedPlayers.emplace_back(kv.second);
+        sortedPlayers.emplace_back(std::make_pair(kv.second->playerID, kv.second->playerHP));
 
     std::sort(sortedPlayers.begin(), sortedPlayers.end(),
-        [](const PlayerRef& a, const PlayerRef& b) {
-            return a->playerHP > b->playerHP;
+        [](const std::pair<int16, int16>& a, const std::pair<int16, int16>& b) {
+            return a.second > b.second;
         });
 
 #ifndef _DUMMYTEST
-    for (auto& player : sortedPlayers) {
-        std::cout << player->playerID << ":" << player->playerHP << ", ";
+    for (auto& item : sortedPlayers) {
+        std::cout << item.first << ":" << item.second << ", ";
     }
 #endif
+
+    if (m_roundCount++ < 3)
+    {
+        // 우승자 정보 + ???
+        SC_GAME_INIT_PKT initGamePkt;
+
+        SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(initGamePkt);
+        Broadcast(sendBuffer, 0);
+
+        InitializeGame();
+    }
+    else
+    {
+        m_roundCount = 0;
+    }
 
     return true;
 }
 
 void Room::InitializeGame()
 {
-    // 이 함수는 항상 스레드 하나에서만 호출함. 프로그램 시작 시, host 로부터 전투단계 종료 확인 시
+    m_players.clear();
+    m_aiPlayers.clear();
+    m_playerCount = 0;
 
     InitItemInfo();
 }

@@ -33,6 +33,7 @@ public:
 
 public:
     uint16 m_roomID;
+    std::atomic<uint16> m_roundCount = 0;
 
 private:
     std::mutex m_mutex;

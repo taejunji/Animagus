@@ -375,6 +375,34 @@ void UMyGameInstance::HandleUpdateHp(Protocol::SC_UPDATE_HP_PKT& pkt)
     }
 }
 
+void UMyGameInstance::HandleInitBattleMode(Protocol::SC_GAME_INIT_PKT& pkt)
+{
+    if (Socket == nullptr || ClientSession == nullptr)
+        return;
+
+    auto* World = GetWorld();
+    if (World == nullptr)
+        return;
+
+    UE_LOG(LogTemp, Warning, TEXT("배틀모드 초기화"));
+
+    AGameModeBase* BaseGameMode = UGameplayStatics::GetGameMode(World);
+    if (BaseGameMode)
+    {
+        ABattleGameMode* GameMode = Cast<ABattleGameMode>(BaseGameMode);
+        if (GameMode)
+        {
+            GameMode->InitBattleMode();
+            GameMode->IndexingSpawnedPlayers.Empty();
+            GameMode->SpawnedPlayers.Empty();
+        }
+    }
+
+    Protocol::CS_ENTER_GAME_PKT enterGamePkt;
+    SendBufferRef sendBuffer = ClientPacketHandler::MakeSendBuffer(enterGamePkt);
+    SendPacket(sendBuffer);
+}
+
 
 
 //void UMyGameInstance::SetMyPlayerIndex(uint16 playerIndex)

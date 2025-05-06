@@ -104,3 +104,13 @@ bool Handle_SC_UPDATE_HP(SessionRef& session, Protocol::SC_UPDATE_HP_PKT& pkt)
 
     return true;
 }
+
+bool Handle_SC_GAME_INIT(SessionRef& session, Protocol::SC_GAME_INIT_PKT& pkt)
+{
+    if (auto* GameInstance = Cast<UMyGameInstance>(GWorld->GetGameInstance()))
+    {
+        GameInstance->HandleInitBattleMode(pkt);
+    }
+
+    return false;
+}

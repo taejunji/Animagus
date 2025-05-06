@@ -91,6 +91,7 @@ namespace Protocol {
         SC_SPAWN,
         SC_SPAWN_ITEM,
         SC_UPDATE_HP,
+        SC_GAME_INIT,
     };
 
 
@@ -234,6 +235,10 @@ namespace Protocol {
         uint16 room_id;
         float hp;
         bool isAlive;
+    };
+    struct SC_GAME_INIT_PKT
+    {
+        
     };
 
 #pragma pack(pop)
