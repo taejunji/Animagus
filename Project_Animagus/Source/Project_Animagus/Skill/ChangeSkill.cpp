@@ -63,7 +63,7 @@ void UChangeSkill::ActiveSkill_Implementation()
         else
         {
             // 타겟이 없다면 AI Panw이 바라보는 방향으로 발사
-            SpawnRotation = Owner->GetActorRotation();
+            SpawnRotation = Owner->GetActorRotation() + FRotator(1.f, 0.f, 0.f);;
         }
     }
     else // Player 혹은 Network가 호출한 경우
@@ -82,7 +82,7 @@ void UChangeSkill::ActiveSkill_Implementation()
         }
 
         // 진행 방향: 카메라 뷰 방향 사용
-        SpawnRotation = CameraRotation;
+        SpawnRotation = CameraRotation + FRotator(1.f, 0.f, 0.f);;
     }
 
     UE_LOG(LogTemp, Log, TEXT("UChangeSkill: SpawnLocation = %s, SpawnRotation = %s"), *SpawnLocation.ToString(), *SpawnRotation.ToString());

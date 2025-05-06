@@ -54,6 +54,13 @@ protected:
     
     UPROPERTY(EditAnywhere, Category="Audio")
     USoundBase* BackgroundMusic;
+
+    UPROPERTY(EditAnywhere, Category="Audio")
+    USoundBase* CountSound;
+
+    UPROPERTY(EditAnywhere, Category="Audio")
+    USoundBase* StartSound;
+
 public:
     // BP_AI 애셋
     UPROPERTY(EditAnywhere, Category="AI")

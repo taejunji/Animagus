@@ -30,6 +30,12 @@ protected:
     // 현재 확산 반경 (초기 값 0, 시간이 지나면서 증가)
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Shockwave")
     float CurrentRadius;
+
+    UPROPERTY(EditAnywhere, Category="Audio")
+    USoundBase* LaunchSound;
+
+    UPROPERTY(EditAnywhere, Category="Audio")
+    USoundAttenuation* AttenuationSettings;
     
 public: 
     // 확산 속도 (cm/s, 예: 1000cm/s = 10m/s)

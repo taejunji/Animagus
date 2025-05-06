@@ -298,6 +298,7 @@ void ABattleGameMode::SpawnPlayers()
 
 void ABattleGameMode::ActivateInput()
 {
+    
     ABattle_PlayerController* PlayerController = Cast<ABattle_PlayerController>(SpawnedPlayers[PossessIndex]->GetController()); // 첫 번째 플레이어 컨트롤러 가져오기
     if (PlayerController)
     {
@@ -333,6 +334,11 @@ void ABattleGameMode::ActivateInput()
             //}
         }
     }
+
+    if (StartSound)
+    {
+        UGameplayStatics::PlaySound2D(GetWorld(), StartSound);
+    }
 }
 
 void ABattleGameMode::PrintElapsedtime()
@@ -362,6 +368,11 @@ void ABattleGameMode::CountdownTimerUpdate()
     float DisplayTime = FMath::CeilToFloat(CurrentCountdownTime);
     if (DisplayTime > 0)
     {
+        if (CountSound)
+        {
+            UGameplayStatics::PlaySound2D(GetWorld(), CountSound);
+        }
+        
         // 각 플레이어의 HUD 업데이트 (SpawnedPlayers 배열의 각 플레이어의 컨트롤러에서 HUD에 업데이트)
         for (ABaseCharacter* Player : SpawnedPlayers)
         {
@@ -396,8 +407,11 @@ void ABattleGameMode::CountdownTimerUpdate()
         return;
     }
 
+ 
+    
     // 1초 경과 후 CountdownTime 감소
     CurrentCountdownTime -= 1.0f;
+    
 }
 
 void ABattleGameMode::RoundTimerUpdate()
@@ -475,11 +489,11 @@ void ABattleGameMode::SpawnItemsInArea2()
 {
     Area2SpawnPoints.Empty();
 
-    Area2SpawnPoints.Add(FVector(-6077.f, -927.f, 777.f));
-    Area2SpawnPoints.Add(FVector(13000.f, 500.f, 66.f));
-    Area2SpawnPoints.Add(FVector(-11000.f, -1500.f, 66.f));
-    Area2SpawnPoints.Add(FVector(11500.f, 800.f, 66.f));
-    Area2SpawnPoints.Add(FVector(-5899.f,  5123.f, 777.f));
+    Area2SpawnPoints.Add(FVector(-6077.f, -927.f, 760.f));
+    Area2SpawnPoints.Add(FVector(13000.f, 500.f, 760.f));
+    Area2SpawnPoints.Add(FVector(-11000.f, -1500.f, 760.f));
+    Area2SpawnPoints.Add(FVector(11500.f, 800.f, 760.f));
+    Area2SpawnPoints.Add(FVector(-5899.f,  5123.f, 760.f));
     Area2SpawnPoints.Add(FVector(-3920.f,  5265.f, 777.f));
     Area2SpawnPoints.Add(FVector(-4478.f,   369.f, 794.f));
     Area2SpawnPoints.Add(FVector(-3231.f, -1757.f, 794.f));

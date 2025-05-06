@@ -28,9 +28,9 @@ AShockwaveActor::AShockwaveActor()
 
     // 기본 값 설정
     CurrentRadius = 0.f;
-    ExpansionSpeed = 1000.f; // 예: 초당 1000cm 확산
-    MaxRadius = 1500.f;      
-    Damage = 30.f;
+    ExpansionSpeed = 300.f; // 예: 초당 1000cm 확산
+    MaxRadius = 300.f;      
+    Damage = 10.f;
     KnockbackForce = 1500.f;
     bHasAppliedEffect = false;
     Shooter = nullptr;
@@ -39,6 +39,19 @@ AShockwaveActor::AShockwaveActor()
 void AShockwaveActor::BeginPlay()
 {
     Super::BeginPlay();
+
+    
+    if (LaunchSound)
+    {
+        UGameplayStatics::PlaySoundAtLocation(
+            this,
+            LaunchSound,
+            this->GetActorLocation(),
+            FRotator::ZeroRotator,
+            1.f, 1.f, 0.f,
+            AttenuationSettings
+        );
+    }
     
     // Niagara 효과 초기 설정 (User Parameter로 확산 반경 업데이트)
     if (ShockwaveEffect)
