@@ -178,6 +178,9 @@ void ABattleGameMode::InitBattleMode()
         //GetWorld()->GetTimerManager().SetTimer(CountdownTimerHandle, this, &ABattleGameMode::CountdownTimerUpdate, 1.0f, true);
     }
     
+    IndexingSpawnedPlayers.Empty();
+    SpawnedPlayers.Empty();
+
     AreaSpawnPoints.Empty();
     SpawnedItems.Empty();
 
