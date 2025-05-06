@@ -12,26 +12,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="b367acbc-6d33-4e55-8a59-404dbba820be" name="변경" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.Project_Animagus/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Project_Animagus/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/WorkFolder/Bluprints/Projectiles/MyProjectile_MagicMissile.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/WorkFolder/Bluprints/Projectiles/MyProjectile_MagicMissile.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/WorkFolder/Bluprints/Ui/BP_MyPlayerHUDWidget.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/WorkFolder/Bluprints/Ui/BP_MyPlayerHUDWidget.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/WorkFolder/GameMode/MyLobbyGameMode.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/WorkFolder/GameMode/MyLobbyGameMode.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/WorkFolder/Sound/SA_Spider.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/WorkFolder/Sound/SA_Spider.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/Project_Animagus/Character/BaseCharacter.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Project_Animagus/Character/BaseCharacter.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/Project_Animagus/PlayerController/Battle_PlayerController.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Project_Animagus/PlayerController/Battle_PlayerController.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/Project_Animagus/PlayerController/Battle_PlayerController.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Project_Animagus/PlayerController/Battle_PlayerController.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/Project_Animagus/Projectile/ProjectileBase.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Project_Animagus/Projectile/ProjectileBase.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/Project_Animagus/Skill/ChangeSkill.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Project_Animagus/Skill/ChangeSkill.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/Project_Animagus/Skill/ChangeSkill.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Project_Animagus/Skill/ChangeSkill.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/Project_Animagus/Skill/Fireball.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Project_Animagus/Skill/Fireball.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/Project_Animagus/Skill/HasteSkill.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Project_Animagus/Skill/HasteSkill.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/Project_Animagus/Skill/MagicMissile.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Project_Animagus/Skill/MagicMissile.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/Project_Animagus/Skill/MagicMissile.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Project_Animagus/Skill/MagicMissile.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/Project_Animagus/Skill/RadialSkill.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Project_Animagus/Skill/RadialSkill.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/Project_Animagus/Skill/ShieldSkill.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Project_Animagus/Skill/ShieldSkill.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/Project_Animagus/Skill/SmokeSkill.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Project_Animagus/Skill/SmokeSkill.cpp" afterDir="false" />
-    </list>
+    <list default="true" id="b367acbc-6d33-4e55-8a59-404dbba820be" name="변경" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -181,7 +162,8 @@
       <workItem from="1746187023219" duration="58000" />
       <workItem from="1746187132109" duration="1150000" />
       <workItem from="1746258967587" duration="21051000" />
-      <workItem from="1746433336588" duration="11690000" />
+      <workItem from="1746433336588" duration="11857000" />
+      <workItem from="1746450889570" duration="16609000" />
     </task>
     <servers />
   </component>

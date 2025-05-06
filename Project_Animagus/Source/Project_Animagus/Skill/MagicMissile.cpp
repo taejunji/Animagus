@@ -124,7 +124,7 @@ void UMagicMissile::ActiveSkill_Implementation()
             {
                 MissileProj->ProjectileMovement->InitialSpeed = startMissileSpeed;
                 MissileProj->ProjectileMovement->MaxSpeed = MissileSpeed;
-
+                MissileProj->KnockbackForce = knockbackForce;
             }
             
             // 추가로, MissileProj에 HomingActivationRadius 값을 전달할 수도 있음(만약 필요하면)
