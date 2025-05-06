@@ -27,7 +27,7 @@ protected:
     bool bInitialized;
 
     UPROPERTY(EditAnywhere, Category = "Movement Check")
-    float TimeThreshold = 10.f; // 정체로 판단할 시간 (초)
+    float TimeThreshold = 5.f; // 정체로 판단할 시간 (초)
 
     UPROPERTY(EditAnywhere, Category = "Movement Check")
     float DistanceThreshold = 100.0f; // 이동량 허용 거리 (cm)
