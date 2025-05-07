@@ -16,10 +16,13 @@ EBTNodeResult::Type UBTTaskNode_Utility::ExecuteTask(UBehaviorTreeComponent& Own
     if (Character == nullptr) return EBTNodeResult::Failed;
 
     // 유틸
-    TArray<FString> UtilitySkills = {
-        TEXT("ChangeSkill"),
-        TEXT("Haste")
+    TArray<EUtilitySkill> UtilitySkills = {
+        EUtilitySkill::Haste,
+        EUtilitySkill::SmokeSkill,
+        EUtilitySkill::ChangeSkill
     };
+
+    UtilitySkills.Remove(EUtilitySkill::Haste);
 
     // 랜덤하게 섞기
     for (int32 i = 0; i < UtilitySkills.Num(); ++i)
@@ -28,18 +31,36 @@ EBTNodeResult::Type UBTTaskNode_Utility::ExecuteTask(UBehaviorTreeComponent& Own
         UtilitySkills.Swap(i, RandIndex);
     }
 
+    UtilitySkills.Insert(EUtilitySkill::Haste, 0);
+
     // 순서대로 사용 시도
-    for (const FString& SkillName : UtilitySkills)
+    for (const EUtilitySkill& SkillEnum : UtilitySkills)
     {
-        if (Character->UseSkillByName(SkillName))
+        switch (SkillEnum)
         {
-            UE_LOG(LogTemp, Log, TEXT("UtilityTask: Successfully used skill: %s"), *SkillName);
-            return EBTNodeResult::Succeeded; // 성공하면 바로 종료
+        case EUtilitySkill::Haste:
+            if (Character->UseSkillByName(TEXT("Haste"))) {
+                return EBTNodeResult::Succeeded; 
+            }
+            break;
+
+        case EUtilitySkill::SmokeSkill:
+            if (Character->UseSkillByName(TEXT("SmokeSkill"))) {
+                return EBTNodeResult::Succeeded; 
+            }
+            break;
+
+        case EUtilitySkill::ChangeSkill: 
+            if (Character->UseSkillByName(TEXT("ChangeSkill"))) { 
+                return EBTNodeResult::Succeeded; 
+            }
+            break;
+
+        default:
+            break;
         }
     }
-    return EBTNodeResult::Succeeded; // 성공하면 바로 종료
 
     UE_LOG(LogTemp, Warning, TEXT("UtilityTask: No available attack skill could be used."));
-//    return EBTNodeResult::Failed; // 사용 가능한 스킬이 없을 경우
+    return EBTNodeResult::Failed; // 사용 가능한 스킬이 없을 경우
 }
-

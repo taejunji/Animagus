@@ -9,6 +9,15 @@
 /**
  * 
  */
+
+UENUM(BlueprintType)
+enum class EUtilitySkill : uint8
+{
+    Haste UMETA(DisplayName = "Haste"),
+    ChangeSkill UMETA(DisplayName = "ChangeSkill"),
+    SmokeSkill UMETA(DisplayName = "SmokeSkill")
+};
+
 UCLASS()
 class PROJECT_ANIMAGUS_API UBTTaskNode_Utility : public UBTTaskNode
 {
