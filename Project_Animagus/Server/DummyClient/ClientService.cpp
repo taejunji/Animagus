@@ -82,6 +82,7 @@ bool ClientService::Start()
             }
         }
 
+        std::cout << "Delay: " << GLatency << "ms" << std::endl;
         // 0.5초 ~ 1초 랜덤 시간 대기
         int delay = 500 + (std::rand() % 1000);
         std::this_thread::sleep_for(std::chrono::milliseconds(delay));
@@ -112,9 +113,9 @@ void ClientService::SendRandomPacket(SessionRef session)
         info.player_id = session->playerID;
         info.x = 0.0f; info.y = 0.0f; info.z = 0.0f;
         info.rotation = 180.0f;
-        info.player_type = PlayerType::NONE;
         info.player_state = PlayerState::MOVE_STATE_RUN;
         movePkt.player_info = info;
+        session->client_timer = GetTickCount64();
 
         SendBufferRef sendBuffer = ClientPacketHandler::MakeSendBuffer(movePkt);
         session->Send(sendBuffer);

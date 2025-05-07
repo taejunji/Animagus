@@ -93,6 +93,7 @@ private:
 
 public:
     uint16 playerID = 0;
+    uint64 client_timer = 0;
 };
 
 

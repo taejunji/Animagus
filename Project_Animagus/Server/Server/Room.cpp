@@ -17,7 +17,7 @@ Room::Room()
 bool Room::Enter(PlayerRef player)
 {
     //std::lock_guard lock(m_mutex);
-    if (m_players.find(player->playerID) != m_players.end())
+    if (m_players.count(player->playerID) != 0)
         return false;
     
     m_players.insert(make_pair(player->playerID, player));
@@ -31,7 +31,7 @@ bool Room::Leave(uint16 playerID)
 {
     //std::lock_guard lock(m_mutex);
     
-    if (m_players.find(playerID) == m_players.end())
+    if (m_players.count(playerID) == 0)
         return false;
 
     PlayerRef player = m_players[playerID];
@@ -481,6 +481,7 @@ void Room::InitializeGame()
     m_players.clear();
     m_aiPlayers.clear();
     m_playerCount = 0;
+    m_gameStartTickCount = 0;
 
     InitItemInfo();
 }

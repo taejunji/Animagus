@@ -6,11 +6,13 @@ using namespace Protocol;
 
 using PacketHandlerFunc = std::function<bool(SessionRef&, BYTE*, int32)>;
 extern PacketHandlerFunc GClientPacketHandler[1024];
+extern std::atomic<uint64> GLatency;
 
 bool Handle_INVALID(SessionRef& session, BYTE* buffer, int32 len);
 bool Handle_DCS_TEST(SessionRef& session, DCS_TEST_PKT& pkt);
 bool Handle_SC_SPAWN(SessionRef& session, SC_SPAWN_PKT& pkt);
 bool Handle_SC_ENTER_GAME(SessionRef& session, SC_ENTER_GAME_PKT& pkt);
+bool Handle_CS_MOVE(SessionRef& session, CS_MOVE_PKT& pkt);
 
 class ClientPacketHandler
 {
@@ -21,6 +23,7 @@ public:
         GClientPacketHandler[(int32)PacketID::DCS_TEST] = [](SessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<DCS_TEST_PKT>(Handle_DCS_TEST, session, buffer, len); };
         GClientPacketHandler[(int32)PacketID::SC_SPAWN] = [](SessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<SC_SPAWN_PKT>(Handle_SC_SPAWN, session, buffer, len); };
         GClientPacketHandler[(int32)PacketID::SC_ENTER_GAME] = [](SessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<SC_ENTER_GAME_PKT>(Handle_SC_ENTER_GAME, session, buffer, len); };
+        GClientPacketHandler[(int32)PacketID::CS_MOVE] = [](SessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<CS_MOVE_PKT>(Handle_CS_MOVE, session, buffer, len); };
 
     }
 
