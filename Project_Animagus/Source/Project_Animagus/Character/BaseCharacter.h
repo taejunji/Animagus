@@ -172,6 +172,9 @@ public:
     // 스턴 상태 해제를 위한 함수 (내부적으로 타이머에서 호출)
     UFUNCTION()
     virtual void RemoveStun();
+
+    UFUNCTION(BlueprintCallable, Category = "Skills")
+    bool UseSkillByName(const FString& DesiredSkillName);
     
 public:
    
