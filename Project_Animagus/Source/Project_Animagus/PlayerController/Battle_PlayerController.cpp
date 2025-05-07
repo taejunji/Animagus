@@ -62,10 +62,6 @@ void ABattle_PlayerController::BeginPlay()
         }
 
     }
-
-    Protocol::CS_ENTER_GAME_PKT enterGamePkt;
-    SendBufferRef sendBuffer = ClientPacketHandler::MakeSendBuffer(enterGamePkt);
-    Cast<UMyGameInstance>(GWorld->GetGameInstance())->SendPacket(sendBuffer);
 }
 
 void ABattle_PlayerController::SetupInputComponent()

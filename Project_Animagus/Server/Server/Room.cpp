@@ -153,6 +153,7 @@ bool Room::HandleStartGame(PlayerRef player)
         for (auto& item : m_players)
         {
             if (n_pid == item.first) continue;  // 자기 자신의 정보는 이미 보냈음
+            if (n_pid == 0) continue;           // 아이디가 0인 플레이어를 마주쳤다면 도망치십시오
 
             PlayerRef o_player = item.second;
             oldPlayer.x = o_player->x;
@@ -187,7 +188,7 @@ bool Room::HandleStartGame(PlayerRef player)
             if (auto session = player->ownerSession.lock())
                 session->Send(sendBuffer);
 
-            //std::cout << "AI info Send Spawn Packet to " << n_pid << std::endl;
+            std::cout << "AI info Send Spawn Packet to " << n_pid << std::endl;
         }
 
     }
@@ -311,7 +312,7 @@ bool Room::HandleEnterAIPlayer(Protocol::CS_AI_ENTER_PKT& pkt)
     uint16 aiID = pkt.ai_id;
     if (m_aiPlayers.contains(aiID) == true) return false;
 
-    std::cout << "AI Enter: " << aiID << std::endl;
+    std::cout << "AI Enter: " << aiID << ", Owner: " << ownerID << std::endl;
 
     AIPlayerRef ai = std::make_shared<AIPlayer>(pkt.x, pkt.y, pkt.z, pkt.rotation);
     ai->aiID = aiID;
@@ -478,10 +479,11 @@ bool Room::HandleTimeOverLocked(Protocol::CS_TIME_OVER_PKT& pkt)
 
 void Room::InitializeGame()
 {
-    m_players.clear();
+    //m_players.clear();
     m_aiPlayers.clear();
     m_playerCount = 0;
     m_gameStartTickCount = 0;
+    m_loadingOverCount = 0;
 
     InitItemInfo();
 }
@@ -514,7 +516,7 @@ void Room::InitItemInfo()
         SC_SPAWN_ITEM_PKT item;
 
         std::vector<int> pool;
-        pool.resize(49); ZeroMemory(pool.data(), sizeof(int) * 47);
+        pool.resize(45); ZeroMemory(pool.data(), sizeof(int) * 45);
         std::iota(pool.begin(), pool.end(), 0);
 
         std::mt19937_64 rng(std::chrono::steady_clock::now().time_since_epoch().count());

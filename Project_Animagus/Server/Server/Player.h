@@ -15,7 +15,7 @@ private:
 class Player
 {
 public:
-    Player() : x(0), y(0), z(1600), rotation(0) {}
+    Player() : x(0), y(0), z(-1000.0f), rotation(0) {}
     Player(float x, float y, float z, float rotation)
         : x(x), y(y), z(z), rotation(rotation) {
     }

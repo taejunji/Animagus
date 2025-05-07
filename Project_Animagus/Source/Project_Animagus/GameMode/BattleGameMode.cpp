@@ -161,10 +161,9 @@ void ABattleGameMode::StartPlay()
         DelayHandle,
         this,
         &ABattleGameMode::OnPostLoadInitialize,
-        5.0f,   // 5초 뒤 실행
+        3.5f,   // 3.5초 뒤 실행
         false   // 한번만
     );
-    
    
 }
 
@@ -172,17 +171,24 @@ void ABattleGameMode::OnPostLoadInitialize()
 {
     InitBattleMode();
     
-    if (LoadingWidget)
-    {
-        LoadingWidget->RemoveFromParent();
-        LoadingWidget = nullptr;
-    }
-    
-    if (BackgroundMusic)
-    {
-        UGameplayStatics::PlaySound2D(GetWorld(), BackgroundMusic);
-    }
-
+    FTimerHandle CleanupHandle;
+    GetWorldTimerManager().SetTimer(
+        CleanupHandle,
+        FTimerDelegate::CreateLambda([this]()
+            {
+                if (LoadingWidget)
+                {
+                    LoadingWidget->RemoveFromParent();
+                    LoadingWidget = nullptr;
+                }
+                if (BackgroundMusic)
+                {
+                    UGameplayStatics::PlaySound2D(GetWorld(), BackgroundMusic);
+                }
+            }),
+        0.15f,
+        false
+    );
 }
 
 void ABattleGameMode::Tick(float DeltaTime)
@@ -242,6 +248,11 @@ void ABattleGameMode::InitBattleMode()
 
     //SpawnItemsInArea1();
     //SpawnItemsInArea3();
+
+
+    Protocol::CS_ENTER_GAME_PKT enterGamePkt;
+    SendBufferRef sendBuffer = ClientPacketHandler::MakeSendBuffer(enterGamePkt);
+    Cast<UMyGameInstance>(GWorld->GetGameInstance())->SendPacket(sendBuffer);
 }
 
 void ABattleGameMode::SpawnPlayers()
@@ -473,6 +484,9 @@ void ABattleGameMode::ActivateInput()
     for (auto& Item : SpawnedPlayers)
     {
         ABaseCharacter* Players = Item.Value;
+
+        UE_LOG(LogTemp, Warning, TEXT("SpawnedPlayerID: %d"), Players->GetPlayerId());
+
         if (AAICharacter* AICastedChar = Cast<AAICharacter>(Players))
         {
             AMyAIController* AICtrl = Cast<AMyAIController>(AICastedChar->GetController());
@@ -802,7 +816,7 @@ void ABattleGameMode::RoundTimerUpdate()
         }
     }
 
-    UE_LOG(LogTemp, Log, TEXT("Round Time: %d"), CurrentRoundTime);
+    //UE_LOG(LogTemp, Log, TEXT("Round Time: %d"), CurrentRoundTime);
 
     if (AmIHost == false) return;
     if (CurrentRoundTime >= TIME_OVER)

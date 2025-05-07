@@ -398,10 +398,6 @@ void UMyGameInstance::HandleInitBattleMode(Protocol::SC_GAME_INIT_PKT& pkt)
             GameMode->InitBattleMode();
         }
     }
-
-    Protocol::CS_ENTER_GAME_PKT enterGamePkt;
-    SendBufferRef sendBuffer = ClientPacketHandler::MakeSendBuffer(enterGamePkt);
-    SendPacket(sendBuffer);
 }
 
 
