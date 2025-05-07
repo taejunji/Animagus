@@ -12,7 +12,14 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="b367acbc-6d33-4e55-8a59-404dbba820be" name="변경" comment="" />
+    <list default="true" id="b367acbc-6d33-4e55-8a59-404dbba820be" name="변경" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.Project_Animagus/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Project_Animagus/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/WorkFolder/Bluprints/Ui/WBP_Loding.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/WorkFolder/Bluprints/Ui/WBP_Loding.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/WorkFolder/Levels/L_Loading.umap" beforeDir="false" afterPath="$PROJECT_DIR$/Content/WorkFolder/Levels/L_Loading.umap" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/WorkFolder/Levels/L_Map.umap" beforeDir="false" afterPath="$PROJECT_DIR$/Content/WorkFolder/Levels/L_Map.umap" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/WorkFolder/Levels/Lobby.umap" beforeDir="false" afterPath="$PROJECT_DIR$/Content/WorkFolder/Levels/Lobby.umap" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/Project_Animagus/GameMode/BattleGameMode.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Project_Animagus/GameMode/BattleGameMode.cpp" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -21,8 +28,45 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
   </component>
+  <component name="HighlightingSettingsPerFile">
+    <setting file="file://$PROJECT_DIR$/../../../../../../Program Files/Epic Games/UE_5.4/Engine/Source/Runtime/CoreUObject/Public/Templates/Casts.h" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Source/Project_Animagus/AI/BTService_FindTarget.cpp" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Source/Project_Animagus/AI/BTTaskNode_Fire.cpp" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Source/Project_Animagus/AI/BTTaskNode_Fire.h" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Source/Project_Animagus/AI/BTTaskNode_Skill_1.cpp" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Source/Project_Animagus/AI/BTTaskNode_Skill_2.cpp" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Source/Project_Animagus/AI/BTTaskNode_Skill_2.h" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Source/Project_Animagus/AI/BTTaskNode_Skill_3.cpp" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Source/Project_Animagus/AI/BTTaskNode_Skill_3.h" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Source/Project_Animagus/AI/BTTaskNode_Skill_4.cpp" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Source/Project_Animagus/AI/BTTaskNode_Skill_4.h" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Source/Project_Animagus/AI/MyAIController.cpp" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Source/Project_Animagus/AI/MyAIController.h" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Source/Project_Animagus/Actor/Shield/ShieldActor.cpp" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Source/Project_Animagus/Actor/Shield/ShieldActor.h" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Source/Project_Animagus/Actor/Shockwave/ShockwaveActor.cpp" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Source/Project_Animagus/Actor/Shockwave/ShockwaveActor.h" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Source/Project_Animagus/Character/AICharacter.cpp" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Source/Project_Animagus/Character/BaseCharacter.h" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Source/Project_Animagus/GameMode/BattleGameMode.cpp" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Source/Project_Animagus/GameMode/BattleGameMode.h" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Source/Project_Animagus/GameMode/LodingMode.cpp" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Source/Project_Animagus/GameMode/LodingMode.h" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Source/Project_Animagus/PlayerController/LoadingController.cpp" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Source/Project_Animagus/PlayerController/LoadingController.h" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Source/Project_Animagus/Projectile/ProjectileBase.cpp" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Source/Project_Animagus/Projectile/ProjectileBase.h" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Source/Project_Animagus/Skill/ChangeSkill.cpp" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Source/Project_Animagus/Skill/Fireball.cpp" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Source/Project_Animagus/Skill/Fireball.h" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Source/Project_Animagus/Skill/MagicMissile.cpp" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Source/Project_Animagus/Skill/RadialSkill.cpp" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Source/Project_Animagus/Skill/RadialSkill.h" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Source/Project_Animagus/Skill/ShockwaveSkill.cpp" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Source/Project_Animagus/Skill/Stun.cpp" root0="FORCE_HIGHLIGHTING" />
+  </component>
   <component name="ProblemsViewState">
-    <option name="selectedTabId" value="Toolset" />
+    <option name="selectedTabId" value="CurrentFile" />
   </component>
   <component name="ProjectColorInfo">{
   &quot;customColor&quot;: &quot;&quot;,
@@ -164,6 +208,12 @@
       <workItem from="1746258967587" duration="21051000" />
       <workItem from="1746433336588" duration="11857000" />
       <workItem from="1746450889570" duration="16609000" />
+      <workItem from="1746534477451" duration="33000" />
+      <workItem from="1746534554511" duration="873000" />
+      <workItem from="1746535456740" duration="1590000" />
+      <workItem from="1746537224693" duration="8901000" />
+      <workItem from="1746595562112" duration="4287000" />
+      <workItem from="1746599903748" duration="6378000" />
     </task>
     <servers />
   </component>
