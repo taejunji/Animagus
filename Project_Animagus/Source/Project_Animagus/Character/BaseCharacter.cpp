@@ -537,7 +537,7 @@ void ABaseCharacter::AIchar_SkillSet()
     Skills.SetNum(5);
     // 1) 사용할 수 있는 스킬 BP 클래스를 TArray로 모은다
     TArray<TSubclassOf<UBaseSkill>> AllSkillClasses = {
-        FireballBPClass,
+        //FireballBPClass,
         MagicMissileBPClass,
         StunBPClass,
         RadialBPClass,
