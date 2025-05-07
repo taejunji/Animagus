@@ -123,7 +123,7 @@ bool UBaseSkill::CanActivateSkill() const
     
     if (!bFirstUse && IsOnCooldown())
     {
-        UE_LOG(LogTemp, Warning, TEXT("CanActivateSkill: Skill %s is on cooldown. Cooldown Percent: %f"), *SkillName, GetCooldownPercent());
+        // UE_LOG(LogTemp, Warning, TEXT("CanActivateSkill: Skill %s is on cooldown. Cooldown Percent: %f"), *SkillName, GetCooldownPercent());
         return false;
     }
     

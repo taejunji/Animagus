@@ -11,7 +11,7 @@
 
 UHasteSkill::UHasteSkill()
 {
-    SkillName        = TEXT("Haste");
+    SkillName        = "Haste";
     SkillDescription = TEXT("일정 시간 동안 이동 속도가 증가하고 이펙트 및 포스트프로세싱을 활성화합니다.");
     Duration         = 5.0f;
     BoostedRunSpeed  = 1000.0f;

@@ -543,9 +543,9 @@ void ABaseCharacter::AIchar_SkillSet()
         RadialBPClass,
         ChangeBPClass,
         SmokeBPClass,
-        ShieldBPClass
-        // ShockwaveBPClass
-        // HasteBPClass
+        ShieldBPClass,
+        ShockwaveBPClass,
+        HasteBPClass,
     };
 
     // 2) 올바르게 설정된(널이 아닌) 클래스만 필터링
@@ -643,6 +643,25 @@ void ABaseCharacter::RemoveStun()
         PC->SetIgnoreMoveInput(false);
         PC->SetIgnoreLookInput(false);
     }
+}
+
+bool ABaseCharacter::UseSkillByName(const FString& DesiredSkillName)
+{
+    for (UBaseSkill* Skill : Skills)
+    {
+        if (!Skill) continue;
+
+        if (Skill->SkillName == DesiredSkillName && Skill->CanActivateSkill())
+        {
+            Skill->ActiveSkill(); // 실제 스킬 실행 함수
+            // UE_LOG(LogTemp, Warning, TEXT("Used skill: %s"), *DesiredSkillName);
+            return true; // 하나만 사용하고 끝내려면 여기서 리턴
+        }
+    }
+
+    return false;
+    /*if (Skills[0]->SkillName != TEXT("Haste"))
+        UE_LOG(LogTemp, Warning, TEXT("Skill not found: %s"), *DesiredSkillName);*/
 }
 
 void ABaseCharacter::IncreasePowerUpLevel()

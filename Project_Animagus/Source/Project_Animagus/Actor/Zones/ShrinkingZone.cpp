@@ -77,7 +77,12 @@ void AShrinkingZone::Tick(float DeltaTime)
 
     APawn* tempPawn = GetWorld()->GetFirstPlayerController()->GetPawn();
     ABaseCharacter* MyPawn = Cast<ABaseCharacter>(tempPawn);
-	if (MyPawn && MyPawn->IsLocallyControlled() && MyPawn->GetPawnType() == PawnType::PLAYER)
+    if (MyPawn->GetIsDead())
+    {
+        SetFogPostProcess(0);
+        return;
+    }
+    if (MyPawn && MyPawn->IsLocallyControlled() && MyPawn->GetPawnType() == PawnType::PLAYER)
 	{
 		if (!IsActorInsideZone(MyPawn))
 		{

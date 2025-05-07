@@ -17,22 +17,24 @@
 
 class ABaseCharacter;
 class AItem_Box_Base;
+class USoundBase;
 
 UCLASS()
 class PROJECT_ANIMAGUS_API ABattleGameMode : public AGameModeBase
 {
-	GENERATED_BODY()
+    GENERATED_BODY()
 
 public:
     virtual void StartPlay() override;
     virtual void Tick(float DeltaTime) override;
 
 public:
-	ABattleGameMode();
+    ABattleGameMode();
 
     void SpawnPlayers();
     void SpawnPlayer(Protocol::SC_SPAWN_PKT& pkt);
     void ActivateInput();
+
     void MoveOtherPlayer(Protocol::CS_MOVE_PKT& pkt);
     void SpawnSkill(Protocol::CS_USING_SKILL_PKT& pkt);
     void SpawnItem(Protocol::SC_SPAWN_ITEM_PKT& pkt);
@@ -62,28 +64,44 @@ protected:
     // 타이머 업데이트 함수
     void CountdownTimerUpdate();
     void RoundTimerUpdate();
-    
-    UPROPERTY(EditAnywhere, Category="Audio")
+
+    UPROPERTY(EditAnywhere, Category = "Audio")
     USoundBase* BackgroundMusic;
 
-    UPROPERTY(EditAnywhere, Category="Audio")
+    UPROPERTY(EditAnywhere, Category = "Audio")
     USoundBase* CountSound;
 
-    UPROPERTY(EditAnywhere, Category="Audio")
+    UPROPERTY(EditAnywhere, Category = "Audio")
     USoundBase* StartSound;
 
 public:
+    
+    /** 로딩 UI 위젯 클래스 (에디터에서 할당) */
+    UPROPERTY(EditAnywhere, Category = "UI")
+    TSubclassOf<UUserWidget> LoadingWidgetClass;
+
+    /** 인스턴스화된 로딩 UI */
+    UPROPERTY()
+    UUserWidget* LoadingWidget;
+
+    /** 5초 후 호출될 초기화 콜백 */
+    UFUNCTION()
+    void OnPostLoadInitialize();
+
+    UPROPERTY(EditAnywhere, Category = "Audio")
+    USoundBase* AttractSoundWave;
+    
     // BP_AI 애셋
-    UPROPERTY(EditAnywhere, Category="AI")
+    UPROPERTY(EditAnywhere, Category = "AI")
     TSoftClassPtr<class AAIController> AIControllerClass;
 
-    UPROPERTY(EditAnywhere, Category="AI")
+    UPROPERTY(EditAnywhere, Category = "AI")
     TSubclassOf<class APawn> AIPlayerClass;
 
-    UPROPERTY(EditAnywhere, Category="Item")
+    UPROPERTY(EditAnywhere, Category = "Item")
     TSubclassOf<class APowerUpItem> PowerUpBpclass;
 
-    UPROPERTY(EditAnywhere, Category="Item")
+    UPROPERTY(EditAnywhere, Category = "Item")
     TSubclassOf<class AItem_Box_Base> ItemBoxBpclass;
 
     TSubclassOf<class AAttractionZone> AttractionBpclass;
@@ -107,15 +125,15 @@ public:
     //TArray<ABaseCharacter*> SpawnedPlayers;
 
     // 플레이어 스폰 위치 배열 (에디터에서 조절 가능)
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category= "Spawning", meta = (AllowPrivateAccess = "true"))
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawning", meta = (AllowPrivateAccess = "true"))
     TArray<FVector> SpawnLocations;
 
     // 플레이어 스폰 회전 배열 (에디터에서 조절 가능)
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Spawning", meta = (AllowPrivateAccess = "true"))
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawning", meta = (AllowPrivateAccess = "true"))
     TArray<FRotator> SpawnRotations;
-    
+
     // 내가 소유할 플레이어 인덱스 (예: GameInstance에서 가져올 수 있음)
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Spawning", meta = (AllowPrivateAccess = "true"))
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawning", meta = (AllowPrivateAccess = "true"))
     int32 PossessIndex;
 
     bool AmIHost = false;
@@ -160,4 +178,6 @@ public:
     void InitializeArea3SpawnPoints();
 
     void SpawnItemsInArea3(Protocol::SC_SPAWN_ITEM_PKT& pkt);
+
+    float GetCurrentRoundTime() const;
 };
