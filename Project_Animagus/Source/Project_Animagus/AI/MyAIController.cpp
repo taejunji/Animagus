@@ -207,7 +207,7 @@ void AMyAIController::Tick(float DeltaTime)
     SetAIRunSpeed(AI, DeltaTime);
 
     // 고정 액터 회전
-    SetStaticActorRotation();
+    SetStaticActorRotation(DeltaTime);
 
     // if (ControlMode != AIControlMode::AIController) return;
 }
@@ -265,7 +265,7 @@ void AMyAIController::OnPerceptionUpdated(const TArray<AActor*>& UpdatedActors)
                 }
             }
 
-            UE_LOG(LogTemp, Warning, TEXT("시야에 감지됐습니다: %s"), *UpdatedActor->GetName());
+            // UE_LOG(LogTemp, Warning, TEXT("시야에 감지됐습니다: %s"), *UpdatedActor->GetName());
         }
 
         // 피해 감지
@@ -276,7 +276,7 @@ void AMyAIController::OnPerceptionUpdated(const TArray<AActor*>& UpdatedActors)
                 CandidateTargets.Add(character);
             }
 
-            UE_LOG(LogTemp, Warning, TEXT("타격을 감지했습니다: %s"), *UpdatedActor->GetName());
+            // UE_LOG(LogTemp, Warning, TEXT("타격을 감지했습니다: %s"), *UpdatedActor->GetName());
         }
     }
 
@@ -601,7 +601,7 @@ void AMyAIController::SetAIRunSpeed(ABaseCharacter* AI, float DeltaTime)
     AI->SetWalkSpeed(AI->current_speed);
 }
 
-void AMyAIController::SetStaticActorRotation()
+void AMyAIController::SetStaticActorRotation(float DeltaTime)
 {
     UObject* TargetObject = GetBlackboardComponent()->GetValueAsObject(TargetKey.SelectedKeyName); 
     UObject* ItemObject = GetBlackboardComponent()->GetValueAsObject(ItemTargetKey.SelectedKeyName); 
@@ -612,14 +612,18 @@ void AMyAIController::SetStaticActorRotation()
         FVector TargetLocation = TargetBox->GetActorLocation(); 
         FVector AIForwardVector = GetPawn()->GetActorForwardVector(); 
 
-        // AI의 현재 위치에서 타겟 위치까지의 벡터를 계산
-        FVector DirectionToTarget = (TargetLocation - GetPawn()->GetActorLocation()).GetSafeNormal(); 
+        // AI의 현재 위치와 타겟 위치로부터 방향 계산
+        FVector DirectionToTarget = (TargetLocation - GetPawn()->GetActorLocation()).GetSafeNormal();
+        FRotator TargetRotation = DirectionToTarget.Rotation();
 
-        // AI가 바라봐야 할 방향으로 회전
-        FRotator NewRotation = DirectionToTarget.Rotation();
+        // 현재 회전값
+        FRotator CurrentRotation = GetPawn()->GetActorRotation();
 
-        // AI의 회전 설정
-        GetPawn()->SetActorRotation(NewRotation);
+        // 부드러운 회전을 위해 보간 (DeltaTime은 Tick 함수에서 받아올 것)
+        FRotator SmoothRotation = FMath::RInterpTo(CurrentRotation, TargetRotation, DeltaTime, 7.f);
+
+        // 회전 적용
+        GetPawn()->SetActorRotation(SmoothRotation);
     }
 }
 

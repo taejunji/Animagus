@@ -18,18 +18,18 @@ class USoundBase;
 UCLASS()
 class PROJECT_ANIMAGUS_API ABattleGameMode : public AGameModeBase
 {
-	GENERATED_BODY()
+    GENERATED_BODY()
 
 public:
     virtual void StartPlay() override;
     virtual void Tick(float DeltaTime) override;
 
 public:
-	ABattleGameMode();
+    ABattleGameMode();
 
     void SpawnPlayers();
     void ActivateInput();
-	
+
 protected:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Battle Settings")
     float start_time; // ex) 5초 후에 입력 활성화
@@ -51,14 +51,14 @@ protected:
     // 타이머 업데이트 함수
     void CountdownTimerUpdate();
     void RoundTimerUpdate();
-    
-    UPROPERTY(EditAnywhere, Category="Audio")
+
+    UPROPERTY(EditAnywhere, Category = "Audio")
     USoundBase* BackgroundMusic;
 
-    UPROPERTY(EditAnywhere, Category="Audio")
+    UPROPERTY(EditAnywhere, Category = "Audio")
     USoundBase* CountSound;
 
-    UPROPERTY(EditAnywhere, Category="Audio")
+    UPROPERTY(EditAnywhere, Category = "Audio")
     USoundBase* StartSound;
 
 public:
@@ -79,16 +79,16 @@ public:
     USoundBase* AttractSoundWave;
     
     // BP_AI 애셋
-    UPROPERTY(EditAnywhere, Category="AI")
+    UPROPERTY(EditAnywhere, Category = "AI")
     TSoftClassPtr<class AAIController> AIControllerClass;
 
-    UPROPERTY(EditAnywhere, Category="AI")
+    UPROPERTY(EditAnywhere, Category = "AI")
     TSubclassOf<class APawn> AIPlayerClass;
 
-    UPROPERTY(EditAnywhere, Category="Item")
+    UPROPERTY(EditAnywhere, Category = "Item")
     TSubclassOf<class APowerUpItem> PowerUpBpclass;
 
-    UPROPERTY(EditAnywhere, Category="Item")
+    UPROPERTY(EditAnywhere, Category = "Item")
     TSubclassOf<class AItem_Box_Base> ItemBoxBpclass;
 
     // 라운드 경과 시간 출력
@@ -97,23 +97,23 @@ public:
 
     void InitBattleMode();
     void PrintElapsedtime();
- 
 
-public:   
+
+public:
     // 스폰된 플레이어 캐릭터들을 저장할 배열
-    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Spawning", meta = (AllowPrivateAccess = "true"))
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Spawning", meta = (AllowPrivateAccess = "true"))
     TArray<ABaseCharacter*> SpawnedPlayers;
 
     // 플레이어 스폰 위치 배열 (에디터에서 조절 가능)
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category= "Spawning", meta = (AllowPrivateAccess = "true"))
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawning", meta = (AllowPrivateAccess = "true"))
     TArray<FVector> SpawnLocations;
 
     // 플레이어 스폰 회전 배열 (에디터에서 조절 가능)
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Spawning", meta = (AllowPrivateAccess = "true"))
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawning", meta = (AllowPrivateAccess = "true"))
     TArray<FRotator> SpawnRotations;
-    
+
     // 내가 소유할 플레이어 인덱스 (예: GameInstance에서 가져올 수 있음)
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Spawning", meta = (AllowPrivateAccess = "true"))
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawning", meta = (AllowPrivateAccess = "true"))
     int32 PossessIndex;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawning")
@@ -140,5 +140,7 @@ public:
     void SpawnItemsInArea2();
 
     UFUNCTION(BlueprintCallable, Category = "PowerUp")
-    void SpawnItemsInArea3(); 
+    void SpawnItemsInArea3();
+
+    float GetCurrentRoundTime() const;
 };

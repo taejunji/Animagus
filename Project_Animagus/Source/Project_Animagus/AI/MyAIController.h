@@ -170,5 +170,5 @@ public:
 
     void SetAIRunSpeed(ABaseCharacter* AI, float DeltaTime);
 
-    void SetStaticActorRotation();
+    void SetStaticActorRotation(float DeltaTime);
 };

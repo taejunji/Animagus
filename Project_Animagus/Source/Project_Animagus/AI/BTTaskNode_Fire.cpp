@@ -28,12 +28,7 @@ EBTNodeResult::Type UBTTaskNode_Fire::ExecuteTask(UBehaviorTreeComponent& OwnerC
         return EBTNodeResult::Failed;
     }
       
-    if (Character && Character->Skills.IsValidIndex(0) && Character->Skills[0])
-    {
-        Character->Skills[0]->ActiveSkill();
-    }
-
-
+    Character->UseSkillByName(TEXT("Fireball"));
 
     return EBTNodeResult::Succeeded;
 }

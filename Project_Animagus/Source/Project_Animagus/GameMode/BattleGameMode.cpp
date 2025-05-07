@@ -600,6 +600,11 @@ void ABattleGameMode::SpawnItemsInArea3()
     
 }
 
+float ABattleGameMode::GetCurrentRoundTime() const
+{
+    return CurrentRoundTime;
+}
+
 void ABattleGameMode::InitializeArea1SpawnPoints()
 {
     // 기존 좌표 배열 초기화
