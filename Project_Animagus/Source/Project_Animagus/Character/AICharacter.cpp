@@ -11,6 +11,8 @@ void AAICharacter::BeginPlay()
 {
     Super::BeginPlay();
 
+    RetreatThreshold = FMath::FRandRange(10.f, 30.f); 
+
     InitPlayerMesh();
 
     AIchar_SkillSet();

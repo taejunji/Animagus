@@ -28,6 +28,9 @@ public:
 
     void JumpAI();
 
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI") 
+    float RetreatThreshold = 20.f;  // 캐릭터마다 블루프린트에서 설정 가능 
+
 private:
     void InitPlayerMesh();
 };
