@@ -106,12 +106,43 @@ void ABattleGameMode::StartPlay()
 {
     Super::StartPlay();
 
+    // 1) 로딩 UI 띄우기
+    if (LoadingWidgetClass)
+    {
+        LoadingWidget = CreateWidget<UUserWidget>(GetWorld(), LoadingWidgetClass);
+        if (LoadingWidget)
+        {
+            LoadingWidget->AddToViewport();
+        }
+    }
+
+    // 2) 5초 눈속임 타이머: 맵 로딩 격차를 감추기 위해
+    FTimerHandle DelayHandle;
+    GetWorldTimerManager().SetTimer(
+        DelayHandle,
+        this,
+        &ABattleGameMode::OnPostLoadInitialize,
+        5.0f,   // 5초 뒤 실행
+        false   // 한번만
+    );
+    
+   
+}
+
+void ABattleGameMode::OnPostLoadInitialize()
+{
     InitBattleMode();
+    
+    if (LoadingWidget)
+    {
+        LoadingWidget->RemoveFromParent();
+        LoadingWidget = nullptr;
+    }
     
     if (BackgroundMusic)
     {
         UGameplayStatics::PlaySound2D(GetWorld(), BackgroundMusic);
-    }
+    } 
 }
 
 void ABattleGameMode::Tick(float DeltaTime)
@@ -141,6 +172,15 @@ void ABattleGameMode::InitBattleMode()
         GetWorld()->GetTimerManager().SetTimer(CountdownTimerHandle, this, &ABattleGameMode::CountdownTimerUpdate, 1.0f, true);
     }
     
+    if (AttractSoundWave)
+    {
+        FVector SoundLocation(0.0f, 0.0f, 210.0f);
+        UGameplayStatics::PlaySoundAtLocation(
+            this,
+            AttractSoundWave,
+            SoundLocation
+        );
+    }
     InitializeArea1SpawnPoints();
     SpawnItemsInArea1();
 }
@@ -431,6 +471,8 @@ void ABattleGameMode::RoundTimerUpdate()
     UE_LOG(LogTemp, Log, TEXT("Round Time: %.0f"), CurrentRoundTime);
 }
 
+
+
 void ABattleGameMode::SpawnItemsInArea1()
 {
     // 예시로 영역1에 10개의 아이템 스폰
@@ -564,125 +606,125 @@ void ABattleGameMode::InitializeArea1SpawnPoints()
     Area1SpawnPoints.Empty();
 
     // 예시로 몇 개의 하드코딩 좌표를 추가 
-    Area1SpawnPoints.Add(FVector(-12400.f, -600.f, 66.f));
-    Area1SpawnPoints.Add(FVector(-13000.f, 500.f, 66.f));
-    Area1SpawnPoints.Add(FVector(-11000.f, -1500.f, 66.f));
-    Area1SpawnPoints.Add(FVector(-11500.f, 800.f, 66.f));
-    Area1SpawnPoints.Add(FVector(-12000.f, -1000.f, 66.f));
+    Area1SpawnPoints.Add(FVector(-12400.f, -600.f, 61.f));
+    Area1SpawnPoints.Add(FVector(-13000.f, 500.f, 61.f));
+    Area1SpawnPoints.Add(FVector(-11000.f, -1500.f, 61.f));
+    Area1SpawnPoints.Add(FVector(-11500.f, 800.f, 61.f));
+    Area1SpawnPoints.Add(FVector(-12000.f, -1000.f, 61.f));
 
-    Area1SpawnPoints.Add(FVector(12400.f, -600.f, 66.f));
-    Area1SpawnPoints.Add(FVector(13000.f, 500.f, 66.f));
-    Area1SpawnPoints.Add(FVector(11000.f, -1500.f, 66.f));
-    Area1SpawnPoints.Add(FVector(11500.f, 800.f, 66.f));
-    Area1SpawnPoints.Add(FVector(12000.f, -1000.f, 66.f)); 
+    Area1SpawnPoints.Add(FVector(12400.f, -600.f, 61.f));
+    Area1SpawnPoints.Add(FVector(13000.f, 500.f, 61.f));
+    Area1SpawnPoints.Add(FVector(11000.f, -1500.f, 61.f));
+    Area1SpawnPoints.Add(FVector(11500.f, 800.f, 61.f));
+    Area1SpawnPoints.Add(FVector(12000.f, -1000.f, 61.f)); 
 
-    Area1SpawnPoints.Add(FVector(12400.f, 600.f, 66.f));
-    Area1SpawnPoints.Add(FVector(13000.f, -500.f, 66.f));
-    Area1SpawnPoints.Add(FVector(11000.f, 1500.f, 66.f));
-    Area1SpawnPoints.Add(FVector(11500.f, -800.f, 66.f));
-    Area1SpawnPoints.Add(FVector(12000.f, 1000.f, 66.f)); 
+    Area1SpawnPoints.Add(FVector(12400.f, 600.f, 61.f));
+    Area1SpawnPoints.Add(FVector(13000.f, -500.f, 61.f));
+    Area1SpawnPoints.Add(FVector(11000.f, 1500.f, 61.f));
+    Area1SpawnPoints.Add(FVector(11500.f, -800.f, 61.f));
+    Area1SpawnPoints.Add(FVector(12000.f, 1000.f, 61.f)); 
 
-    Area1SpawnPoints.Add(FVector(-12400.f, 600.f, 66.f));
-    Area1SpawnPoints.Add(FVector(-13000.f, -500.f, 66.f));
-    Area1SpawnPoints.Add(FVector(-11000.f, 1500.f, 66.f));
-    Area1SpawnPoints.Add(FVector(-11500.f, -800.f, 66.f));
-    Area1SpawnPoints.Add(FVector(-12000.f, 1000.f, 66.f)); 
+    Area1SpawnPoints.Add(FVector(-12400.f, 600.f, 61.f));
+    Area1SpawnPoints.Add(FVector(-13000.f, -500.f, 61.f));
+    Area1SpawnPoints.Add(FVector(-11000.f, 1500.f, 61.f));
+    Area1SpawnPoints.Add(FVector(-11500.f, -800.f, 61.f));
+    Area1SpawnPoints.Add(FVector(-12000.f, 1000.f, 61.f)); 
 
-    Area1SpawnPoints.Add(FVector(-12325.f, 3641.f, 66.f));
-    Area1SpawnPoints.Add(FVector(-10195.f, -6392.f, 66.f));
-    Area1SpawnPoints.Add(FVector(-9100.f, 6392.f, 66.f));
+    Area1SpawnPoints.Add(FVector(-12325.f, 3641.f, 61.f));
+    Area1SpawnPoints.Add(FVector(-10195.f, -6392.f, 61.f));
+    Area1SpawnPoints.Add(FVector(-9100.f, 6392.f, 61.f));
     
-    Area1SpawnPoints.Add(FVector(-8300.f, 8100.f, 66.f));
-    Area1SpawnPoints.Add(FVector(-8300.f, 10800.f, 66.f));
-    Area1SpawnPoints.Add(FVector(-8300.f, 13500.f, 66.f));
+    Area1SpawnPoints.Add(FVector(-8300.f, 8100.f, 61.f));
+    Area1SpawnPoints.Add(FVector(-8300.f, 10800.f, 61.f));
+    Area1SpawnPoints.Add(FVector(-8300.f, 13500.f, 61.f));
 
-    Area1SpawnPoints.Add(FVector(8300.f, 8100.f, 66.f));
-    Area1SpawnPoints.Add(FVector(8300.f, 10800.f, 66.f));
-    Area1SpawnPoints.Add(FVector(8300.f, 13500.f, 66.f));
+    Area1SpawnPoints.Add(FVector(8300.f, 8100.f, 61.f));
+    Area1SpawnPoints.Add(FVector(8300.f, 10800.f, 61.f));
+    Area1SpawnPoints.Add(FVector(8300.f, 13500.f, 61.f));
 
-    Area1SpawnPoints.Add(FVector(8300.f, -8100.f, 66.f));
-    Area1SpawnPoints.Add(FVector(8300.f, -10800.f, 66.f));
-    Area1SpawnPoints.Add(FVector(8300.f, -13500.f, 66.f));
+    Area1SpawnPoints.Add(FVector(8300.f, -8100.f, 61.f));
+    Area1SpawnPoints.Add(FVector(8300.f, -10800.f, 61.f));
+    Area1SpawnPoints.Add(FVector(8300.f, -13500.f, 61.f));
 
-    Area1SpawnPoints.Add(FVector(-8300.f, -8100.f, 66.f));
-    Area1SpawnPoints.Add(FVector(-8300.f, -10800.f, 66.f));
-    Area1SpawnPoints.Add(FVector(-8300.f, -13500.f, 66.f));
+    Area1SpawnPoints.Add(FVector(-8300.f, -8100.f, 61.f));
+    Area1SpawnPoints.Add(FVector(-8300.f, -10800.f, 61.f));
+    Area1SpawnPoints.Add(FVector(-8300.f, -13500.f, 61.f));
     
-    Area1SpawnPoints.Add(FVector(-5400.f, 8100.f, 66.f));
-    Area1SpawnPoints.Add(FVector(-5400.f, 10800.f, 66.f));
-    Area1SpawnPoints.Add(FVector(-5400.f, 13500.f, 66.f));
+    Area1SpawnPoints.Add(FVector(-5400.f, 8100.f, 61.f));
+    Area1SpawnPoints.Add(FVector(-5400.f, 10800.f, 61.f));
+    Area1SpawnPoints.Add(FVector(-5400.f, 13500.f, 61.f));
 
-    Area1SpawnPoints.Add(FVector(5400.f, 8100.f, 66.f));
-    Area1SpawnPoints.Add(FVector(5400.f, 10800.f, 66.f));
-    Area1SpawnPoints.Add(FVector(5400.f, 13500.f, 66.f));
+    Area1SpawnPoints.Add(FVector(5400.f, 8100.f, 61.f));
+    Area1SpawnPoints.Add(FVector(5400.f, 10800.f, 61.f));
+    Area1SpawnPoints.Add(FVector(5400.f, 13500.f, 61.f));
 
-    Area1SpawnPoints.Add(FVector(-5400.f, -8100.f, 66.f));
-    Area1SpawnPoints.Add(FVector(-5400.f, -10800.f, 66.f));
-    Area1SpawnPoints.Add(FVector(-5400.f, -13500.f, 66.f));
+    Area1SpawnPoints.Add(FVector(-5400.f, -8100.f, 61.f));
+    Area1SpawnPoints.Add(FVector(-5400.f, -10800.f, 61.f));
+    Area1SpawnPoints.Add(FVector(-5400.f, -13500.f, 61.f));
 
-    Area1SpawnPoints.Add(FVector(5400.f, -8100.f, 66.f));
-    Area1SpawnPoints.Add(FVector(5400.f, -10800.f, 66.f));
-    Area1SpawnPoints.Add(FVector(5400.f, -13500.f, 66.f));
+    Area1SpawnPoints.Add(FVector(5400.f, -8100.f, 61.f));
+    Area1SpawnPoints.Add(FVector(5400.f, -10800.f, 61.f));
+    Area1SpawnPoints.Add(FVector(5400.f, -13500.f, 61.f));
     
-    Area1SpawnPoints.Add(FVector(1394.f, 11911.f, 66.f)); 
-    Area1SpawnPoints.Add(FVector(2044.f, 10873.f, 66.f));
-    Area1SpawnPoints.Add(FVector(4469.f, 9526.f, 66.f)); 
-    Area1SpawnPoints.Add(FVector(5479.f, 10049.f, 66.f)); 
+    Area1SpawnPoints.Add(FVector(1394.f, 11911.f, 61.f)); 
+    Area1SpawnPoints.Add(FVector(2044.f, 10873.f, 61.f));
+    Area1SpawnPoints.Add(FVector(4469.f, 9526.f, 61.f)); 
+    Area1SpawnPoints.Add(FVector(5479.f, 10049.f, 61.f)); 
     
-    Area1SpawnPoints.Add(FVector(-1394.f, -11911.f, 66.f)); 
-    Area1SpawnPoints.Add(FVector(-2044.f, -10873.f, 66.f));
-    Area1SpawnPoints.Add(FVector(-4469.f, -9526.f, 66.f)); 
-    Area1SpawnPoints.Add(FVector(-5479.f, -10049.f, 66.f)); 
+    Area1SpawnPoints.Add(FVector(-1394.f, -11911.f, 61.f)); 
+    Area1SpawnPoints.Add(FVector(-2044.f, -10873.f, 61.f));
+    Area1SpawnPoints.Add(FVector(-4469.f, -9526.f, 61.f)); 
+    Area1SpawnPoints.Add(FVector(-5479.f, -10049.f, 61.f)); 
 
-    Area1SpawnPoints.Add(FVector(1394.f, -11911.f, 66.f)); 
-    Area1SpawnPoints.Add(FVector(2044.f, -10873.f, 66.f));
-    Area1SpawnPoints.Add(FVector(4469.f, -9526.f, 66.f)); 
-    Area1SpawnPoints.Add(FVector(5479.f, -10049.f, 66.f)); 
+    Area1SpawnPoints.Add(FVector(1394.f, -11911.f, 61.f)); 
+    Area1SpawnPoints.Add(FVector(2044.f, -10873.f, 61.f));
+    Area1SpawnPoints.Add(FVector(4469.f, -9526.f, 61.f)); 
+    Area1SpawnPoints.Add(FVector(5479.f, -10049.f, 61.f)); 
 
-    Area1SpawnPoints.Add(FVector(-1394.f, 11911.f, 66.f)); 
-    Area1SpawnPoints.Add(FVector(-2044.f, 10873.f, 66.f));
-    Area1SpawnPoints.Add(FVector(-4469.f, 9526.f, 66.f)); 
-    Area1SpawnPoints.Add(FVector(-5479.f, 10049.f, 66.f));
+    Area1SpawnPoints.Add(FVector(-1394.f, 11911.f, 61.f)); 
+    Area1SpawnPoints.Add(FVector(-2044.f, 10873.f, 61.f));
+    Area1SpawnPoints.Add(FVector(-4469.f, 9526.f, 61.f)); 
+    Area1SpawnPoints.Add(FVector(-5479.f, 10049.f, 61.f));
     
-    Area1SpawnPoints.Add(FVector(-12031.f, 4344.f, 66.f)); 
-    Area1SpawnPoints.Add(FVector(-10562.f, 6102.f, 66.f));
-    Area1SpawnPoints.Add(FVector(-9121.f, 7897.f, 66.f)); 
-    Area1SpawnPoints.Add(FVector(-9565.f, 4504.f, 66.f));
+    Area1SpawnPoints.Add(FVector(-12031.f, 4344.f, 61.f)); 
+    Area1SpawnPoints.Add(FVector(-10562.f, 6102.f, 61.f));
+    Area1SpawnPoints.Add(FVector(-9121.f, 7897.f, 61.f)); 
+    Area1SpawnPoints.Add(FVector(-9565.f, 4504.f, 61.f));
 
-    Area1SpawnPoints.Add(FVector(12031.f, 4344.f, 66.f)); 
-    Area1SpawnPoints.Add(FVector(10562.f, 6102.f, 66.f));
-    Area1SpawnPoints.Add(FVector(9121.f, 7897.f, 66.f)); 
-    Area1SpawnPoints.Add(FVector(9565.f, 4504.f, 66.f));
+    Area1SpawnPoints.Add(FVector(12031.f, 4344.f, 61.f)); 
+    Area1SpawnPoints.Add(FVector(10562.f, 6102.f, 61.f));
+    Area1SpawnPoints.Add(FVector(9121.f, 7897.f, 61.f)); 
+    Area1SpawnPoints.Add(FVector(9565.f, 4504.f, 61.f));
 
-    Area1SpawnPoints.Add(FVector(12031.f, -4344.f, 66.f)); 
-    Area1SpawnPoints.Add(FVector(10562.f, -6102.f, 66.f));
-    Area1SpawnPoints.Add(FVector(9121.f, -7897.f, 66.f)); 
-    Area1SpawnPoints.Add(FVector(9565.f, -4504.f, 66.f));
+    Area1SpawnPoints.Add(FVector(12031.f, -4344.f, 61.f)); 
+    Area1SpawnPoints.Add(FVector(10562.f, -6102.f, 61.f));
+    Area1SpawnPoints.Add(FVector(9121.f, -7897.f, 61.f)); 
+    Area1SpawnPoints.Add(FVector(9565.f, -4504.f, 61.f));
 
-    Area1SpawnPoints.Add(FVector(-12031.f, -4344.f, 66.f)); 
-    Area1SpawnPoints.Add(FVector(-10562.f, -6102.f, 66.f));
-    Area1SpawnPoints.Add(FVector(-9121.f, -7897.f, 66.f)); 
-    Area1SpawnPoints.Add(FVector(-9565.f, -4504.f, 66.f));
+    Area1SpawnPoints.Add(FVector(-12031.f, -4344.f, 61.f)); 
+    Area1SpawnPoints.Add(FVector(-10562.f, -6102.f, 61.f));
+    Area1SpawnPoints.Add(FVector(-9121.f, -7897.f, 61.f)); 
+    Area1SpawnPoints.Add(FVector(-9565.f, -4504.f, 61.f));
 
-    Area1SpawnPoints.Add(FVector(-7845.f, -115.f, 66.f)); 
-    Area1SpawnPoints.Add(FVector(-8151.f, -1855.f, 66.f));
-    Area1SpawnPoints.Add(FVector(-8806.f, -2018.f, 66.f)); 
-    Area1SpawnPoints.Add(FVector(-7416.f, -7377.f, 66.f)); 
+    Area1SpawnPoints.Add(FVector(-7845.f, -115.f, 61.f)); 
+    Area1SpawnPoints.Add(FVector(-8151.f, -1855.f, 61.f));
+    Area1SpawnPoints.Add(FVector(-8806.f, -2018.f, 61.f)); 
+    Area1SpawnPoints.Add(FVector(-7416.f, -7377.f, 61.f)); 
 
-    Area1SpawnPoints.Add(FVector(7845.f, -115.f, 66.f)); 
-    Area1SpawnPoints.Add(FVector(8151.f, -1855.f, 66.f));
-    Area1SpawnPoints.Add(FVector(8806.f, -2018.f, 66.f)); 
-    Area1SpawnPoints.Add(FVector(7416.f, -7377.f, 66.f)); 
+    Area1SpawnPoints.Add(FVector(7845.f, -115.f, 61.f)); 
+    Area1SpawnPoints.Add(FVector(8151.f, -1855.f, 61.f));
+    Area1SpawnPoints.Add(FVector(8806.f, -2018.f, 61.f)); 
+    Area1SpawnPoints.Add(FVector(7416.f, -7377.f, 61.f)); 
 
-    Area1SpawnPoints.Add(FVector(7845.f, 115.f, 66.f)); 
-    Area1SpawnPoints.Add(FVector(8151.f, 1855.f, 66.f));
-    Area1SpawnPoints.Add(FVector(8806.f, 2018.f, 66.f)); 
-    Area1SpawnPoints.Add(FVector(7416.f, 7377.f, 66.f)); 
+    Area1SpawnPoints.Add(FVector(7845.f, 115.f, 61.f)); 
+    Area1SpawnPoints.Add(FVector(8151.f, 1855.f, 61.f));
+    Area1SpawnPoints.Add(FVector(8806.f, 2018.f, 61.f)); 
+    Area1SpawnPoints.Add(FVector(7416.f, 7377.f, 61.f)); 
 
-    Area1SpawnPoints.Add(FVector(-7845.f, 115.f, 66.f)); 
-    Area1SpawnPoints.Add(FVector(-8151.f, 1855.f, 66.f));
-    Area1SpawnPoints.Add(FVector(-8806.f, 2018.f, 66.f)); 
-    Area1SpawnPoints.Add(FVector(-7416.f, 7377.f, 66.f)); 
+    Area1SpawnPoints.Add(FVector(-7845.f, 115.f, 61.f)); 
+    Area1SpawnPoints.Add(FVector(-8151.f, 1855.f, 61.f));
+    Area1SpawnPoints.Add(FVector(-8806.f, 2018.f, 61.f)); 
+    Area1SpawnPoints.Add(FVector(-7416.f, 7377.f, 61.f)); 
     
     UE_LOG(LogTemp, Log, TEXT("InitializeRegion1SpawnPoints: Initialized %d spawn points."), Area1SpawnPoints.Num());
 }

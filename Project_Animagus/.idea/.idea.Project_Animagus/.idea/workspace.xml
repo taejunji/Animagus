@@ -12,13 +12,17 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="b367acbc-6d33-4e55-8a59-404dbba820be" name="변경" comment="">
+    <list default="true" id="dcfa75d3-3882-49fe-9b2c-df988a452241" name="변경" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.Project_Animagus/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Project_Animagus/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/WorkFolder/Bluprints/Item/MyPowerUpPlusItem.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/WorkFolder/Bluprints/Item/MyPowerUpPlusItem.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/WorkFolder/Bluprints/Skills/BP_SmokeSkill.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/WorkFolder/Bluprints/Skills/BP_SmokeSkill.uasset" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Content/WorkFolder/Bluprints/Ui/WBP_Loding.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/WorkFolder/Bluprints/Ui/WBP_Loding.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/WorkFolder/Levels/L_Loading.umap" beforeDir="false" afterPath="$PROJECT_DIR$/Content/WorkFolder/Levels/L_Loading.umap" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/WorkFolder/GameMode/BP_BattleGameMode.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/WorkFolder/GameMode/BP_BattleGameMode.uasset" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Content/WorkFolder/Levels/L_Map.umap" beforeDir="false" afterPath="$PROJECT_DIR$/Content/WorkFolder/Levels/L_Map.umap" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/WorkFolder/Levels/Lobby.umap" beforeDir="false" afterPath="$PROJECT_DIR$/Content/WorkFolder/Levels/Lobby.umap" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/Project_Animagus/Actor/Zones/ShrinkingZone.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Project_Animagus/Actor/Zones/ShrinkingZone.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/Project_Animagus/GameMode/BattleGameMode.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Project_Animagus/GameMode/BattleGameMode.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/Project_Animagus/GameMode/BattleGameMode.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Project_Animagus/GameMode/BattleGameMode.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/Project_Animagus/Skill/SmokeSkill.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Project_Animagus/Skill/SmokeSkill.cpp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -29,50 +33,13 @@
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
   </component>
   <component name="HighlightingSettingsPerFile">
-    <setting file="file://$PROJECT_DIR$/../../../../../../Program Files/Epic Games/UE_5.4/Engine/Source/Runtime/CoreUObject/Public/Templates/Casts.h" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Source/Project_Animagus/AI/BTService_FindTarget.cpp" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Source/Project_Animagus/AI/BTTaskNode_Fire.cpp" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Source/Project_Animagus/AI/BTTaskNode_Fire.h" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Source/Project_Animagus/AI/BTTaskNode_Skill_1.cpp" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Source/Project_Animagus/AI/BTTaskNode_Skill_2.cpp" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Source/Project_Animagus/AI/BTTaskNode_Skill_2.h" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Source/Project_Animagus/AI/BTTaskNode_Skill_3.cpp" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Source/Project_Animagus/AI/BTTaskNode_Skill_3.h" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Source/Project_Animagus/AI/BTTaskNode_Skill_4.cpp" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Source/Project_Animagus/AI/BTTaskNode_Skill_4.h" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Source/Project_Animagus/AI/MyAIController.cpp" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Source/Project_Animagus/AI/MyAIController.h" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Source/Project_Animagus/Actor/Shield/ShieldActor.cpp" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Source/Project_Animagus/Actor/Shield/ShieldActor.h" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Source/Project_Animagus/Actor/Shockwave/ShockwaveActor.cpp" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Source/Project_Animagus/Actor/Shockwave/ShockwaveActor.h" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Source/Project_Animagus/Character/AICharacter.cpp" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Source/Project_Animagus/Character/BaseCharacter.h" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Source/Project_Animagus/GameMode/BattleGameMode.cpp" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Source/Project_Animagus/GameMode/BattleGameMode.h" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Source/Project_Animagus/GameMode/LodingMode.cpp" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Source/Project_Animagus/GameMode/LodingMode.h" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Source/Project_Animagus/PlayerController/LoadingController.cpp" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Source/Project_Animagus/PlayerController/LoadingController.h" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Source/Project_Animagus/Projectile/ProjectileBase.cpp" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Source/Project_Animagus/Projectile/ProjectileBase.h" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Source/Project_Animagus/Skill/ChangeSkill.cpp" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Source/Project_Animagus/Skill/Fireball.cpp" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Source/Project_Animagus/Skill/Fireball.h" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Source/Project_Animagus/Skill/MagicMissile.cpp" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Source/Project_Animagus/Skill/RadialSkill.cpp" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Source/Project_Animagus/Skill/RadialSkill.h" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Source/Project_Animagus/Skill/ShockwaveSkill.cpp" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Source/Project_Animagus/Skill/Stun.cpp" root0="FORCE_HIGHLIGHTING" />
-  </component>
-  <component name="ProblemsViewState">
-    <option name="selectedTabId" value="CurrentFile" />
+    <setting file="file://$PROJECT_DIR$/../../../../../../Program Files/Epic Games/UE_5.4/Engine/Source/Programs/AutomationTool/Gauntlet/Platform/Windows/Gauntlet.WindowsPGO.cs" root0="FORCE_HIGHLIGHTING" />
   </component>
   <component name="ProjectColorInfo">{
   &quot;customColor&quot;: &quot;&quot;,
   &quot;associatedIndex&quot;: 5
 }</component>
-  <component name="ProjectId" id="2wVxYk9XfzNq80MjIFGGBQECWcX" />
+  <component name="ProjectId" id="2wlC9IbIEXNTB8BLUTMg0p8W6rr" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
@@ -90,11 +57,19 @@
     &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
 }</component>
-  <component name="RunManager" selected="C/C++ 프로젝트.Project_Animagus">
+  <component name="RunManager" selected="C/C++ 프로젝트.UE5">
     <configuration name="Project_Animagus" type="CppProject" factoryName="C++ Project">
+      <option name="DEFAULT_PROJECT_PATH" value="$PROJECT_DIR$/Intermediate/ProjectFiles/Project_Animagus.vcxproj" />
+      <option name="PROJECT_FILE_PATH" value="$PROJECT_DIR$/Intermediate/ProjectFiles/Project_Animagus.vcxproj" />
+      <option name="AUTO_SELECT_PRIORITY" value="0" />
+      <method v="2">
+        <option name="Build" />
+      </method>
+    </configuration>
+    <configuration name="UE5" type="CppProject" factoryName="C++ Project">
       <configuration_1 setup="1">
-        <option name="CONFIGURATION" value="Development_Editor" />
-        <option name="PLATFORM" value="x64" />
+        <option name="CONFIGURATION" value="BuiltWithUnrealBuildTool" />
+        <option name="PLATFORM" value="Win64" />
         <option name="CURRENT_LAUNCH_PROFILE" value="Local" />
         <option name="EXE_PATH" value="$(LocalDebuggerCommand)" />
         <option name="PROGRAM_PARAMETERS" value="$(LocalDebuggerCommandArguments)" />
@@ -102,19 +77,11 @@
         <option name="PASS_PARENT_ENVS" value="1" />
         <option name="USE_EXTERNAL_CONSOLE" value="0" />
         <option name="TERMINAL_INTERACTION_BEHAVIOR" value="AUTO_DETECT" />
-        <option name="PROJECT_FILE_PATH" value="$PROJECT_DIR$/Intermediate/ProjectFiles/Project_Animagus.vcxproj" />
+        <option name="PROJECT_FILE_PATH" value="$PROJECT_DIR$/Intermediate/ProjectFiles/UE5.vcxproj" />
       </configuration_1>
-      <option name="DEFAULT_PROJECT_PATH" value="$PROJECT_DIR$/Intermediate/ProjectFiles/Project_Animagus.vcxproj" />
-      <option name="PROJECT_FILE_PATH" value="$PROJECT_DIR$/Intermediate/ProjectFiles/Project_Animagus.vcxproj" />
-      <option name="AUTO_SELECT_PRIORITY" value="10010" />
-      <method v="2">
-        <option name="Build" />
-      </method>
-    </configuration>
-    <configuration name="UE5" type="CppProject" factoryName="C++ Project">
       <option name="DEFAULT_PROJECT_PATH" value="$PROJECT_DIR$/Intermediate/ProjectFiles/UE5.vcxproj" />
       <option name="PROJECT_FILE_PATH" value="$PROJECT_DIR$/Intermediate/ProjectFiles/UE5.vcxproj" />
-      <option name="AUTO_SELECT_PRIORITY" value="10000" />
+      <option name="AUTO_SELECT_PRIORITY" value="0" />
       <method v="2">
         <option name="Build" />
       </method>
@@ -192,28 +159,14 @@
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="애플리케이션 수준" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="디폴트 작업">
-      <changelist id="b367acbc-6d33-4e55-8a59-404dbba820be" name="변경" comment="" />
-      <created>1746140593521</created>
+      <changelist id="dcfa75d3-3882-49fe-9b2c-df988a452241" name="변경" comment="" />
+      <created>1746606621673</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
-      <updated>1746140593521</updated>
-      <workItem from="1746140595442" duration="841000" />
-      <workItem from="1746141456542" duration="716000" />
-      <workItem from="1746142433579" duration="1981000" />
-      <workItem from="1746144466329" duration="1499000" />
-      <workItem from="1746147021288" duration="1037000" />
-      <workItem from="1746185949405" duration="1027000" />
-      <workItem from="1746187023219" duration="58000" />
-      <workItem from="1746187132109" duration="1150000" />
-      <workItem from="1746258967587" duration="21051000" />
-      <workItem from="1746433336588" duration="11857000" />
-      <workItem from="1746450889570" duration="16609000" />
-      <workItem from="1746534477451" duration="33000" />
-      <workItem from="1746534554511" duration="873000" />
-      <workItem from="1746535456740" duration="1590000" />
-      <workItem from="1746537224693" duration="8901000" />
-      <workItem from="1746595562112" duration="4287000" />
-      <workItem from="1746599903748" duration="6378000" />
+      <updated>1746606621673</updated>
+      <workItem from="1746606623357" duration="1806000" />
+      <workItem from="1746608465269" duration="4908000" />
+      <workItem from="1746613905216" duration="695000" />
     </task>
     <servers />
   </component>
