@@ -5,6 +5,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "GameFramework/Pawn.h"
 #include "DrawDebugHelpers.h"
+#include "../../Character/BaseCharacter.h"
 
 AShrinkingZone::AShrinkingZone()
 {
@@ -75,6 +76,13 @@ void AShrinkingZone::Tick(float DeltaTime)
 
 
     APawn* MyPawn = GetWorld()->GetFirstPlayerController()->GetPawn();
+    ABaseCharacter* BCharacter = Cast<ABaseCharacter>(MyPawn);
+
+    if (BCharacter->GetIsDead())
+    {
+        SetFogPostProcess(0);
+        return;
+    }
 		if (MyPawn && MyPawn->IsLocallyControlled())
 		{
 			if (!IsActorInsideZone(MyPawn))
