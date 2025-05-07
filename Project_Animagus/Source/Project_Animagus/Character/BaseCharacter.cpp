@@ -655,6 +655,41 @@ bool ABaseCharacter::UseSkillByName(const FString& DesiredSkillName)
         {
             Skill->ActiveSkill(); // 실제 스킬 실행 함수
             // UE_LOG(LogTemp, Warning, TEXT("Used skill: %s"), *DesiredSkillName);
+
+            FRotator Rotation;
+
+            if (AMyAIController* AIController = Cast<AMyAIController>(GetController()))
+            {
+                ABaseCharacter* TargetCharacter = nullptr;
+                UBlackboardComponent* BBComp = AIController->GetBlackboardComponent();
+                if (BBComp && AIController->TargetKey.SelectedKeyName.IsValid())
+                {
+                    TargetCharacter = Cast<ABaseCharacter>(BBComp->GetValueAsObject(AIController->TargetKey.SelectedKeyName));
+                }
+                if (TargetCharacter)
+                {
+                    FVector DirectionToTarget = (TargetCharacter->GetActorLocation() - GetActorLocation()).GetSafeNormal();
+                    Rotation = DirectionToTarget.Rotation();
+                }
+                else
+                {
+                    // 타겟이 없다면 AI Panw이 바라보는 방향으로 발사
+                    Rotation = GetActorRotation();
+                }
+
+                Skill->SetSkillRotation(Rotation.Pitch, Rotation.Yaw, Rotation.Roll);
+                Skill->ActiveSkill();
+
+                Protocol::CS_AI_USING_SKILL_PKT SkillPkt;
+                SkillPkt.ai_id = GetPlayerId();
+                SkillPkt.s_type = Skill->SkillType;
+                //SkillPkt.x = Location.X; SkillPkt.y = Location.Y; SkillPkt.z = Location.Z;  // 필수인가?
+                SkillPkt.pitch = Rotation.Pitch; SkillPkt.yaw = Rotation.Yaw; SkillPkt.roll = Rotation.Roll;
+
+                SendBufferRef SendBuffer = ClientPacketHandler::MakeSendBuffer(SkillPkt);
+                Cast<UMyGameInstance>(GWorld->GetGameInstance())->SendPacket(SendBuffer);
+            }
+
             return true; // 하나만 사용하고 끝내려면 여기서 리턴
         }
     }
