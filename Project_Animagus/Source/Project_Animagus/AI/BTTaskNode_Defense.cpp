@@ -16,9 +16,8 @@ EBTNodeResult::Type UBTTaskNode_Defense::ExecuteTask(UBehaviorTreeComponent& Own
     if (Character == nullptr) return EBTNodeResult::Failed;
 
     // 방어
-    TArray<FString> DefenseSkills = {
-    TEXT("ShieldSkill"),
-    TEXT("SmokeSkill")
+    TArray<EDefenseSkill> DefenseSkills = {
+        EDefenseSkill::Shield    
     };
 
     // 랜덤하게 섞기
@@ -29,17 +28,34 @@ EBTNodeResult::Type UBTTaskNode_Defense::ExecuteTask(UBehaviorTreeComponent& Own
     }
 
     // 순서대로 사용 시도
-    for (const FString& SkillName : DefenseSkills)
+    for (const EDefenseSkill& SkillEnum : DefenseSkills)
     {
-        if (Character->UseSkillByName(SkillName))
+        switch (SkillEnum)
         {
-            UE_LOG(LogTemp, Log, TEXT("DefenseTask: Successfully used skill: %s"), *SkillName);
-            return EBTNodeResult::Succeeded; // 성공하면 바로 종료
+        case EDefenseSkill::Shield:
+            if (CheckShieldSkill(OwnerComp, Character) && Character->UseSkillByName(TEXT("ShieldSkill"))) {
+                UE_LOG(LogTemp, Warning, TEXT("ShieldSkill used."));
+                return EBTNodeResult::Succeeded;
+            }
+            break;
+
+        default:
+            break;
         }
     }
-    return EBTNodeResult::Succeeded; // 성공하면 바로 종료
 
+    return EBTNodeResult::Failed; // 사용 가능한 스킬이 없을 경우
+}
 
-    UE_LOG(LogTemp, Warning, TEXT("DefenseTask: No available attack skill could be used."));
-//    return EBTNodeResult::Failed; // 사용 가능한 스킬이 없을 경우
+bool UBTTaskNode_Defense::CheckShieldSkill(UBehaviorTreeComponent& OwnerComp, ABaseCharacter* Character)
+{
+    auto* Target = Cast<ABaseCharacter>(OwnerComp.GetBlackboardComponent()->GetValueAsObject(target_key.SelectedKeyName));
+    if (Target == nullptr || Character == nullptr) return false;
+
+    FVector CharacterLocation = Character->GetActorLocation();
+    FVector TargetLocation = Target->GetActorLocation();
+    float Distance = FVector::Dist(CharacterLocation, TargetLocation);
+
+    // 거리 조건: 15m 이하일 때만 true == 유효 사거리 
+    return Distance <= 1500.f;
 }
