@@ -62,6 +62,8 @@ void ABattle_PlayerController::BeginPlay()
         }
 
     }
+
+    DisableInput(this); // 입력 비활성화
 }
 
 void ABattle_PlayerController::SetupInputComponent()

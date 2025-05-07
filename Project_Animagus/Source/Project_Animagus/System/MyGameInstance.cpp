@@ -19,6 +19,8 @@
 #include "../Animation/CharacterAnimInstance.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "../Actor/ItemBox/Item_Box_Base.h"
+#include "../Actor/Zones/ShrinkingZone.h"
+#include "../Actor/Zones/AttractionZone.h"
 
 #include "../Server/Server/protocol.h"
 
@@ -390,6 +392,10 @@ void UMyGameInstance::HandleInitBattleMode(Protocol::SC_GAME_INIT_PKT& pkt)
         ABattleGameMode* GameMode = Cast<ABattleGameMode>(BaseGameMode);
         if (GameMode)
         {
+            GameMode->ShrinkingZone->Destroy();
+
+            for (auto& Item : GameMode->AttractionZones)
+                if (Item != nullptr) Item->Destroy();
             for (auto& Item : GameMode->SpawnedItems)
                 if (Item != nullptr) Item->Destroy();
             for (auto& Item : GameMode->SpawnedPlayers)

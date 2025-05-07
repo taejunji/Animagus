@@ -25,6 +25,7 @@
 #include "Runtime/Core/Tests/Containers/TestUtils.h"
 #include "../Network/ClientPacketHandler.h"
 #include "../Actor/Zones/AttractionZone.h"
+#include "../Actor/Zones/ShrinkingZone.h"
 
 
 ABattleGameMode::ABattleGameMode()
@@ -219,18 +220,30 @@ void ABattleGameMode::InitBattleMode()
 
         // TDOO: 서버에 배틀모드 입장 알림
 
-        CurrentCountdownTime = start_time;
+        CurrentCountdownTime = CountdownTime;
         CurrentRoundTime = 0;
 
         // 1초마다 CountdownTimerUpdate() 호출
         //GetWorld()->GetTimerManager().SetTimer(CountdownTimerHandle, this, &ABattleGameMode::CountdownTimerUpdate, 1.0f, true);
     }
+
+    UWorld* World = GetWorld();
+    if (!World)
+    {
+        UE_LOG(LogTemp, Warning, TEXT("BattleGameMode: World가 null임."));
+        return;
+    }
+
+    FTransform ShrinkSpawnTransform;
+    ShrinkSpawnTransform.SetLocation(FVector(0.f, 0.f, 1162.f));
+    ShrinkingZone = World->SpawnActor<AShrinkingZone>(ShrinkzoneBpclass, ShrinkSpawnTransform);
     
     IndexingSpawnedPlayers.Empty();
     SpawnedPlayers.Empty();
 
     AreaSpawnPoints.Empty();
     SpawnedItems.Empty();
+    AttractionZones.Empty();
 
     if (AttractSoundWave)
     {
@@ -249,7 +262,6 @@ void ABattleGameMode::InitBattleMode()
     //SpawnItemsInArea1();
     //SpawnItemsInArea3();
 
-
     Protocol::CS_ENTER_GAME_PKT enterGamePkt;
     SendBufferRef sendBuffer = ClientPacketHandler::MakeSendBuffer(enterGamePkt);
     Cast<UMyGameInstance>(GWorld->GetGameInstance())->SendPacket(sendBuffer);
@@ -259,6 +271,7 @@ void ABattleGameMode::SpawnPlayers()
 {
     GetWorld()->GetTimerManager().SetTimer(RoundTimerHandle, this, &ABattleGameMode::RoundTimerUpdate, 0.2f, true);
 
+    CalledActiveInput = false;
 
     // 먼저 자동으로 생성된 Pawn이 있다면 제거함
     UWorld* World = GetWorld();
@@ -337,17 +350,21 @@ void ABattleGameMode::SpawnPlayers()
             UE_LOG(LogTemp, Log, TEXT("BattleGameMode: PlayerController가 인덱스 %d의 캐릭터를 소유함."), PossessIndex);
         }
 
-        // 5초 후에 플레이어 입력 활성화
-        FTimerHandle GameStartTimerHandle;
-        GetWorld()->GetTimerManager().SetTimer(GameStartTimerHandle, this, &ABattleGameMode::ActivateInput, 6.0f, false);
+        // 1초마다 Countdown 사운드 호출
+        GetWorld()->GetTimerManager().SetTimer(GameStartTimerSoundHandle, FTimerDelegate::CreateLambda([this]() {
+            if (CountSound)
+            {
+                UGameplayStatics::PlaySound2D(GetWorld(), CountSound);
+            }}), 1.0f, true);
 
-        // 1초마다 CountdownTimerUpdate() 호출
-        GetWorld()->GetTimerManager().SetTimer(CountdownTimerHandle, this, &ABattleGameMode::CountdownTimerUpdate, 1.0f, true);
+        // 0.2초마다 CountdownTimerUpdate() 호출
+        GetWorld()->GetTimerManager().SetTimer(CountdownTimerHandle, this, &ABattleGameMode::CountdownTimerUpdate, 0.2f, true);
 
         FTransform AttractionSpawnTransform;
         AttractionSpawnTransform.SetLocation(FVector(0.f, 0.f, 236.f));
         AAttractionZone* AttractionZone = World->SpawnActor<AAttractionZone>(AttractionBpclass, AttractionSpawnTransform);
         AttractionZone->OwnerCharacter = PlayerCharacter;
+        AttractionZones.Add(AttractionZone);
     }
 
     // "0"번 플레이어가 아닌 경우 AI 생성하지 않고 나가기
@@ -357,7 +374,7 @@ void ABattleGameMode::SpawnPlayers()
 
     uint16 AIId = 101;
     // ** AI를 추가할 경우 -> 0번 플레이어만 만들 것임 ** AI 플레이어 수 설정
-    for (int32 i = 1; i < 2; ++i)
+    for (int32 i = 1; i < 8; ++i)
     {
         // AI 플레이어 생성 (임의의 `ABaseCharacter`로 가정)
         // FVector AI_SpawnLocation = spawn_transform[i].GetLocation();
@@ -390,6 +407,7 @@ void ABattleGameMode::SpawnPlayers()
         AttractionSpawnTransform.SetLocation(FVector(0.f, 0.f, 236.f));
         AAttractionZone* AttractionZone = World->SpawnActor<AAttractionZone>(AttractionBpclass, AttractionSpawnTransform);
         AttractionZone->OwnerCharacter = AIChar;
+        AttractionZones.Add(AttractionZone);
 
         Protocol::CS_AI_ENTER_PKT AIPkt;
 
@@ -452,6 +470,7 @@ void ABattleGameMode::SpawnPlayer(Protocol::SC_SPAWN_PKT& pkt)
         AttractionSpawnTransform.SetLocation(FVector(0.f, 0.f, 236.f));
         AAttractionZone* AttractionZone = World->SpawnActor<AAttractionZone>(AttractionBpclass, AttractionSpawnTransform);
         AttractionZone->OwnerCharacter = NewPlayer;
+        AttractionZones.Add(AttractionZone);
 
         UE_LOG(LogTemp, Log, TEXT("SpawnPlayer: Spawned player %d at (%f, %f, %f)"),
             pkt.player_id, SpawnLocation.X, SpawnLocation.Y, SpawnLocation.Z);
@@ -464,6 +483,8 @@ void ABattleGameMode::SpawnPlayer(Protocol::SC_SPAWN_PKT& pkt)
 
 void ABattleGameMode::ActivateInput()
 {
+    GetWorld()->GetTimerManager().ClearTimer(GameStartTimerSoundHandle);    // 카운트다운 사운드 재생 타이머 정지
+
     ABattle_PlayerController* PlayerController = Cast<ABattle_PlayerController>(PlayerCharacter->GetController()); // 첫 번째 플레이어 컨트롤러 가져오기
     
     if (PlayerController)
@@ -477,6 +498,13 @@ void ABattleGameMode::ActivateInput()
         }
     }
 
+    if (StartSound)
+    {
+        UGameplayStatics::PlaySound2D(GetWorld(), StartSound);
+    }
+
+    CalledActiveInput = true;
+
     // "0"번 플레이어가 아닌 경우 AI 생성하지 않고 나가기
     if (AmIHost == false) return;
 
@@ -484,8 +512,6 @@ void ABattleGameMode::ActivateInput()
     for (auto& Item : SpawnedPlayers)
     {
         ABaseCharacter* Players = Item.Value;
-
-        UE_LOG(LogTemp, Warning, TEXT("SpawnedPlayerID: %d"), Players->GetPlayerId());
 
         if (AAICharacter* AICastedChar = Cast<AAICharacter>(Players))
         {
@@ -505,10 +531,6 @@ void ABattleGameMode::ActivateInput()
         }
     }
 
-    if (StartSound)
-    {
-        UGameplayStatics::PlaySound2D(GetWorld(), StartSound);
-    }
 }
 
 void ABattleGameMode::MoveOtherPlayer(Protocol::CS_MOVE_PKT& pkt)
@@ -520,10 +542,18 @@ void ABattleGameMode::MoveOtherPlayer(Protocol::CS_MOVE_PKT& pkt)
         uint64 NowMs = pkt.server_time;
         uint64 ElapsedMs = NowMs - StartTime2Server;
         uint64 ElapsedSecInt = ElapsedMs / 1000;
-        if (ElapsedSecInt >= 0 && (ElapsedSecInt - CurrentRoundTime) <= 10)
+
+        if (ElapsedSecInt >= 0)
         {
-            if (ElapsedSecInt >= 5) CurrentRoundTime = ElapsedSecInt - 5;
-            UE_LOG(LogTemp, Warning, TEXT("%d - Time to Server: %d sec"), PossessIndex, ElapsedSecInt);
+            if (CalledActiveInput == false && ElapsedSecInt >= 6)
+            {
+                UE_LOG(LogTemp, Warning, TEXT("Active input"));
+                ActivateInput();
+            }
+            if (ElapsedSecInt <= 6) CurrentCountdownTime = CountdownTime - ElapsedSecInt;
+            if (ElapsedSecInt >= 5 && (ElapsedSecInt - CurrentRoundTime) <= 10) CurrentRoundTime = ElapsedSecInt - 5;
+
+            UE_LOG(LogTemp, Warning, TEXT("%d - Time to Server: %d sec"), PlayerCharacter->GetPlayerId(), ElapsedSecInt);
         }
 
         return;
@@ -625,6 +655,18 @@ void ABattleGameMode::SpawnSkill(Protocol::CS_USING_SKILL_PKT& pkt)
         Skill = NewObject<UHasteSkill>(this, UHasteSkill::StaticClass());
         Skill->SetSkillRotation(pkt.pitch, pkt.yaw, pkt.roll);
         Skill->UpgradeSkill(Player->PowerUpLevel);
+        //if (UWorld* W = Player->GetWorld())
+        //{
+        //    FTimerHandle HasteTimerHandle;
+        //    W->GetTimerManager().SetTimer(
+        //        HasteTimerHandle,
+        //        this,
+        //        &UHasteSkill::DeactiveSkill,
+        //        5.0f,
+        //        false
+        //    );
+        //}
+
         break;
     default:
         UE_LOG(LogTemp, Error, TEXT("SpawnSkill: Unknown skill type"));
@@ -757,10 +799,6 @@ void ABattleGameMode::CountdownTimerUpdate()
     {
         ABattle_PlayerController* PC = Cast<ABattle_PlayerController>(PlayerCharacter->GetController());
         if (PC && PC->PlayerHUD)
-        if (CountSound)
-        {
-            UGameplayStatics::PlaySound2D(GetWorld(), CountSound);
-        }
         
         // 플레이어의 HUD 업데이트
         PC->PlayerHUD->UpdateCountdown(DisplayTime);
@@ -783,12 +821,7 @@ void ABattleGameMode::CountdownTimerUpdate()
         //GetWorld()->GetTimerManager().SetTimer(RoundTimerHandle, this, &ABattleGameMode::RoundTimerUpdate, 1.0f, true);
         return;
     }
-
- 
-    
-    // 1초 경과 후 CountdownTime 감소
-    CurrentCountdownTime -= 1.0f;
-    
+       
 }
 
 void ABattleGameMode::RoundTimerUpdate()

@@ -18,6 +18,8 @@
 class ABaseCharacter;
 class AItem_Box_Base;
 class USoundBase;
+class AShrinkingZone;
+class AAttractionZone;
 
 UCLASS()
 class PROJECT_ANIMAGUS_API ABattleGameMode : public AGameModeBase
@@ -53,11 +55,13 @@ protected:
 
     // 현재 카운트다운 시간
     float CurrentCountdownTime;
+    float CountdownTime = 5.0f;
 
     // 현재 라운드 진행 시간 (카운트다운 종료 후)
     uint64 CurrentRoundTime;
 
     // 타이머 핸들들
+    FTimerHandle GameStartTimerSoundHandle;
     FTimerHandle CountdownTimerHandle;
     FTimerHandle RoundTimerHandle;
 
@@ -107,6 +111,9 @@ public:
     TSubclassOf<class AAttractionZone> AttractionBpclass;
 
     TSubclassOf<class AItem_Box_High> ItemBoxHighBpclass;
+
+    UPROPERTY(EditAnywhere, Category = "ShrinkZone")
+    TSubclassOf<class AShrinkingZone> ShrinkzoneBpclass;
     
     // 라운드 경과 시간 출력
     FTimerHandle battle_timer_handle;
@@ -136,9 +143,14 @@ public:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawning", meta = (AllowPrivateAccess = "true"))
     int32 PossessIndex;
 
+    AShrinkingZone* ShrinkingZone;
+
+    TArray<AAttractionZone*> AttractionZones;
+
     bool AmIHost = false;
     float TIME_OVER = 90.0f;
     uint64 StartTime2Server = 0;
+    bool CalledActiveInput = false;
 
     APlayerCharacter* PlayerCharacter; // 플레이어 캐릭터 포인터
 
