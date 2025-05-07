@@ -13,7 +13,7 @@
 
 class ABaseCharacter;
 class AItem_Box_Base;
-
+class USoundBase;
 
 UCLASS()
 class PROJECT_ANIMAGUS_API ABattleGameMode : public AGameModeBase
@@ -62,6 +62,22 @@ protected:
     USoundBase* StartSound;
 
 public:
+    
+    /** 로딩 UI 위젯 클래스 (에디터에서 할당) */
+    UPROPERTY(EditAnywhere, Category = "UI")
+    TSubclassOf<UUserWidget> LoadingWidgetClass;
+
+    /** 인스턴스화된 로딩 UI */
+    UPROPERTY()
+    UUserWidget* LoadingWidget;
+
+    /** 5초 후 호출될 초기화 콜백 */
+    UFUNCTION()
+    void OnPostLoadInitialize();
+
+    UPROPERTY(EditAnywhere, Category = "Audio")
+    USoundBase* AttractSoundWave;
+    
     // BP_AI 애셋
     UPROPERTY(EditAnywhere, Category = "AI")
     TSoftClassPtr<class AAIController> AIControllerClass;
