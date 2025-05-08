@@ -20,14 +20,31 @@ EBTNodeResult::Type UBTTaskNode_SetPatrolOriginRadius::ExecuteTask(UBehaviorTree
 
     // 1. 여러 개의 스폰 지점과 반경을 배열로 선언
     TArray<FVector> SpawnOrigins = { 
-        //FVector(0.f, 0.f, 0.f), 
-        FVector(0.0f,0.0f, 1443.468667)
+         FVector(0.0f,0.0f, 1443.468667), 
+         
+         FVector(-4370.0f,-4545.0f, 810.f), // [1] 
+         FVector(0.0f,-4545.0f, 810.f),     // [2]
+         FVector(4370.0f,-4545.0f, 810.f),  // [3]
+         FVector(-4370.0f, 0.0f, 810.f),    // [4]
+         FVector(4370.0f, 0.0f, 810.f),     // [5]
+         FVector(-4370.0f,4545.0f, 810.f),  // [6]
+         FVector(0.0f,4545.0f, 810.f),      // [7]
+         FVector(4370.0f,4545.0f, 810.f),   // [8]
+         
     };
 
     TArray<float> SpawnRadii = {
-        //1300.f,  
         1300.f,
-
+        
+        2100.f,
+        2100.f,
+        2100.f,
+        2100.f,
+        2100.f,
+        2100.f,
+        2100.f,
+        2100.f,
+        
     };
      
     // 2. 랜덤하게 한 스폰 지역을 선택
@@ -38,11 +55,6 @@ EBTNodeResult::Type UBTTaskNode_SetPatrolOriginRadius::ExecuteTask(UBehaviorTree
     // 3. BB에 Origin과 Radius 저장
     BlackboardComp->SetValueAsVector(random_patrol_pos_key.SelectedKeyName, OriginVector);
     BlackboardComp->SetValueAsFloat(random_patrol_radius_key.SelectedKeyName, SearchRadius);
-
-    // 최종 값 로그 출력
-    // UE_LOG(LogTemp, Warning, TEXT("Selected Origin: X=%.2f, Y=%.2f, Z=%.2f"), OriginVector.X, OriginVector.Y, OriginVector.Z);
-    // UE_LOG(LogTemp, Warning, TEXT("Selected SearchRadius: %.2f"), SearchRadius);
-
 
     return EBTNodeResult::Succeeded;
 }

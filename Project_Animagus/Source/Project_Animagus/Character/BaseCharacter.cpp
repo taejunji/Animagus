@@ -511,7 +511,7 @@ void ABaseCharacter::AIchar_SkillSet()
 {
     // PowerUpLevel 적용 전 리셋
     Skills.Empty();
-    Skills.SetNum(5);
+    Skills.SetNum(4);
     // 1) 사용할 수 있는 스킬 BP 클래스를 TArray로 모은다
     TArray<TSubclassOf<UBaseSkill>> AllSkillClasses = {
         //FireballBPClass,
@@ -521,7 +521,7 @@ void ABaseCharacter::AIchar_SkillSet()
         ChangeBPClass,
         SmokeBPClass,
         ShieldBPClass,
-        ShockwaveBPClass,
+        //ShockwaveBPClass,
         HasteBPClass,
     };
 
@@ -529,7 +529,7 @@ void ABaseCharacter::AIchar_SkillSet()
     AllSkillClasses.RemoveAll([](TSubclassOf<UBaseSkill> Cls) { return Cls == nullptr; });
 
     // 3) 랜덤 셔플
-    const int32 NumToPick = FMath::Min(5, AllSkillClasses.Num());
+    const int32 NumToPick = FMath::Min(4, AllSkillClasses.Num());
     for (int32 i = AllSkillClasses.Num() - 1; i > 0; --i)
     {
         int32 j = FMath::RandRange(0, i);
@@ -557,6 +557,25 @@ void ABaseCharacter::AIchar_SkillSet()
         }
     }
     
+    if (ShockwaveBPClass)
+    {
+        UBaseSkill* NewSkill = NewObject<UShockwaveSkill>(this, ShockwaveBPClass);
+        if (NewSkill)
+        {
+            NewSkill->Owner = this;
+            Skills[1] = NewSkill;
+            UE_LOG(LogTemp, Log, TEXT("InitializeSkills: Successfully created MagicMissile skill for slot 0: %s"), *NewSkill->GetName());
+        }
+        else
+        {
+            UE_LOG(LogTemp, Warning, TEXT("InitializeSkills: Failed to create MagicMissile skill for slot 0"));
+        }
+    }
+    else
+    {
+        UE_LOG(LogTemp, Warning, TEXT("InitializeSkills: FireballBPClass is not assigned."));
+    }
+    
     if (FireballBPClass)
     {
         UBaseSkill* NewSkill = NewObject<UFireball>(this, FireballBPClass);
@@ -571,11 +590,7 @@ void ABaseCharacter::AIchar_SkillSet()
             UE_LOG(LogTemp, Warning, TEXT("InitializeSkills: Failed to create MagicMissile skill for slot 0"));
         }
     }
-    else
-    {
-        UE_LOG(LogTemp, Warning, TEXT("InitializeSkills: FireballBPClass is not assigned."));
-    }
-    
+
     // 5) PowerUpLevel에 따른 강화 적용
     for (UBaseSkill* Skill : Skills)
     {

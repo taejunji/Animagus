@@ -6,10 +6,11 @@
 #include "BehaviorTree/BlackboardComponent.h"
 #include "../Character/BaseCharacter.h"
 #include "Engine/OverlapResult.h"
+#include "../Item/BaseItem.h"
 
 UBTService_FindTarget::UBTService_FindTarget()
 {
-    NodeName = TEXT("Find Target Service");
+    NodeName = TEXT("Find ItemTarget Service");
     Interval = 0.5f; // 주기
 }
 
@@ -19,36 +20,29 @@ void UBTService_FindTarget::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* N
 
     // 주인 가져오기
     APawn* LocalPawn = OwnerComp.GetAIOwner()->GetPawn();
-    if (LocalPawn == nullptr)
-    {
+    if (LocalPawn == nullptr) {
         return;
     }
 
     UWorld* World = LocalPawn->GetWorld();
-    if (World == nullptr)
-    {
+    if (World == nullptr) {
         return;
     }
 
     FVector Location = LocalPawn->GetActorLocation();
     // TargetKey가 있는지 확인
-    ABaseCharacter* TargetCharacter = Cast<ABaseCharacter>(OwnerComp.GetBlackboardComponent()->GetValueAsObject(target_key.SelectedKeyName));
-    bool bHasTarget = (TargetCharacter != nullptr);
+    ABaseItem* TargetItem = Cast<ABaseItem>(OwnerComp.GetBlackboardComponent()->GetValueAsObject(ItemTarget_key.SelectedKeyName));
 
     // 색상 결정 (빨강: 타겟 있음, 파랑: 타겟 없음)
+    bool bHasTarget = (TargetItem != nullptr);
     FColor DebugColor = bHasTarget ? FColor::Red : FColor::Blue; 
-
-    // 디버그 구체 그리기
     // DrawDebugSphere(World, Location, search_radius, 16, DebugColor, false, 0.2f); 
-#if 0
+
+    if (TargetItem) return;
+
     TArray<FOverlapResult> OverlapResults; 
-    // FOverlapResult는 하나의 오버랩 결과에 대한 정보
     
     FCollisionQueryParams CollisionQueryParam(NAME_None, false, LocalPawn);
-    // 충돌 검사에 대한 파라미터를 설정
-    // NAME_None: 쿼리 이름(특별한 이름을 지정하지 않으면 None으로 설정).
-    // false: 충돌을 발생시킨 객체가 이 객체 자체인 경우를 무시하지 않도록
-    // LocalPawn: 쿼리에서 제외할 객체를 지정
 
     bool bResult = World->OverlapMultiByChannel(
         OverlapResults,
@@ -59,29 +53,25 @@ void UBTService_FindTarget::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* N
         CollisionQueryParam
     );
 
+    // 이미 세팅된 아이템이 있는지 확인
     if (bResult)
     {
         for (FOverlapResult& OverlapResult : OverlapResults)
         {
-            ABaseCharacter* character = Cast<ABaseCharacter>(OverlapResult.GetActor());
-            if (character && character->GetIsDead() == false)
+            if (ABaseItem* Item = Cast<ABaseItem>(OverlapResult.GetActor()))
             {
-                FVector ActorLocation = character->GetActorLocation(); 
+                FVector ActorLocation = Item->GetActorLocation();
 
                 // Z값이 특정 범위를 벗어나면 타겟 설정하지 않음
                 if (FMath::Abs(ActorLocation.Z - Location.Z) <= max_z_difference) // maxZDifference는 허용하는 Z 범위
                 {
-                    DrawDebugSphere(World, Location, search_radius, 16, FColor::Red, false, 0.2f);
-                    OwnerComp.GetBlackboardComponent()->SetValueAsObject(target_key.SelectedKeyName, character);
+                    // DrawDebugSphere(World, ActorLocation, 500, 16, FColor::Magenta, true, -1.f);
+                    OwnerComp.GetBlackboardComponent()->SetValueAsObject(ItemTarget_key.SelectedKeyName, Item);
                     return;
                 }
             }
         }
     }
-
-    OwnerComp.GetBlackboardComponent()->SetValueAsObject(target_key.SelectedKeyName, nullptr);
-    DrawDebugSphere(World, Location, search_radius, 16, FColor::Blue, false, 0.2f);
-#endif
 }
 
 
