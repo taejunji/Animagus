@@ -486,7 +486,7 @@ void AMyAIController::SetAITarget(ABaseCharacter* NewTarget)
         GetBlackboardComponent()->SetValueAsObject(TargetKey.SelectedKeyName, NewTarget);
         GetBlackboardComponent()->SetValueAsBool(can_set_target_key.SelectedKeyName, false);
 
-        GetWorld()->GetTimerManager().SetTimer(TargetChangeTimerHandle, this, &AMyAIController::ResetTargetChange, 15.0f, false);
+        GetWorld()->GetTimerManager().SetTimer(TargetChangeTimerHandle, this, &AMyAIController::ResetTargetChange, 20.0f, false);
     }
     else
     {
