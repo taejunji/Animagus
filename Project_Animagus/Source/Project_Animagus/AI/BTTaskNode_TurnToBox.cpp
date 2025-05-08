@@ -82,7 +82,8 @@ void UBTTaskNode_TurnToBox::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* N
     float YawDifference = FMath::Abs(FMath::FindDeltaAngleDegrees(Character->GetActorRotation().Yaw, TargetRotation.Yaw));
 
     // 각도 차이가 크면 느리게(7), 작으면 빠르게(35)
-    InterpSpeed = FMath::GetMappedRangeValueClamped(FVector2D(0.f, 180.f), FVector2D(7.f, 35.f), YawDifference); 
+    InterpSpeed = FMath::GetMappedRangeValueClamped(FVector2D(0.f, 180.f), FVector2D(10.f, 3.f), YawDifference); 
+    //InterpSpeed = 10.f;
 
     FRotator NewRotation = FMath::RInterpTo(Character->GetActorRotation(), TargetRotation, DeltaSeconds, InterpSpeed);
     Character->SetActorRotation(NewRotation);
