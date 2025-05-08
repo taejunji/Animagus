@@ -76,7 +76,7 @@ bool Room::HandleEnterPlayer(PlayerRef player)
 
     bool isHost = false;
     int n_pid = 0;
-    if (m_playerCount % 2 == 0)
+    if (m_playerCount % 2 == 1)
     {
         SC_UR_HOST_PKT ur_host;
         m_hostPlayer = player;

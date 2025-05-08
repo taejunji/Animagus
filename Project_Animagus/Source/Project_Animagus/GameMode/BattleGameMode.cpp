@@ -162,7 +162,7 @@ void ABattleGameMode::StartPlay()
         DelayHandle,
         this,
         &ABattleGameMode::OnPostLoadInitialize,
-        3.5f,   // 3.5초 뒤 실행
+        5.0f,   // 5초 뒤 실행
         false   // 한번만
     );
    
@@ -187,7 +187,7 @@ void ABattleGameMode::OnPostLoadInitialize()
                     UGameplayStatics::PlaySound2D(GetWorld(), BackgroundMusic);
                 }
             }),
-        0.15f,
+        0.3f,
         false
     );
 }
@@ -374,7 +374,7 @@ void ABattleGameMode::SpawnPlayers()
 
     uint16 AIId = 101;
     // ** AI를 추가할 경우 -> 0번 플레이어만 만들 것임 ** AI 플레이어 수 설정
-    for (int32 i = 1; i < 8; ++i)
+    for (int32 i = 1; i < 5; ++i)
     {
         // AI 플레이어 생성 (임의의 `ABaseCharacter`로 가정)
         // FVector AI_SpawnLocation = spawn_transform[i].GetLocation();
