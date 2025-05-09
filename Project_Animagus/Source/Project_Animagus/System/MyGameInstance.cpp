@@ -69,7 +69,7 @@ void UMyGameInstance::Init()
 {
     Super::Init();
 
-    ConnectToGameServer();
+    //ConnectToGameServer();
 
     // 데이터 불러왔을 때 mesh 타입 설정하기 => ( 임시로 양 디폴트 )
     player_data.stored_mesh = CharacterMesh::Sheep; 
@@ -110,7 +110,7 @@ void UMyGameInstance::SwitchLevel(LevelType level)
     }
 }
 
-void UMyGameInstance::ConnectToGameServer()
+void UMyGameInstance::ConnectToGameServer(const FString IpAddress)
 {
     // TCP 소켓 생성
     Socket = ISocketSubsystem::Get(PLATFORM_SOCKETSUBSYSTEM)->CreateSocket(TEXT("Stream"), TEXT("Client Socket"));

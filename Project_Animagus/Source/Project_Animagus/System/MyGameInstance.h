@@ -75,7 +75,7 @@ public:
 
 public:
     UFUNCTION(BlueprintCallable)
-    void ConnectToGameServer();
+    void ConnectToGameServer(const FString IpAddress = TEXT("182.230.58.32"));
 
     UFUNCTION(BlueprintCallable)
     void DisconnectFromGameServer();
@@ -105,7 +105,7 @@ public:
     // void AddAICharacter(AAICharacter* AICharacter);
 
     class FSocket* Socket;
-    FString IpAddress = TEXT("182.230.58.32");
+    //FString IpAddress = TEXT("182.230.58.32");
     int16 Port = 7777;
     TSharedPtr<class Session> ClientSession;
 
