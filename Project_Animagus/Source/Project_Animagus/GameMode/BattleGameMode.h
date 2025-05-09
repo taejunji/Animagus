@@ -148,7 +148,7 @@ public:
     TArray<AAttractionZone*> AttractionZones;
 
     bool AmIHost = false;
-    float TIME_OVER = 90.0f;
+    float TIME_OVER = 60.0f;
     uint64 StartTime2Server = 0;
     bool CalledActiveInput = false;
 

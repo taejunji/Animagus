@@ -10,7 +10,7 @@ public:
 public:
     bool Enter(PlayerRef player);
     bool Leave(uint16 playerID);
-    void Broadcast(SendBufferRef sendBuffer, uint16 execptID);
+    void Broadcast(SendBufferRef sendBuffer, uint16 execptID, bool state_check = false);
 
 public:
     bool HandleEnterPlayer(PlayerRef player);
@@ -47,6 +47,7 @@ private:
     std::unordered_map<uint16/*player_id*/, PlayerRef> m_players; // thread safe 한 자료구조로?
     std::unordered_map<uint16/*ai_id*/, AIPlayerRef> m_aiPlayers;
     uint16 m_maxPlayerCount = 2;
+    std::atomic<uint16> m_nowPlayerCount = 0;
 
     PlayerRef m_hostPlayer = nullptr;
     std::array<Protocol::SC_SPAWN_ITEM_PKT, 3> m_itemInfo;

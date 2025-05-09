@@ -21,7 +21,10 @@ bool Room::Enter(PlayerRef player)
         return false;
     
     m_players.insert(make_pair(player->playerID, player));
+    player->s_mutex.lock();
     player->room.store(shared_from_this());
+    player->player_state = PlayerRoomState::WAITING;
+    player->s_mutex.unlock();
     m_playerCount++;
 
     return true;
@@ -35,7 +38,10 @@ bool Room::Leave(uint16 playerID)
         return false;
 
     PlayerRef player = m_players[playerID];
+    player->s_mutex.lock();
     player->room.store(shared_from_this());
+    player->player_state = PlayerRoomState::LOBBY;
+    player->s_mutex.unlock();
 
     m_players.erase(playerID);
     m_playerCount--;
@@ -43,7 +49,7 @@ bool Room::Leave(uint16 playerID)
     return true;
 }
 
-void Room::Broadcast(SendBufferRef sendBuffer, uint16 execptID)
+void Room::Broadcast(SendBufferRef sendBuffer, uint16 execptID, bool state_check)
 {
     //std::lock_guard lock(m_mutex);
     for (auto& p : m_players)
@@ -51,6 +57,9 @@ void Room::Broadcast(SendBufferRef sendBuffer, uint16 execptID)
         PlayerRef player = p.second;
         if (player->playerID == execptID) continue;
         if (player->playerID == 0) continue;
+        if (state_check == true) {
+            if (player->player_state != PlayerRoomState::INGAME) continue;
+        }
 
         SessionRef session = player->ownerSession.lock();
         session->Send(sendBuffer);
@@ -98,7 +107,7 @@ bool Room::HandleEnterPlayer(PlayerRef player)
 bool Room::HandleEnterGame()
 {
     m_loadingOverCount++;
-    if (m_loadingOverCount == m_maxPlayerCount)
+    if (m_loadingOverCount == m_players.size())
     {
         m_gameStartTickCount = GetTickCount64();
         for (auto& item : m_players)
@@ -116,9 +125,8 @@ bool Room::HandleStartGame(PlayerRef player)
 
     if (m_players.count(player->playerID) == 0)
     {
-        bool success = Enter(player);
-        if (success == false)
-            std::cout << "Enter Room Error" << std::endl;
+        std::cout << "Player didn't exist this Room" << std::endl;
+        return false;
     }
 
     // 신입 플레이어 스폰 위치, 회전각 서버에서 지정해주고 해당 정보 플레이어에게 전송
@@ -139,8 +147,12 @@ bool Room::HandleStartGame(PlayerRef player)
 
         n_pid = player->playerID;
 
+        player->s_mutex.lock();
+        player->player_state = PlayerRoomState::INGAME;
+        player->s_mutex.unlock();
+
 #ifndef _DUMMYTEST
-        //std::cout << "Send Enter Game Packet to " << player->playerID << " , Spawn Index: " << newPlayer.spawn_index << std::endl;
+        std::cout << "Send Enter Game Packet to " << player->playerID << " , Spawn Index: " << newPlayer.spawn_index << std::endl;
 #endif
 
         //std::cout << n_pid << std::endl;
@@ -154,6 +166,7 @@ bool Room::HandleStartGame(PlayerRef player)
         {
             if (n_pid == item.first) continue;  // 자기 자신의 정보는 이미 보냈음
             if (n_pid == 0) continue;           // 아이디가 0인 플레이어를 마주쳤다면 도망치십시오
+            if (item.second->player_state != PlayerRoomState::INGAME) continue;
 
             PlayerRef o_player = item.second;
             oldPlayer.x = o_player->x;
@@ -168,7 +181,7 @@ bool Room::HandleStartGame(PlayerRef player)
                 session->Send(sendBuffer);
 
 #ifndef _DUMMYTEST
-            //std::cout << item.first << "'s info Send Spawn Packet to " << n_pid << std::endl;
+            std::cout << item.first << "'s info Send Spawn Packet to " << n_pid << std::endl;
 #endif
         }
 
@@ -204,7 +217,7 @@ bool Room::HandleStartGame(PlayerRef player)
         newPlayer.player_id = player->playerID;
         newPlayer.p_type = player->type;
         SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(newPlayer);
-        Broadcast(sendBuffer, player->playerID);
+        Broadcast(sendBuffer, player->playerID, true);
     }
 
     // 신입 플레이어에게 아이템 정보 전송
@@ -251,7 +264,7 @@ bool Room::HandleMoveLocked(Protocol::CS_MOVE_PKT& pkt)
 
     const uint16 playerId = pkt.player_info.player_id;
     //std::cout << "Move PlayerID: " << playerId << std::endl;
-    if (m_players.find(playerId) == m_players.end())
+    if (m_players.count(playerId) == 0)
         return false;
 
     //std::cout << "Handle Move" << std::endl;
@@ -461,13 +474,14 @@ bool Room::HandleTimeOverLocked(Protocol::CS_TIME_OVER_PKT& pkt)
 
     if (m_roundCount++ < 3)
     {
+        InitializeGame();
+
         // 우승자 정보 + ???
         SC_GAME_INIT_PKT initGamePkt;
 
         SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(initGamePkt);
         Broadcast(sendBuffer, 0);
 
-        InitializeGame();
     }
     else
     {
@@ -480,6 +494,13 @@ bool Room::HandleTimeOverLocked(Protocol::CS_TIME_OVER_PKT& pkt)
 void Room::InitializeGame()
 {
     //m_players.clear();
+    for (auto& item : m_players)
+    {
+        PlayerRef player = item.second;
+        player->s_mutex.lock();
+        player->player_state = PlayerRoomState::WAITING;
+        player->s_mutex.unlock();
+    }
     m_aiPlayers.clear();
     m_playerCount = 0;
     m_gameStartTickCount = 0;
@@ -500,13 +521,13 @@ void Room::InitItemInfo()
         std::mt19937_64 rng(std::chrono::steady_clock::now().time_since_epoch().count());
         std::shuffle(pool.begin(), pool.end(), rng);
 
-        for (int i = 0; i < 20; ++i)
+        for (int i = 0; i < 30; ++i)
         {
             item.spawn_index[i] = static_cast<char>(pool[i]);
             item.item_level[i] = static_cast<char>(rand() % 3);
             //item.item_level[i] = static_cast<char>(1);
         }
-        item.item_count = 20;
+        item.item_count = 30;
         item.zone_index = 0;
 
         m_itemInfo[0] = item;
@@ -522,12 +543,12 @@ void Room::InitItemInfo()
         std::mt19937_64 rng(std::chrono::steady_clock::now().time_since_epoch().count());
         std::shuffle(pool.begin(), pool.end(), rng);
 
-        for (int i = 0; i < 10; ++i)
+        for (int i = 0; i < 20; ++i)
         {
             item.spawn_index[i] = static_cast<char>(pool[i]);
             item.item_level[i] = static_cast<char>(rand() % 3);
         }
-        item.item_count = 10;
+        item.item_count = 20;
         item.zone_index = 1;
 
         m_itemInfo[1] = item;
@@ -536,13 +557,13 @@ void Room::InitItemInfo()
     {   // Zone3
         SC_SPAWN_ITEM_PKT item;
 
-        for (int i = 0; i < 9; ++i)
+        for (int i = 0; i < 12; ++i)
         {
             item.spawn_index[i] = static_cast<char>(i);
             item.item_level[i] = static_cast<char>(rand() % 3);
         }
         
-        item.item_count = 9;
+        item.item_count = 12;
         item.zone_index = 2;
 
         m_itemInfo[2] = item;

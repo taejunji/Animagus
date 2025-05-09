@@ -12,6 +12,7 @@ private:
 };
 
 
+enum class PlayerRoomState {INGAME, WAITING, LOBBY};
 class Player
 {
 public:
@@ -22,6 +23,9 @@ public:
 
 public:
     uint16  playerID = 0;
+    PlayerRoomState player_state = PlayerRoomState::LOBBY;
+    std::mutex s_mutex;
+
     int16    playerHP = 100;
     float   x, y, z;
     float   rotation;   // y축 회전각

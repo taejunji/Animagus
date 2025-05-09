@@ -399,7 +399,10 @@ void UMyGameInstance::HandleInitBattleMode(Protocol::SC_GAME_INIT_PKT& pkt)
             for (auto& Item : GameMode->SpawnedItems)
                 if (Item != nullptr) Item->Destroy();
             for (auto& Item : GameMode->SpawnedPlayers)
+            {
+                UE_LOG(LogTemp, Warning, TEXT("Player ID: %d"), Item.Key);
                 if (Item.Value != nullptr) Item.Value->Destroy();
+            }
 
             GameMode->InitBattleMode();
         }

@@ -228,8 +228,8 @@ namespace Protocol {
     {
         uint16 zone_index;
         uint16 item_count;
-        char spawn_index[20];
-        char item_level[20];
+        char spawn_index[30];
+        char item_level[30];
     };
     struct SC_UPDATE_HP_PKT
     {
