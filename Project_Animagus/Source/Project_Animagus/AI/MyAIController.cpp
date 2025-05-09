@@ -85,12 +85,11 @@ void AMyAIController::BeginPlay()
             AttackRadiusKey.SelectedKeyName = FName(TEXT("AttackRadius"));
             BlackboardPtr->SetValueAsFloat(AttackRadiusKey.SelectedKeyName, 600.f);
 
-            Skill_isCoolTime_Key.SetNum(5);
+            Skill_isCoolTime_Key.SetNum(4);
             Skill_isCoolTime_Key[0].SelectedKeyName = FName(TEXT("Skill_0_Ready"));
             Skill_isCoolTime_Key[1].SelectedKeyName = FName(TEXT("Skill_1_Ready"));
             Skill_isCoolTime_Key[2].SelectedKeyName = FName(TEXT("Skill_2_Ready"));
             Skill_isCoolTime_Key[3].SelectedKeyName = FName(TEXT("Skill_3_Ready"));
-            Skill_isCoolTime_Key[4].SelectedKeyName = FName(TEXT("Skill_4_Ready"));
 
             patrol_pos_key.SelectedKeyName = FName(TEXT("PatrolLocation"));
         }
@@ -152,22 +151,22 @@ void AMyAIController::SetControlMode(AIControlMode mode)
 
 void AMyAIController::SetSkillCoolTime()
 {
-    UBlackboardComponent* BlackboardPtr = Blackboard.Get();
+    //UBlackboardComponent* BlackboardPtr = Blackboard.Get();
 
-    if (auto* MyCharacter = Cast<ABaseCharacter>(GetPawn())) 
-    {
-        Skill_1_CoolTime_Key.SelectedKeyName = FName(TEXT("Skill_1_CoolTime")); 
-        BlackboardPtr->SetValueAsFloat(Skill_1_CoolTime_Key.SelectedKeyName, MyCharacter->Skills[1]->CooldownTime);
+    //if (auto* MyCharacter = Cast<ABaseCharacter>(GetPawn())) 
+    //{
+    //    Skill_1_CoolTime_Key.SelectedKeyName = FName(TEXT("Skill_1_CoolTime")); 
+    //    BlackboardPtr->SetValueAsFloat(Skill_1_CoolTime_Key.SelectedKeyName, MyCharacter->Skills[1]->CooldownTime);
 
-        Skill_2_CoolTime_Key.SelectedKeyName = FName(TEXT("Skill_2_CoolTime"));
-        BlackboardPtr->SetValueAsFloat(Skill_2_CoolTime_Key.SelectedKeyName, MyCharacter->Skills[2]->CooldownTime);
+    //    Skill_2_CoolTime_Key.SelectedKeyName = FName(TEXT("Skill_2_CoolTime"));
+    //    BlackboardPtr->SetValueAsFloat(Skill_2_CoolTime_Key.SelectedKeyName, MyCharacter->Skills[2]->CooldownTime);
 
-        Skill_3_CoolTime_Key.SelectedKeyName = FName(TEXT("Skill_3_CoolTime"));
-        BlackboardPtr->SetValueAsFloat(Skill_3_CoolTime_Key.SelectedKeyName, MyCharacter->Skills[3]->CooldownTime);
+    //    Skill_3_CoolTime_Key.SelectedKeyName = FName(TEXT("Skill_3_CoolTime"));
+    //    BlackboardPtr->SetValueAsFloat(Skill_3_CoolTime_Key.SelectedKeyName, MyCharacter->Skills[3]->CooldownTime);
 
-        Skill_4_CoolTime_Key.SelectedKeyName = FName(TEXT("Skill_4_CoolTime"));
-        BlackboardPtr->SetValueAsFloat(Skill_4_CoolTime_Key.SelectedKeyName, MyCharacter->Skills[4]->CooldownTime);
-    }
+    //    Skill_4_CoolTime_Key.SelectedKeyName = FName(TEXT("Skill_4_CoolTime"));
+    //    BlackboardPtr->SetValueAsFloat(Skill_4_CoolTime_Key.SelectedKeyName, MyCharacter->Skills[4]->CooldownTime);
+    //}
 
 }
 
@@ -201,7 +200,7 @@ void AMyAIController::Tick(float DeltaTime)
     CheckAndDisableTargetIfDead();
 
     // 스킬 쿨타임 확인
-    CheckSkillCoolTime(AI);
+    // CheckSkillCoolTime(AI);
 
     // 달리기 속도 설정
     SetAIRunSpeed(AI, DeltaTime);
@@ -487,7 +486,7 @@ void AMyAIController::SetAITarget(ABaseCharacter* NewTarget)
         GetBlackboardComponent()->SetValueAsObject(TargetKey.SelectedKeyName, NewTarget);
         GetBlackboardComponent()->SetValueAsBool(can_set_target_key.SelectedKeyName, false);
 
-        GetWorld()->GetTimerManager().SetTimer(TargetChangeTimerHandle, this, &AMyAIController::ResetTargetChange, 10.0f, false);
+        GetWorld()->GetTimerManager().SetTimer(TargetChangeTimerHandle, this, &AMyAIController::ResetTargetChange, 20.0f, false);
     }
     else
     {
@@ -620,7 +619,7 @@ void AMyAIController::SetStaticActorRotation(float DeltaTime)
         FRotator CurrentRotation = GetPawn()->GetActorRotation();
 
         // 부드러운 회전을 위해 보간 (DeltaTime은 Tick 함수에서 받아올 것)
-        FRotator SmoothRotation = FMath::RInterpTo(CurrentRotation, TargetRotation, DeltaTime, 7.f);
+        FRotator SmoothRotation = FMath::RInterpTo(CurrentRotation, TargetRotation, DeltaTime, 10.f);
 
         // 회전 적용
         GetPawn()->SetActorRotation(SmoothRotation);

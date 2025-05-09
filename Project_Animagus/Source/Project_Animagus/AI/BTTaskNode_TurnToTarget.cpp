@@ -51,8 +51,6 @@ void UBTTaskNode_TurnToTarget::TickTask(UBehaviorTreeComponent& OwnerComp, uint8
     FRotator TargetRotation = (Target->GetActorLocation() - Character->GetActorLocation()).Rotation(); 
     TargetRotation.Pitch = 0.0f; // Y 축 회전(상하 방향) 무시 - Y축을 기준으로 앞뒤로 고개를 흔드는(상하로 기울어지는) 회전
 
-
-
     float YawDifference = FMath::Abs(FMath::FindDeltaAngleDegrees(Character->GetActorRotation().Yaw, TargetRotation.Yaw));
     // FindDeltaAngleDegrees: 현재 Yaw(바라보고 있는 방향)와 목표 Yaw 간의 각도 차이를 계산합니다. 이 함수는 + 180 ~- 180도 범위에서 가장 짧은 회전 거리(ΔYaw)를 반환
     // ✅ 현재 Yaw와 목표 Yaw 사이의 최소 회전 각도(±180도 범위)를 반환해.
@@ -61,11 +59,12 @@ void UBTTaskNode_TurnToTarget::TickTask(UBehaviorTreeComponent& OwnerComp, uint8
     // ✅ 특정 범위의 값을 다른 범위로 선형 매핑해주는 함수야.
     //  200도든 360도든 결과는 50.0f로 동일
 
-    // FRotator NewRotation = FMath::RInterpTo(Character->GetActorRotation(), TargetRotation, DeltaSeconds, InterpSpeed);
-    // Character->SetActorRotation(NewRotation);
-
-    FRotator NewRotation = FMath::RInterpTo(Character->GetActorRotation(), TargetRotation, DeltaSeconds, 35.f);
+    float InterpSpeed = FMath::GetMappedRangeValueClamped(FVector2D(0.f, 180.f), FVector2D(10.f, 3.f), YawDifference);
+    FRotator NewRotation = FMath::RInterpTo(Character->GetActorRotation(), TargetRotation, DeltaSeconds, InterpSpeed);
     Character->SetActorRotation(NewRotation);
+
+    // FRotator NewRotation = FMath::RInterpTo(Character->GetActorRotation(), TargetRotation, DeltaSeconds, 35.f);
+    // Character->SetActorRotation(NewRotation);
 
     // 회전 완료 체크
     if (YawDifference < 3.0f)
