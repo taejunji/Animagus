@@ -22,12 +22,12 @@ protected:
 
 protected:
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
-    float search_radius = 500.f;
+    float search_radius = 1500.f;
     
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
-    float max_z_difference = 500.f; // 이 Z크기 만큼 차이 나면 타겟으로 인식X 
+    float max_z_difference = 300.f; // 이 Z크기 만큼 차이 나면 타겟으로 인식X 
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
-    FBlackboardKeySelector target_key;
+    FBlackboardKeySelector ItemTarget_key;
 
 };

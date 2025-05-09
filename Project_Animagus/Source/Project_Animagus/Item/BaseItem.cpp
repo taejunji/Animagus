@@ -23,6 +23,9 @@ ABaseItem::ABaseItem()
     
     CollisionComp->SetCollisionResponseToChannel(ECC_GameTraceChannel1, ECollisionResponse::ECR_Ignore);
     CollisionComp->SetCollisionResponseToChannel(ECC_Visibility, ECR_Block); // 추가 
+    CollisionComp->SetCollisionResponseToChannel(ECC_WorldDynamic, ECR_Overlap); // 오버랩 추가
+
+    CollisionComp->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics); 
 
     RootComponent = CollisionComp;
 
