@@ -482,9 +482,27 @@ void ABaseCharacter::TestSkill_Change()
     }
 
     // 슬롯 2: UChangeSkill 스킬 생성
-    if (ChangeBPClass)
+    //if (ChangeBPClass)
+    //{
+    //    UBaseSkill* NewSkill = NewObject<UChangeSkill>(this, ChangeBPClass);
+    //    if (NewSkill)
+    //    {
+    //        NewSkill->Owner = this;
+    //        Skills[2] = NewSkill;
+    //        UE_LOG(LogTemp, Log, TEXT("TestSkill_Change: Successfully created Change skill for slot 2: %s"), *NewSkill->GetName());
+    //    }
+    //    else
+    //    {
+    //        UE_LOG(LogTemp, Warning, TEXT("TestSkill_Change: Failed to create Change skill for slot 2"));
+    //    }
+    //}
+    //else
+    //{
+    //    UE_LOG(LogTemp, Warning, TEXT("TestSkill_Change: ChangeBPClass is not assigned."));
+    //}
+    if (ShockwaveBPClass)
     {
-        UBaseSkill* NewSkill = NewObject<UChangeSkill>(this, ChangeBPClass);
+        UBaseSkill* NewSkill = NewObject<UShockwaveSkill>(this, ShockwaveBPClass);
         if (NewSkill)
         {
             NewSkill->Owner = this;

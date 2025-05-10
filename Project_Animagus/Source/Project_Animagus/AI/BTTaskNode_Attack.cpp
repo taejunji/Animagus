@@ -62,7 +62,7 @@ EBTNodeResult::Type UBTTaskNode_Attack::ExecuteTask(UBehaviorTreeComponent& Owne
 
         case EAttackSkill::ShockwaveSkill:
             if (CheckShockwaveSkill(OwnerComp, Character) && Character->UseSkillByName(TEXT("ShockwaveSkill"))) {
-                UE_LOG(LogTemp, Warning, TEXT("AttackTask: Successfully used skill: ShockwaveSkill")); 
+                UE_LOG(LogTemp, Warning, TEXT("AttackTask: Successfully used skill: ShockwaveSkill"));
                 return EBTNodeResult::Succeeded;
             }
             break;

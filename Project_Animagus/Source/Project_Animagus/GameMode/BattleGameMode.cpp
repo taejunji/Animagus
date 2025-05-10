@@ -723,7 +723,7 @@ void ABattleGameMode::SpawnSkill(Protocol::CS_USING_SKILL_PKT& pkt)
 
     if (Skill) {
         Skill->Owner = Player;
-        Skill->ActiveSkill();   // TODO: pkt.pitch, yaw, roll로 회전값 설정 따로 해줘야 함
+        Skill->ActiveSkill();
     }
 }
 
