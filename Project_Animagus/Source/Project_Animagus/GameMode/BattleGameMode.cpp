@@ -1189,11 +1189,11 @@ void ABattleGameMode::InitializeArea2SpawnPoints()
     Area2SpawnPoints.Add(FVector(-1966.f, -3540.f, 760.f));
     Area2SpawnPoints.Add(FVector(6068.f, 1640.f, 760.f));
     Area2SpawnPoints.Add(FVector(6672.f, 5137.f, 760.f));
-    Area2SpawnPoints.Add(FVector(-1193.f, -4795.f, 1172.f));
+    Area2SpawnPoints.Add(FVector(-1193.f, -4795.f, 1140.f));
 
-    Area2SpawnPoints.Add(FVector(-5025.f, -1134.f, 1172.f));
-    Area2SpawnPoints.Add(FVector(-1610.f, -4933.f, 1172.f));
-    Area2SpawnPoints.Add(FVector(4641.f, -253.f, 1172.f));
+    Area2SpawnPoints.Add(FVector(-5025.f, -1134.f, 1140.f));
+    Area2SpawnPoints.Add(FVector(-1610.f, -4933.f, 1140.f));
+    Area2SpawnPoints.Add(FVector(4641.f, -253.f, 1140.f));
 
 
     AreaSpawnPoints.Add(Area2SpawnPoints);
