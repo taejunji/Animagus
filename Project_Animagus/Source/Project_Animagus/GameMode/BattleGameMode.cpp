@@ -876,14 +876,14 @@ void ABattleGameMode::RoundTimerUpdate()
 
     //UE_LOG(LogTemp, Log, TEXT("Round Time: %d"), CurrentRoundTime);
 
-    if (AmIHost == false) return;
-    if (CurrentRoundTime >= TIME_OVER)
-    {
-        Protocol::CS_TIME_OVER_PKT timeOverPkt;
+    //if (AmIHost == false) return;
+    //if (CurrentRoundTime >= TIME_OVER)
+    //{
+    //    Protocol::CS_TIME_OVER_PKT timeOverPkt;
 
-        SendBufferRef SendBuffer = ClientPacketHandler::MakeSendBuffer(timeOverPkt);
-        Cast<UMyGameInstance>(GWorld->GetGameInstance())->SendPacket(SendBuffer);
-    }
+    //    SendBufferRef SendBuffer = ClientPacketHandler::MakeSendBuffer(timeOverPkt);
+    //    Cast<UMyGameInstance>(GWorld->GetGameInstance())->SendPacket(SendBuffer);
+    //}
 }
 
 

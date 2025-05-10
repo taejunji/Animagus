@@ -42,7 +42,8 @@ bool Room::Leave(uint16 playerID)
     player->room.store(shared_from_this());
     player->player_state = PlayerRoomState::LOBBY;
     player->s_mutex.unlock();
-
+    if (player->playerID == m_hostPlayer->playerID)
+        InitializeGame();
     m_players.erase(playerID);
     m_playerCount--;
 

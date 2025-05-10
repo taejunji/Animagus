@@ -100,6 +100,7 @@ void ABattle_PlayerController::SetupInputComponent()
         // "Camera 변경: <-, ->"
         EnhancedInputComponent->BindAction(convert_camera_action, ETriggerEvent::Started, this, &ThisClass::Input_ConvertCamera);
 
+        EnhancedInputComponent->BindAction(init_action, ETriggerEvent::Started, this, &ThisClass::Input_Init);
     }
 }
 
@@ -456,6 +457,29 @@ void ABattle_PlayerController::Input_Skill_4(const FInputActionValue& InputValue
         }
     }
     UE_LOG(LogTemp, Display, TEXT("Skill_4_Pressed"));
+}
+
+void ABattle_PlayerController::Input_Init(const FInputActionValue& InputValue)
+{
+    UE_LOG(LogTemp, Warning, TEXT("초기화 입력 요청"));
+
+    ABattleGameMode* BattleMode = Cast<ABattleGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
+    if (BattleMode == nullptr)
+    {
+        UE_LOG(LogTemp, Warning, TEXT("BattleGameMode: World가 null임."));
+    }
+    else if (BattleMode->AmIHost == false)
+    {
+        UE_LOG(LogTemp, Warning, TEXT("BattleGameMode: Host 가 아님"));
+    }
+
+    if (BattleMode != nullptr && BattleMode->AmIHost == true)
+    {
+        Protocol::CS_TIME_OVER_PKT timeOverPkt;
+
+        SendBufferRef SendBuffer = ClientPacketHandler::MakeSendBuffer(timeOverPkt);
+        Cast<UMyGameInstance>(GWorld->GetGameInstance())->SendPacket(SendBuffer);
+    }
 }
 
 void ABattle_PlayerController::Input_ControlToggle_Pressed()
