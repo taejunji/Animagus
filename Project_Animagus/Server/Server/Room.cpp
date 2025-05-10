@@ -155,7 +155,7 @@ bool Room::HandleStartGame(PlayerRef player)
         player->s_mutex.unlock();
 
 #ifndef _DUMMYTEST
-        std::cout << "Send Enter Game Packet to " << player->playerID << " , Spawn Index: " << newPlayer.spawn_index << std::endl;
+        //std::cout << "Send Enter Game Packet to " << player->playerID << " , Spawn Index: " << newPlayer.spawn_index << std::endl;
 #endif
 
         //std::cout << n_pid << std::endl;
@@ -184,7 +184,7 @@ bool Room::HandleStartGame(PlayerRef player)
                 session->Send(sendBuffer);
 
 #ifndef _DUMMYTEST
-            std::cout << item.first << "'s info Send Spawn Packet to " << n_pid << std::endl;
+            //std::cout << item.first << "'s info Send Spawn Packet to " << n_pid << std::endl;
 #endif
         }
 
@@ -204,7 +204,7 @@ bool Room::HandleStartGame(PlayerRef player)
             if (auto session = player->ownerSession.lock())
                 session->Send(sendBuffer);
 
-            std::cout << "AI info Send Spawn Packet to " << n_pid << std::endl;
+            //std::cout << "AI info Send Spawn Packet to " << n_pid << std::endl;
         }
 
     }
