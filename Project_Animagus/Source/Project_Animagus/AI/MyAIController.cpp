@@ -3,6 +3,7 @@
 
 #include "MyAIController.h"
 #include "Kismet/GameplayStatics.h"
+#include "../GameMode/BattleGameMode.h"
 
 #include "BehaviorTree/BlackboardComponent.h"
 #include "BehaviorTree/BehaviorTreeComponent.h"
@@ -32,6 +33,7 @@
 
 #include "../Actor/ItemBox/Item_Box_Base.h"
 #include "../Item/BaseItem.h"
+#include "../Actor/Zones/ShrinkingZone.h"
 
 AMyAIController::AMyAIController(const FObjectInitializer& ObjectInitializer)
     : Super(ObjectInitializer)
@@ -202,8 +204,8 @@ void AMyAIController::Tick(float DeltaTime)
     // 유효한 네비 경로 확인
     // CheckFindPathFromNavMesh();
 
-    // 타겟이 죽었는지 확인
-    CheckAndDisableTargetIfDead();
+    // 타겟을 해제해야하는지 확인
+    CheckDisableTarget();
 
     // 스킬 쿨타임 확인
     // CheckSkillCoolTime(AI);
@@ -263,27 +265,103 @@ void AMyAIController::Tick(float DeltaTime)
 
 }
 
-void AMyAIController::CheckAndDisableTargetIfDead()
+void AMyAIController::CheckDisableTarget()
 {
-    // Blackboard에서 TargetKey에 해당하는 타겟 객체를 가져옵니다
-    ABaseCharacter* TargetCharacter = Cast<ABaseCharacter>(GetBlackboardComponent()->GetValueAsObject(TargetKey.SelectedKeyName));
+    // 기본 참조
+    AAICharacter* AI = Cast<AAICharacter>(GetPawn());
+    ABattleGameMode* BattleMode = Cast<ABattleGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
 
-    // 타겟이 죽었는지 확인
-    if (TargetCharacter == nullptr || TargetCharacter->GetIsDead())
-    {
+    // 1. 캐릭터 타겟 검사
+    ABaseCharacter* TargetCharacter = Cast<ABaseCharacter>(Blackboard->GetValueAsObject(TargetKey.SelectedKeyName));
+    if (!TargetCharacter || TargetCharacter->GetIsDead()) {
         ClearFocusTarget();
     }
 
-    AItem_Box_Base* TargetBox = Cast<AItem_Box_Base>(GetBlackboardComponent()->GetValueAsObject(BoxTargetKey.SelectedKeyName));
+    // 2. 박스 타겟 검사
+    AItem_Box_Base* TargetBox = Cast<AItem_Box_Base>(Blackboard->GetValueAsObject(BoxTargetKey.SelectedKeyName));
     if (TargetBox && TargetBox->GetHp() <= 0.f) {
-        if (ABaseCharacter* AI = Cast<ABaseCharacter>(GetPawn())) { 
-            AI->bUseControllerRotationYaw = false; 
-            AI->GetCharacterMovement()->bOrientRotationToMovement = true; 
-            AI->GetCharacterMovement()->bUseControllerDesiredRotation = false; 
-        } 
+        if (AI) {
+            AI->bUseControllerRotationYaw = false;
+            AI->GetCharacterMovement()->bOrientRotationToMovement = true;
+            AI->GetCharacterMovement()->bUseControllerDesiredRotation = false;
+        }
 
-        ClearFocus(EAIFocusPriority::Gameplay);  // Focus 해제 
-        GetBlackboardComponent()->ClearValue(BoxTargetKey.SelectedKeyName); 
+        ClearFocus(EAIFocusPriority::Gameplay);
+        Blackboard->ClearValue(BoxTargetKey.SelectedKeyName); 
+    }
+
+    // 3. 게임 라운드에 따라 해제
+    if (BattleMode && AI)
+    {
+        // 상시 전투 구역 -> 라운드 시간에 영향 받지 않는다 -> 타겟이 있으면 싸우고, 박스가 있으면 먹고
+        // bool bInCombatZone = ((FMath::Abs(AI->GetActorLocation().X) <= 3300.f) && (FMath::Abs(AI->GetActorLocation().Y) <= 3300.f));
+
+        if (TargetCharacter && BattleMode->ShrinkingZone) {
+
+            float HPDifference = TargetCharacter->GetHP() - AI->GetHP();
+            // float RandomAlpha = FMath::RandRange(10.f, 40.f);
+
+            float DistanceAI = FVector::Dist(FVector::ZeroVector, AI->GetActorLocation()); 
+
+            // ShrinkingZone이 있고, 해당 범위에 벗어나면 도망
+            if (DistanceAI >= BattleMode->ShrinkingZone->CurrentRadius) { 
+                if (HPDifference >= (AI->RetreatThreshold)) { 
+                    UE_LOG(LogTemp, Error, TEXT("안개구역 => HP 차이가 RetreatThreshold 이상일 경우")); 
+                    ClearFocusTarget(); 
+                }
+            }
+#if 0
+            if (false == bInCombatZone) {
+
+                // 전투 구역이 아니고, HP 차이가 RetreatThreshold + RandomAlpha 이상일 경우
+                if (HPDifference >= (AI->RetreatThreshold + RandomAlpha)) {
+                    UE_LOG(LogTemp, Error, TEXT("평화 구역 => HP 차이가 RetreatThreshold + RandomAlpha 이상일 경우"));
+                    ClearFocusTarget();
+                }
+            }
+            else {
+                // 전투 구역 내에서 거리 계산
+
+                float DistanceAI = FVector::Dist(FVector::ZeroVector, AI->GetActorLocation());
+
+                // ShrinkingZone이 있고, 해당 범위에 벗어나면 도망
+                if (BattleMode->ShrinkingZone && DistanceAI >= BattleMode->ShrinkingZone->CurrentRadius) {
+                    if (HPDifference >= (AI->RetreatThreshold)) {
+                        UE_LOG(LogTemp, Error, TEXT("전투 구역 + 안개구역 => HP 차이가 RetreatThreshold 이상일 경우"));
+                        ClearFocusTarget();
+                    }
+                }
+            }
+#endif
+        }
+
+        if (TargetBox && BattleMode->ShrinkingZone) {
+
+            float DistanceBox = FVector::Dist(FVector::ZeroVector, TargetBox->GetActorLocation());
+            if (DistanceBox >= BattleMode->ShrinkingZone->CurrentRadius) {
+                UE_LOG(LogTemp, Error, TEXT("박스 위치 => 안개 존 => 박스 X"));
+
+                AI->bUseControllerRotationYaw = false;
+                AI->GetCharacterMovement()->bOrientRotationToMovement = true;
+                AI->GetCharacterMovement()->bUseControllerDesiredRotation = false;
+
+                ClearFocus(EAIFocusPriority::Gameplay);
+                Blackboard->ClearValue(BoxTargetKey.SelectedKeyName);
+            }
+        }
+       
+#if 0
+        if (false == bInCombatZone && TargetBox && BattleMode->GetCurrentRoundTime() > 90.f) {
+            UE_LOG(LogTemp, Error, TEXT("평화 구역 => 라운드 1분 30초 => 박스 X"));
+
+            AI->bUseControllerRotationYaw = false;
+            AI->GetCharacterMovement()->bOrientRotationToMovement = true;
+            AI->GetCharacterMovement()->bUseControllerDesiredRotation = false;
+
+            ClearFocus(EAIFocusPriority::Gameplay); 
+            Blackboard->ClearValue(BoxTargetKey.SelectedKeyName); 
+        }
+#endif
     }
 }
 

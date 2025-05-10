@@ -6,6 +6,10 @@
 #include "BehaviorTree/BehaviorTreeComponent.h"
 #include "MyAIController.h"
 #include "NavigationSystem.h"
+#include "../GameMode/BattleGameMode.h"
+#include "Kismet/GameplayStatics.h"
+#include "../Actor/Zones/ShrinkingZone.h"
+
 
 UBTTaskNode_FindPatrolPos::UBTTaskNode_FindPatrolPos()
 {
@@ -17,6 +21,11 @@ EBTNodeResult::Type UBTTaskNode_FindPatrolPos::ExecuteTask(UBehaviorTreeComponen
     APawn* ControllingPawn = OwnerComp.GetAIOwner()->GetPawn();
     if (ControllingPawn == nullptr)
     {
+        return EBTNodeResult::Failed;
+    }
+
+    ABattleGameMode* BattleMode = Cast<ABattleGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
+    if (!BattleMode) {
         return EBTNodeResult::Failed;
     }
 
@@ -35,12 +44,18 @@ EBTNodeResult::Type UBTTaskNode_FindPatrolPos::ExecuteTask(UBehaviorTreeComponen
     float SearchRadius = OwnerComp.GetBlackboardComponent()->GetValueAsFloat(random_patrol_radius_key.SelectedKeyName);
 
     // 1. OriginVector, Radius, ResultVector
-    if (NavSystem->GetRandomPointInNavigableRadius(
-        OriginVector, //ControllingPawn->GetActorLocation(),
-        SearchRadius,
-        NextPatrol))
+    if (NavSystem->GetRandomPointInNavigableRadius(OriginVector, SearchRadius, NextPatrol))
     {
-        // DrawDebugSphere(GetWorld(), NextPatrol, 300, 16, FColor::Magenta, false, 0.2f);
+        // 월드 원점 기준 거리 계산
+        float Distance = FVector::Dist(FVector::ZeroVector, NextPatrol.Location);
+
+        // ShrinkingZone의 반지름보다 거리가 크면 실패하도록
+        if (BattleMode->ShrinkingZone && Distance >= BattleMode->ShrinkingZone->CurrentRadius)
+        {
+            return EBTNodeResult::Failed;
+        }
+
+        //DrawDebugSphere(GetWorld(), NextPatrol, 300, 16, FColor::Magenta, false, 3.f);
 
         OwnerComp.GetBlackboardComponent()->SetValueAsVector(patrol_pos_key.SelectedKeyName, NextPatrol);
         return EBTNodeResult::Succeeded;

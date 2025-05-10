@@ -41,4 +41,5 @@ protected:
 
     // 쇼크 웨이브 가능한지 확인 -> 적과 가까운 경우에 사용
     bool CheckShockwaveSkill(UBehaviorTreeComponent& OwnerComp, class ABaseCharacter* Character);
+    bool CheckRadialSkill(UBehaviorTreeComponent& OwnerComp, class ABaseCharacter* Character);
 };
