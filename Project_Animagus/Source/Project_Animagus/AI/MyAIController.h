@@ -141,7 +141,7 @@ public:
     UFUNCTION()
     void OnPerceptionUpdated(const TArray<AActor*>& UpdatedActors);
 
-    void CheckAndDisableTargetIfDead();
+    void CheckDisableTarget();
     
     struct FAIStimulus CanSenseActor(AActor* Actor, EAIPerceptionSense AIPerceptionSense);
     
