@@ -464,15 +464,6 @@ void ABattle_PlayerController::Input_Init(const FInputActionValue& InputValue)
     UE_LOG(LogTemp, Warning, TEXT("초기화 입력 요청"));
 
     ABattleGameMode* BattleMode = Cast<ABattleGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
-    if (BattleMode == nullptr)
-    {
-        UE_LOG(LogTemp, Warning, TEXT("BattleGameMode: World가 null임."));
-    }
-    else if (BattleMode->AmIHost == false)
-    {
-        UE_LOG(LogTemp, Warning, TEXT("BattleGameMode: Host 가 아님"));
-    }
-
     if (BattleMode != nullptr && BattleMode->AmIHost == true)
     {
         Protocol::CS_TIME_OVER_PKT timeOverPkt;

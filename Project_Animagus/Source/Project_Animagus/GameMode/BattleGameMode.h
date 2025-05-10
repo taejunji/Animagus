@@ -20,6 +20,7 @@ class AItem_Box_Base;
 class USoundBase;
 class AShrinkingZone;
 class AAttractionZone;
+class UAudioComponent;
 
 UCLASS()
 class PROJECT_ANIMAGUS_API ABattleGameMode : public AGameModeBase
@@ -117,6 +118,10 @@ public:
 
     UPROPERTY(EditAnywhere, Category = "ShrinkZone")
     TSubclassOf<class AShrinkingZone> ShrinkzoneBpclass;
+
+    UPROPERTY()
+    UAudioComponent* BackgroundMusicComponent;
+    void PlayBackgroundMusic();
     
     // 라운드 경과 시간 출력
     FTimerHandle battle_timer_handle;
@@ -151,7 +156,7 @@ public:
     TArray<AAttractionZone*> AttractionZones;
 
     bool AmIHost = false;
-    float TIME_OVER = 180.0f;
+    float TIME_OVER = 60.0f * 4;
     uint64 StartTime2Server = 0;
     bool CalledActiveInput = false;
 

@@ -408,6 +408,7 @@ void UMyGameInstance::HandleInitBattleMode(Protocol::SC_GAME_INIT_PKT& pkt)
             }
 
             GameMode->InitBattleMode();
+            GameMode->PlayBackgroundMusic();
         }
     }
 }

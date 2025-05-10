@@ -27,6 +27,7 @@
 #include "../Actor/Zones/AttractionZone.h"
 #include "../Actor/Zones/ShrinkingZone.h"
 #include "EngineUtils.h"
+#include "Components/AudioComponent.h"
 
 
 ABattleGameMode::ABattleGameMode()
@@ -167,6 +168,16 @@ void ABattleGameMode::StartPlay()
         false   // 한번만
     );
    
+
+    if (AttractSoundWave)
+    {
+        FVector SoundLocation(0.0f, 0.0f, 210.0f);
+        UGameplayStatics::PlaySoundAtLocation(
+            this,
+            AttractSoundWave,
+            SoundLocation
+        );
+    }
 }
 
 void ABattleGameMode::OnPostLoadInitialize()
@@ -185,7 +196,8 @@ void ABattleGameMode::OnPostLoadInitialize()
                 }
                 if (BackgroundMusic)
                 {
-                    UGameplayStatics::PlaySound2D(GetWorld(), BackgroundMusic);
+                    //UGameplayStatics::PlaySound2D(GetWorld(), BackgroundMusic);
+                    PlayBackgroundMusic();
                 }
             }),
         0.3f,
@@ -198,6 +210,33 @@ void ABattleGameMode::Tick(float DeltaTime)
     Super::Tick(DeltaTime);
  
     Cast<UMyGameInstance>(GWorld->GetGameInstance())->HandleRecvPackets();
+}
+
+void ABattleGameMode::PlayBackgroundMusic()
+{
+    if (!BackgroundMusic) return;
+
+    // 기존 재생 중이면 중지
+    if (BackgroundMusicComponent)
+    {
+        BackgroundMusicComponent->Stop();
+        BackgroundMusicComponent->DestroyComponent();
+    }
+
+    // 2D 사운드 재생하고 컴포넌트 레퍼런스 저장
+    BackgroundMusicComponent = UGameplayStatics::SpawnSound2D(
+        this,
+        BackgroundMusic,
+        1.0f, // Volume
+        1.0f, // Pitch
+        0.0f  // StartTime
+    );
+
+    // 루프 설정
+    //if (BackgroundMusicComponent)
+    //{
+    //    BackgroundMusicComponent->bLooping = true;
+    //}
 }
 
 void ABattleGameMode::InitBattleMode()
@@ -223,6 +262,7 @@ void ABattleGameMode::InitBattleMode()
 
         CurrentCountdownTime = CountdownTime;
         CurrentRoundTime = 0;
+        RoundTimerUpdate();
 
         // 1초마다 CountdownTimerUpdate() 호출
         //GetWorld()->GetTimerManager().SetTimer(CountdownTimerHandle, this, &ABattleGameMode::CountdownTimerUpdate, 1.0f, true);
@@ -246,16 +286,6 @@ void ABattleGameMode::InitBattleMode()
     AreaSpawnPoints.Empty();
     SpawnedItems.Empty();
     AttractionZones.Empty();
-
-    if (AttractSoundWave)
-    {
-        FVector SoundLocation(0.0f, 0.0f, 210.0f);
-        UGameplayStatics::PlaySoundAtLocation(
-            this,
-            AttractSoundWave,
-            SoundLocation
-        );
-    }
 
     InitializeArea1SpawnPoints();
     InitializeArea2SpawnPoints();
@@ -876,14 +906,14 @@ void ABattleGameMode::RoundTimerUpdate()
 
     //UE_LOG(LogTemp, Log, TEXT("Round Time: %d"), CurrentRoundTime);
 
-    //if (AmIHost == false) return;
-    //if (CurrentRoundTime >= TIME_OVER)
-    //{
-    //    Protocol::CS_TIME_OVER_PKT timeOverPkt;
+    if (AmIHost == false) return;
+    if (CurrentRoundTime >= TIME_OVER)
+    {
+        Protocol::CS_TIME_OVER_PKT timeOverPkt;
 
-    //    SendBufferRef SendBuffer = ClientPacketHandler::MakeSendBuffer(timeOverPkt);
-    //    Cast<UMyGameInstance>(GWorld->GetGameInstance())->SendPacket(SendBuffer);
-    //}
+        SendBufferRef SendBuffer = ClientPacketHandler::MakeSendBuffer(timeOverPkt);
+        Cast<UMyGameInstance>(GWorld->GetGameInstance())->SendPacket(SendBuffer);
+    }
 }
 
 

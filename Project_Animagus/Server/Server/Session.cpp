@@ -356,15 +356,15 @@ int32 Session::OnRecv(BYTE* buffer, int32 len)
 
 void Session::OnDisconnected()
 {
-    PlayerRef player = m_player.load();
-    if (player == nullptr)
-        return;
+    //PlayerRef player = m_player.load();
+    //if (player == nullptr)
+    //    return;
 
-    RoomRef room = player->room.load().lock(); 
-    if (room == nullptr)
-        return;
+    //RoomRef room = player->room.load().lock(); 
+    //if (room == nullptr)
+    //    return;
 
-    room->HandleLeavePlayer(player);
+    //room->HandleLeavePlayer(player);
 }
 
 void Session::OnRecvPacket(BYTE* buffer, int32 len)

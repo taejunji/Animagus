@@ -42,10 +42,11 @@ bool Room::Leave(uint16 playerID)
     player->room.store(shared_from_this());
     player->player_state = PlayerRoomState::LOBBY;
     player->s_mutex.unlock();
-    if (player->playerID == m_hostPlayer->playerID)
-        InitializeGame();
     m_players.erase(playerID);
     m_playerCount--;
+
+    if (player->playerID == m_hostPlayer->playerID)
+        InitializeGame();
 
     return true;
 }
@@ -337,7 +338,7 @@ bool Room::HandleEnterAIPlayer(Protocol::CS_AI_ENTER_PKT& pkt)
     m_aiPlayers.insert(make_pair(aiID, ai));
     ai->room.store(shared_from_this());
 
-    m_playerCount++;
+    //m_playerCount++;
 
     // Host 를 제외한 클라이언트에서는 AI 를 일반 NetworkPlayer 로 인식
     SC_SPAWN_PKT newPlayer;
@@ -504,7 +505,7 @@ void Room::InitializeGame()
         player->s_mutex.unlock();
     }
     m_aiPlayers.clear();
-    m_playerCount = 0;
+    //m_playerCount = 0;
     m_gameStartTickCount = 0;
     m_loadingOverCount = 0;
     m_indexGen = 0;
