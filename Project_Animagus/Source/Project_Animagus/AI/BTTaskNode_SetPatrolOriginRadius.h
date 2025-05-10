@@ -9,6 +9,23 @@
 /**
  * 
  */
+
+ // 거리 정보 저장용 구조체
+struct FIndexDistancePair
+{
+    int32 Index;
+    float DistanceSq;
+};
+
+// 정렬 기준 정의
+struct FCompareDistance
+{
+    bool operator()(const FIndexDistancePair& A, const FIndexDistancePair& B) const
+    {
+        return A.DistanceSq < B.DistanceSq;
+    }
+};
+
 UCLASS()
 class PROJECT_ANIMAGUS_API UBTTaskNode_SetPatrolOriginRadius : public UBTTaskNode
 {
