@@ -155,9 +155,10 @@ void UMyGameInstance::DisconnectFromGameServer()
     if (Socket == nullptr || ClientSession == nullptr)
         return;
 
-    Protocol::CS_LEAVE_PKT LeavePkt;
-    SendBufferRef SendBuffer = ClientPacketHandler::MakeSendBuffer(LeavePkt);
-    Cast<UMyGameInstance>(GWorld->GetGameInstance())->SendPacket(SendBuffer);
+    // TODO: 게임 종료 패킷 보내도록 수정
+    //Protocol::CS_LEAVE_PKT LeavePkt;
+    //SendBufferRef SendBuffer = ClientPacketHandler::MakeSendBuffer(LeavePkt);
+    //Cast<UMyGameInstance>(GWorld->GetGameInstance())->SendPacket(SendBuffer);
 }
 
 void UMyGameInstance::HandleRecvPackets()

@@ -242,7 +242,7 @@ bool Room::HandleLeavePlayer(PlayerRef player)
     std::lock_guard lock(m_mutex);
 
     uint16 p_id = player->playerID;
-    //bool success = Leave(p_id);
+    bool success = Leave(p_id);
 
 #ifndef _DUMMYTEST
     std::cout << "Leave PlayerID: " << p_id << std::endl;
@@ -258,7 +258,7 @@ bool Room::HandleLeavePlayer(PlayerRef player)
 
     m_aiPlayers.clear();
 
-    return true;
+    return success;
 }
 
 bool Room::HandleMoveLocked(Protocol::CS_MOVE_PKT& pkt)
