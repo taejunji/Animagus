@@ -39,12 +39,17 @@ void UBTService_CheckMovementStuck::TickNode(UBehaviorTreeComponent& OwnerComp, 
     const FVector MyLoc = Character->GetActorLocation();
 
     // DeadZone 여부 판단
-    //bool bInDeadZone = (
-    //    FMath::Abs(MyLoc.X) <= 2450.f &&
-    //    FMath::Abs(MyLoc.Y) <= 2450.f &&
-    //    MyLoc.Z <= 600.f
-    //    );
+    bool bInDeadZone = (
+        FMath::Abs(MyLoc.X) <= 2450.f &&
+        FMath::Abs(MyLoc.Y) <= 2450.f &&
+        MyLoc.Z >= 600.f
+        );
 
+    if (bInDeadZone) {
+        ElapsedTime = 0.f;
+        OwnerComp.GetBlackboardComponent()->SetValueAsBool(bMoveStuckKey.SelectedKeyName, false);
+    }
+         
     //// DeadZone일 경우 TimeThreshold 짧게 조정
     //TimeThreshold = bInDeadZone ? 1.0f : 5.0f; 
 
