@@ -256,8 +256,11 @@ void UMyGameInstance::HandleEnterGame(Protocol::SC_ENTER_GAME_PKT& pkt)
             GameMode->AmIHost = pkt.host;
             GameMode->StartTime2Server = pkt.server_time;
             if (pkt.host == true)
+            {
+                GameMode->CurrentPlayerCount = pkt.player_count;
+
                 UE_LOG(LogTemp, Warning, TEXT("I AM THE HOST: %d"), pkt.player_id);
-                
+            }
             GameMode->SpawnPlayers();
 
             APlayerController* PC = UGameplayStatics::GetPlayerController(GetWorld(), 0);

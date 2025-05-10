@@ -85,7 +85,7 @@ bool Room::HandleEnterPlayer(PlayerRef player)
 
     bool isHost = false;
     int n_pid = 0;
-    if (m_playerCount % 2 == 1)
+    if (m_playerCount == 1)
     {
         SC_UR_HOST_PKT ur_host;
         m_hostPlayer = player;
@@ -139,7 +139,8 @@ bool Room::HandleStartGame(PlayerRef player)
         //newPlayer.rotation = player->rotation;
         newPlayer.host = (player->playerID == m_hostPlayer->playerID);
         //newPlayer.spawn_index = 0;
-        newPlayer.spawn_index = m_indexGen++ % 8;
+        newPlayer.spawn_index = m_indexGen++ % m_maxPlayerCount;
+        newPlayer.player_count = m_players.size();
         newPlayer.server_time = m_gameStartTickCount;
         SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(newPlayer);
         if (auto session = player->ownerSession.lock())
@@ -505,6 +506,7 @@ void Room::InitializeGame()
     m_playerCount = 0;
     m_gameStartTickCount = 0;
     m_loadingOverCount = 0;
+    m_indexGen = 0;
 
     InitItemInfo();
 }

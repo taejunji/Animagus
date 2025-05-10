@@ -238,6 +238,7 @@ void ABattleGameMode::InitBattleMode()
     FTransform ShrinkSpawnTransform;
     ShrinkSpawnTransform.SetLocation(FVector(0.f, 0.f, 1162.f));
     ShrinkingZone = World->SpawnActor<AShrinkingZone>(ShrinkzoneBpclass, ShrinkSpawnTransform);
+
     
     IndexingSpawnedPlayers.Empty();
     SpawnedPlayers.Empty();
@@ -375,7 +376,7 @@ void ABattleGameMode::SpawnPlayers()
 
     uint16 AIId = 101;
     // ** AI를 추가할 경우 -> 0번 플레이어만 만들 것임 ** AI 플레이어 수 설정
-    for (int32 i = 1; i < 5; ++i)
+    for (int32 i = MAX_PLAYER - 1; i >= CurrentPlayerCount; --i)
     {
         // AI 플레이어 생성 (임의의 `ABaseCharacter`로 가정)
         // FVector AI_SpawnLocation = spawn_transform[i].GetLocation();

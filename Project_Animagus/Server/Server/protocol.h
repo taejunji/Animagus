@@ -211,7 +211,7 @@ namespace Protocol {
         //float rotation;
         bool host;
         int16 spawn_index;
-        int16 ai_count;
+        int16 player_count;
         uint64 server_time;
     };
     struct SC_LEAVE_PKT

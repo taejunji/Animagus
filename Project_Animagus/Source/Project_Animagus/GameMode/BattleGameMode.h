@@ -45,6 +45,9 @@ public:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Classes)
     TSubclassOf<APawn> NetPawnClass;
 
+    const uint16 MAX_PLAYER = 8;
+    uint16 CurrentPlayerCount = 1;
+
 protected:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Battle Settings")
     float start_time; // ex) 5초 후에 입력 활성화
@@ -148,7 +151,7 @@ public:
     TArray<AAttractionZone*> AttractionZones;
 
     bool AmIHost = false;
-    float TIME_OVER = 60.0f;
+    float TIME_OVER = 180.0f;
     uint64 StartTime2Server = 0;
     bool CalledActiveInput = false;
 
