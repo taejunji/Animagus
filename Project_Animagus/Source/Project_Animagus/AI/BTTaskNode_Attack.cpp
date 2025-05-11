@@ -55,7 +55,7 @@ EBTNodeResult::Type UBTTaskNode_Attack::ExecuteTask(UBehaviorTreeComponent& Owne
             break;
 
         case EAttackSkill::RadialSkill:
-            if (Character->UseSkillByName(TEXT("RadialSkill"))) {
+            if (CheckRadialSkill(OwnerComp, Character) && Character->UseSkillByName(TEXT("RadialSkill"))) {
                 return EBTNodeResult::Succeeded;
             }
             break;
@@ -94,4 +94,14 @@ bool UBTTaskNode_Attack::CheckShockwaveSkill(UBehaviorTreeComponent& OwnerComp, 
     // UE_LOG(LogTemp, Warning, TEXT("ShockwaveSkill Check: Distance = %f"), Distance); 
     // 거리 조건: 400 이하일 때만 true == 쇼크웨이브 최대 반지름이 300인데 400을 유효사거리로
     return Distance <= 400.f;
+}
+
+bool UBTTaskNode_Attack::CheckRadialSkill(UBehaviorTreeComponent& OwnerComp, ABaseCharacter* Character)
+{
+    // Target Character가 아니라면 False == Box한테는 발사 x
+
+    ABaseCharacter* Target = Cast<ABaseCharacter>(OwnerComp.GetBlackboardComponent()->GetValueAsObject(target_key.SelectedKeyName));
+    if (Target == nullptr) return false;
+
+    return true;
 }
