@@ -528,7 +528,13 @@ void Room::InitItemInfo()
         for (int i = 0; i < 30; ++i)
         {
             item.spawn_index[i] = static_cast<char>(pool[i]);
-            item.item_level[i] = static_cast<char>(rand() % 3);
+            int item_level = rand() % 10;
+            if (item_level <= 1)
+                item.item_level[i] = static_cast<char>(0);
+            else if (item_level <= 8)
+                item.item_level[i] = static_cast<char>(1);
+            else
+                item.item_level[i] = static_cast<char>(2);
             //item.item_level[i] = static_cast<char>(1);
         }
         item.item_count = 30;
@@ -550,7 +556,13 @@ void Room::InitItemInfo()
         for (int i = 0; i < 20; ++i)
         {
             item.spawn_index[i] = static_cast<char>(pool[i]);
-            item.item_level[i] = static_cast<char>(rand() % 3);
+            int item_level = rand() % 10;
+            if (item_level <= 1)
+                item.item_level[i] = static_cast<char>(0);
+            else if (item_level <= 7)
+                item.item_level[i] = static_cast<char>(1);
+            else
+                item.item_level[i] = static_cast<char>(2);
         }
         item.item_count = 20;
         item.zone_index = 1;
@@ -564,7 +576,11 @@ void Room::InitItemInfo()
         for (int i = 0; i < 12; ++i)
         {
             item.spawn_index[i] = static_cast<char>(i);
-            item.item_level[i] = static_cast<char>(rand() % 3);
+            int item_level = rand() % 10;
+            if (item_level <= 7)
+                item.item_level[i] = static_cast<char>(1);
+            else
+                item.item_level[i] = static_cast<char>(2);
         }
         
         item.item_count = 12;
