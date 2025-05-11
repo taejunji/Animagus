@@ -123,7 +123,7 @@ public:
     int32 Skilltest;
 
 protected:
-    const float MOVE_PACKET_SEND_DELAY = 1.0f / 30.0f;
+    const float MOVE_PACKET_SEND_DELAY = 1.0f / 40.0f;
     float MovePacketSendTimer = MOVE_PACKET_SEND_DELAY;
 
     // Cache

@@ -559,10 +559,10 @@ void ABaseCharacter::AIchar_SkillSet()
         MagicMissileBPClass,
         StunBPClass,
         RadialBPClass,
-        ChangeBPClass,
+        //ChangeBPClass,
         SmokeBPClass,
-        ShieldBPClass,
-        //ShockwaveBPClass,
+        //ShieldBPClass,
+        ShockwaveBPClass,
         HasteBPClass,
     };
 
@@ -598,9 +598,9 @@ void ABaseCharacter::AIchar_SkillSet()
         }
     }
     
-    if (ShockwaveBPClass)
+    if (ShieldBPClass)
     {
-        UBaseSkill* NewSkill = NewObject<UShockwaveSkill>(this, ShockwaveBPClass);
+        UBaseSkill* NewSkill = NewObject<UShieldSkill>(this, ShieldBPClass);
         if (NewSkill)
         {
             NewSkill->Owner = this;

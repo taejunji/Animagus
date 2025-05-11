@@ -164,7 +164,7 @@ void ABattleGameMode::StartPlay()
         DelayHandle,
         this,
         &ABattleGameMode::OnPostLoadInitialize,
-        5.0f,   // 5초 뒤 실행
+        6.0f,   // 5초 뒤 실행
         false   // 한번만
     );
    

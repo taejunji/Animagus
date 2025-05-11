@@ -529,7 +529,7 @@ void Room::InitItemInfo()
         {
             item.spawn_index[i] = static_cast<char>(pool[i]);
             int item_level = rand() % 10;
-            if (item_level <= 1)
+            if (item_level <= 6)
                 item.item_level[i] = static_cast<char>(0);
             else if (item_level <= 8)
                 item.item_level[i] = static_cast<char>(1);
@@ -557,9 +557,9 @@ void Room::InitItemInfo()
         {
             item.spawn_index[i] = static_cast<char>(pool[i]);
             int item_level = rand() % 10;
-            if (item_level <= 1)
+            if (item_level <= 5)
                 item.item_level[i] = static_cast<char>(0);
-            else if (item_level <= 7)
+            else if (item_level <= 8)
                 item.item_level[i] = static_cast<char>(1);
             else
                 item.item_level[i] = static_cast<char>(2);
@@ -578,9 +578,9 @@ void Room::InitItemInfo()
             item.spawn_index[i] = static_cast<char>(i);
             int item_level = rand() % 10;
             if (item_level <= 7)
-                item.item_level[i] = static_cast<char>(1);
+                item.item_level[i] = static_cast<char>(0);
             else
-                item.item_level[i] = static_cast<char>(2);
+                item.item_level[i] = static_cast<char>(1);
         }
         
         item.item_count = 12;
