@@ -294,7 +294,7 @@ bool Room::HandleMoveLocked(Protocol::CS_MOVE_PKT& pkt)
 
     // 이동 
     SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(pkt);
-    Broadcast(sendBuffer, 0);
+    Broadcast(sendBuffer, 0, true);
 
     return true;
 }
@@ -315,7 +315,7 @@ bool Room::HandleSkillLocked(Protocol::CS_USING_SKILL_PKT& pkt)
     // 뭐 더 붙일 정보가 있나?
 
     SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(pkt);
-    Broadcast(sendBuffer, playerId);
+    Broadcast(sendBuffer, playerId, true);
 
     return true;
 }
@@ -350,7 +350,7 @@ bool Room::HandleEnterAIPlayer(Protocol::CS_AI_ENTER_PKT& pkt)
     newPlayer.p_type = ai->type;
 
     SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(newPlayer);
-    Broadcast(sendBuffer, ownerID);
+    Broadcast(sendBuffer, ownerID, true);
 
     return true;
 }
@@ -390,7 +390,7 @@ bool Room::HandleAIMoveLocked(Protocol::CS_AI_MOVE_PKT& pkt, const uint16 ownerI
 
     // host 에게는 전송 X
     SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(movePkt);
-    Broadcast(sendBuffer, ownerID);
+    Broadcast(sendBuffer, ownerID, true);
 
     return true;
 }
@@ -413,7 +413,7 @@ bool Room::HandleAISkillLocked(Protocol::CS_AI_USING_SKILL_PKT& pkt, const uint1
     //std::cout << "AI Using Skill " << static_cast<int>(aiSkillPkt.s_type) << " Rotation: " << aiSkillPkt.pitch << ", " << aiSkillPkt.yaw << ", " << aiSkillPkt.roll << std::endl;
 
     SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(aiSkillPkt);
-    Broadcast(sendBuffer, ownerID);
+    Broadcast(sendBuffer, ownerID, true);
 
     return true;
 }
@@ -442,7 +442,7 @@ bool Room::HandleDamageLocked(Protocol::CS_DAMAGE_PKT& pkt, const uint16 ownerID
     updateHpPkt.isAlive = pkt.isAlive;
 
     SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(updateHpPkt);
-    Broadcast(sendBuffer, ownerID);
+    Broadcast(sendBuffer, ownerID, true);
 
     return true;
 }
@@ -483,7 +483,7 @@ bool Room::HandleTimeOverLocked(Protocol::CS_TIME_OVER_PKT& pkt)
         SC_GAME_INIT_PKT initGamePkt;
 
         SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(initGamePkt);
-        Broadcast(sendBuffer, 0);
+        Broadcast(sendBuffer, 0, true);
 
     }
     else
