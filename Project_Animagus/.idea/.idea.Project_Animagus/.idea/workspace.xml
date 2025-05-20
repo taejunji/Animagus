@@ -8,19 +8,14 @@
     <projectFile>Intermediate/ProjectFiles/Project_Animagus.vcxproj</projectFile>
     <projectFile>Intermediate/ProjectFiles/UE5.vcxproj</projectFile>
   </component>
-  <component name="AutoImportSettings">
-    <option name="autoReloadType" value="SELECTIVE" />
-  </component>
   <component name="ChangeListManager">
-    <list default="true" id="85cc10f5-76b3-48c8-ae34-53a363f7136e" name="변경" comment="">
+    <list default="true" id="c350df0e-eb71-45e4-bcdf-3b24d09e67ec" name="변경" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.Project_Animagus/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Project_Animagus/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Config/DefaultEngine.ini" beforeDir="false" afterPath="$PROJECT_DIR$/Config/DefaultEngine.ini" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/WorkFolder/Bluprints/Fog/MyShrinkingZone.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/WorkFolder/Bluprints/Fog/MyShrinkingZone.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/WorkFolder/Bluprints/Ui/Ui_Texture/START/START.uasset" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/WorkFolder/Bluprints/Ui/WBP_Lobby.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/WorkFolder/Bluprints/Ui/WBP_Lobby.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/WorkFolder/Levels/Lobby.umap" beforeDir="false" afterPath="$PROJECT_DIR$/Content/WorkFolder/Levels/Lobby.umap" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/Project_Animagus/GameMode/BattleGameMode.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Project_Animagus/GameMode/BattleGameMode.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/Project_Animagus/GameMode/BattleGameMode.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Project_Animagus/GameMode/BattleGameMode.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/작업 일지/ji/작업일지(241223-241229).docx" beforeDir="false" afterPath="$PROJECT_DIR$/작업 일지/ji/작업일지(241223-241229).docx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/작업 일지/ji/작업일지(241230-250105).docx" beforeDir="false" afterPath="$PROJECT_DIR$/작업 일지/ji/작업일지(241230-250105).docx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/작업 일지/ji/작업일지(250106-250112).docx" beforeDir="false" afterPath="$PROJECT_DIR$/작업 일지/ji/작업일지(250106-250112).docx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/작업 일지/ji/작업일지(250113-250119).docx" beforeDir="false" afterPath="$PROJECT_DIR$/작업 일지/ji/작업일지(250113-250119).docx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/작업 일지/ji/작업일지(250120-250126).docx" beforeDir="false" afterPath="$PROJECT_DIR$/작업 일지/ji/작업일지(250120-250126).docx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -34,7 +29,7 @@
   "customColor": "",
   "associatedIndex": 5
 }]]></component>
-  <component name="ProjectId" id="2woj3OWgcrppmmbCJ3mO1Ij6tZL" />
+  <component name="ProjectId" id="2xNBslyVeiYs32leVNmNg6GRLmd" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
@@ -44,10 +39,6 @@
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
     "git-widget-placeholder": "jitae",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
     "nodejs_package_manager_path": "npm",
     "vue.rearranger.settings.migration": "true"
   }
@@ -151,12 +142,12 @@
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="애플리케이션 수준" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="디폴트 작업">
-      <changelist id="85cc10f5-76b3-48c8-ae34-53a363f7136e" name="변경" comment="" />
-      <created>1746714621888</created>
+      <changelist id="c350df0e-eb71-45e4-bcdf-3b24d09e67ec" name="변경" comment="" />
+      <created>1747768860344</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
-      <updated>1746714621888</updated>
-      <workItem from="1746714624119" duration="1931000" />
+      <updated>1747768860344</updated>
+      <workItem from="1747768862111" duration="114000" />
     </task>
     <servers />
   </component>
