@@ -8,14 +8,83 @@
     <projectFile>Intermediate/ProjectFiles/Project_Animagus.vcxproj</projectFile>
     <projectFile>Intermediate/ProjectFiles/UE5.vcxproj</projectFile>
   </component>
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
   <component name="ChangeListManager">
     <list default="true" id="c350df0e-eb71-45e4-bcdf-3b24d09e67ec" name="변경" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.Project_Animagus/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Project_Animagus/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/작업 일지/ji/작업일지(241223-241229).docx" beforeDir="false" afterPath="$PROJECT_DIR$/작업 일지/ji/작업일지(241223-241229).docx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/작업 일지/ji/작업일지(241230-250105).docx" beforeDir="false" afterPath="$PROJECT_DIR$/작업 일지/ji/작업일지(241230-250105).docx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/작업 일지/ji/작업일지(250106-250112).docx" beforeDir="false" afterPath="$PROJECT_DIR$/작업 일지/ji/작업일지(250106-250112).docx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/작업 일지/ji/작업일지(250113-250119).docx" beforeDir="false" afterPath="$PROJECT_DIR$/작업 일지/ji/작업일지(250113-250119).docx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/작업 일지/ji/작업일지(250120-250126).docx" beforeDir="false" afterPath="$PROJECT_DIR$/작업 일지/ji/작업일지(250120-250126).docx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.Project_Animagus/.idea/indexLayout.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.Project_Animagus/.idea/projectSettingsUpdater.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.Project_Animagus/.idea/vcs.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.Project_Animagus/.idea/workspace.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Project_Animagus.sln.DotSettings.user" beforeDir="false" afterPath="$PROJECT_DIR$/Project_Animagus.sln.DotSettings.user" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/Project_Animagus/AI/BTTaskNode_FindPatrolPos.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Project_Animagus/AI/BTTaskNode_FindPatrolPos.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/Project_Animagus/AI/MyAIController.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Project_Animagus/AI/MyAIController.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/Project_Animagus/Actor/Zones/ShrinkingZone.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Project_Animagus/Actor/Zones/ShrinkingZone.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/Project_Animagus/GameMode/BattleGameMode.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Project_Animagus/GameMode/BattleGameMode.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/Project_Animagus/GameMode/BattleGameMode.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Project_Animagus/GameMode/BattleGameMode.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/작업 일지/ji/작업일지(241223-241229).docx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/작업 일지/ji/작업일지(241230-250105).docx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/작업 일지/ji/작업일지(250106-250112).docx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/작업 일지/ji/작업일지(250113-250119).docx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/작업 일지/ji/작업일지(250120-250126).docx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/작업 일지/ji/작업일지(250127-250202).docx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/작업 일지/ji/작업일지(250203-250209).docx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/작업 일지/ji/작업일지(250210-250216).docx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/작업 일지/ji/작업일지(250217-250223).docx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/작업 일지/ji/작업일지(250224-250302).docx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/작업 일지/ji/작업일지(250303-250309).docx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/작업 일지/ji/작업일지(250310-250316).docx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/작업 일지/ji/작업일지(250317-250323).docx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/작업 일지/ji/작업일지(250324-250330).docx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/작업 일지/ji/작업일지(250331-250406).docx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/작업 일지/ji/작업일지(250407-250413).docx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/작업 일지/ji/작업일지(250414-250420).docx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/작업 일지/ji/작업일지(250421-250427).docx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/작업 일지/ji/작업일지(250428-250504).docx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/작업 일지/ji/작업일지(250505-250511).docx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/작업 일지/ji/작업일지(250512-250518).docx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/작업 일지/ji/작업일지(250519-250525).docx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/작업 일지/ji/작업일지(250526-250601).docx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/작업 일지/ji/작업일지(250602-250608).docx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/작업 일지/ji/작업일지(250609-250615).docx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/작업 일지/ji/작업일지(250616-250622).docx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/작업 일지/ji/작업일지(250623-250629).docx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/작업 일지/ji/작업일지(250630-250706).docx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/작업 일지/ji/작업일지(250707-250713).docx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/작업 일지/ji/작업일지(250714-250720).docx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/작업 일지/ji/작업일지(250721-250727).docx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/작업 일지/작업일지(241223-241229).docx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/작업 일지/작업일지(241230-250105).docx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/작업 일지/작업일지(250106-250112).docx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/작업 일지/작업일지(250113-250119).docx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/작업 일지/작업일지(250120-250126).docx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/작업 일지/작업일지(250127-250202).docx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/작업 일지/작업일지(250203-250209).docx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/작업 일지/작업일지(250210-250216).docx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/작업 일지/작업일지(250217-250223).docx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/작업 일지/작업일지(250224-250302).docx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/작업 일지/작업일지(250303-250309).docx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/작업 일지/작업일지(250310-250316).docx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/작업 일지/작업일지(250317-250323).docx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/작업 일지/작업일지(250324-250330).docx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/작업 일지/작업일지(250331-250406).docx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/작업 일지/작업일지(250407-250413).docx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/작업 일지/작업일지(250414-250420).docx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/작업 일지/작업일지(250421-250427).docx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/작업 일지/작업일지(250428-250504).docx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/작업 일지/작업일지(250505-250511).docx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/작업 일지/작업일지(250512-250518).docx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/작업 일지/작업일지(250519-250525).docx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/작업 일지/작업일지(250526-250601).docx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/작업 일지/작업일지(250602-250608).docx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/작업 일지/작업일지(250609-250615).docx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/작업 일지/작업일지(250616-250622).docx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/작업 일지/작업일지(250623-250629).docx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/작업 일지/작업일지(250630-250706).docx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/작업 일지/작업일지(250707-250713).docx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/작업 일지/작업일지(250714-250720).docx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/작업 일지/작업일지(250721-250727).docx" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -25,24 +94,41 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
   </component>
-  <component name="ProjectColorInfo"><![CDATA[{
-  "customColor": "",
-  "associatedIndex": 5
-}]]></component>
+  <component name="HighlightingSettingsPerFile">
+    <setting file="file://$PROJECT_DIR$/../../../../../../Program Files/Epic Games/UE_5.4/Engine/Source/Editor/UnrealEd/Public/Subsystems/AssetEditorSubsystem.h" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Source/Project_Animagus/Character/BaseCharacter.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Source/Project_Animagus/GameMode/BattleGameMode.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Source/Project_Animagus/GameMode/BattleGameMode.h" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Source/Project_Animagus/Item/BaseItem.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Source/Project_Animagus/PlayerController/Battle_PlayerController.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Source/Project_Animagus/Project_Animagus.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Source/Project_Animagus/UI/MyPlayerHUDWidget.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Source/Project_Animagus/UI/MyPlayerHUDWidget.h" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Source/Project_Animagus/UI/SkillSelectionWidget.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Source/Project_Animagus/UI/SkillSelectionWidget.h" root0="SKIP_HIGHLIGHTING" />
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;customColor&quot;: &quot;&quot;,
+  &quot;associatedIndex&quot;: 5
+}</component>
   <component name="ProjectId" id="2xNBslyVeiYs32leVNmNg6GRLmd" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "jitae",
-    "nodejs_package_manager_path": "npm",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;jitae&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RunManager" selected="C/C++ 프로젝트.Project_Animagus">
     <configuration name="Project_Animagus" type="CppProject" factoryName="C++ Project">
       <configuration_1 setup="1">
@@ -135,7 +221,10 @@
       <method v="2" />
     </configuration>
     <configuration default="true" type="docker-deploy" factoryName="dockerfile" temporary="true">
-      <deployment type="dockerfile" />
+      <deployment type="dockerfile">
+        <settings />
+      </deployment>
+      <EXTENSION ID="com.jetbrains.rider.docker.debug" isFastModeEnabled="true" isSslEnabled="false" />
       <method v="2" />
     </configuration>
   </component>
@@ -148,6 +237,9 @@
       <option name="presentableId" value="Default" />
       <updated>1747768860344</updated>
       <workItem from="1747768862111" duration="114000" />
+      <workItem from="1747769118513" duration="1009000" />
+      <workItem from="1748007412507" duration="3913000" />
+      <workItem from="1748253267873" duration="9329000" />
     </task>
     <servers />
   </component>
