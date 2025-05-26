@@ -26,7 +26,7 @@ public:
 
     // 초기화 
     UFUNCTION(BlueprintCallable, Category = "Skill Selection")
-    void Initialize(float InTimeLimit, int32 InMaxSlots);
+    void SetupWidget(float InTimeLimit, int32 InMaxSlots);
 
 protected:
     virtual void NativeConstruct() override;
@@ -81,7 +81,7 @@ private:
 
     // 최대 슬롯 개수
     int32 MaxSlots;
-
+public:
     // 스킬 클래스 목록
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Skill Selection")
     TArray<TSubclassOf<UBaseSkill>> AvailableClasses;
