@@ -17,6 +17,7 @@
 #include "Project_Animagus/Actor/ItemBox/Item_Box_Base.h"
 #include "Project_Animagus/Item/PowerUpItem.h"
 #include "Runtime/Core/Tests/Containers/TestUtils.h"
+#include "../Actor/Zones/ShrinkingZone.h"
 
 ABattleGameMode::ABattleGameMode()
 {
