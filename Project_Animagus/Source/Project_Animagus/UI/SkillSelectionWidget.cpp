@@ -33,7 +33,7 @@ void USkillSelectionWidget::SetupOwner(ABattle_PlayerController* InController)
   OwnerController = InController;
 }
 
-void USkillSelectionWidget::Initialize(float InTimeLimit, int32 InMaxSlots)
+void USkillSelectionWidget::SetupWidget(float InTimeLimit, int32 InMaxSlots)
 {
   TimeRemaining = InTimeLimit;
   MaxSlots = InMaxSlots;
