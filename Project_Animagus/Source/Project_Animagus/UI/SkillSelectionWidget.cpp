@@ -2,6 +2,9 @@
 
 
 #include "SkillSelectionWidget.h"
+
+#include "SkillIconWidget.h"
+#include "SkillSlotWidget.h"
 #include "../GameMode/BattleGameMode.h"
 #include "../Skill/BaseSkill.h"
 #include "Components/TextBlock.h"
@@ -15,6 +18,25 @@ void USkillSelectionWidget::NativeConstruct()
 {
   Super::NativeConstruct();
 
+    // 1) 슬롯 위젯을 MaxSlots 개수만큼 생성
+    SlotContainer->ClearChildren();
+    for (int32 i = 0; i < MaxSlots; ++i)
+    {
+        USkillSlotWidget* SkillSlot = CreateWidget<USkillSlotWidget>(this, SkillSlotWidgetClass);
+        SkillSlot->SetupSlot(i);
+        SlotContainer->AddChild(SkillSlot);
+    }
+
+    // 2) 스킬 아이콘 리스트 뿌리기
+    SkillIconList->ClearChildren();
+    for (int32 i = 0; i < AvailableClasses.Num(); ++i)
+    {
+        USkillIconWidget* Icon = CreateWidget<USkillIconWidget>(this, SkillIconWidgetClass);
+        Icon->SetupIcon(AvailableClasses[i]);
+        // 인덱스를 전달할 수 있으면, SetupIcon에 추가 파라미터로 넘겨도 좋음
+        SkillIconList->AddChild(Icon);
+    }
+    
   // 버튼 바인딩
   if (ConfirmButton)
     ConfirmButton->OnClicked.AddDynamic(this, &USkillSelectionWidget::OnConfirmClicked);
@@ -23,8 +45,11 @@ void USkillSelectionWidget::NativeConstruct()
     ClearAllButton->OnClicked.AddDynamic(this, &USkillSelectionWidget::OnClearAllClicked);
 
   
-  // SkillIconWidget / SkillSlotWidget 을 생성하고,
-  // 각각 클릭 시 OnSkillIconClicked(Index) 호출하도록 바인딩
+    if (GetWorld())
+    {
+        GetWorld()->GetTimerManager().SetTimer(
+            LocalTimerHandle, this, &USkillSelectionWidget::TickTimer, 1.f, true);
+    }
 
 }
 
@@ -33,10 +58,10 @@ void USkillSelectionWidget::SetupOwner(ABattle_PlayerController* InController)
   OwnerController = InController;
 }
 
-void USkillSelectionWidget::SetupWidget(float InTimeLimit, int32 InMaxSlots)
+void USkillSelectionWidget::SetupWidget(float InTimeLimit)
 {
   TimeRemaining = InTimeLimit;
-  MaxSlots = InMaxSlots;
+
 
   // 타이머 시작
   if (GetWorld())
@@ -92,16 +117,35 @@ void USkillSelectionWidget::OnClearAllClicked()
   // TODO: SlotContainer 내 슬롯 UI 리셋
 }
 
-void USkillSelectionWidget::OnSkillIconClicked(int32 IconIndex)
+void USkillSelectionWidget::OnSkillIconClicked(TSubclassOf<UBaseSkill> ClickedClass)
 {
-  if (!AvailableClasses.IsValidIndex(IconIndex))
-    return;
+    if (!ClickedClass) 
+        return;
 
-  TSubclassOf<UBaseSkill> Clicked = AvailableClasses[IconIndex];
-  if (ChosenClasses.Contains(Clicked))
-    ChosenClasses.Remove(Clicked);
-  else if (ChosenClasses.Num() < MaxSlots)
-    ChosenClasses.Add(Clicked);
+    // 이미 선택된 클래스인지 확인
+    if (ChosenClasses.Contains(ClickedClass))
+    {
+        // 선택 해제
+        ChosenClasses.Remove(ClickedClass);
+    }
+    else if (ChosenClasses.Num() < MaxSlots)
+    {
+        // 아직 슬롯 여유가 있으면 추가
+        ChosenClasses.Add(ClickedClass);
+    }
 
-  // TODO: SlotContainer 내 슬롯 위젯에 ChosenClasses 반영
+    // 슬롯 위젯에 반영
+    int32 SlotCount = SlotContainer->GetChildrenCount();
+    for (int32 i = 0; i < SlotCount; ++i)
+    {
+        USkillSlotWidget* SkillSlot = Cast<USkillSlotWidget>(SlotContainer->GetChildAt(i));
+        if (SkillSlot)
+        {
+            TSubclassOf<UBaseSkill> Assigned = (i < ChosenClasses.Num())
+              ? ChosenClasses[i]
+              : nullptr;
+            SkillSlot->UpdateSlot(Assigned);
+        }
+    }
+    
 }

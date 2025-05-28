@@ -13,7 +13,8 @@ class UTextBlock;
 class UButton;
 class UScrollBox;
 class UHorizontalBox;
-
+class USkillIconWidget;
+class USkillSlotWidget;
 UCLASS()
 class PROJECT_ANIMAGUS_API USkillSelectionWidget : public UUserWidget
 {
@@ -26,9 +27,9 @@ public:
 
     // 초기화 
     UFUNCTION(BlueprintCallable, Category = "Skill Selection")
-    void SetupWidget(float InTimeLimit, int32 InMaxSlots);
+    void SetupWidget(float InTimeLimit);
 
-protected:
+public:
     virtual void NativeConstruct() override;
 
     // 1초마다 남은 시간 감소
@@ -44,7 +45,7 @@ protected:
 
     //** 아이콘 클릭 시 (Index는 리스트 내 위치)
     UFUNCTION()
-    void OnSkillIconClicked(int32 IconIndex);
+    void OnSkillIconClicked(TSubclassOf<UBaseSkill> ClickedClass);
 
     
 // 에디터에서 BP만들어서 설정
@@ -80,7 +81,8 @@ private:
     float TimeRemaining;
 
     // 최대 슬롯 개수
-    int32 MaxSlots;
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Skill Selection", meta=(AllowPrivateAccess))
+    int32 MaxSlots = 4;
 public:
     // 스킬 클래스 목록
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Skill Selection")
@@ -88,4 +90,12 @@ public:
 
     // 선택한 스킬 클래스 여기 담긴거로 스킬 세팅ㅇㅇ
     TArray<TSubclassOf<UBaseSkill>> ChosenClasses;
+
+    /** 스킬 아이콘 위젯 클래스 (BP에서 지정) */
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Skill Selection")
+    TSubclassOf<USkillIconWidget> SkillIconWidgetClass;
+
+    /** 스킬 슬롯 위젯 클래스 (BP에서 지정) */
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Skill Selection")
+    TSubclassOf<USkillSlotWidget> SkillSlotWidgetClass;
 };

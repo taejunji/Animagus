@@ -48,6 +48,12 @@ public:
 public:
     UBaseSkill();
 
+    UFUNCTION(BlueprintCallable, Category="Skill")
+    UTexture2D* GetIconTexture() const
+    {
+        return SkillIcon;
+    }
+    
     // 스킬 활성화 (실제로 스킬 효과를 실행할 때 호출)
     UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Skill")
     void ActiveSkill();
