@@ -22,6 +22,8 @@
 #include "../Actor/Zones/ShrinkingZone.h"
 #include "../Actor/Zones/AttractionZone.h"
 
+#include "Misc/Paths.h"
+#include "Misc/FileHelper.h"
 #include "../Server/Server/protocol.h"
 
 
@@ -69,7 +71,7 @@ void UMyGameInstance::Init()
 {
     Super::Init();
 
-    //ConnectToGameServer();
+    ConnectToGameServer();
 
     // 데이터 불러왔을 때 mesh 타입 설정하기 => ( 임시로 양 디폴트 )
     player_data.stored_mesh = CharacterMesh::Sheep; 
@@ -110,8 +112,25 @@ void UMyGameInstance::SwitchLevel(LevelType level)
     }
 }
 
-void UMyGameInstance::ConnectToGameServer(const FString IpAddress)
+void UMyGameInstance::ConnectToGameServer()
 {
+#if WITH_EDITOR
+    // 에디터: 프로젝트 폴더에
+    FString IpFilePath = FPaths::Combine(FPaths::ProjectDir(), TEXT("ip.txt"));
+#else
+    // 패키징: exe 폴더에
+    FString IpFilePath = FPaths::Combine(FPaths::LaunchDir(), TEXT("ip.txt"));
+#endif
+
+    FString IpAddress;
+    if (false == FFileHelper::LoadFileToString(IpAddress, *IpFilePath))
+    {
+        UE_LOG(LogTemp, Error, TEXT("Failed to load IP Addr file: %s"), *IpFilePath);
+    }
+    // 앞뒤 공백 제거
+    IpAddress = IpAddress.TrimStartAndEnd();
+    UE_LOG(LogTemp, Warning, TEXT("IP Address: %s"), *IpAddress);
+
     // TCP 소켓 생성
     Socket = ISocketSubsystem::Get(PLATFORM_SOCKETSUBSYSTEM)->CreateSocket(TEXT("Stream"), TEXT("Client Socket"));
 

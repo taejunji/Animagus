@@ -75,7 +75,7 @@ public:
 
 public:
     UFUNCTION(BlueprintCallable)
-    void ConnectToGameServer(const FString IpAddress = TEXT("182.230.58.32"));
+    void ConnectToGameServer();
 
     UFUNCTION(BlueprintCallable)
     void DisconnectFromGameServer();
