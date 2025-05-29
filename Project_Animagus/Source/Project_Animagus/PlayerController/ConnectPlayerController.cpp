@@ -59,7 +59,7 @@ void AConnectPlayerController::OnConnectButtonClicked()
 
     
     // 여기서 Connect 하면됩니다잉. 
-    Cast<UMyGameInstance>(GWorld->GetGameInstance())->ConnectToGameServer(TargetIP);
+    //Cast<UMyGameInstance>(GWorld->GetGameInstance())->ConnectToGameServer(TargetIP);
 
     // 6) 연결 성공 시, 로비 레벨로 전환
     UGameplayStatics::OpenLevel(this, TEXT("Lobby"));
