@@ -49,11 +49,11 @@ EBTNodeResult::Type UBTTaskNode_FindPatrolPos::ExecuteTask(UBehaviorTreeComponen
         // 월드 원점 기준 거리 계산
         float Distance = FVector::Dist(FVector::ZeroVector, NextPatrol.Location);
 
-        // ShrinkingZone의 반지름보다 거리가 크면 실패하도록
-        // if (BattleMode->ShrinkzoneBpclass && Distance >= BattleMode->ShrinkzoneBpclass->CurrentRadius)
-        // {
-        //     return EBTNodeResult::Failed;
-        // }
+         // ShrinkingZone의 반지름보다 거리가 크면 실패하도록
+         if (BattleMode->ShrinkingZone && Distance >= BattleMode->ShrinkingZone->CurrentRadius)
+         {
+             return EBTNodeResult::Failed;
+         }
 
         //DrawDebugSphere(GetWorld(), NextPatrol, 300, 16, FColor::Magenta, false, 3.f);
 
