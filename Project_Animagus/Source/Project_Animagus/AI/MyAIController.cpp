@@ -244,7 +244,7 @@ void AMyAIController::CheckDisableTarget()
         // 상시 전투 구역 -> 라운드 시간에 영향 받지 않는다 -> 타겟이 있으면 싸우고, 박스가 있으면 먹고
         // bool bInCombatZone = ((FMath::Abs(AI->GetActorLocation().X) <= 3300.f) && (FMath::Abs(AI->GetActorLocation().Y) <= 3300.f));
 
-        if (TargetCharacter && BattleMode->ShrinkingZone) {
+        if (TargetCharacter && BattleMode->ShrinkzoneBpclass) {
 
             float HPDifference = TargetCharacter->GetHP() - AI->GetHP();
             // float RandomAlpha = FMath::RandRange(10.f, 40.f);
@@ -252,12 +252,12 @@ void AMyAIController::CheckDisableTarget()
             float DistanceAI = FVector::Dist(FVector::ZeroVector, AI->GetActorLocation()); 
 
             // ShrinkingZone이 있고, 해당 범위에 벗어나면 도망
-            if (DistanceAI >= BattleMode->ShrinkingZone->CurrentRadius) { 
-                if (HPDifference >= (AI->RetreatThreshold)) { 
-                    UE_LOG(LogTemp, Error, TEXT("안개구역 => HP 차이가 RetreatThreshold 이상일 경우")); 
-                    ClearFocusTarget(); 
-                }
-            }
+            // if (DistanceAI >= BattleMode->ShrinkzoneBpclass->CurrentRadius) { 
+            //     if (HPDifference >= (AI->RetreatThreshold)) { 
+            //         UE_LOG(LogTemp, Error, TEXT("안개구역 => HP 차이가 RetreatThreshold 이상일 경우")); 
+            //         ClearFocusTarget(); 
+            //     }
+            // }
 #if 0
             if (false == bInCombatZone) {
 
@@ -283,19 +283,19 @@ void AMyAIController::CheckDisableTarget()
 #endif
         }
 
-        if (TargetBox && BattleMode->ShrinkingZone) {
+        if (TargetBox && BattleMode->ShrinkzoneBpclass) {
 
             float DistanceBox = FVector::Dist(FVector::ZeroVector, TargetBox->GetActorLocation());
-            if (DistanceBox >= BattleMode->ShrinkingZone->CurrentRadius) {
-                UE_LOG(LogTemp, Error, TEXT("박스 위치 => 안개 존 => 박스 X"));
-
-                AI->bUseControllerRotationYaw = false;
-                AI->GetCharacterMovement()->bOrientRotationToMovement = true;
-                AI->GetCharacterMovement()->bUseControllerDesiredRotation = false;
-
-                ClearFocus(EAIFocusPriority::Gameplay);
-                Blackboard->ClearValue(BoxTargetKey.SelectedKeyName);
-            }
+            // if (DistanceBox >= BattleMode->ShrinkzoneBpclass->CurrentRadius) {
+            //     UE_LOG(LogTemp, Error, TEXT("박스 위치 => 안개 존 => 박스 X"));
+            //
+            //     AI->bUseControllerRotationYaw = false;
+            //     AI->GetCharacterMovement()->bOrientRotationToMovement = true;
+            //     AI->GetCharacterMovement()->bUseControllerDesiredRotation = false;
+            //
+            //     ClearFocus(EAIFocusPriority::Gameplay);
+            //     Blackboard->ClearValue(BoxTargetKey.SelectedKeyName);
+            // }
         }
        
 #if 0
