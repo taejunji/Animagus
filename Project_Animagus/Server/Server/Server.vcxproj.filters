@@ -10,6 +10,9 @@
     <Filter Include="Network">
       <UniqueIdentifier>{5352ebb5-a0b9-4635-a9a5-b63c193e19f5}</UniqueIdentifier>
     </Filter>
+    <Filter Include="DataBase">
+      <UniqueIdentifier>{417ae003-5948-4512-a93e-13ead88cdad8}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ServerMain.cpp">
@@ -47,6 +50,9 @@
     </ClCompile>
     <ClCompile Include="Room.cpp">
       <Filter>ServerMain</Filter>
+    </ClCompile>
+    <ClCompile Include="DBManager.cpp">
+      <Filter>DataBase</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -88,6 +94,9 @@
     </ClInclude>
     <ClInclude Include="Room.h">
       <Filter>ServerMain</Filter>
+    </ClInclude>
+    <ClInclude Include="DBManager.h">
+      <Filter>DataBase</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

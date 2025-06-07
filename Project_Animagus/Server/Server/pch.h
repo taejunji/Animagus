@@ -25,6 +25,8 @@
 
 #include <WS2tcpip.h>
 #include <MSWSock.h>
+
+#include <sqlext.h>  
 #include <windows.h>
 
 #include "Types.h"
