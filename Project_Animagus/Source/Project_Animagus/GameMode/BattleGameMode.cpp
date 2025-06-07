@@ -16,8 +16,10 @@
 #include "Algo/RandomShuffle.h"
 #include "Project_Animagus/Actor/ItemBox/Item_Box_Base.h"
 #include "Project_Animagus/Item/PowerUpItem.h"
+#include "../UI/SkillSelectionWidget.h"
 #include "Runtime/Core/Tests/Containers/TestUtils.h"
 #include "../Actor/Zones/ShrinkingZone.h"
+
 
 ABattleGameMode::ABattleGameMode()
 {
@@ -157,20 +159,34 @@ void ABattleGameMode::InitBattleMode()
     UMyGameInstance* MyGameInstance = Cast<UMyGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));  
     if (MyGameInstance)
     {
-        elasped_time = 0.0f; 
-        GetWorld()->GetTimerManager().ClearTimer(battle_timer_handle); // 타이머가 중지됨 
+        
 
         SpawnPlayers(); 
 
-        // 5초 후에 플레이어 입력 활성화
-        FTimerHandle GameStartTimerHandle; 
-        GetWorld()->GetTimerManager().SetTimer(GameStartTimerHandle, this, &ABattleGameMode::ActivateInput, 6.0f, false); 
+        // 여기서 스킬셀렉 띄움.
+        if (ABattle_PlayerController* BPC = Cast<ABattle_PlayerController>(GetWorld()->GetFirstPlayerController()))
+        {
+            ActiveSkillSelectionWidget = BPC->ShowSkillSelectionWidget(30.f);
+        }
 
-        CurrentCountdownTime = start_time;
-        CurrentRoundTime = 0.0f;
+        SelectionTimeRemaining = 30;
 
-        // 1초마다 CountdownTimerUpdate() 호출
-        GetWorld()->GetTimerManager().SetTimer(CountdownTimerHandle, this, &ABattleGameMode::CountdownTimerUpdate, 1.0f, true);
+        GetWorldTimerManager().SetTimer(
+          SkillSelectionTickHandle,
+          this,
+          &ABattleGameMode::OnSkillSelectionTick,
+          1.0f,
+          true
+        );
+        
+        GetWorldTimerManager().SetTimer(
+          SkillSelectionTimerHandle,
+          this,
+          &ABattleGameMode::OnSkillSelectionTimeout,
+          30.0f,
+          false
+        );
+        
     }
     
     if (AttractSoundWave)
@@ -401,6 +417,58 @@ void ABattleGameMode::PrintElapsedtime()
         MyGameInstance->PrintGameInstanceData(); 
     }
 }
+
+void ABattleGameMode::OnSkillSelectionTimeout()
+{
+    // 1) Tick 타이머 정리
+    GetWorldTimerManager().ClearTimer(SkillSelectionTickHandle);
+
+    // 2) 위젯 강제 Confirm
+    if (ActiveSkillSelectionWidget)
+    {
+        // 위젯의 Confirm 핸들러 직접 호출
+        ActiveSkillSelectionWidget->AutoFillAndConfirm();
+        ActiveSkillSelectionWidget = nullptr; 
+    }
+
+    elasped_time = 0.0f; 
+    GetWorld()->GetTimerManager().ClearTimer(battle_timer_handle); // 타이머가 중지됨
+        
+    // 5초 후에 플레이어 입력 활성화
+    FTimerHandle GameStartTimerHandle; 
+    GetWorld()->GetTimerManager().SetTimer(GameStartTimerHandle, this, &ABattleGameMode::ActivateInput, 6.0f, false); 
+
+    CurrentCountdownTime = start_time;
+    CurrentRoundTime = 0.0f;
+
+    // 1초마다 CountdownTimerUpdate() 호출
+    GetWorld()->GetTimerManager().SetTimer(CountdownTimerHandle, this, &ABattleGameMode::CountdownTimerUpdate, 1.0f, true);
+
+    if(ABattle_PlayerController* BPC = Cast<ABattle_PlayerController>(GetWorld()->GetFirstPlayerController()))
+    {
+        BPC->DisPlayPlayerWidget(); 
+    }
+    
+}
+
+void ABattleGameMode::OnSkillSelectionTick()
+{
+    if (--SelectionTimeRemaining <= 0)
+    {
+        // 다음 타이머에서 Timeout 처리하므로 여기선 멈추기만
+        GetWorldTimerManager().ClearTimer(SkillSelectionTickHandle);
+        return;
+    }
+
+    // UI에 남은 시간 전파
+    if (ActiveSkillSelectionWidget)
+    {
+        ActiveSkillSelectionWidget->UpdateTimerDisplay(SelectionTimeRemaining);
+    }
+    
+}
+
+
 
 void ABattleGameMode::CountdownTimerUpdate()
 {

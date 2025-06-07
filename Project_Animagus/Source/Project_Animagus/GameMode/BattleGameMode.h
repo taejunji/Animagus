@@ -15,6 +15,7 @@ class ABaseCharacter;
 class AItem_Box_Base;
 class USoundBase;
 class AShrinkingZone;
+class USkillSelectionWidget;
 
 UCLASS()
 class PROJECT_ANIMAGUS_API ABattleGameMode : public AGameModeBase
@@ -101,7 +102,26 @@ public:
     void InitBattleMode();
     void PrintElapsedtime();
 
+public:
+    UPROPERTY()
+    USkillSelectionWidget* ActiveSkillSelectionWidget;
 
+    // 30초 선택 단계 타이머
+    FTimerHandle SkillSelectionTimerHandle;
+
+    // 1초마다 남은 시간 갱신용 타이머 핸들
+    FTimerHandle SkillSelectionTickHandle;
+
+    // 남은 선택 시간(초)
+    int32 SelectionTimeRemaining;
+
+    UFUNCTION()
+    void OnSkillSelectionTimeout();
+
+    /** 1초마다 호출, UI에 남은 시간 전파 */
+    UFUNCTION()
+    void OnSkillSelectionTick();
+    
 public:
     // 스폰된 플레이어 캐릭터들을 저장할 배열
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Spawning", meta = (AllowPrivateAccess = "true"))

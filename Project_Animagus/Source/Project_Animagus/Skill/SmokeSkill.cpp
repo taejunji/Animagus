@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 
 #include "SmokeSkill.h"
@@ -19,6 +19,7 @@ USmokeSkill::USmokeSkill()
     CooldownTime = 20.0f;
     BaseCooldownTime = CooldownTime;
     SmokeProjectileSpeed = 1000.f; // 기본값, 필요에 따라 조정 가능
+    SkillDescription = TEXT("적의 시야를 가리거나 몸을 숨길 수 있는 연막을 소환합니다.");
 }
 
 void USmokeSkill::ActiveSkill_Implementation()
