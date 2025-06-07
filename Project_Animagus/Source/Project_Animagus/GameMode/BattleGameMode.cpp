@@ -29,7 +29,6 @@
 #include "../Actor/Zones/ShrinkingZone.h"
 #include "EngineUtils.h"
 #include "Components/AudioComponent.h"
-#include "../Actor/Zones/ShrinkingZone.h"
 
 
 ABattleGameMode::ABattleGameMode()
@@ -189,7 +188,7 @@ void ABattleGameMode::OnPostLoadInitialize()
                 if (BackgroundMusic)
                 {
                     //UGameplayStatics::PlaySound2D(GetWorld(), BackgroundMusic);
-                    PlayBackgroundMusic();
+                    PlayBackgroundMusic();      // -> TODO: BGM 재생 타이밍 조절 시 이부분 짤라서 복붙
                 }
             }),
         0.3f,
@@ -260,23 +259,15 @@ void ABattleGameMode::InitBattleMode()
         }
 
 
-        SelectionTimeRemaining = 30;
+        SelectionTimeRemaining = SelectionTime;
 
-        GetWorldTimerManager().SetTimer(
-            SkillSelectionTickHandle,
-            this,
-            &ABattleGameMode::OnSkillSelectionTick,
-            1.0f,
-            true
-        );
-
-        GetWorldTimerManager().SetTimer(
-            SkillSelectionTimerHandle,
-            this,
-            &ABattleGameMode::OnSkillSelectionTimeout,
-            30.0f,
-            false
-        );
+        //GetWorldTimerManager().SetTimer(
+        //    SkillSelectionTimerHandle,
+        //    this,
+        //    &ABattleGameMode::OnSkillSelectionTimeout,
+        //    30.0f,
+        //    false
+        //);
 
         CurrentCountdownTime = CountdownTime;
         CurrentRoundTime = 0;
@@ -293,11 +284,6 @@ void ABattleGameMode::InitBattleMode()
         return;
     }
 
-    FTransform ShrinkSpawnTransform;
-    ShrinkSpawnTransform.SetLocation(FVector(0.f, 0.f, 1162.f));
-    ShrinkingZone = World->SpawnActor<AShrinkingZone>(ShrinkzoneBpclass, ShrinkSpawnTransform);
-
-    
     IndexingSpawnedPlayers.Empty();
     SpawnedPlayers.Empty();
 
@@ -400,15 +386,9 @@ void ABattleGameMode::SpawnPlayers()    // 스킬 셀렉 전에 SpawnPlayers 호
             UE_LOG(LogTemp, Log, TEXT("BattleGameMode: PlayerController가 인덱스 %d의 캐릭터를 소유함."), PossessIndex);
         }
 
-        // 1초마다 Countdown 사운드 호출
-        GetWorld()->GetTimerManager().SetTimer(GameStartTimerSoundHandle, FTimerDelegate::CreateLambda([this]() {
-            if (CountSound)
-            {
-                UGameplayStatics::PlaySound2D(GetWorld(), CountSound);
-            }}), 1.0f, true);
-
-        // 0.2초마다 CountdownTimerUpdate() 호출
-        GetWorld()->GetTimerManager().SetTimer(CountdownTimerHandle, this, &ABattleGameMode::CountdownTimerUpdate, 0.2f, true);
+        // 0.2초마다 OnSkillSelectionTick() 호출
+        GetWorldTimerManager().SetTimer(SkillSelectionTickHandle, this,
+            &ABattleGameMode::OnSkillSelectionTick, 0.2f, true);
 
         FTransform AttractionSpawnTransform;
         AttractionSpawnTransform.SetLocation(FVector(0.f, 0.f, 236.f));
@@ -618,13 +598,26 @@ void ABattleGameMode::MoveOtherPlayer(Protocol::CS_MOVE_PKT& pkt)
 
         if (ElapsedSecInt >= 0)
         {
-            if (CalledActiveInput == false && ElapsedSecInt >= 6)
+            // 스킬 선택창 30초
+            if (false == CalledConfirmInput && ElapsedSecInt >= SelectionTime)
+            {
+                CalledConfirmInput = true;
+                OnSkillSelectionTimeout();
+            }
+
+            // 게임시작 카운트다운 6초
+            if (false == CalledActiveInput && ElapsedSecInt >= SelectionTime + CountdownTime)
             {
                 UE_LOG(LogTemp, Warning, TEXT("Active input"));
                 ActivateInput();
             }
-            if (ElapsedSecInt <= 6) CurrentCountdownTime = CountdownTime - ElapsedSecInt;
-            if (ElapsedSecInt >= 5 && (ElapsedSecInt - CurrentRoundTime) <= 10) CurrentRoundTime = ElapsedSecInt - 5;
+
+            // 스킬 선택창 카운트다운 업데이트
+            if (ElapsedSecInt <= SelectionTime) SelectionTimeRemaining = SelectionTime - ElapsedSecInt;
+            // 게임시작 카운트다운 업데이트
+            if (ElapsedSecInt >= SelectionTime && ElapsedSecInt <= SelectionTime + CountdownTime) CurrentCountdownTime = SelectionTime + CountdownTime - ElapsedSecInt;
+            // 라운드 타이머 업데이트
+            if (ElapsedSecInt >= SelectionTime + CountdownTime && (ElapsedSecInt - CurrentRoundTime) <= (SelectionTime + CountdownTime + 5)) CurrentRoundTime = ElapsedSecInt - (SelectionTime + CountdownTime);
 
             //UE_LOG(LogTemp, Warning, TEXT("%d - Time to Server: %d sec"), PlayerCharacter->GetPlayerId(), ElapsedSecInt);
         }
@@ -872,26 +865,40 @@ void ABattleGameMode::OnSkillSelectionTimeout()
     elasped_time = 0.0f; 
     GetWorld()->GetTimerManager().ClearTimer(battle_timer_handle); // 타이머가 중지됨
         
-    // 5초 후에 플레이어 입력 활성화
-    FTimerHandle GameStartTimerHandle; 
-    GetWorld()->GetTimerManager().SetTimer(GameStartTimerHandle, this, &ABattleGameMode::ActivateInput, 6.0f, false); 
+    //// 5초 후에 플레이어 입력 활성화
+    //FTimerHandle GameStartTimerHandle; 
+    //GetWorld()->GetTimerManager().SetTimer(GameStartTimerHandle, this, &ABattleGameMode::ActivateInput, 6.0f, false); 
 
-    CurrentCountdownTime = start_time;
-    CurrentRoundTime = 0.0f;
+    // 1초마다 Countdown 사운드 호출
+    GetWorld()->GetTimerManager().SetTimer(GameStartTimerSoundHandle, FTimerDelegate::CreateLambda([this]() {
+        if (CountSound)
+        {
+            UGameplayStatics::PlaySound2D(GetWorld(), CountSound);
+        }}), 1.0f, true);
 
-    // 1초마다 CountdownTimerUpdate() 호출
-    GetWorld()->GetTimerManager().SetTimer(CountdownTimerHandle, this, &ABattleGameMode::CountdownTimerUpdate, 1.0f, true);
+    // 0.2초마다 CountdownTimerUpdate() 호출
+    GetWorld()->GetTimerManager().SetTimer(CountdownTimerHandle, this, &ABattleGameMode::CountdownTimerUpdate, 0.2f, true);
+
+
+    //CurrentCountdownTime = start_time;
+    //CurrentRoundTime = 0.0f;
+
+    //// 1초마다 CountdownTimerUpdate() 호출
+    //GetWorld()->GetTimerManager().SetTimer(CountdownTimerHandle, this, &ABattleGameMode::CountdownTimerUpdate, 1.0f, true);
 
     if(ABattle_PlayerController* BPC = Cast<ABattle_PlayerController>(GetWorld()->GetFirstPlayerController()))
     {
         BPC->DisPlayPlayerWidget(); 
     }
     
+    FTransform ShrinkSpawnTransform;
+    ShrinkSpawnTransform.SetLocation(FVector(0.f, 0.f, 1162.f));
+    ShrinkingZone = GWorld->SpawnActor<AShrinkingZone>(ShrinkzoneBpclass, ShrinkSpawnTransform);
 }
 
 void ABattleGameMode::OnSkillSelectionTick()
 {
-    if (--SelectionTimeRemaining <= 0)
+    if (SelectionTimeRemaining <= 0)
     {
         // 다음 타이머에서 Timeout 처리하므로 여기선 멈추기만
         GetWorldTimerManager().ClearTimer(SkillSelectionTickHandle);

@@ -117,9 +117,6 @@ public:
 
     TSubclassOf<class AItem_Box_High> ItemBoxHighBpclass;
 
-    UPROPERTY(EditAnywhere, Category = "ShrinkZone")
-    TSubclassOf<class AShrinkingZone> ShrinkzoneBpclass;
-
     UPROPERTY()
     UAudioComponent* BackgroundMusicComponent;
     void PlayBackgroundMusic();
@@ -146,6 +143,7 @@ public:
 
     // 남은 선택 시간(초)
     int32 SelectionTimeRemaining;
+    int32 SelectionTime = 10;
 
     UFUNCTION()
     void OnSkillSelectionTimeout();
@@ -180,6 +178,7 @@ public:
     float TIME_OVER = 60.0f * 4;
     uint64 StartTime2Server = 0;
     bool CalledActiveInput = false;
+    bool CalledConfirmInput = false;
 
     APlayerCharacter* PlayerCharacter; // 플레이어 캐릭터 포인터
 

@@ -26,6 +26,7 @@ void show_error()
     printf("error\n");
 }
 
+
 bool DBManager::DBConnect()
 {
     SQLRETURN retcode;

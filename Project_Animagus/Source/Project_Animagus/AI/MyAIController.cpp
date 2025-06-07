@@ -110,7 +110,7 @@ void AMyAIController::BeginPlay()
             AIPerceptionComponent->OnPerceptionUpdated.AddDynamic(this, &AMyAIController::OnPerceptionUpdated);
         }
     }
-#if 1
+#if 0
     StartBehaviorTree(); 
 #endif
 
