@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 
 #include "Stun.h"
@@ -20,7 +20,7 @@ UStun::UStun()
 
     // ProjectileBPClass는 에디터에서 할당 (예: MyProjectile_Stun_BP)
     ProjectileBPClass = nullptr;
-
+    SkillDescription = TEXT("피격시 움직임을 제한 하는 투사체를 발사합니다.");
     BaseCooldownTime = CooldownTime;
     BaseStunDuration = StunDuration;
 }

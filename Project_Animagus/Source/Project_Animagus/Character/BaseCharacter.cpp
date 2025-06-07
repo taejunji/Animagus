@@ -416,6 +416,27 @@ void ABaseCharacter::InitializeSkills()
     } 
 }
 
+void ABaseCharacter::SelectSkills(const TArray<TSubclassOf<class UBaseSkill>>& NewSkills)
+{
+    for (UBaseSkill* S : Skills)
+    {
+        if (S) S->ConditionalBeginDestroy();
+    }
+    Skills.Empty();
+
+    // 2) 새 스킬 생성 및 추가
+    for (auto& SkillClass : NewSkills)
+    {
+        if (SkillClass)
+        {
+            UBaseSkill* Inst = NewObject<UBaseSkill>(this, SkillClass);
+            Inst->Owner = this;
+            Skills.Add(Inst);
+        }
+    }
+    
+}
+
 void ABaseCharacter::TestSkill_Change()
 {
     // 슬롯 0: UBounce 스킬 생성

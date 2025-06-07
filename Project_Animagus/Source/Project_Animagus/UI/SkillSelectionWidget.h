@@ -31,22 +31,33 @@ public:
 
 public:
     virtual void NativeConstruct() override;
-
-    // 1초마다 남은 시간 감소
-    void TickTimer();
-
+    
+    // 슬롯 클릭 시 호출될 함수
+    UFUNCTION()
+    void OnSlotClicked(int32 SlotIndex);
+    
     // *선택 완료 버튼 클릭
     UFUNCTION()
     void OnConfirmClicked();
+
+    UFUNCTION()
+    void AutoFillAndConfirm();
 
     // 선택 초기화 버튼 클릭 시
     UFUNCTION()
     void OnClearAllClicked();
 
+
+    
     //** 아이콘 클릭 시 (Index는 리스트 내 위치)
     UFUNCTION()
     void OnSkillIconClicked(TSubclassOf<UBaseSkill> ClickedClass);
 
+    UFUNCTION(BlueprintCallable, Category="Skill Selection")
+    void UpdateTimerDisplay(int32 RemainingSeconds);
+
+    UFUNCTION()
+    void ForceConfirm() { OnConfirmClicked(); }
     
 // 에디터에서 BP만들어서 설정
     
@@ -74,12 +85,6 @@ private:
     // 이 위젯을 띄운 컨트롤러 포인터
     TWeakObjectPtr<ABattle_PlayerController> OwnerController;
 
-    // 로컬 타이머 핸들
-    FTimerHandle LocalTimerHandle;
-
-    // 남은 시간(초)
-    float TimeRemaining;
-
     // 최대 슬롯 개수
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Skill Selection", meta=(AllowPrivateAccess))
     int32 MaxSlots = 4;
@@ -99,3 +104,5 @@ public:
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Skill Selection")
     TSubclassOf<USkillSlotWidget> SkillSlotWidgetClass;
 };
+
+

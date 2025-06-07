@@ -3,6 +3,8 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "../Item/BaseItem.h"
+#include "../UI/SkillSelectionWidget.h"
 #include "GameFramework/PlayerController.h"
 #include "Battle_PlayerController.generated.h"
 
@@ -106,11 +108,28 @@ public:
     // HUD 위젯 클래스를 에디터에서 지정할 수 있도록 함
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UI")
     TSubclassOf<class UMyPlayerHUDWidget> PlayerHUDClass;
+
+    UPROPERTY(EditDefaultsOnly, Category="UI")
+    TSubclassOf<USkillSelectionWidget> SkillSelectionWidgetClass;
     
     // 생성된 HUD 위젯 인스턴스
     UPROPERTY()
     class UMyPlayerHUDWidget* PlayerHUD;
 
     UPROPERTY()
+    class USkillSelectionWidget* SkillSelectionWidget;
+    
+    UFUNCTION()
+    USkillSelectionWidget* ShowSkillSelectionWidget(float TimeLimit);
+    
+    UFUNCTION()
+    void DisPlayPlayerWidget();
+    
+    UFUNCTION()// 위젯에서 호출될 스킬 확정 핸들러
+    void OnSkillSelectionConfirmed(const TArray<TSubclassOf<UBaseSkill>>& Selected);
+    
+    UPROPERTY()
     int32 Skilltest;
 };
+
+

@@ -14,6 +14,8 @@
 class ABaseCharacter;
 class AItem_Box_Base;
 class USoundBase;
+class AShrinkingZone;
+class USkillSelectionWidget;
 
 UCLASS()
 class PROJECT_ANIMAGUS_API ABattleGameMode : public AGameModeBase
@@ -91,12 +93,8 @@ public:
     UPROPERTY(EditAnywhere, Category = "Item")
     TSubclassOf<class AItem_Box_Base> ItemBoxBpclass;
 
-    class AShrinkingZone* ShrinkingZone;
-
     UPROPERTY(EditAnywhere, Category = "ShrinkZone")
     TSubclassOf<class AShrinkingZone> ShrinkzoneBpclass;
-
-
     // 라운드 경과 시간 출력
     FTimerHandle battle_timer_handle;
     float elasped_time;
@@ -104,7 +102,26 @@ public:
     void InitBattleMode();
     void PrintElapsedtime();
 
+public:
+    UPROPERTY()
+    USkillSelectionWidget* ActiveSkillSelectionWidget;
 
+    // 30초 선택 단계 타이머
+    FTimerHandle SkillSelectionTimerHandle;
+
+    // 1초마다 남은 시간 갱신용 타이머 핸들
+    FTimerHandle SkillSelectionTickHandle;
+
+    // 남은 선택 시간(초)
+    int32 SelectionTimeRemaining;
+
+    UFUNCTION()
+    void OnSkillSelectionTimeout();
+
+    /** 1초마다 호출, UI에 남은 시간 전파 */
+    UFUNCTION()
+    void OnSkillSelectionTick();
+    
 public:
     // 스폰된 플레이어 캐릭터들을 저장할 배열
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Spawning", meta = (AllowPrivateAccess = "true"))
@@ -138,12 +155,6 @@ public:
     // 영역1의 스폰 좌표들을 초기화하는 함수 
     UFUNCTION(BlueprintCallable, Category = "PowerUp")
     void InitializeArea1SpawnPoints();
-
-    UFUNCTION(BlueprintCallable, Category = "PowerUp")
-    void InitializeArea2SpawnPoints();
-
-    UFUNCTION(BlueprintCallable, Category = "PowerUp")
-    void InitializeArea3SpawnPoints();
 
     UFUNCTION(BlueprintCallable, Category = "PowerUp")
     void SpawnItemsInArea1();
