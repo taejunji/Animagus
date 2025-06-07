@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 
 #include "ChangeSkill.h"
@@ -16,7 +16,7 @@ UChangeSkill::UChangeSkill()
     CooldownTime = 10.0f;        // 쿨타임 5초
     ChangeDamage = 1.0f;        // 데미지 없음(교환 효과 목적)
     ChangeSpeed = 1000.f;       // 투사체 속도
-
+    SkillDescription = TEXT("적중한 적과 위치를 바꿉니다.");
     BaseCooldownTime = CooldownTime;
     //ProjectileBPClass = nullptr;  // 에디터에서 할당할 것
     static ConstructorHelpers::FClassFinder<AProjectile_change> ChangeBPFinder(TEXT("/Game/WorkFolder/Bluprints/Projectiles/MyProjectile_change"));

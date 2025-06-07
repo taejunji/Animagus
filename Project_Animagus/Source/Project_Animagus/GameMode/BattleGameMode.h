@@ -21,6 +21,7 @@ class USoundBase;
 class AShrinkingZone;
 class AAttractionZone;
 class UAudioComponent;
+class USkillSelectionWidget;
 
 UCLASS()
 class PROJECT_ANIMAGUS_API ABattleGameMode : public AGameModeBase
@@ -123,6 +124,8 @@ public:
     UAudioComponent* BackgroundMusicComponent;
     void PlayBackgroundMusic();
     
+    UPROPERTY(EditAnywhere, Category = "ShrinkZone")
+    TSubclassOf<class AShrinkingZone> ShrinkzoneBpclass;
     // 라운드 경과 시간 출력
     FTimerHandle battle_timer_handle;
     float elasped_time;
@@ -132,7 +135,25 @@ public:
 
 public:
     void SetPlayerIndex(uint16 playerIndex);
+    UPROPERTY()
+    USkillSelectionWidget* ActiveSkillSelectionWidget;
 
+    // 30초 선택 단계 타이머
+    FTimerHandle SkillSelectionTimerHandle;
+
+    // 1초마다 남은 시간 갱신용 타이머 핸들
+    FTimerHandle SkillSelectionTickHandle;
+
+    // 남은 선택 시간(초)
+    int32 SelectionTimeRemaining;
+
+    UFUNCTION()
+    void OnSkillSelectionTimeout();
+
+    /** 1초마다 호출, UI에 남은 시간 전파 */
+    UFUNCTION()
+    void OnSkillSelectionTick();
+    
 public:
     // 스폰된 플레이어 캐릭터들을 저장할 배열
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Spawning", meta = (AllowPrivateAccess = "true"))

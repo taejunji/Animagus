@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 
 #include "MagicMissile.h"
@@ -13,7 +13,7 @@
 UMagicMissile::UMagicMissile()
 {
     SkillName = "MagicMissile";
-    SkillDescription = "유도 기능이 있고 데미지가 높지만 쿨타임이 긴 스킬";
+    SkillDescription = TEXT("일정 시간후에 빨라지는 미사일을 발사합니다.");
     CooldownTime = 10.0f; // 
     MissileDamage = 10.0f;
     MissileSpeed = 4000.f;

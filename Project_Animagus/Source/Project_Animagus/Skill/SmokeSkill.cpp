@@ -34,6 +34,7 @@ USmokeSkill::USmokeSkill()
 
     SkillType = Protocol::SkillType::SMOKE;
 
+    SkillDescription = TEXT("적의 시야를 가리거나 몸을 숨길 수 있는 연막을 소환합니다.");
 }
 
 void USmokeSkill::ActiveSkill_Implementation()

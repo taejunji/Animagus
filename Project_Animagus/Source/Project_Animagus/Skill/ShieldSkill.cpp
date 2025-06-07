@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 
 #include "ShieldSkill.h"
@@ -14,7 +14,7 @@ UShieldSkill::UShieldSkill()
     CooldownTime = 20.0f;
     ShieldDuration = 5.0f;
     BaseCooldownTime = CooldownTime;
-
+    SkillDescription = TEXT("다른 스킬들로 부터 사용자를 보호하는 보호막을 소환합니다.");
     ShieldActorBPClass = nullptr; // 에디터에서 보호막 액터 블루프린트 클래스를 할당할 것
     static ConstructorHelpers::FClassFinder<AShieldActor> ShieldBPFinder(TEXT("/Game/WorkFolder/Bluprints/Shield/MyShieldActor"));
     if (ShieldBPFinder.Succeeded())

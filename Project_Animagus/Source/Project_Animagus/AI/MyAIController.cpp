@@ -110,7 +110,7 @@ void AMyAIController::BeginPlay()
             AIPerceptionComponent->OnPerceptionUpdated.AddDynamic(this, &AMyAIController::OnPerceptionUpdated);
         }
     }
-#if 0
+#if 1
     StartBehaviorTree(); 
 #endif
 
@@ -304,12 +304,12 @@ void AMyAIController::CheckDisableTarget()
             float DistanceAI = FVector::Dist(FVector::ZeroVector, AI->GetActorLocation()); 
 
             // ShrinkingZone이 있고, 해당 범위에 벗어나면 도망
-            if (DistanceAI >= BattleMode->ShrinkingZone->CurrentRadius) { 
-                if (HPDifference >= (AI->RetreatThreshold)) { 
-                    UE_LOG(LogTemp, Error, TEXT("안개구역 => HP 차이가 RetreatThreshold 이상일 경우")); 
-                    ClearFocusTarget(); 
-                }
-            }
+             if (DistanceAI >= BattleMode->ShrinkingZone->CurrentRadius) {
+                 if (HPDifference >= (AI->RetreatThreshold)) { 
+                     UE_LOG(LogTemp, Error, TEXT("안개구역 => HP 차이가 RetreatThreshold 이상일 경우")); 
+                     ClearFocusTarget(); 
+                 }
+             }
 #if 0
             if (false == bInCombatZone) {
 
@@ -338,16 +338,16 @@ void AMyAIController::CheckDisableTarget()
         if (TargetBox && BattleMode->ShrinkingZone) {
 
             float DistanceBox = FVector::Dist(FVector::ZeroVector, TargetBox->GetActorLocation());
-            if (DistanceBox >= BattleMode->ShrinkingZone->CurrentRadius) {
-                UE_LOG(LogTemp, Error, TEXT("박스 위치 => 안개 존 => 박스 X"));
-
-                AI->bUseControllerRotationYaw = false;
-                AI->GetCharacterMovement()->bOrientRotationToMovement = true;
-                AI->GetCharacterMovement()->bUseControllerDesiredRotation = false;
-
-                ClearFocus(EAIFocusPriority::Gameplay);
-                Blackboard->ClearValue(BoxTargetKey.SelectedKeyName);
-            }
+             if (DistanceBox >= BattleMode->ShrinkingZone->CurrentRadius) {
+                 UE_LOG(LogTemp, Error, TEXT("박스 위치 => 안개 존 => 박스 X"));
+            
+                 AI->bUseControllerRotationYaw = false;
+                 AI->GetCharacterMovement()->bOrientRotationToMovement = true;
+                 AI->GetCharacterMovement()->bUseControllerDesiredRotation = false;
+            
+                 ClearFocus(EAIFocusPriority::Gameplay);
+                 Blackboard->ClearValue(BoxTargetKey.SelectedKeyName);
+             }
         }
        
 #if 0

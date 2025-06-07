@@ -53,6 +53,8 @@ public:
     bool IsActorInsideZone(AActor* OtherActor) const;
 
     void SetFogPostProcess(float NewWeight);
+
+    float GetCurrentRadius(){return CurrentRadius;}
     
     // 디버그용: 안전구역 시각화 활성화 여부
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Debug")

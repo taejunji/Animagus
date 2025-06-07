@@ -1,4 +1,4 @@
-#include "ShockwaveSkill.h"
+﻿#include "ShockwaveSkill.h"
 #include "Project_Animagus/Actor/Shockwave/ShockwaveActor.h"
 #include "Engine/World.h"
 #include "Kismet/GameplayStatics.h"
@@ -7,7 +7,7 @@
 UShockwaveSkill::UShockwaveSkill()
 {
     SkillName = "ShockwaveSkill";
-    SkillDescription = "Emits a shockwave that pushes away nearby players and applies damage.";
+    SkillDescription = TEXT("일정 범위에 영향을 주는 충격파를 생성합니다.");
     
     // 스킬 쿨타임 등은 필요에 따라 에디터에서 조정 가능
     CooldownTime = 10.f;

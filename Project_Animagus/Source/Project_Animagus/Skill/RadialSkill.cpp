@@ -1,4 +1,4 @@
-#include "RadialSkill.h"
+﻿#include "RadialSkill.h"
 #include "../Projectile/ProjectileBase.h"
 #include "../Projectile/Projectile_Radial.h"
 #include "Kismet/GameplayStatics.h"
@@ -16,7 +16,7 @@ URadialSkill::URadialSkill()
     SpreadAngle = 190.0f;                 // 전체 90도 부채꼴
     RadialDamage = 10.0f;                // 투사체 데미지
     RadialSpeed = 1600.f;                // 투사체 속도
-
+    SkillDescription = TEXT("여러개의 투사체를 발사합니다.");
     SpawnRadius = 80.f;                  // 캐릭터 기준으로 80cm 떨어진 위치에서 스폰
     VerticalOffset = 20.f;               // 캐릭터 기준으로 위쪽 20cm
 
