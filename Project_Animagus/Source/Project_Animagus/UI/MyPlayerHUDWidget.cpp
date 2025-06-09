@@ -2,12 +2,19 @@
 
 
 #include "MyPlayerHUDWidget.h"
+#include "Animation/WidgetAnimation.h"
 
 #include "Components/Border.h"
 #include "Components/ProgressBar.h"
 #include "Components/Image.h"
 #include "Components/HorizontalBox.h" // 나중에 스킬 목록 추가 시 사용
 #include "Components/TextBlock.h"
+
+void UMyPlayerHUDWidget::NativeConstruct()
+{
+    Super::NativeConstruct();
+    SelectedOutlineColor = FLinearColor(0.0f, 1.0f, 1.0f, 1.0f);
+}
 
 void UMyPlayerHUDWidget::UpdateHP(float HPPercent)
 {
@@ -112,5 +119,15 @@ void UMyPlayerHUDWidget::UpdateSelectedSkillOutline(int32 SelectedIndex)
     if (SkillBorder_3)
     {
         SkillBorder_3->SetBrushColor((SelectedIndex == 3) ? SelectedOutlineColor : NormalOutlineColor);
+    }
+}
+
+void UMyPlayerHUDWidget::PlayWidgetAnimation(UWidgetAnimation* WidgetAnimation, bool bLoop, float StartAtTime)
+{
+    if (WidgetAnimation)
+    {
+        PlayAnimation(WidgetAnimation, StartAtTime, bLoop ? 0 : 1);
+        // 0 = infinite loop, 1 = once
+        // NumLoopsToPlay = 0이면 애니메이션이 끝없이 반복
     }
 }

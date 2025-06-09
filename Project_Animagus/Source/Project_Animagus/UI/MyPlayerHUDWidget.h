@@ -15,12 +15,16 @@ class UImage;
 class UHorizontalBox;
 class UTextBlock;
 class UBorder;
+class UWidgetAnimation; 
 
 UCLASS()
 class PROJECT_ANIMAGUS_API UMyPlayerHUDWidget : public UUserWidget
 {
 	GENERATED_BODY()
 public:
+    virtual void NativeConstruct() override;
+
+
     // 업데이트를 위해 외부에서 호출할 함수, HP 비율(0~1) 전달
     UFUNCTION(BlueprintCallable, Category="UI")
     void UpdateHP(float HPPercent);
@@ -42,6 +46,10 @@ public:
     UFUNCTION(BlueprintCallable, Category="UI")
     void UpdateSelectedSkillOutline(int32 SelectedIndex);
 
+    UFUNCTION(BlueprintCallable, Category = "UI")
+    void PlayWidgetAnimation(UWidgetAnimation* WidgetAnimation, bool bLoop = false, float StartAtTime = 0.f);
+
+    UWidgetAnimation* GetCountDownTime() const { return CountDownTime; }
 
 protected:
     // 화면 중앙에 고정될 에임 이미지
@@ -101,6 +109,10 @@ protected:
     
     UPROPERTY(meta = (BindWidget))
     UBorder* SkillBorder_3;
+
+    // 위젯 애니메이션
+    UPROPERTY(meta = (BindWidgetAnim), Transient)
+    UWidgetAnimation* CountDownTime;
 
     
     // 기본 윤곽선 색상과 선택되었을 때의 색상
