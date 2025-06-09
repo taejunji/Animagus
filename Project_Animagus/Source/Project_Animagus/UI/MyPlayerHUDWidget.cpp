@@ -83,7 +83,13 @@ void UMyPlayerHUDWidget::UpdateRoundTime(float RoundTimeValue)
         int32 TotalSeconds = FMath::FloorToInt(RoundTimeValue);
         int32 Minutes = TotalSeconds / 60;
         int32 Seconds = TotalSeconds % 60;
-        FString NewText = FString::Printf(TEXT("%d : %02d"), Minutes, Seconds);
+
+        int32 Tens = Seconds / 10;   // 초의 십의 자리
+        int32 Ones = Seconds % 10;   // 초의 일의 자리
+
+        FString NewText = FString::Printf(TEXT("%d : %d %d"), Minutes, Tens, Ones);
+
+        // FString NewText = FString::Printf(TEXT("%d : %02d"), Minutes, Seconds);
         RoundTimeText->SetText(FText::FromString(NewText));
     }
 }
