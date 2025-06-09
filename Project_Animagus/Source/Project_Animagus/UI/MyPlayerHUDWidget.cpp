@@ -75,6 +75,32 @@ void UMyPlayerHUDWidget::UpdateCountdown(float CountdownValue)
         {
             FString NewText = FString::Printf(TEXT("%.0f"), DisplayTime);
             CountdownText->SetText(FText::FromString(NewText));
+
+            // 초마다 색상 변경 
+            FLinearColor NewColor;
+            switch (static_cast<int32>(DisplayTime))
+            {
+            case 5:
+                NewColor = FLinearColor(1.0f, 0.5f, 0.5f);
+                break;
+            case 4:
+                NewColor = FLinearColor(1.0f, 0.7f, 0.4f);
+                break;
+            case 3:
+                NewColor = FLinearColor(1.0f, 1.0f, 0.6f);
+                break;
+            case 2:
+                NewColor = FLinearColor(0.6f, 1.0f, 0.6f);
+                break;
+            case 1:
+                NewColor = FLinearColor(0.6f, 0.8f, 1.0f);
+                break;
+            default:
+                NewColor = FLinearColor(1.0f, 0.5f, 0.5f);
+                break;
+            }
+             
+            CountdownText->SetColorAndOpacity(FSlateColor(NewColor)); 
         }
         else
         {
