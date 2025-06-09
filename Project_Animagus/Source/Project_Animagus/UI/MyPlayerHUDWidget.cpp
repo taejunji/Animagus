@@ -76,7 +76,7 @@ void UMyPlayerHUDWidget::UpdateCountdown(float CountdownValue)
             FString NewText = FString::Printf(TEXT("%.0f"), DisplayTime);
             CountdownText->SetText(FText::FromString(NewText));
 
-            // 초마다 색상 변경 
+            // 초마다 색상 변경 ( 파스텔톤 - 빨 주 노 초 )
             FLinearColor NewColor;
             switch (static_cast<int32>(DisplayTime))
             {
@@ -84,13 +84,13 @@ void UMyPlayerHUDWidget::UpdateCountdown(float CountdownValue)
                 NewColor = FLinearColor(1.0f, 0.5f, 0.5f);
                 break;
             case 4:
-                NewColor = FLinearColor(1.0f, 0.7f, 0.4f);
+                NewColor = FLinearColor(1.0f, 0.521833f, 0.15625f);
                 break;
             case 3:
-                NewColor = FLinearColor(1.0f, 1.0f, 0.6f);
+                NewColor = FLinearColor(1.0f, 1.0f, 0.311012f);
                 break;
             case 2:
-                NewColor = FLinearColor(0.6f, 1.0f, 0.6f);
+                NewColor = FLinearColor(0.311012f, 1.0f, 0.400647f);
                 break;
             case 1:
                 NewColor = FLinearColor(0.6f, 0.8f, 1.0f);
@@ -105,6 +105,8 @@ void UMyPlayerHUDWidget::UpdateCountdown(float CountdownValue)
         else
         {
             CountdownText->SetText(FText::GetEmpty());
+            PlayAnimation(GameStartTime, 0.f, 1, EUMGSequencePlayMode::Forward, 2.f);
+            // 2초짜리 1.333배 -> 1.5초 재생
         }
     }
 }

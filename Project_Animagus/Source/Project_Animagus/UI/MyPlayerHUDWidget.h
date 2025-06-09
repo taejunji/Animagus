@@ -114,6 +114,9 @@ protected:
     UPROPERTY(meta = (BindWidgetAnim), Transient)
     UWidgetAnimation* CountDownTime;
 
+    UPROPERTY(meta = (BindWidgetAnim), Transient)
+    UWidgetAnimation* GameStartTime;
+
     
     // 기본 윤곽선 색상과 선택되었을 때의 색상
     FLinearColor NormalOutlineColor = FLinearColor::Gray;
