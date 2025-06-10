@@ -679,6 +679,11 @@ void ABaseCharacter::IncreasePowerUpLevel()
     PowerUpLevel++;
     UE_LOG(LogTemp, Log, TEXT("%s PowerUpLevel increased to %d"), *GetName(), PowerUpLevel);
 
+    if (auto* PC = Cast<ABattle_PlayerController>(GetController())) {
+        PC->PlayerHUD->ResetLevelImgage(); 
+        PC->PlayerHUD->SetLevelImage(PowerUpLevel);
+    }
+
     // 보유한 모든 스킬에 대해 UpgradeSkill() 호출
     for (UBaseSkill* Skill : Skills)
     {
@@ -739,6 +744,18 @@ void ABaseCharacter::UpdateAuraColorBasedOnPowerUpLevel()
     if (PowerUpLevel > 6)
     {
         AuraMaterialInstance->SetScalarParameterValue(FName("Power"), 18.f);
+    }
+    else if (PowerUpLevel == 13)
+    {
+        AuraMaterialInstance->SetScalarParameterValue(FName("Power"), 20.f);
+    }
+    else if (PowerUpLevel == 14)
+    {
+        AuraMaterialInstance->SetScalarParameterValue(FName("Power"), 20.f);
+    }
+    else if (PowerUpLevel == 15)
+    {
+        AuraMaterialInstance->SetScalarParameterValue(FName("Power"), 22.f);
     }
 
     // "auracolor" 파라미터 업데이트

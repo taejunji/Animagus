@@ -15,6 +15,22 @@ void UMyPlayerHUDWidget::NativeConstruct()
     Super::NativeConstruct();
 
     SelectedOutlineColor = FLinearColor(0.0f, 1.0f, 1.0f, 1.0f);
+
+    ArrayLevel.Add(Image_Level_0);
+    ArrayLevel.Add(Image_Level_1);
+    ArrayLevel.Add(Image_Level_2);
+    ArrayLevel.Add(Image_Level_3);
+    ArrayLevel.Add(Image_Level_4);
+    ArrayLevel.Add(Image_Level_5);
+    ArrayLevel.Add(Image_Level_6);
+    ArrayLevel.Add(Image_Level_7);
+    ArrayLevel.Add(Image_Level_8);
+    ArrayLevel.Add(Image_Level_9);
+    ArrayLevel.Add(Image_Level_10);
+    ArrayLevel.Add(Image_Level_11);
+    ArrayLevel.Add(Image_Level_12);
+    ArrayLevel.Add(Image_Level_13);
+    ArrayLevel.Add(Image_Level_14);
 }
 
 void UMyPlayerHUDWidget::UpdateHP(float HPPercent)
@@ -170,4 +186,18 @@ void UMyPlayerHUDWidget::SetCurrentHP(float hp, float max_hp)
 
     FString NewText = FString::Printf(TEXT("%d/%d"), HP, MaxHP);
     CurrentHPText->SetText(FText::FromString(NewText));
+}
+
+void UMyPlayerHUDWidget::ResetLevelImgage()
+{
+    for (auto* Image : ArrayLevel) {
+        Image->SetVisibility(ESlateVisibility::Hidden);
+    }
+}
+
+void UMyPlayerHUDWidget::SetLevelImage(int32 num)
+{
+    for (int i = 0; i < num; ++i) {
+        ArrayLevel[i]->SetVisibility(ESlateVisibility::Visible);
+    }
 }
