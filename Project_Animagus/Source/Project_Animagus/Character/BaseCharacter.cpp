@@ -2,6 +2,9 @@
 
 
 #include "BaseCharacter.h"
+#include "../PlayerController/Battle_PlayerController.h"
+#include "../UI/MyPlayerHUDWidget.h"
+
 #include "AICharacter.h"
 #include "../AI/MyAIController.h"
 #include "Animation/AnimInstance.h"
@@ -231,13 +234,23 @@ void ABaseCharacter::Tick(float DeltaTime)
 
     // 임시 캐릭터 죽음 테스트
     if (hp <= 0.f) {        
-        if (is_dead == false) is_dead = true;
+        if (is_dead == false) {
+            is_dead = true;
+            // Player면 죽은 시점에서 마지막 업데이트
+            /*ABattle_PlayerController* PC = Cast<ABattle_PlayerController>(GetController());
+            if (PC && PC->PlayerHUD)
+            {
+                PC->PlayerHUD->SetCurrentHP(GetHP(), GetMax_Hp());
+            }*/
+        }
+
         if (GetCharacterMovement()->IsFalling() == false) {
             // 일시적으로 이동을 멈추고 싶다면? → DisableMovement()
             // 이동을 완전히 비활성화하고 싶다면 ? → SetMovementMode(MOVE_None)
             GetCharacterMovement()->DisableMovement();
             GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
         }
+
         return;
     }
     else {

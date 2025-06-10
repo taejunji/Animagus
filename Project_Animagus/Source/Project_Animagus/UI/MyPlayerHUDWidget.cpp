@@ -13,6 +13,7 @@
 void UMyPlayerHUDWidget::NativeConstruct()
 {
     Super::NativeConstruct();
+
     SelectedOutlineColor = FLinearColor(0.0f, 1.0f, 1.0f, 1.0f);
 }
 
@@ -158,4 +159,15 @@ void UMyPlayerHUDWidget::PlayWidgetAnimation(UWidgetAnimation* WidgetAnimation, 
         // 0 = infinite loop, 1 = once
         // NumLoopsToPlay = 0이면 애니메이션이 끝없이 반복
     }
+}
+
+void UMyPlayerHUDWidget::SetCurrentHP(float hp, float max_hp)
+{
+    if (hp <= 0) hp = 0;
+
+    int32 HP = FMath::FloorToInt32(hp);
+    int32 MaxHP = FMath::FloorToInt32(max_hp);
+
+    FString NewText = FString::Printf(TEXT("%d/%d"), HP, MaxHP);
+    CurrentHPText->SetText(FText::FromString(NewText));
 }

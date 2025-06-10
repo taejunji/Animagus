@@ -49,6 +49,8 @@ public:
     UFUNCTION(BlueprintCallable, Category = "UI")
     void PlayWidgetAnimation(UWidgetAnimation* WidgetAnimation, bool bLoop = false, float StartAtTime = 0.f);
 
+    void SetCurrentHP(float hp, float max_hp);
+
     UWidgetAnimation* GetCountDownTime() const { return CountDownTime; }
 
 protected:
@@ -109,6 +111,9 @@ protected:
     
     UPROPERTY(meta = (BindWidget))
     UBorder* SkillBorder_3;
+
+    UPROPERTY(meta = (BindWidget))
+    UTextBlock* CurrentHPText;
 
     // 위젯 애니메이션
     UPROPERTY(meta = (BindWidgetAnim), Transient)

@@ -118,11 +118,13 @@ void ABattle_PlayerController::Tick(float DeltaTime)
         MyPlayer->SetWalkSpeed(MyPlayer->current_speed);
 
         // HUD 업데이트: MyPlayerHUDWidget에서 캐릭터의 HP 비율을 업데이트 (hp / max_hp)
-        if (PlayerHUD)
+        if (PlayerHUD )
         {
             float HPPercent = MyPlayer->GetHP() / MyPlayer->GetMax_Hp();
             PlayerHUD->UpdateHP(HPPercent);
-            
+            PlayerHUD->SetCurrentHP(MyPlayer->GetHP(), MyPlayer->GetMax_Hp());
+
+
             for (int32 i = 0; i < MyPlayer->Skills.Num(); i++)
             {
                 if (MyPlayer->Skills.IsValidIndex(i) && MyPlayer->Skills[i] != nullptr)
@@ -262,6 +264,11 @@ void ABattle_PlayerController::Input_ConvertCamera(const FInputActionValue& Inpu
         ABaseCharacter* TargetPawn = BM->SpawnedPlayers[current_camera_index];
         if (TargetPawn && !TargetPawn->GetIsDead())
         {
+            /*PlayerHUD->SetCurrentHP(TargetPawn->GetHP(), TargetPawn->GetMax_Hp());
+
+            float HPPercent = TargetPawn->GetHP() / TargetPawn->GetMax_Hp();
+            PlayerHUD->UpdateHP(HPPercent);*/
+
             SetViewTargetWithBlend(TargetPawn, 0.0f);
             return;
         }
