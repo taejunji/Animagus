@@ -12,6 +12,7 @@
 #include "../UI/MyPlayerHUDWidget.h"
 #include "../GameMode/BattleGameMode.h"
 #include "Kismet/GameplayStatics.h"
+#include "Project_Animagus/UI/SkillSelectionWidget.h"
 
 ABattle_PlayerController::ABattle_PlayerController(const FObjectInitializer& ObjectInitializer)
     : Super(ObjectInitializer)
@@ -45,7 +46,12 @@ void ABattle_PlayerController::BeginPlay()
         // TPS 설정을 위한 변수 설정 [ 컨트롤러 회전 Yaw 끄기, Spring Arm 폰 제어 회전 켜기, Character Movement 컨트롤러 선호 회전 켜기 ]
         MyPlayer->Initialize_TPS_Settings(); 
     }
+    
+    // DisPlayPlayerWidget();
+}
 
+void ABattle_PlayerController::DisPlayPlayerWidget()
+{
     if (PlayerHUDClass)
     {
         PlayerHUD = CreateWidget<UMyPlayerHUDWidget>(this, PlayerHUDClass);
@@ -54,9 +60,9 @@ void ABattle_PlayerController::BeginPlay()
             PlayerHUD->AddToViewport();
             PlayerHUD->UpdateSelectedSkillOutline(0);
         }
-
-    }
+    } 
 }
+
 
 void ABattle_PlayerController::SetupInputComponent()
 {
@@ -398,6 +404,46 @@ void ABattle_PlayerController::Input_RunToggle_Pressed()
 void ABattle_PlayerController::Input_RunToggle_Released()
 {
     is_running = false;
+}
+
+USkillSelectionWidget* ABattle_PlayerController::ShowSkillSelectionWidget(float TimeLimit)
+{
+    if (!SkillSelectionWidgetClass) return nullptr;
+
+    // 1) 게임 모드 전환: UI 전용
+    FInputModeUIOnly InputMode;
+    InputMode.SetWidgetToFocus(nullptr);
+    InputMode.SetLockMouseToViewportBehavior(EMouseLockMode::DoNotLock);
+    SetInputMode(InputMode);
+    bShowMouseCursor = true;
+
+    // 2) 위젯 생성 및 세팅
+    SkillSelectionWidget = CreateWidget<USkillSelectionWidget>(this, SkillSelectionWidgetClass);
+    SkillSelectionWidget->AddToViewport();
+    SkillSelectionWidget->SetupOwner(this);
+    SkillSelectionWidget->SetupWidget(TimeLimit);
+
+    return SkillSelectionWidget;
+}
+
+void ABattle_PlayerController::OnSkillSelectionConfirmed(const TArray<TSubclassOf<UBaseSkill>>& Selected)
+{
+    if (ABaseCharacter* Ch = Cast<APlayerCharacter>(GetPawn()))
+    {
+        Ch->SelectSkills(Selected);
+    }
+
+    // 2) 입력 모드 복구: 게임플레이 모드
+    FInputModeGameOnly GameMode;
+    SetInputMode(GameMode);
+    bShowMouseCursor = false;
+
+    // 3) 5초 카운트다운 시작 (GameMode 함수)
+    if (ABattleGameMode* GM = Cast<ABattleGameMode>(GetWorld()->GetAuthGameMode()))
+    {
+       // GM->BeginRoundCountdown();
+    }
+    
 }
 
 

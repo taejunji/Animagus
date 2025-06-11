@@ -11,6 +11,11 @@
 /**
  * 
  */
+class USkillSelectionWidget;
+class UBaseSkill;
+class USoundBase;
+class UTextBlock;
+
 UCLASS()
 class PROJECT_ANIMAGUS_API USkillIconWidget : public UUserWidget
 {
@@ -20,21 +25,38 @@ public:
     UPROPERTY(BlueprintReadWrite, Category="Skill")
     TSubclassOf<UBaseSkill> SkillClass;
 
-    // 이 아이콘 위젯을 초기화하는 함수
-    UFUNCTION()
-    void SetupIcon(TSubclassOf<UBaseSkill> InClass);
+    UPROPERTY(meta = (BindWidget))
+    UTextBlock* DescriptionText;
 
     // 클릭 바인딩
     UFUNCTION()
     void OnIconClicked();
 
+private:
+    TWeakObjectPtr<USkillSelectionWidget> OwnerWidget;
+
+public:
+    void SetupIcon(TSubclassOf<UBaseSkill> InClass, USkillSelectionWidget* InOwner);
+    
 protected:
     virtual void NativeConstruct() override;
 
-    /** 이미지 바인딩 */ 
-    UPROPERTY(meta=(BindWidget))
-    UImage* IconImage;
+    UFUNCTION()
+    void HandleClicked();
+
+    /** 버튼에 마우스를 올렸을 때 호출되는 함수 */
+    UFUNCTION()
+    void HandleHovered();
+    
     
     UPROPERTY(meta=(BindWidget))
     UButton* IconButton;
+
+    /** Hover 시 재생할 효과음 */
+    UPROPERTY(EditAnywhere, Category="Sound")
+    USoundBase* HoverSound;
+
+    /** Click 시 재생할 효과음 */
+    UPROPERTY(EditAnywhere, Category="Sound")
+    USoundBase* ClickSound;
 };

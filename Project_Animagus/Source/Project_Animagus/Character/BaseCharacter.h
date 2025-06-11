@@ -144,6 +144,9 @@ public:
     void InitializeSkills();
 
     UFUNCTION(BlueprintCallable, Category="Skills")
+    void SelectSkills(const TArray<TSubclassOf<class UBaseSkill>>& NewSkills);
+    
+    UFUNCTION(BlueprintCallable, Category="Skills")
     void TestSkill_Change();
 
     UFUNCTION(BlueprintCallable, Category="Skills")

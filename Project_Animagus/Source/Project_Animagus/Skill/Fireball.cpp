@@ -1,4 +1,4 @@
-#include "Fireball.h"
+﻿#include "Fireball.h"
 #include "../Projectile/Projectile_FireBall.h"
 #include "Kismet/GameplayStatics.h"
 #include "../Character/BaseCharacter.h"
@@ -14,7 +14,7 @@
 UFireball::UFireball()
 {
     SkillName = "Fireball";
-    SkillDescription = "가장 기본적인 스킬";
+    
     CooldownTime = 3.f;
     FireballDamage = 5.0f;
     FireballSpeed = 1500.f;
@@ -28,6 +28,7 @@ UFireball::UFireball()
         UE_LOG(LogTemp, Warning, TEXT("Failed to load Fireball BP class!"));
     }
     // 기본값 저장 (강화 전 기본 수치)
+    SkillDescription = TEXT("가장 기본적인 스킬");
     BaseFireballDamage = FireballDamage;
     BaseCooldownTime = CooldownTime;
 }
