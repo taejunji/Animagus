@@ -12,38 +12,26 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="e220200e-1b53-46b8-ae20-b4f649f13607" name="변경" comment="">
+    <list default="true" id="82f90524-bcfc-4556-9fef-0490e524b030" name="변경" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.Project_Animagus/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Project_Animagus/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/WorkFolder/Bluprints/Skills/MyFireball.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/WorkFolder/Bluprints/Skills/MyFireball.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/WorkFolder/Bluprints/Ui/BP_MyPlayerHUDWidget.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/WorkFolder/Bluprints/Ui/BP_MyPlayerHUDWidget.uasset" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Content/WorkFolder/Bluprints/Ui/BP_SkillSelectionWidget.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/WorkFolder/Bluprints/Ui/BP_SkillSelectionWidget.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/WorkFolder/Bluprints/Ui/Ui_Texture/Skilltexture/Shockwave.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/WorkFolder/Bluprints/Ui/Ui_Texture/Skilltexture/Shockwave.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/WorkFolder/Bluprints/Ui/WBP_SkillIconWidget.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/WorkFolder/Bluprints/Ui/WBP_SkillIconWidget.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/WorkFolder/Bluprints/Ui/WBP_SkillSlotWidget.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/WorkFolder/Bluprints/Ui/WBP_SkillSlotWidget.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/WorkFolder/Controller/BP_Battle_PlayerController.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/WorkFolder/Controller/BP_Battle_PlayerController.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/WorkFolder/Controller/BP_ConnectPlayerController.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/WorkFolder/Controller/BP_ConnectPlayerController.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/WorkFolder/Effect/Material/M_Smoke2.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/WorkFolder/Effect/Material/M_Torchfire.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/WorkFolder/Effect/Material/M_Torchfire.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/WorkFolder/Effect/Material/T_Fire_SubUV.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/WorkFolder/Effect/Material/T_Fire_SubUV.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/WorkFolder/Effect/Material/T_SmokeSubUV_8X8.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/WorkFolder/Effect/Niagara/NS_TorchFire.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/WorkFolder/Effect/Niagara/NS_TorchFire.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/WorkFolder/GameMode/BP_ConnectGameMode.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/WorkFolder/GameMode/BP_ConnectGameMode.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/WorkFolder/Levels/L_Connect.umap" beforeDir="false" afterPath="$PROJECT_DIR$/Content/WorkFolder/Levels/L_Connect.umap" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Content/WorkFolder/Levels/L_Map.umap" beforeDir="false" afterPath="$PROJECT_DIR$/Content/WorkFolder/Levels/L_Map.umap" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/Project_Animagus/Character/BaseCharacter.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Project_Animagus/Character/BaseCharacter.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/Project_Animagus/Character/BaseCharacter.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Project_Animagus/Character/BaseCharacter.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/Project_Animagus/GameMode/BattleGameMode.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Project_Animagus/GameMode/BattleGameMode.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/Project_Animagus/GameMode/BattleGameMode.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Project_Animagus/GameMode/BattleGameMode.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/Project_Animagus/PlayerController/Battle_PlayerController.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Project_Animagus/PlayerController/Battle_PlayerController.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/Project_Animagus/PlayerController/Battle_PlayerController.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Project_Animagus/PlayerController/Battle_PlayerController.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/Project_Animagus/Skill/BaseSkill.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Project_Animagus/Skill/BaseSkill.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/Project_Animagus/Skill/ChangeSkill.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Project_Animagus/Skill/ChangeSkill.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/Project_Animagus/Skill/Fireball.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Project_Animagus/Skill/Fireball.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/Project_Animagus/Skill/HasteSkill.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Project_Animagus/Skill/HasteSkill.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/Project_Animagus/Skill/MagicMissile.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Project_Animagus/Skill/MagicMissile.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/Project_Animagus/Skill/RadialSkill.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Project_Animagus/Skill/RadialSkill.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/Project_Animagus/Skill/ShieldSkill.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Project_Animagus/Skill/ShieldSkill.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/Project_Animagus/Skill/ShockwaveSkill.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Project_Animagus/Skill/ShockwaveSkill.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/Project_Animagus/Skill/SmokeSkill.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Project_Animagus/Skill/SmokeSkill.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/Project_Animagus/Skill/Stun.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Project_Animagus/Skill/Stun.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/Project_Animagus/UI/SkillIconWidget.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Project_Animagus/UI/SkillIconWidget.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/Project_Animagus/UI/SkillIconWidget.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Project_Animagus/UI/SkillIconWidget.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/Project_Animagus/UI/SkillSelectionWidget.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Project_Animagus/UI/SkillSelectionWidget.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/Project_Animagus/UI/SkillSelectionWidget.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Project_Animagus/UI/SkillSelectionWidget.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/Project_Animagus/UI/SkillSlotWidget.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Project_Animagus/UI/SkillSlotWidget.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/Project_Animagus/UI/SkillSlotWidget.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Project_Animagus/UI/SkillSlotWidget.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/Project_Animagus/GameMode/ConnectGameMode.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Project_Animagus/GameMode/ConnectGameMode.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/Project_Animagus/GameMode/ConnectGameMode.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Project_Animagus/GameMode/ConnectGameMode.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/Project_Animagus/PlayerController/ConnectPlayerController.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Project_Animagus/PlayerController/ConnectPlayerController.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/Project_Animagus/PlayerController/ConnectPlayerController.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Project_Animagus/PlayerController/ConnectPlayerController.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/Project_Animagus/System/MyGameInstance.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Project_Animagus/System/MyGameInstance.h" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -53,29 +41,31 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
   </component>
-  <component name="ProjectColorInfo">{
-  &quot;customColor&quot;: &quot;&quot;,
-  &quot;associatedIndex&quot;: 5
-}</component>
-  <component name="ProjectId" id="2xlFkUrrqjyigUh5VLBaW5LApIS" />
+  <component name="HighlightingSettingsPerFile">
+    <setting file="file://$PROJECT_DIR$/Intermediate/Build/Win64/UnrealEditor/Inc/Project_Animagus/UHT/MyGameInstance.generated.h" root0="SKIP_HIGHLIGHTING" />
+  </component>
+  <component name="ProjectColorInfo"><![CDATA[{
+  "customColor": "",
+  "associatedIndex": 5
+}]]></component>
+  <component name="ProjectId" id="2yM4cZHcx20CSSyr5p2jSwcCV4C" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;jitae&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;File.Encoding&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "git-widget-placeholder": "jitae",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="RunManager" selected="C/C++ 프로젝트.Project_Animagus">
     <configuration name="Project_Animagus" type="CppProject" factoryName="C++ Project">
       <configuration_1 setup="1">
@@ -168,24 +158,19 @@
       <method v="2" />
     </configuration>
     <configuration default="true" type="docker-deploy" factoryName="dockerfile" temporary="true">
-      <deployment type="dockerfile">
-        <settings />
-      </deployment>
-      <EXTENSION ID="com.jetbrains.rider.docker.debug" isFastModeEnabled="true" isSslEnabled="false" />
+      <deployment type="dockerfile" />
       <method v="2" />
     </configuration>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="애플리케이션 수준" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="디폴트 작업">
-      <changelist id="e220200e-1b53-46b8-ae20-b4f649f13607" name="변경" comment="" />
-      <created>1748504898050</created>
+      <changelist id="82f90524-bcfc-4556-9fef-0490e524b030" name="변경" comment="" />
+      <created>1749631189706</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
-      <updated>1748504898050</updated>
-      <workItem from="1748504900129" duration="3277000" />
-      <workItem from="1748851244525" duration="25241000" />
-      <workItem from="1749196508559" duration="8072000" />
+      <updated>1749631189706</updated>
+      <workItem from="1749631191260" duration="6792000" />
     </task>
     <servers />
   </component>

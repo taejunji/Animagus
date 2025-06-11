@@ -737,7 +737,7 @@ void ABaseCharacter::UpdateAuraColorBasedOnPowerUpLevel()
     }
     else if (PowerUpLevel == 6 || PowerUpLevel == 12)
     {
-        NewColor = FLinearColor(0.29f, 0.0f, 0.51f); // Indigo (근사치)
+        NewColor = FLinearColor(0.29f, 0.0f, 0.51f);
     }
     else
     {
@@ -748,7 +748,19 @@ void ABaseCharacter::UpdateAuraColorBasedOnPowerUpLevel()
     {
         AuraMaterialInstance->SetScalarParameterValue(FName("Power"), 18.f);
     }
-
+    else if (PowerUpLevel == 13)
+    {
+        AuraMaterialInstance->SetScalarParameterValue(FName("Power"), 20.f);
+    }
+    else if (PowerUpLevel == 14)
+    {
+        AuraMaterialInstance->SetScalarParameterValue(FName("Power"), 20.f);
+    }
+    else if (PowerUpLevel == 15)
+    {
+        AuraMaterialInstance->SetScalarParameterValue(FName("Power"), 22.f);
+    }
+    
     // "auracolor" 파라미터 업데이트
     AuraMaterialInstance->SetVectorParameterValue(FName("BaseColor"), NewColor);
 
