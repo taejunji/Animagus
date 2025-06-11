@@ -268,7 +268,7 @@ void ABattleGameMode::SpawnPlayers()
         ABaseCharacter* NewCharacter = World->SpawnActor<ABaseCharacter>(DefaultPawnClass, SpawnTransform);
         if (NewCharacter)
         {
-            SpawnedPlayers.Add(NewCharacter);
+            SpawnedPlayers.Add(NewCharacter); 
             UE_LOG(LogTemp, Log, TEXT("BattleGameMode: 플레이어 %d 스폰됨, 위치: %s"), i, *SpawnLocations[i].ToString());
         }
         else
@@ -503,6 +503,7 @@ void ABattleGameMode::CountdownTimerUpdate()
                 if (PC && PC->PlayerHUD)
                 {
                     PC->PlayerHUD->UpdateCountdown(DisplayTime);
+                    PC->PlayerHUD->PlayWidgetAnimation(PC->PlayerHUD->GetCountDownTime());
                 }
             }
         }
