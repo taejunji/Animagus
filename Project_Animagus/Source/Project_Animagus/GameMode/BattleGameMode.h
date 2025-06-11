@@ -93,6 +93,8 @@ public:
     UPROPERTY(EditAnywhere, Category = "Item")
     TSubclassOf<class AItem_Box_Base> ItemBoxBpclass;
 
+    class AShrinkingZone* ShrinkingZone;
+
     UPROPERTY(EditAnywhere, Category = "ShrinkZone")
     TSubclassOf<class AShrinkingZone> ShrinkzoneBpclass;
     // 라운드 경과 시간 출력
