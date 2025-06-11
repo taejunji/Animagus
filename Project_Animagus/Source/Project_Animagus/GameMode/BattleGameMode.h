@@ -95,6 +95,9 @@ public:
 
     UPROPERTY(EditAnywhere, Category = "ShrinkZone")
     TSubclassOf<class AShrinkingZone> ShrinkzoneBpclass;
+
+    class AShrinkingZone* ShrinkingZone;
+
     // 라운드 경과 시간 출력
     FTimerHandle battle_timer_handle;
     float elasped_time;

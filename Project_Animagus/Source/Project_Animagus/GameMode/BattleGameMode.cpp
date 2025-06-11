@@ -183,7 +183,7 @@ void ABattleGameMode::InitBattleMode()
           SkillSelectionTimerHandle,
           this,
           &ABattleGameMode::OnSkillSelectionTimeout,
-          30.0f,
+          1.0f,
           false
         );
         
@@ -198,6 +198,18 @@ void ABattleGameMode::InitBattleMode()
             SoundLocation
         );
     }
+
+    UWorld* World = GetWorld();
+    if (!World)
+    {
+        UE_LOG(LogTemp, Warning, TEXT("BattleGameMode: World가 null임."));
+        return;
+    }
+    
+    FTransform ShrinkSpawnTransform;
+    ShrinkSpawnTransform.SetLocation(FVector(0.f, 0.f, 1162.f));
+    ShrinkingZone = World->SpawnActor<AShrinkingZone>(ShrinkzoneBpclass, ShrinkSpawnTransform);
+    
     InitializeArea1SpawnPoints();
     SpawnItemsInArea1();
 }
