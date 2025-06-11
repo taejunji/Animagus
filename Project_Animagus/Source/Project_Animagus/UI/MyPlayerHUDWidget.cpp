@@ -44,13 +44,15 @@ void UMyPlayerHUDWidget::UpdateHP(float HPPercent)
 void UMyPlayerHUDWidget::UpdateSkillIcon(int32 SkillIndex, UTexture2D* NewTexture)
 {
     UImage* TargetImage = nullptr;
+
     switch(SkillIndex)
     {
-    case 0: TargetImage = SkillImage0; break;
-    case 1: TargetImage = SkillImage1; break;
-    case 2: TargetImage = SkillImage2; break;
-    case 3: TargetImage = SkillImage3; break;
-    default: break;
+        case 0: TargetImage = SkillImage0; break;
+        case 1: TargetImage = SkillImage1; break;
+        case 2: TargetImage = SkillImage2; break;
+        case 3: TargetImage = SkillImage3; break;
+        
+        default: break;
     }
     
     if (TargetImage && NewTexture)
@@ -66,13 +68,15 @@ void UMyPlayerHUDWidget::UpdateSkillIcon(int32 SkillIndex, UTexture2D* NewTextur
 void UMyPlayerHUDWidget::UpdateSkillCooldown(int32 SkillIndex, float CooldownPercent)
 {
     UProgressBar* TargetBar = nullptr;
+
     switch(SkillIndex)
     {
-    case 0: TargetBar = SkillCooldownProgressBar0; break;
-    case 1: TargetBar = SkillCooldownProgressBar1; break;
-    case 2: TargetBar = SkillCooldownProgressBar2; break;
-    case 3: TargetBar = SkillCooldownProgressBar3; break;
-    default: break;
+        case 0: TargetBar = SkillCooldownProgressBar0; break;
+        case 1: TargetBar = SkillCooldownProgressBar1; break;
+        case 2: TargetBar = SkillCooldownProgressBar2; break;
+        case 3: TargetBar = SkillCooldownProgressBar3; break;
+        
+        default: break;
     }
 
     if (TargetBar)
@@ -81,13 +85,42 @@ void UMyPlayerHUDWidget::UpdateSkillCooldown(int32 SkillIndex, float CooldownPer
     }
 }
 
+void UMyPlayerHUDWidget::UpdateSkillCooldownTime(int32 SkillIndex, int32 CooldownTime)
+{
+    UTextBlock* TextBlock = nullptr;
+
+    switch (SkillIndex)
+    {
+        case 0: TextBlock = SkillCoolDownTime_0; break;
+        case 1: TextBlock = SkillCoolDownTime_1; break;
+        case 2: TextBlock = SkillCoolDownTime_2; break;
+        case 3: TextBlock = SkillCoolDownTime_3; break;
+
+        default: break;
+    }
+
+    if (TextBlock)
+    {
+        if (CooldownTime <= 0) {
+            TextBlock->SetVisibility(ESlateVisibility::Hidden);
+            return;
+        }
+        else {
+            TextBlock->SetVisibility(ESlateVisibility::Visible);
+        }
+
+        FString NewText = FString::Printf(TEXT("%.2d"), CooldownTime);
+        TextBlock->SetText(FText::FromString(NewText));
+    }
+}
+
 void UMyPlayerHUDWidget::UpdateCountdown(float CountdownValue)
 {
     if (CountdownText)
     {
-        // CountdownValue가 1초 이상이면 (즉, ceil값이 1보다 크면) 표시하고, 
-        // 그렇지 않으면(1초 이하) 빈 텍스트로 처리.
+        // CountdownValue가 1초 이상이면 (즉, ceil값이 1보다 크면) 표시하고, 그렇지 않으면(1초 이하) 빈 텍스트로 처리.
         float DisplayTime = FMath::CeilToFloat(CountdownValue);
+
         if (DisplayTime > 0)
         {
             FString NewText = FString::Printf(TEXT("%.0f"), DisplayTime);
@@ -95,26 +128,16 @@ void UMyPlayerHUDWidget::UpdateCountdown(float CountdownValue)
 
             // 초마다 색상 변경 ( 파스텔톤 - 빨 주 노 초 )
             FLinearColor NewColor;
+
             switch (static_cast<int32>(DisplayTime))
             {
-            case 5:
-                NewColor = FLinearColor(1.0f, 0.5f, 0.5f);
-                break;
-            case 4:
-                NewColor = FLinearColor(1.0f, 0.521833f, 0.15625f);
-                break;
-            case 3:
-                NewColor = FLinearColor(1.0f, 1.0f, 0.311012f);
-                break;
-            case 2:
-                NewColor = FLinearColor(0.311012f, 1.0f, 0.400647f);
-                break;
-            case 1:
-                NewColor = FLinearColor(0.6f, 0.8f, 1.0f);
-                break;
-            default:
-                NewColor = FLinearColor(1.0f, 0.5f, 0.5f);
-                break;
+                case 5: NewColor = FLinearColor(1.0f, 0.5f, 0.5f);           break;
+                case 4: NewColor = FLinearColor(1.0f, 0.521833f, 0.15625f);  break;
+                case 3: NewColor = FLinearColor(1.0f, 1.0f, 0.311012f);      break;
+                case 2: NewColor = FLinearColor(0.311012f, 1.0f, 0.400647f); break;
+                case 1: NewColor = FLinearColor(0.6f, 0.8f, 1.0f);           break;
+
+                default: NewColor = FLinearColor(1.0f, 0.5f, 0.5f);          break;
             }
              
             CountdownText->SetColorAndOpacity(FSlateColor(NewColor)); 

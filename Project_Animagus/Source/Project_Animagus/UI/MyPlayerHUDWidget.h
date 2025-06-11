@@ -95,6 +95,20 @@ protected:
 protected:
 
     UPROPERTY(meta = (BindWidget))
+    UTextBlock* SkillCoolDownTime_0;
+
+    UPROPERTY(meta = (BindWidget))
+    UTextBlock* SkillCoolDownTime_1;
+
+    UPROPERTY(meta = (BindWidget))
+    UTextBlock* SkillCoolDownTime_2;
+
+    UPROPERTY(meta = (BindWidget))
+    UTextBlock* SkillCoolDownTime_3;
+
+protected:
+
+    UPROPERTY(meta = (BindWidget))
     UBorder* SkillBorder_0;
 
     UPROPERTY(meta = (BindWidget))
@@ -154,6 +168,9 @@ public:
     // 스킬 쿨타임 진행률 업데이트 함수 (0~1 사이의 값)
     UFUNCTION(BlueprintCallable, Category = "UI")
     void UpdateSkillCooldown(int32 SkillIndex, float CooldownPercent);
+
+    UFUNCTION(BlueprintCallable, Category = "UI")
+    void UpdateSkillCooldownTime(int32 SkillIndex, int32 CooldownTime);
 
     UFUNCTION(BlueprintCallable, Category = "UI")
     void UpdateCountdown(float CountdownValue);
