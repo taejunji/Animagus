@@ -592,36 +592,7 @@ void ABattleGameMode::MoveOtherPlayer(Protocol::CS_MOVE_PKT& pkt)
 
     if (pkt.player_info.player_id == my_id)
     {
-        uint64 NowMs = pkt.server_time;
-        uint64 ElapsedMs = NowMs - StartTime2Server;
-        uint64 ElapsedSecInt = ElapsedMs / 1000;
-
-        if (ElapsedSecInt >= 0)
-        {
-            // 스킬 선택창 30초
-            if (false == CalledConfirmInput && ElapsedSecInt >= SelectionTime)
-            {
-                CalledConfirmInput = true;
-                OnSkillSelectionTimeout();
-            }
-
-            // 게임시작 카운트다운 6초
-            if (false == CalledActiveInput && ElapsedSecInt >= SelectionTime + CountdownTime)
-            {
-                UE_LOG(LogTemp, Warning, TEXT("Active input"));
-                ActivateInput();
-            }
-
-            // 스킬 선택창 카운트다운 업데이트
-            if (ElapsedSecInt <= SelectionTime) SelectionTimeRemaining = SelectionTime - ElapsedSecInt;
-            // 게임시작 카운트다운 업데이트
-            if (ElapsedSecInt >= SelectionTime && ElapsedSecInt <= SelectionTime + CountdownTime) CurrentCountdownTime = SelectionTime + CountdownTime - ElapsedSecInt;
-            // 라운드 타이머 업데이트
-            if (ElapsedSecInt >= SelectionTime + CountdownTime && (ElapsedSecInt - CurrentRoundTime) <= (SelectionTime + CountdownTime + 5)) CurrentRoundTime = ElapsedSecInt - (SelectionTime + CountdownTime);
-
-            //UE_LOG(LogTemp, Warning, TEXT("%d - Time to Server: %d sec"), PlayerCharacter->GetPlayerId(), ElapsedSecInt);
-        }
-
+        HandleServerTime(pkt.server_time);
         return;
     }
 
@@ -655,6 +626,39 @@ void ABattleGameMode::MoveOtherPlayer(Protocol::CS_MOVE_PKT& pkt)
     else if (State == Protocol::PlayerState::MOVE_STATE_IDLE)
         Player->GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_None);
 
+}
+
+void ABattleGameMode::HandleServerTime(uint64 server_time)
+{
+    uint64 NowMs = server_time;
+    uint64 ElapsedMs = NowMs - StartTime2Server;
+    uint64 ElapsedSecInt = ElapsedMs / 1000;
+
+    if (ElapsedSecInt >= 0)
+    {
+        // 스킬 선택창 30초
+        if (false == CalledConfirmInput && ElapsedSecInt >= SelectionTime)
+        {
+            CalledConfirmInput = true;
+            OnSkillSelectionTimeout();
+        }
+
+        // 게임시작 카운트다운 6초
+        if (false == CalledActiveInput && ElapsedSecInt >= SelectionTime + CountdownTime)
+        {
+            UE_LOG(LogTemp, Warning, TEXT("Active input"));
+            ActivateInput();
+        }
+
+        // 스킬 선택창 카운트다운 업데이트
+        if (ElapsedSecInt <= SelectionTime) SelectionTimeRemaining = SelectionTime - ElapsedSecInt;
+        // 게임시작 카운트다운 업데이트
+        if (ElapsedSecInt >= SelectionTime && ElapsedSecInt <= SelectionTime + CountdownTime) CurrentCountdownTime = SelectionTime + CountdownTime - ElapsedSecInt;
+        // 라운드 타이머 업데이트
+        if (ElapsedSecInt >= SelectionTime + CountdownTime && (ElapsedSecInt - CurrentRoundTime) <= (SelectionTime + CountdownTime + 5)) CurrentRoundTime = ElapsedSecInt - (SelectionTime + CountdownTime);
+
+        //UE_LOG(LogTemp, Warning, TEXT("%d - Time to Server: %d sec"), PlayerCharacter->GetPlayerId(), ElapsedSecInt);
+    }
 }
 
 void ABattleGameMode::SpawnSkill(Protocol::CS_USING_SKILL_PKT& pkt)
@@ -1073,11 +1077,6 @@ void ABattleGameMode::SpawnItemsInArea1()
 //            UE_LOG(LogTemp, Warning, TEXT("SpawnItemsInArea1: Failed to spawn item at index %d"), i);
 //        }
 //    }
-}
-
-float ABattleGameMode::GetCurrentRoundTime() const
-{
-    return CurrentRoundTime;
 }
 
 void ABattleGameMode::InitializeArea1SpawnPoints()

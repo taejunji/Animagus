@@ -26,7 +26,7 @@ protected:
     virtual void Tick(float DeltaTime) override;
 
 public:
-    void SetPlayerType(Protocol::PlayerType type) { PlayerType = type; }
+    void SetPlayerType(Protocol::PlayerType type) { PlayerType = type; InitPlayerMesh(); }
     void SetPlayerInfo(Protocol::PlayerInfo& info);
     void SetDestInfo(Protocol::PlayerInfo& info);
 

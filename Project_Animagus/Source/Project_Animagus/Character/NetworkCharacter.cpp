@@ -93,6 +93,8 @@ void ANetworkCharacter::InitPlayerMesh()
 {
     if (auto* GameInstance = Cast<UMyGameInstance>(GetGameInstance()))
     {
+        UE_LOG(LogTemp, Warning, TEXT("NetworkCharacter InitPlayerMesh"));
+
         switch (PlayerType)
         {
         case Protocol::PlayerType::MONKEY:

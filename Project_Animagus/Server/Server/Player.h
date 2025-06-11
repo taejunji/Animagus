@@ -32,7 +32,7 @@ public:
 
     std::atomic<int8> powerUpLevel = 0;
     
-    Protocol::PlayerType type = Protocol::PlayerType::RAM;     // TODO : 선택한 캐릭터로 보여지게
+    Protocol::PlayerType type = Protocol::PlayerType::KOALA;     // TODO : 선택한 캐릭터로 보여지게
 
 
     std::weak_ptr<Session> ownerSession;
