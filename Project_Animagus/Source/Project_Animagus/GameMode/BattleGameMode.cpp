@@ -291,6 +291,17 @@ void ABattleGameMode::InitBattleMode()
     SpawnedItems.Empty();
     AttractionZones.Empty();
 
+    UWorld* World = GetWorld();
+    if (!World)
+    {
+        UE_LOG(LogTemp, Warning, TEXT("BattleGameMode: World가 null임."));
+        return;
+    }
+    
+    FTransform ShrinkSpawnTransform;
+    ShrinkSpawnTransform.SetLocation(FVector(0.f, 0.f, 1162.f));
+    ShrinkingZone = World->SpawnActor<AShrinkingZone>(ShrinkzoneBpclass, ShrinkSpawnTransform);
+    
     InitializeArea1SpawnPoints();
     InitializeArea2SpawnPoints();
     InitializeArea3SpawnPoints();

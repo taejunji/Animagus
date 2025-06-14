@@ -1,33 +1,68 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 #pragma once
 
 #include "CoreMinimal.h"
 #include "GameFramework/PlayerController.h"
+#include "../System/MyGameInstance.h"        
 #include "ConnectPlayerController.generated.h"
 
-class UUConnectWidget;
+class UMeshSelectWidget;
+class ASkeletalPreviewActor;
+class UAnimSequence;
 
-/**
- * 
- */
 UCLASS()
 class PROJECT_ANIMAGUS_API AConnectPlayerController : public APlayerController
 {
-	GENERATED_BODY()
+    GENERATED_BODY()
+
 public:
     virtual void BeginPlay() override;
+    void ShowConnectUI();
+    void OnMeshSelected(CharacterMesh Selected);  
+    void OnStartGame();
 
-protected:
-    /** 블루프린트로 만든 WBP_Connect 위젯 클래스 */
-    UPROPERTY(EditDefaultsOnly, Category = "UI")
-    TSubclassOf<UUserWidget> ConnectWidgetClass;
 
-    /** 생성된 위젯 인스턴스 */
+    virtual void OnPossess(APawn* InPawn) override;
+    
+    UPROPERTY(EditAnywhere, Category="Spawn")
+    FVector InitialPawnLocation  = FVector(0,0,0);
+
+    UPROPERTY(EditAnywhere, Category="Spawn")
+    FRotator InitialPawnRotation  = FRotator(0, 90, 0);
+    
+    TArray<CharacterMesh> MeshList;
+
     UPROPERTY()
-    UUConnectWidget* ConnectWidget;
+    int32 CurrentMeshIndex = 0;
+    
+protected:
+    UPROPERTY(EditAnywhere, Category="UI")
+    TSubclassOf<UMeshSelectWidget> MeshSelectWidgetClass;
 
-    /** 버튼 클릭 핸들러 */
-    UFUNCTION()
-    void OnConnectButtonClicked();
+
+private:
+    UPROPERTY()
+    UMeshSelectWidget* MeshSelectWidget;
+
+    UPROPERTY()
+    ASkeletalPreviewActor* PreviewActor = nullptr;
+
+    static FString MeshKeyFromEnum(CharacterMesh Mesh)
+    {
+        switch (Mesh)
+        {
+        case CharacterMesh::Monkey:   return TEXT("SM_Monkey");
+        case CharacterMesh::Koala:    return TEXT("SM_Koala");
+        case CharacterMesh::Sheep:    return TEXT("SM_Sheep");
+        case CharacterMesh::Fox:      return TEXT("SM_Fox");
+        case CharacterMesh::Sloth:    return TEXT("SM_Sloth");
+        case CharacterMesh::Elephant: return TEXT("SM_Elephant");
+        case CharacterMesh::Raccoon:  return TEXT("SM_Raccoon");
+        case CharacterMesh::Deer:     return TEXT("SM_Deer");
+        case CharacterMesh::Cow:      return TEXT("SM_Cow");
+        case CharacterMesh::Unicorn:  return TEXT("SM_Unicorn");
+        case CharacterMesh::Zebra:    return TEXT("SM_Zebra");
+        case CharacterMesh::Donkey:   return TEXT("SM_Donkey");
+        }
+        return TEXT("");
+    }
 };

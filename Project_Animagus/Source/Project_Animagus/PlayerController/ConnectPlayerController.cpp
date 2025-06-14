@@ -1,66 +1,139 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
-
 #include "ConnectPlayerController.h"
-#include "Blueprint/UserWidget.h"
-#include "../UI/UConnectWidget.h"         // UConnectWidget 선언 포함
-#include "Components/Button.h"
-#include "Components/EditableTextBox.h"
-#include "Kismet/GameplayStatics.h"
+#include "../UI/MeshSelectWidget.h"
+#include "../Actor/SkeletalPreviewActor.h"
 #include "../System/MyGameInstance.h"
-
+#include "Kismet/GameplayStatics.h"
+#include "Project_Animagus/GameMode/ConnectGameMode.h"
 
 void AConnectPlayerController::BeginPlay()
 {
     Super::BeginPlay();
 
-    // 1) 위젯 클래스가 할당되었는지 확인
-    if (!ConnectWidgetClass)
+    ShowConnectUI();
+
+    if (AConnectGameMode* GM = Cast<AConnectGameMode>(UGameplayStatics::GetGameMode(this)))
     {
-        UE_LOG(LogTemp, Warning, TEXT("ConnectWidgetClass가 에디터에서 할당되지 않음"));
-        return;
+        PreviewActor = GM->GetPreviewActor();
     }
 
-    // 2) 위젯 생성 후 뷰포트에 추가
-    ConnectWidget = CreateWidget<UUConnectWidget>(this, ConnectWidgetClass);
-    if (ConnectWidget)
+    MeshList = {
+        CharacterMesh::Sheep,
+        CharacterMesh::Monkey,
+        CharacterMesh::Koala,
+        CharacterMesh::Fox,
+        CharacterMesh::Sloth,
+        CharacterMesh::Elephant,
+        CharacterMesh::Raccoon,
+        CharacterMesh::Deer,
+        CharacterMesh::Cow,
+        CharacterMesh::Unicorn,
+        CharacterMesh::Zebra,
+        CharacterMesh::Donkey
+    };
+
+    if (MeshList.Num() > 0)
     {
-        ConnectWidget->AddToViewport();
-
-        // 3) 위젯 내부의 버튼에 클릭 델리게이트 바인딩
-        ConnectWidget->ConnectButton->OnClicked.AddDynamic(this, &AConnectPlayerController::OnConnectButtonClicked);
-
-        // UI 전용 입력 모드
-        bShowMouseCursor = true;
-        FInputModeUIOnly InputMode;
-        InputMode.SetWidgetToFocus(ConnectWidget->TakeWidget());
-        InputMode.SetLockMouseToViewportBehavior(EMouseLockMode::DoNotLock);
-        SetInputMode(InputMode);
+        CurrentMeshIndex = 0;
+        OnMeshSelected(MeshList[0]);
     }
-    else
-    {
-        UE_LOG(LogTemp, Warning, TEXT("ConnectWidget 생성 실패"));
-    }
-}
-
-void AConnectPlayerController::OnConnectButtonClicked()
-{
-    if (!ConnectWidget) return;
-
-    // 4) 입력된 IP 주소 읽어오기
-    const FString TargetIP = ConnectWidget->InputIP->GetText().ToString();
-    if (TargetIP.IsEmpty())
-    {
-        UE_LOG(LogTemp, Warning, TEXT("IP 주소가 비어있음"));
-        return;
-    }
-
-    UE_LOG(LogTemp, Log, TEXT("입력된 IP: %s 로 연결 시도"), *TargetIP);
-
     
-    // 여기서 Connect 하면됩니다잉. 
-    //Cast<UMyGameInstance>(GWorld->GetGameInstance())->ConnectToGameServer(TargetIP);
-
-    // 6) 연결 성공 시, 로비 레벨로 전환
-    UGameplayStatics::OpenLevel(this, TEXT("Lobby"));
+    if (UMyGameInstance* GI = GetGameInstance<UMyGameInstance>())
+        OnMeshSelected(GI->player_data.stored_mesh);
 }
+
+void AConnectPlayerController::ShowConnectUI()
+{
+    if (!MeshSelectWidgetClass) return;
+
+    FInputModeUIOnly Mode;
+    Mode.SetWidgetToFocus(nullptr);
+    Mode.SetLockMouseToViewportBehavior(EMouseLockMode::DoNotLock);
+    SetInputMode(Mode);
+    bShowMouseCursor = true;
+    
+    MeshSelectWidget = CreateWidget<UMeshSelectWidget>(this, MeshSelectWidgetClass);
+    MeshSelectWidget->AddToViewport();
+    MeshSelectWidget->SetupOwner(this);
+}
+
+void AConnectPlayerController::OnMeshSelected(CharacterMesh Selected)
+{
+
+    if (UMyGameInstance* GI = GetGameInstance<UMyGameInstance>())
+    {
+        GI->player_data.stored_mesh = Selected;
+
+        // 문자열 키 변환
+        const FString Key = MeshKeyFromEnum(Selected);
+        if (USkeletalMesh** MeshPtr = GI->CharacterMeshes.Find(Key))
+        {
+            if (PreviewActor)
+            {
+                // 이제 SetMesh만 호출: Idle만 재생
+                PreviewActor->SetMesh(*MeshPtr);
+            }
+        }
+    }
+    
+    // UE_LOG(LogTemp, Warning, TEXT("OnMeshSelected called with %d"), (int32)Selected);
+    //
+    // if (UMyGameInstance* GI = GetGameInstance<UMyGameInstance>())
+    // {
+    //     // 1) 저장
+    //     if (!GI)
+    //     {
+    //         UE_LOG(LogTemp, Error, TEXT("OnMeshSelected: GameInstance is null"));
+    //         return;
+    //     }
+    //     GI->player_data.stored_mesh = Selected;
+    //
+    //     // 2) PreviewActor 확인
+    //     if (!PreviewActor)
+    //     {
+    //         UE_LOG(LogTemp, Error, TEXT("OnMeshSelected: PreviewActor is null"));
+    //         return;
+    //     }
+    //
+    //     
+    //     // 2) 맵에서 문자열 키로 찾기
+    //     FString Key = MeshKeyFromEnum(Selected);
+    //     UE_LOG(LogTemp, Log, TEXT("OnMeshSelected: Key = %s"), *Key);
+    //     
+    //     // 4) 메쉬 검색
+    //     USkeletalMesh** MeshPtr = GI->CharacterMeshes.Find(Key);
+    //     if (!MeshPtr)
+    //     {
+    //         UE_LOG(LogTemp, Error, TEXT("OnMeshSelected: CharacterMeshes has no entry for %s"), *Key);
+    //         return;
+    //     }
+    //     UE_LOG(LogTemp, Log, TEXT("OnMeshSelected: Found mesh ptr %p"), MeshPtr);
+    //     
+    //     PreviewActor->SetMesh(*MeshPtr);
+    //     UE_LOG(LogTemp, Log, TEXT("OnMeshSelected: SetMeshAndPlay called"));
+    // }
+}
+
+void AConnectPlayerController::OnStartGame()
+{
+    // 레벨 전환
+    UGameplayStatics::OpenLevel(this, TEXT("L_Map"));
+}
+
+void AConnectPlayerController::OnPossess(APawn* InPawn)
+{
+    Super::OnPossess(InPawn);
+
+    if (!InPawn) return;
+
+    // 1) Pawn 위치·회전 강제
+    InPawn->SetActorLocationAndRotation(
+      InitialPawnLocation,
+      InitialPawnRotation ,
+      false, nullptr,
+      ETeleportType::TeleportPhysics
+    );
+
+    // 2) 컨트롤러 회전 강제
+    SetControlRotation(InitialPawnRotation );
+}
+

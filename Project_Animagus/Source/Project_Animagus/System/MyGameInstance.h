@@ -10,7 +10,23 @@
 
 
 enum class LevelType { Login, Lobby, Battle };
-enum class CharacterMesh { Monkey, Koala, Sheep, Fox, Sloth, Elephant, Raccoon, Deer, Cow, Unicorn, Zebra, Donkey };
+
+
+enum class CharacterMesh
+{
+    Monkey,
+    Koala,
+    Sheep,
+    Fox,
+    Sloth,
+    Elephant,
+    Raccoon,
+    Deer,
+    Cow,
+    Unicorn,
+    Zebra,
+    Donkey     
+};
 
 struct StoredPlayerData
 {

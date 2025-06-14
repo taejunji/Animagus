@@ -113,6 +113,21 @@ float UBaseSkill::GetCooldownPercent() const
     return FMath::Clamp(Elapsed / CooldownTime, 0.0f, 1.0f);
 }
 
+int32 UBaseSkill::GetRemainingCooldown() const
+{
+    if(!bIsCooldown)
+    {
+        return 0;
+    }
+
+    float CurrentTime = GetWorld()->GetTimeSeconds();
+    float Elapsed = CurrentTime - LastUsedTime;
+    float RemaingTime = CooldownTime - Elapsed;
+
+    // 0보다 작으면 0으로 처리
+    return FMath::Max(FMath::CeilToInt(RemaingTime), 0);
+}
+
 bool UBaseSkill::CanActivateSkill() const
 {
     if (!Owner)

@@ -2,6 +2,9 @@
 
 
 #include "BaseCharacter.h"
+#include "../PlayerController/Battle_PlayerController.h"
+#include "../UI/MyPlayerHUDWidget.h"
+
 #include "AICharacter.h"
 #include "../AI/MyAIController.h"
 #include "Animation/AnimInstance.h"
@@ -236,13 +239,23 @@ void ABaseCharacter::Tick(float DeltaTime)
 
     // 임시 캐릭터 죽음 테스트
     if (hp <= 0.f) {        
-        if (is_dead == false) is_dead = true;
+        if (is_dead == false) {
+            is_dead = true;
+            // Player면 죽은 시점에서 마지막 업데이트
+            /*ABattle_PlayerController* PC = Cast<ABattle_PlayerController>(GetController());
+            if (PC && PC->PlayerHUD)
+            {
+                PC->PlayerHUD->SetCurrentHP(GetHP(), GetMax_Hp());
+            }*/
+        }
+
         if (GetCharacterMovement()->IsFalling() == false) {
             // 일시적으로 이동을 멈추고 싶다면? → DisableMovement()
             // 이동을 완전히 비활성화하고 싶다면 ? → SetMovementMode(MOVE_None)
             GetCharacterMovement()->DisableMovement();
             GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
         }
+
         return;
     }
     else {
@@ -763,6 +776,11 @@ void ABaseCharacter::IncreasePowerUpLevel()
     PowerUpLevel++;
     UE_LOG(LogTemp, Log, TEXT("%s PowerUpLevel increased to %d"), *GetName(), PowerUpLevel);
 
+    if (auto* PC = Cast<ABattle_PlayerController>(GetController())) {
+        PC->PlayerHUD->ResetLevelImgage(); 
+        PC->PlayerHUD->SetLevelImage(PowerUpLevel);
+    }
+
     // 보유한 모든 스킬에 대해 UpgradeSkill() 호출
     for (UBaseSkill* Skill : Skills)
     {
@@ -823,6 +841,18 @@ void ABaseCharacter::UpdateAuraColorBasedOnPowerUpLevel()
     if (PowerUpLevel > 6)
     {
         AuraMaterialInstance->SetScalarParameterValue(FName("Power"), 18.f);
+    }
+    else if (PowerUpLevel == 13)
+    {
+        AuraMaterialInstance->SetScalarParameterValue(FName("Power"), 20.f);
+    }
+    else if (PowerUpLevel == 14)
+    {
+        AuraMaterialInstance->SetScalarParameterValue(FName("Power"), 20.f);
+    }
+    else if (PowerUpLevel == 15)
+    {
+        AuraMaterialInstance->SetScalarParameterValue(FName("Power"), 22.f);
     }
 
     // "auracolor" 파라미터 업데이트
