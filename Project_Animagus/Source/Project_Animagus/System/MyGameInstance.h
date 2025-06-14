@@ -126,4 +126,5 @@ public:
     TSharedPtr<class Session> ClientSession;
 
     uint16 MyPlayerId = 0;
+    bool    AmIHost = false; // 내가 호스트인지 여부
 };

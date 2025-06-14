@@ -483,7 +483,7 @@ bool Room::HandleTimeOverLocked(Protocol::CS_TIME_OVER_PKT& pkt)
         SC_GAME_INIT_PKT initGamePkt;
 
         SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(initGamePkt);
-        Broadcast(sendBuffer, 0, true);
+        Broadcast(sendBuffer, 0);
 
     }
     else
@@ -504,7 +504,7 @@ void Room::InitializeGame()
         player->player_state = PlayerRoomState::WAITING;
         player->s_mutex.unlock();
     }
-    m_aiPlayers.clear();
+    //m_aiPlayers.clear();
     //m_playerCount = 0;
     m_gameStartTickCount = 0;
     m_loadingOverCount = 0;

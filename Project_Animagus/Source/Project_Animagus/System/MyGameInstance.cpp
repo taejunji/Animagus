@@ -16,11 +16,13 @@
 #include "../Character/NetworkCharacter.h"
 #include "../GameMode/BattleGameMode.h"
 #include "../GameMode/LobbyGameMode.h"
+#include "../GameMode/ConnectGameMode.h"
 #include "../Animation/CharacterAnimInstance.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "../Actor/ItemBox/Item_Box_Base.h"
 #include "../Actor/Zones/ShrinkingZone.h"
 #include "../Actor/Zones/AttractionZone.h"
+#include "../PlayerController/ConnectPlayerController.h"
 
 #include "Misc/Paths.h"
 #include "Misc/FileHelper.h"
@@ -74,7 +76,7 @@ void UMyGameInstance::Init()
     ConnectToGameServer();
 
     // 데이터 불러왔을 때 mesh 타입 설정하기 => ( 임시로 양 디폴트 )
-    player_data.stored_mesh = CharacterMesh::Sheep; 
+    player_data.stored_mesh = CharacterMesh::Sheep;
 
     InitGameInstance();
 }
@@ -216,17 +218,21 @@ void UMyGameInstance::HandleLobbyHost(Protocol::SC_UR_HOST_PKT& pkt)
     if (Socket == nullptr || ClientSession == nullptr)
         return;
 
+    AmIHost = true;
+
     auto* World = GetWorld();
     if (World == nullptr)
         return;
+
     AGameModeBase* BaseGameMode = UGameplayStatics::GetGameMode(World);
     if (BaseGameMode)
     {
-        ALobbyGameMode* GameMode = Cast<ALobbyGameMode>(BaseGameMode);
-        if (GameMode)
+        if (AConnectGameMode* GameMode = Cast<AConnectGameMode>(BaseGameMode))
         {
-            GameMode->AmIHost = true;
-            GameMode->ActiveStartButton();
+            if (AConnectPlayerController* PC = Cast<AConnectPlayerController>(UGameplayStatics::GetPlayerController(GameMode, 0))) {
+                GameMode->AmIHost = true;
+                PC->ActiveStartButton();
+            }
         }
     }
 }
@@ -242,7 +248,7 @@ void UMyGameInstance::HandleStartGame(Protocol::SC_START_GAME_PKT& pkt)
     AGameModeBase* BaseGameMode = UGameplayStatics::GetGameMode(World);
     if (BaseGameMode)
     {
-        ALobbyGameMode* GameMode = Cast<ALobbyGameMode>(BaseGameMode);
+        AConnectGameMode* GameMode = Cast<AConnectGameMode>(BaseGameMode);
         if (GameMode == nullptr) return;
     }
 

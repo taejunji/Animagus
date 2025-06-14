@@ -291,13 +291,6 @@ void ABattleGameMode::InitBattleMode()
     SpawnedItems.Empty();
     AttractionZones.Empty();
 
-    UWorld* World = GetWorld();
-    if (!World)
-    {
-        UE_LOG(LogTemp, Warning, TEXT("BattleGameMode: World가 null임."));
-        return;
-    }
-    
     FTransform ShrinkSpawnTransform;
     ShrinkSpawnTransform.SetLocation(FVector(0.f, 0.f, 1162.f));
     ShrinkingZone = World->SpawnActor<AShrinkingZone>(ShrinkzoneBpclass, ShrinkSpawnTransform);
@@ -884,8 +877,10 @@ void ABattleGameMode::OnSkillSelectionTimeout()
     //FTimerHandle GameStartTimerHandle; 
     //GetWorld()->GetTimerManager().SetTimer(GameStartTimerHandle, this, &ABattleGameMode::ActivateInput, 6.0f, false); 
 
-    // 1초마다 Countdown 사운드 호출
+    // 1초마다 Countdown 사운드 호출, Countdown 효과 호출
     GetWorld()->GetTimerManager().SetTimer(GameStartTimerSoundHandle, FTimerDelegate::CreateLambda([this]() {
+        if (ABattle_PlayerController* PC = Cast<ABattle_PlayerController>(PlayerCharacter->GetController()))
+            PC->PlayerHUD->PlayWidgetAnimation(PC->PlayerHUD->GetCountDownTime());
         if (CountSound)
         {
             UGameplayStatics::PlaySound2D(GetWorld(), CountSound);
@@ -997,7 +992,7 @@ void ABattleGameMode::RoundTimerUpdate()
 
     //UE_LOG(LogTemp, Log, TEXT("Round Time: %d"), CurrentRoundTime);
 
-    if (AmIHost == false) return;
+    if (false == Cast<UMyGameInstance>(GWorld->GetGameInstance())->AmIHost) return;
     if (CurrentRoundTime >= TIME_OVER)
     {
         Protocol::CS_TIME_OVER_PKT timeOverPkt;

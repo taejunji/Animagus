@@ -208,4 +208,18 @@ bool Handle_CS_TIME_OVER(SessionRef& session, CS_TIME_OVER_PKT& pkt)
     return true;
 }
 
-// 브랜치 보호용 커밋
+bool Handle_CS_SELECT_CHARACTER_PKT(SessionRef& session, CS_SELECT_CHARACTER_PKT& pkt)
+{
+    auto gameSession = static_pointer_cast<Session>(session);
+
+    PlayerRef player = gameSession->m_player.load();
+    if (player == nullptr)
+        return false;
+
+    player->type = pkt.p_type;
+
+    std::cout << "Player[" << player->playerID << "] Selected Character Type: " << static_cast<int>(pkt.p_type) << std::endl;
+
+    return true;
+}
+
