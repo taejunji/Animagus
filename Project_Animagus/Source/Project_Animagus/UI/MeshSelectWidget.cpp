@@ -14,6 +14,19 @@ void UMeshSelectWidget::NativeConstruct()
 {
     Super::NativeConstruct();
 
+
+    if (BtnBack)
+    {
+        BtnBack->OnClicked.AddDynamic(this, &UMeshSelectWidget::HandleBackClicked);
+        BtnBack->OnClicked.AddDynamic(this, &UMeshSelectWidget::PlayClickSound);
+        BtnBack->OnHovered.AddDynamic(this, &UMeshSelectWidget::PlayHoverSound); 
+    }
+    if (BtnNext)
+    {
+    BtnNext->OnClicked.AddDynamic(this, &UMeshSelectWidget::HandleNextClicked);
+        BtnNext->OnClicked.AddDynamic(this, &UMeshSelectWidget::PlayClickSound);
+        BtnNext->OnHovered.AddDynamic(this, &UMeshSelectWidget::PlayHoverSound); 
+    }
  // Monkey
     if (BtnMonkey)
     {
@@ -165,6 +178,26 @@ void UMeshSelectWidget::HandleSelectZebra()
 
 void UMeshSelectWidget::HandleSelectDonkey()
 { if (Owner.IsValid()) Owner->OnMeshSelected(CharacterMesh::Donkey); }
+
+void UMeshSelectWidget::HandleBackClicked()
+{
+    if (!Owner.IsValid()) return;
+
+    const int32 N = Owner->MeshList.Num();
+    Owner->CurrentMeshIndex = (Owner->CurrentMeshIndex - 1 + N) % N;
+
+    // 컨트롤러에 선택 알림
+    Owner->OnMeshSelected(Owner->MeshList[Owner->CurrentMeshIndex]);
+}
+
+void UMeshSelectWidget::HandleNextClicked()
+{
+    if (!Owner.IsValid()) return;
+    const int32 N = Owner->MeshList.Num();
+    Owner->CurrentMeshIndex = (Owner->CurrentMeshIndex + 1) % N;
+    Owner->OnMeshSelected(Owner->MeshList[Owner->CurrentMeshIndex]);
+    
+}
 
 void UMeshSelectWidget::HandleStartClicked()
 {

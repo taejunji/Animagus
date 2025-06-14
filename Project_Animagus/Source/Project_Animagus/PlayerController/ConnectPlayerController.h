@@ -20,13 +20,24 @@ public:
     void OnMeshSelected(CharacterMesh Selected);  
     void OnStartGame();
 
+
+    virtual void OnPossess(APawn* InPawn) override;
+    
+    UPROPERTY(EditAnywhere, Category="Spawn")
+    FVector InitialPawnLocation  = FVector(0,0,0);
+
+    UPROPERTY(EditAnywhere, Category="Spawn")
+    FRotator InitialPawnRotation  = FRotator(0, 90, 0);
+    
+    TArray<CharacterMesh> MeshList;
+
+    UPROPERTY()
+    int32 CurrentMeshIndex = 0;
+    
 protected:
     UPROPERTY(EditAnywhere, Category="UI")
     TSubclassOf<UMeshSelectWidget> MeshSelectWidgetClass;
-    
 
-    UPROPERTY(EditAnywhere, Category="Preview")
-    UAnimSequence* IdleAnimation;
 
 private:
     UPROPERTY()

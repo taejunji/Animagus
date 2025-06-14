@@ -5,6 +5,7 @@
 #include "../GameMode/ConnectGameMode.h"
 #include "../UI/MeshSelectWidget.h"
 #include "../Actor/SkeletalPreviewActor.h"
+#include "GameFramework/PlayerStart.h"
 #include "Kismet/GameplayStatics.h"
 #include "Project_Animagus/PlayerController/ConnectPlayerController.h"
 
@@ -20,6 +21,21 @@ void AConnectGameMode::BeginPlay()
             PreviewSpawnLocation,
             PreviewSpawnRotation
         );
+        
     }
+}
+
+void AConnectGameMode::PostLogin(APlayerController* NewPlayer)
+{
+    Super::PostLogin(NewPlayer);
+
+    if (APawn* P = NewPlayer->GetPawn())
+    {
+        
+        P->SetActorLocationAndRotation(SpawnLocation, SpawnRotation, false, nullptr, ETeleportType::TeleportPhysics);
+        
+        NewPlayer->SetControlRotation(SpawnRotation);
+    }
+
 }
 

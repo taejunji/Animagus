@@ -37,6 +37,9 @@ protected:
     UPROPERTY(meta=(BindWidget)) UButton* BtnZebra;
     UPROPERTY(meta=(BindWidget)) UButton* BtnDonkey;
 
+    UPROPERTY(meta=(BindWidget)) UButton* BtnBack;
+    UPROPERTY(meta=(BindWidget)) UButton* BtnNext;
+    
     // 시작 버튼
     UPROPERTY(meta=(BindWidget)) UButton* BtnStart;
 
@@ -61,6 +64,9 @@ private:
     UFUNCTION() void HandleSelectZebra();
     UFUNCTION() void HandleSelectDonkey();
 
+    UFUNCTION() void HandleBackClicked();
+    UFUNCTION() void HandleNextClicked();
+    
     // 시작
     UFUNCTION() void HandleStartClicked();
 
