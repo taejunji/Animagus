@@ -4,17 +4,18 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/GameModeBase.h"
-#include "LodingMode.generated.h"
+#include "RoomSelectGameMode.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class PROJECT_ANIMAGUS_API ALodingMode : public AGameModeBase
+class PROJECT_ANIMAGUS_API ARoomSelectGameMode : public AGameModeBase
 {
 	GENERATED_BODY()
 	
 public:
+    ARoomSelectGameMode();
     virtual void BeginPlay() override;
 };
 

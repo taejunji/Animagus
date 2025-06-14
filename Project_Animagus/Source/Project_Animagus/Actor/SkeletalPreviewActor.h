@@ -7,7 +7,7 @@
 #include "SkeletalPreviewActor.generated.h"
 
 class USkeletalMeshComponent;
-class UAnimSequence;
+class UAnimMontage;
 
 UCLASS()
 class PROJECT_ANIMAGUS_API ASkeletalPreviewActor : public AActor
@@ -19,7 +19,7 @@ public:
 	ASkeletalPreviewActor();
 
     UFUNCTION()
-    void SetMeshAndPlay(USkeletalMesh* Mesh, UAnimSequence* IdleAnimation);
+    void SetMesh(USkeletalMesh* Mesh);
     
 protected:
 	// Called when the game starts or when spawned
@@ -29,6 +29,9 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+    UFUNCTION()
+    void OnSelectMontageEnded(UAnimMontage* Montage, bool bInterrupted);
+    
 protected:
     
     UPROPERTY(VisibleAnywhere)
@@ -37,5 +40,14 @@ protected:
     
     UPROPERTY(VisibleAnywhere)
     USkeletalMeshComponent* PreviewMesh;
+
+    UPROPERTY(EditAnywhere, Category="Animation")
+    UAnimSequence* IdleAnimation;
+    
+    // UPROPERTY(EditAnywhere, Category="Animation")
+    // UAnimMontage* SelectMontage;
+    //
+    // UPROPERTY(EditAnywhere, Category="Animation")
+    // UAnimMontage* IdleMontage;
 
 };

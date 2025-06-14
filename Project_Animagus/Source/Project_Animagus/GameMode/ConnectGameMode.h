@@ -21,7 +21,9 @@ public:
     virtual void BeginPlay() override;
     
     ASkeletalPreviewActor* GetPreviewActor() const { return PreviewActor; }
-    
+
+    // PostLogin을 잡아서, 로그인(스폰) 직후 시작 위치를 고정
+    virtual void PostLogin(APlayerController* NewPlayer) override;
 protected:
     /** PreviewActor용 클래스 지정 (BP에서 할당) */
     UPROPERTY(EditAnywhere, Category="Preview")
@@ -37,4 +39,10 @@ protected:
     /** PreviewActor 스폰 회전 */
     UPROPERTY(EditAnywhere, Category="Preview")
     FRotator PreviewSpawnRotation = FRotator::ZeroRotator;
+
+    UPROPERTY(EditAnywhere, Category="Spawn")
+    FVector SpawnLocation = FVector(0.f, 0.f, 0.f);
+
+    UPROPERTY(EditAnywhere, Category="Spawn")
+    FRotator SpawnRotation = FRotator(0.f, 90.f, 0.f);
 };
