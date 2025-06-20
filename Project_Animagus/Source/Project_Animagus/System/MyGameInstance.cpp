@@ -15,7 +15,7 @@
 #include "../Network/ClientPacketHandler.h"
 #include "../Character/NetworkCharacter.h"
 #include "../GameMode/BattleGameMode.h"
-#include "../GameMode/LobbyGameMode.h"
+#include "../GameMode/LoginGameMode.h"
 #include "../GameMode/ConnectGameMode.h"
 #include "../Animation/CharacterAnimInstance.h"
 #include "GameFramework/CharacterMovementComponent.h"

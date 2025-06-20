@@ -15,7 +15,7 @@ void AProjectile_change::OnHit(UPrimitiveComponent* OverlappedComponent, AActor*
     // 충돌한 대상이 유효하고, 자기 자신 및 발사자(Shooter)가 아닐 때 처리함
     if (OtherActor && OtherActor != this && OtherActor != Shooter)
     {
-       
+        
         ABaseCharacter* HitCharacter = Cast<ABaseCharacter>(OtherActor);
 
         if (HitSound_noPlayer)

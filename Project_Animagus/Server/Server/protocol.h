@@ -83,6 +83,7 @@ namespace Protocol {
         CS_AI_USING_SKILL,
         CS_DAMAGE,
         CS_TIME_OVER,
+        CS_SKILL_CHANGE,
 
         SC_UR_HOST,
         SC_START_GAME,
@@ -197,6 +198,11 @@ namespace Protocol {
     struct CS_TIME_OVER_PKT
     {
     };
+    struct CS_SKILL_CHANGE_PKT
+    {
+        uint16 hit_player_id;
+        uint16 shooter_player_id;
+    };
 
     struct SC_UR_HOST_PKT
     {
@@ -240,7 +246,7 @@ namespace Protocol {
     };
     struct SC_GAME_INIT_PKT
     {
-        
+        char ranking[8];
     };
 
 #pragma pack(pop)

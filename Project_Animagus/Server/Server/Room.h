@@ -24,6 +24,7 @@ public:
     bool HandleAISkillLocked(Protocol::CS_AI_USING_SKILL_PKT& pkt, const uint16 ownerID);
     bool HandleDamageLocked(Protocol::CS_DAMAGE_PKT& pkt, const uint16 ownerID);
     bool HandleTimeOverLocked(Protocol::CS_TIME_OVER_PKT& pkt);
+    bool HandleHitChangeSkill(Protocol::CS_SKILL_CHANGE_PKT& pkt);
 
 public:
     uint16 GetPlayerCount() { return m_playerCount; }   // 사람 수 받을 때 동기화 작업 필요
@@ -39,6 +40,8 @@ public:
     std::atomic<uint16> m_loadingOverCount = 0;
 
     uint64 m_gameStartTickCount = 0;
+
+    std::vector<std::pair<uint8/*id*/, uint8/*score*/>> accumRanking;
 
 private:
     std::mutex m_mutex;

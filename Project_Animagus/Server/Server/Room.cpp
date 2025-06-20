@@ -472,19 +472,29 @@ bool Room::HandleTimeOverLocked(Protocol::CS_TIME_OVER_PKT& pkt)
             return a.second > b.second;
         });
 
-#ifndef _DUMMYTEST
     for (auto& item : sortedPlayers) {
+#ifndef _DUMMYTEST
         std::cout << item.first << ":" << item.second << ", ";
+#endif
+        uint8 targetId = item.first;
+        auto it = std::find_if(
+            accumRanking.begin(), accumRanking.end(),
+            [targetId](const std::pair<uint8, uint8>& p) {
+                return p.first == targetId;
+            }
+        );
+
     }
     std::cout << std::endl;
-#endif
 
     if (m_roundCount++ < 3)
     {
         InitializeGame();
 
-        // 우승자 정보 + ???
+
         SC_GAME_INIT_PKT initGamePkt;
+
+        // 우승자 정보 + ???
 
         SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(initGamePkt);
         Broadcast(sendBuffer, 0);
@@ -494,6 +504,24 @@ bool Room::HandleTimeOverLocked(Protocol::CS_TIME_OVER_PKT& pkt)
     {
         m_roundCount = 0;
     }
+
+    return true;
+}
+
+bool Room::HandleHitChangeSkill(Protocol::CS_SKILL_CHANGE_PKT& pkt)
+{
+    std::lock_guard lock(m_mutex);
+
+    uint16 hit_player_id = pkt.hit_player_id;
+    uint16 shooter_player_id = pkt.shooter_player_id;
+
+    float h_x = m_players[hit_player_id]->x, h_y = m_players[hit_player_id]->y, h_z = m_players[hit_player_id]->z;
+    float s_x = m_players[shooter_player_id]->x, s_y = m_players[shooter_player_id]->y, s_z = m_players[shooter_player_id]->z;
+
+    m_players[hit_player_id]->x = s_x; m_players[hit_player_id]->y = s_y; m_players[hit_player_id]->z = s_z;
+    m_players[shooter_player_id]->x = h_x; m_players[shooter_player_id]->y = h_y; m_players[shooter_player_id]->z = h_z;
+
+
 
     return true;
 }

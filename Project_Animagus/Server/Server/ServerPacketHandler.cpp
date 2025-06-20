@@ -209,7 +209,7 @@ bool Handle_CS_TIME_OVER(SessionRef& session, CS_TIME_OVER_PKT& pkt)
     return true;
 }
 
-bool Handle_CS_SELECT_CHARACTER_PKT(SessionRef& session, CS_SELECT_CHARACTER_PKT& pkt)
+bool Handle_CS_SELECT_CHARACTER(SessionRef& session, CS_SELECT_CHARACTER_PKT& pkt)
 {
     auto gameSession = static_pointer_cast<Session>(session);
 
@@ -220,6 +220,23 @@ bool Handle_CS_SELECT_CHARACTER_PKT(SessionRef& session, CS_SELECT_CHARACTER_PKT
     player->type = pkt.p_type;
 
     std::cout << "Room#" << player->room.load().lock()->m_roomID << "Player[" << player->playerID << "] Selected Character Type: " << static_cast<int>(pkt.p_type) << std::endl;
+
+    return true;
+}
+
+bool Handle_CS_SKILL_CHANGE(SessionRef& session, CS_SKILL_CHANGE_PKT& pkt)
+{
+    auto gameSession = static_pointer_cast<Session>(session);
+
+    PlayerRef player = gameSession->m_player.load();
+    if (player == nullptr)
+        return false;
+
+    RoomRef room = player->room.load().lock();
+    if (room == nullptr)
+        return false;
+
+    room->HandleHitChangeSkill(pkt);
 
     return true;
 }

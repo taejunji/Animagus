@@ -43,17 +43,13 @@ void ALoginPlayerController::OnLoginClicked()
     const FString UserID   = LoginWidget->TxtUserID->GetText().ToString();
     const FString Password = LoginWidget->TxtPassword->GetText().ToString();
 
-
-
-
-
     
     // 여기서 서버 로그인 요청 및 openlevel
     // UserId, Password
-    
 
-
-
+    FTCHARToUTF8 Converter(*UserID);
+    const char* UTF8Str = Converter.Get();
+    uint16 len = Converter.Length();
 
 
     
