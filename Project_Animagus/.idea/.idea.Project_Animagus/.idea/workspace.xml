@@ -13,32 +13,35 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="82f90524-bcfc-4556-9fef-0490e524b030" name="변경" comment="">
-      <change afterPath="$PROJECT_DIR$/Source/Project_Animagus/PlayerController/RoomSelectController.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.Project_Animagus/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Project_Animagus/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Config/DefaultEngine.ini" beforeDir="false" afterPath="$PROJECT_DIR$/Config/DefaultEngine.ini" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/CuteUIKit2/UI/Texture/T_icon_back.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/CuteUIKit2/UI/Texture/T_icon_back.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/WorkFolder/Assets/Monkey/Character134_RiggedMonkey_Skeleton.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/WorkFolder/Assets/Monkey/Character134_RiggedMonkey_Skeleton.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/WorkFolder/Bluprints/Actor/BP_SkeletalPreviewActor.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/WorkFolder/Bluprints/Actor/BP_SkeletalPreviewActor.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/WorkFolder/Bluprints/Ui/BP_SkillSelectionWidget.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/WorkFolder/Bluprints/Ui/BP_SkillSelectionWidget.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/WorkFolder/Bluprints/Ui/WBP_MeshSelectWidget.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/WorkFolder/Bluprints/Ui/WBP_MeshSelectWidget.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/WorkFolder/Bluprints/Ui/WBP_SkillIconWidget.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/WorkFolder/Bluprints/Ui/WBP_SkillIconWidget.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/WorkFolder/Controller/MyLoadingController.uasset" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/WorkFolder/GameMode/BP_ConnectGameMode.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/WorkFolder/GameMode/BP_ConnectGameMode.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/WorkFolder/GameMode/MyLodingMode.uasset" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/WorkFolder/Levels/L_Connect.umap" beforeDir="false" afterPath="$PROJECT_DIR$/Content/WorkFolder/Levels/L_Connect.umap" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/WorkFolder/Levels/L_Loading.umap" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/Project_Animagus/Actor/SkeletalPreviewActor.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Project_Animagus/Actor/SkeletalPreviewActor.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/Project_Animagus/Actor/SkeletalPreviewActor.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Project_Animagus/Actor/SkeletalPreviewActor.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/Project_Animagus/GameMode/ConnectGameMode.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Project_Animagus/GameMode/ConnectGameMode.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/Project_Animagus/GameMode/ConnectGameMode.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Project_Animagus/GameMode/ConnectGameMode.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/Project_Animagus/GameMode/LodingMode.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Project_Animagus/GameMode/RoomSelectGameMode.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/Project_Animagus/GameMode/LodingMode.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Project_Animagus/GameMode/RoomSelectGameMode.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/WorkFolder/Assets/Cow/Cow.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/WorkFolder/Assets/Cow/Cow.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/WorkFolder/Assets/Deer/Deer.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/WorkFolder/Assets/Deer/Deer.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/WorkFolder/Assets/Donkey/Donkey.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/WorkFolder/Assets/Donkey/Donkey.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/WorkFolder/Assets/Elephant/Elephant.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/WorkFolder/Assets/Elephant/Elephant.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/WorkFolder/Assets/Fox/Fox.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/WorkFolder/Assets/Fox/Fox.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/WorkFolder/Assets/Koala/Koala.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/WorkFolder/Assets/Koala/Koala.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/WorkFolder/Assets/Map/materials/m_ground3.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/WorkFolder/Assets/Map/materials/m_ground3.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/WorkFolder/Assets/Monkey/Monkey.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/WorkFolder/Assets/Monkey/Monkey.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/WorkFolder/Assets/Raccoon/Raccoon.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/WorkFolder/Assets/Raccoon/Raccoon.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/WorkFolder/Assets/Sheep/Sheep.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/WorkFolder/Assets/Sheep/Sheep.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/WorkFolder/Assets/Sloth/Sloth.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/WorkFolder/Assets/Sloth/Sloth.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/WorkFolder/Assets/Unicorn/Unicorn.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/WorkFolder/Assets/Unicorn/Unicorn.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/WorkFolder/Assets/Zebra/Zebra.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/WorkFolder/Assets/Zebra/Zebra.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/WorkFolder/Bluprints/Ui/BP_ConnectWidget.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/WorkFolder/Bluprints/Ui/WBP_Lobby.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/WorkFolder/Controller/MyLobbyPlayerController.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/WorkFolder/GameMode/MyLobbyGameMode.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/WorkFolder/Levels/Lobby.umap" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/WorkFolder/Levels/Login.umap" beforeDir="false" afterPath="$PROJECT_DIR$/Content/WorkFolder/Levels/Login.umap" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/Project_Animagus/GameMode/LobbyGameMode.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Project_Animagus/GameMode/LoginGameMode.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/Project_Animagus/GameMode/LobbyGameMode.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Project_Animagus/GameMode/LoginGameMode.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/Project_Animagus/PlayerController/ConnectPlayerController.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Project_Animagus/PlayerController/ConnectPlayerController.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/Project_Animagus/PlayerController/ConnectPlayerController.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Project_Animagus/PlayerController/ConnectPlayerController.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/Project_Animagus/PlayerController/LoadingController.cpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/Project_Animagus/PlayerController/LoadingController.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Project_Animagus/PlayerController/RoomSelectController.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/Project_Animagus/PlayerController/LobbyPlayerController.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Project_Animagus/PlayerController/LoginPlayerController.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/Project_Animagus/PlayerController/LobbyPlayerController.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Project_Animagus/PlayerController/LoginPlayerController.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/Project_Animagus/UI/MeshSelectWidget.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Project_Animagus/UI/MeshSelectWidget.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/Project_Animagus/UI/MeshSelectWidget.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Project_Animagus/UI/MeshSelectWidget.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/Project_Animagus/UI/UConnectWidget.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Project_Animagus/UI/LoginWidget.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/Project_Animagus/UI/UConnectWidget.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Project_Animagus/UI/LoginWidget.h" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -50,6 +53,10 @@
   </component>
   <component name="HighlightingSettingsPerFile">
     <setting file="file://$PROJECT_DIR$/Intermediate/Build/Win64/UnrealEditor/Inc/Project_Animagus/UHT/MyGameInstance.generated.h" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Source/Project_Animagus/GameMode/MainMenuGameMode.cpp" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Source/Project_Animagus/GameMode/MainMenuGameMode.h" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Source/Project_Animagus/PlayerController/MainMenuController.cpp" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Source/Project_Animagus/PlayerController/MainMenuController.h" root0="FORCE_HIGHLIGHTING" />
   </component>
   <component name="ProjectColorInfo">{
   &quot;customColor&quot;: &quot;&quot;,
@@ -184,7 +191,11 @@
       <workItem from="1749640657604" duration="23000" />
       <workItem from="1749640731852" duration="879000" />
       <workItem from="1749641810367" duration="2418000" />
-      <workItem from="1749707331993" duration="30766000" />
+      <workItem from="1749707331993" duration="37823000" />
+      <workItem from="1750068440203" duration="3211000" />
+      <workItem from="1750241024407" duration="3984000" />
+      <workItem from="1750320780787" duration="4969000" />
+      <workItem from="1750410793140" duration="6919000" />
     </task>
     <servers />
   </component>
