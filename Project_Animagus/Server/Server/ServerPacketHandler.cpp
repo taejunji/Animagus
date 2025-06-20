@@ -34,7 +34,7 @@ bool Handle_CS_ENTER_ROOM(SessionRef& session, CS_ENTER_ROOM_PKT& pkt)
     GRoom[pkt.room_id]->HandleEnterPlayer(player);
 
 #ifndef _DUMMYTEST
-    std::cout << player->playerID << ": Enter Game" << std::endl;
+    //std::cout << player->playerID << ": Enter Room#" << pkt.room_id << std::endl;
 #endif
 
     return true;
@@ -42,7 +42,6 @@ bool Handle_CS_ENTER_ROOM(SessionRef& session, CS_ENTER_ROOM_PKT& pkt)
 
 bool Handle_CS_START_GAME(SessionRef& session, CS_START_GAME_PKT& pkt)
 {
-    std::cout << "Host Request to Start Game" << std::endl;
 
     PlayerRef player = session->m_player.load();
     if (player == nullptr)
@@ -51,6 +50,8 @@ bool Handle_CS_START_GAME(SessionRef& session, CS_START_GAME_PKT& pkt)
     RoomRef room = player->room.load().lock();
     if (room == nullptr)
         return false;
+
+    std::cout << "Room#" << room->m_roomID << "Host Request to Start Game" << std::endl;
 
     SC_START_GAME_PKT start_pkt;
     SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(start_pkt);
@@ -218,7 +219,7 @@ bool Handle_CS_SELECT_CHARACTER_PKT(SessionRef& session, CS_SELECT_CHARACTER_PKT
 
     player->type = pkt.p_type;
 
-    std::cout << "Player[" << player->playerID << "] Selected Character Type: " << static_cast<int>(pkt.p_type) << std::endl;
+    std::cout << "Room#" << player->room.load().lock()->m_roomID << "Player[" << player->playerID << "] Selected Character Type: " << static_cast<int>(pkt.p_type) << std::endl;
 
     return true;
 }

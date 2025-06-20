@@ -159,10 +159,10 @@ void UMyGameInstance::ConnectToGameServer()
 
         {
             // TODO : 일단 인스턴스 시작하자마자 룸 입장 패킷 보냄. 로그인 패킷으로 변경 필요
-            Protocol::CS_ENTER_ROOM_PKT pkt;
-            pkt.room_id = 0;
-            SendBufferRef sendBuffer = ClientPacketHandler::MakeSendBuffer(pkt);
-            SendPacket(sendBuffer);
+            //Protocol::CS_ENTER_ROOM_PKT pkt;
+            //pkt.room_id = 0;
+            //SendBufferRef sendBuffer = ClientPacketHandler::MakeSendBuffer(pkt);
+            //SendPacket(sendBuffer);
         }
     }
     else

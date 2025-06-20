@@ -332,14 +332,6 @@ void ABattleGameMode::SpawnPlayers()    // 스킬 셀렉 전에 SpawnPlayers 호
         }
     }
 
-    // 플레이어 캐릭터들을 SpawnLocations 배열에 따라 스폰함
-    SpawnedPlayers.Empty();
-    if (!World)
-    {
-        UE_LOG(LogTemp, Warning, TEXT("BattleGameMode: World가 null임."));
-        return;
-    }
-
     //SpawnLocations 배열에 최소 8개가 있어야 함.
     if (SpawnLocations.Num() < 8)
     {
@@ -401,10 +393,19 @@ void ABattleGameMode::SpawnPlayers()    // 스킬 셀렉 전에 SpawnPlayers 호
         AttractionZones.Add(AttractionZone);
     }
 
-    // "0"번 플레이어가 아닌 경우 AI 생성하지 않고 나가기
-    //if (PossessIndex != 0) return;
+    if (true == AmIHost) SpawnAIPlayers();
+}
 
-    if (AmIHost == false) return;
+void ABattleGameMode::SpawnAIPlayers()
+{
+    if (false == AmIHost) return;
+
+    UWorld* World = GetWorld();
+    if (!World)
+    {
+        UE_LOG(LogTemp, Warning, TEXT("BattleGameMode: World가 null임."));
+        return;
+    }
 
     uint16 AIId = 101;
     // ** AI를 추가할 경우 -> 0번 플레이어만 만들 것임 ** AI 플레이어 수 설정
@@ -417,18 +418,18 @@ void ABattleGameMode::SpawnPlayers()    // 스킬 셀렉 전에 SpawnPlayers 호
         FTransform SpawnTransform;
         SpawnTransform.SetLocation(SpawnLocations[i]);
         SpawnTransform.SetRotation(FQuat(SpawnRotations[i]));
-        
+
         // AI 캐릭터 스폰
-        AAICharacter* AIChar = GetWorld()->SpawnActor<AAICharacter>(AIPlayerClass,SpawnTransform);
+        AAICharacter* AIChar = GetWorld()->SpawnActor<AAICharacter>(AIPlayerClass, SpawnTransform);
         if (!AIChar) continue;
 
         AIChar->bUseControllerRotationYaw = false;
 
-        auto Movement = AIChar->GetCharacterMovement(); 
-        Movement->bOrientRotationToMovement = true; 
-        Movement->bUseControllerDesiredRotation = false; 
+        auto Movement = AIChar->GetCharacterMovement();
+        Movement->bOrientRotationToMovement = true;
+        Movement->bUseControllerDesiredRotation = false;
         //Movement->bUseAccelerationForPaths = false; // MoveTo가 목적지 가까워져도 감속 없이 직선 고속 이동
-        
+
         AIChar->SetPlayerId(AIId);
 
 
@@ -458,10 +459,9 @@ void ABattleGameMode::SpawnPlayers()    // 스킬 셀렉 전에 SpawnPlayers 호
 
         AIId++;
     }
-
-
-    // TODO: -> 여기서 로딩화면 해제
 }
+
+
 
 void ABattleGameMode::SpawnPlayer(Protocol::SC_SPAWN_PKT& pkt)
 {

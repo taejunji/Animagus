@@ -25,7 +25,9 @@ enum class CharacterMesh
     Cow,
     Unicorn,
     Zebra,
-    Donkey     
+    Donkey,
+
+    Count
 };
 
 struct StoredPlayerData

@@ -71,6 +71,8 @@ public:    // 게임 시스템 관련
 
 public:    // 게임 오브젝트 관련
     void SpawnPlayers();
+    void SpawnAIPlayers();
+
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Classes)
     TSubclassOf<APawn> NetPawnClass;
 

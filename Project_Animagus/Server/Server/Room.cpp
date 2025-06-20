@@ -83,7 +83,7 @@ bool Room::HandleEnterPlayer(PlayerRef player)
     std::cout << "Room#" << m_roomID << " Player Enter :" << player->playerID << std::endl;
 #endif
 
-    std::cout << "Player Count - " << m_playerCount << std::endl;
+    std::cout << "Room#" << m_roomID  << "Player Count - " << m_playerCount << std::endl;
 
     bool isHost = false;
     int n_pid = 0;
@@ -112,8 +112,12 @@ bool Room::HandleEnterGame()
     if (m_loadingOverCount == m_players.size())
     {
         m_gameStartTickCount = GetTickCount64();
-        for (auto& item : m_players)
+        for (auto& item : m_players) {
             HandleStartGame(item.second);
+            if (item.first == m_hostPlayer->playerID) {
+                //MakeAIPlayer();
+            }
+        }
     }
 
     return true;
@@ -245,7 +249,7 @@ bool Room::HandleLeavePlayer(PlayerRef player)
     bool success = Leave(p_id);
 
 #ifndef _DUMMYTEST
-    std::cout << "Leave PlayerID: " << p_id << std::endl;
+    std::cout << "Room#" << m_roomID << "Leave PlayerID: " << p_id << std::endl;
 #endif
 
     // 다른 플레이어에게 해당 플레이어 퇴장 알림 + Host 라면 AI 플레이어 퇴장 일림
@@ -308,7 +312,7 @@ bool Room::HandleSkillLocked(Protocol::CS_USING_SKILL_PKT& pkt)
         return false;
 
 #ifndef _DUMMYTEST
-    std::cout << "Player" << playerId << " Used Skill " << static_cast<int>(pkt.s_type) << std::endl;
+    std::cout << "Room#" << m_roomID << "Player" << playerId << " Used Skill " << static_cast<int>(pkt.s_type) << std::endl;
     //std::cout << " " << pkt.x << " " << pkt.y << " " << pkt.z << std::endl;
 #endif
 
@@ -328,7 +332,7 @@ bool Room::HandleEnterAIPlayer(Protocol::CS_AI_ENTER_PKT& pkt)
     uint16 aiID = pkt.ai_id;
     if (m_aiPlayers.contains(aiID) == true) return false;
 
-    std::cout << "AI Enter: " << aiID << ", Owner: " << ownerID << std::endl;
+    std::cout << "Room#" << m_roomID << "AI Enter: " << aiID << ", Owner: " << ownerID << std::endl;
 
     AIPlayerRef ai = std::make_shared<AIPlayer>(pkt.x, pkt.y, pkt.z, pkt.rotation);
     ai->aiID = aiID;
@@ -432,7 +436,7 @@ bool Room::HandleDamageLocked(Protocol::CS_DAMAGE_PKT& pkt, const uint16 ownerID
     //player->isAlive = pkt.isAlive;
 
 #ifndef _DUMMYTEST
-    std::cout << "Player#" << player_id << " Got Damage - HP: " << pkt.hp << std::endl;
+    std::cout << "Room#" << m_roomID << "Player#" << player_id << " Got Damage - HP: " << pkt.hp << std::endl;
 #endif
 
     SC_UPDATE_HP_PKT updateHpPkt;
@@ -516,7 +520,7 @@ void Room::InitializeGame()
 void Room::InitItemInfo()
 {
     {   // Zone1
-        SC_SPAWN_ITEM_PKT item;
+        SC_SPAWN_ITEM_PKT item; 
 
         std::vector<int> pool;
         pool.resize(90); ZeroMemory(pool.data(), sizeof(int) * 90);
