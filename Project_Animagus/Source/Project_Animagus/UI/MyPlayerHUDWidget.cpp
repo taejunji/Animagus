@@ -141,6 +141,7 @@ void UMyPlayerHUDWidget::UpdateCountdown(float CountdownValue)
             }
              
             CountdownText->SetColorAndOpacity(FSlateColor(NewColor)); 
+            PlayWidgetAnimation(CountDownTime);
         }
         else
         {
