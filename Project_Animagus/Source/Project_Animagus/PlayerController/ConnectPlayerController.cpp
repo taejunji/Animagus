@@ -115,7 +115,10 @@ void AConnectPlayerController::OnMeshSelected(CharacterMesh Selected)
 
 void AConnectPlayerController::OnStartGame()
 {
-    // 레벨 전환
+    // 여기가  
+
+
+    
     UGameplayStatics::OpenLevel(this, TEXT("L_Map"));
 }
 
