@@ -12,55 +12,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="82f90524-bcfc-4556-9fef-0490e524b030" name="변경" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.Project_Animagus/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Project_Animagus/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/WorkFolder/Bluprints/Ui/BP_MainMenuWidget.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/WorkFolder/Bluprints/Ui/BP_MainMenuWidget.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/WorkFolder/Bluprints/Ui/BP_MyPlayerHUDWidget.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/WorkFolder/Bluprints/Ui/BP_MyPlayerHUDWidget.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/WorkFolder/Controller/BP_MainMenuController.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/WorkFolder/Controller/BP_MainMenuController.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/WorkFolder/Sound/Bgm/BattleModeBgm.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/WorkFolder/Sound/Bgm/BattleModeBgm.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/WorkFolder/Sound/Bgm/SW_spider.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/WorkFolder/Sound/Bgm/SW_spider.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/WorkFolder/Sound/Bgm/Sw_SPIDER1.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/WorkFolder/Sound/Bgm/Sw_SPIDER1.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/WorkFolder/Sound/SFX/BreakBox.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/WorkFolder/Sound/SFX/BreakBox.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/WorkFolder/Sound/SFX/Healing.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/WorkFolder/Sound/SFX/Healing.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/WorkFolder/Sound/SFX/MushJump.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/WorkFolder/Sound/SFX/MushJump.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/WorkFolder/Sound/SFX/PowerUp.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/WorkFolder/Sound/SFX/PowerUp.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/WorkFolder/Sound/SFX/SWChange_Hit.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/WorkFolder/Sound/SFX/SWChange_Hit.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/WorkFolder/Sound/SFX/SW_ChangeHit.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/WorkFolder/Sound/SFX/SW_ChangeHit.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/WorkFolder/Sound/SFX/SW_ChangeLanched.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/WorkFolder/Sound/SFX/SW_ChangeLanched.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/WorkFolder/Sound/SFX/SW_Haste.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/WorkFolder/Sound/SFX/SW_Haste.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/WorkFolder/Sound/SFX/SW_MagicMissileHit.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/WorkFolder/Sound/SFX/SW_MagicMissileHit.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/WorkFolder/Sound/SFX/SW_MagicMissileLanched.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/WorkFolder/Sound/SFX/SW_MagicMissileLanched.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/WorkFolder/Sound/SFX/SW_RadianHit.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/WorkFolder/Sound/SFX/SW_RadianHit.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/WorkFolder/Sound/SFX/SW_RadianLanched.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/WorkFolder/Sound/SFX/SW_RadianLanched.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/WorkFolder/Sound/SFX/SW_Shockwave.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/WorkFolder/Sound/SFX/SW_Shockwave.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/WorkFolder/Sound/SFX/SW_SmokeHit.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/WorkFolder/Sound/SFX/SW_SmokeHit.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/WorkFolder/Sound/SFX/SW_SmokeLanched.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/WorkFolder/Sound/SFX/SW_SmokeLanched.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/WorkFolder/Sound/SFX/SW_Start.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/WorkFolder/Sound/SFX/SW_Start.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/WorkFolder/Sound/SFX/SW_StunHit.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/WorkFolder/Sound/SFX/SW_StunHit.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/WorkFolder/Sound/SFX/SW_StunLanched.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/WorkFolder/Sound/SFX/SW_StunLanched.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/WorkFolder/Sound/SFX/SW_count.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/WorkFolder/Sound/SFX/SW_count.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/WorkFolder/Sound/SFX/SW_fireball_Lanch.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/WorkFolder/Sound/SFX/SW_fireball_Lanch.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/WorkFolder/Sound/SFX/SW_fireball_Lanch_Cue.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/WorkFolder/Sound/SFX/SW_fireball_Lanch_Cue.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/WorkFolder/Sound/SFX/SW_fireball_lanched.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/WorkFolder/Sound/SFX/SW_fireball_lanched.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/WorkFolder/Sound/SFX/SW_shield.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/WorkFolder/Sound/SFX/SW_shield.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/WorkFolder/Sound/SFX/SW_shiledblock.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/WorkFolder/Sound/SFX/SW_shiledblock.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/WorkFolder/Sound/SFX/Shrinkzone.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/WorkFolder/Sound/SFX/Shrinkzone.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/WorkFolder/Sound/SFX/fireball_Lanched.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/WorkFolder/Sound/SFX/fireball_Lanched.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/WorkFolder/Sound/SFX/sw_fireball_hit.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/WorkFolder/Sound/SFX/sw_fireball_hit.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/WorkFolder/Sound/Ui/SkillSelectClick.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/WorkFolder/Sound/Ui/SkillSelectClick.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/WorkFolder/Sound/Ui/SkillSelecthover.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/WorkFolder/Sound/Ui/SkillSelecthover.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Project_Animagus.sln.DotSettings.user" beforeDir="false" afterPath="$PROJECT_DIR$/Project_Animagus.sln.DotSettings.user" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/Project_Animagus/PlayerController/Battle_PlayerController.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Project_Animagus/PlayerController/Battle_PlayerController.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/Project_Animagus/PlayerController/Battle_PlayerController.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Project_Animagus/PlayerController/Battle_PlayerController.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/Project_Animagus/PlayerController/MainMenuController.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Project_Animagus/PlayerController/MainMenuController.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/Project_Animagus/PlayerController/MainMenuController.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Project_Animagus/PlayerController/MainMenuController.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/Project_Animagus/System/MyGameInstance.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Project_Animagus/System/MyGameInstance.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/Project_Animagus/UI/MainMenuWidget.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Project_Animagus/UI/MainMenuWidget.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/Project_Animagus/UI/MainMenuWidget.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Project_Animagus/UI/MainMenuWidget.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/Project_Animagus/UI/MeshSelectWidget.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Project_Animagus/UI/MeshSelectWidget.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/Project_Animagus/UI/MyPlayerHUDWidget.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Project_Animagus/UI/MyPlayerHUDWidget.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/Project_Animagus/UI/MyPlayerHUDWidget.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Project_Animagus/UI/MyPlayerHUDWidget.h" afterDir="false" />
-    </list>
+    <list default="true" id="82f90524-bcfc-4556-9fef-0490e524b030" name="변경" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -216,7 +168,7 @@
       <workItem from="1750320780787" duration="4969000" />
       <workItem from="1750410793140" duration="10499000" />
       <workItem from="1750535722943" duration="13801000" />
-      <workItem from="1750672564886" duration="20043000" />
+      <workItem from="1750672564886" duration="20080000" />
     </task>
     <servers />
   </component>
