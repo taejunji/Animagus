@@ -72,8 +72,11 @@ public:
     // -> 로비, 배틀 레벨에서 공통된 메쉬 데이터 사용하기 위해서 인스턴스에서 메쉬 정보를 기억하도록 한다
     // -> 애셋 데이터를 인스턴스 생성시 한번만 로드해서 데이터를 갖도록 한다
     
+    UPROPERTY(BlueprintReadWrite, Category="Settings")
+    float MouseSensitivity = 1.0f;
 
-    
+    UPROPERTY(BlueprintReadWrite, Category="Settings")
+    int32 AimImageIndex = 0;
 public:
     UMyGameInstance(const FObjectInitializer& ObjectInitializer);
 

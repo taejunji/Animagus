@@ -9,6 +9,7 @@
 #include "Components/Image.h"
 #include "Components/HorizontalBox.h" // 나중에 스킬 목록 추가 시 사용
 #include "Components/TextBlock.h"
+#include "Project_Animagus/System/MyGameInstance.h"
 
 void UMyPlayerHUDWidget::NativeConstruct()
 {
@@ -31,6 +32,16 @@ void UMyPlayerHUDWidget::NativeConstruct()
     ArrayLevel.Add(Image_Level_12);
     ArrayLevel.Add(Image_Level_13);
     ArrayLevel.Add(Image_Level_14);
+
+    if (!AimImage) return;
+    if (UMyGameInstance* GI = GetGameInstance<UMyGameInstance>())
+    {
+        int32 Index = GI->AimImageIndex;
+        if (HUDTextures.IsValidIndex(Index) && HUDTextures[Index])
+        {
+            AimImage->SetBrushFromTexture(HUDTextures[Index]);
+        }
+    }
 }
 
 void UMyPlayerHUDWidget::UpdateHP(float HPPercent)
@@ -141,6 +152,7 @@ void UMyPlayerHUDWidget::UpdateCountdown(float CountdownValue)
             }
              
             CountdownText->SetColorAndOpacity(FSlateColor(NewColor)); 
+            PlayWidgetAnimation(CountDownTime);
         }
         else
         {

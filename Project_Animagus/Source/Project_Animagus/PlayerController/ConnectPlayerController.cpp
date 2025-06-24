@@ -7,6 +7,7 @@
 #include "../Network/ClientPacketHandler.h"
 #include "Components/Button.h"
 
+#include "Components/SkeletalMeshComponent.h"
 
 void AConnectPlayerController::BeginPlay()
 {
@@ -48,7 +49,9 @@ void AConnectPlayerController::ShowConnectUI()
 {
     if (!MeshSelectWidgetClass) return;
 
-    FInputModeUIOnly Mode;
+    FInputModeGameAndUI Mode;
+
+//    FInputModeUIOnly Mode;
     Mode.SetWidgetToFocus(nullptr);
     Mode.SetLockMouseToViewportBehavior(EMouseLockMode::DoNotLock);
     SetInputMode(Mode);
