@@ -18,6 +18,8 @@ namespace Protocol {
         UNICORN,
         ZEBRA,
         DONKEY,
+
+        COUNT
     };
 
     enum class SkillType : uint16
@@ -88,6 +90,7 @@ namespace Protocol {
         SC_UR_HOST,
         SC_START_GAME,
         SC_ENTER_GAME,
+        SC_AI_SPAWN,
         SC_LEAVE,
         SC_SPAWN,
         SC_SPAWN_ITEM,
@@ -217,8 +220,12 @@ namespace Protocol {
         //float rotation;
         bool host;
         int16 spawn_index;
-        int16 player_count;
         uint64 server_time;
+    };
+    struct SC_AI_SPAWN_PKT
+    {
+        int16 player_count;
+        PlayerType types[8];
     };
     struct SC_LEAVE_PKT
     {   // 로비로 보내기
@@ -247,6 +254,7 @@ namespace Protocol {
     struct SC_GAME_INIT_PKT
     {
         char ranking[8];
+        char score[8];
     };
 
 #pragma pack(pop)

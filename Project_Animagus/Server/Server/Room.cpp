@@ -5,13 +5,17 @@
 #include "Session.h"
 #include "ServerPacketHandler.h"
 
+static std::random_device rd;
+static std::mt19937       gen(rd());
 
 // GRoom 의 각 요소들 초기생성
 std::array<RoomRef, ROOM_COUNT> GRoom{};
+std::array<uint8, 8> scoreBoard = {10, 7, 6, 5, 4, 3, 2, 1};
 
 Room::Room()
 {
     InitializeGame();
+    InitAiTypes();
 }
 
 bool Room::Enter(PlayerRef player)
@@ -83,7 +87,7 @@ bool Room::HandleEnterPlayer(PlayerRef player)
     std::cout << "Room#" << m_roomID << " Player Enter :" << player->playerID << std::endl;
 #endif
 
-    std::cout << "Room#" << m_roomID  << "Player Count - " << m_playerCount << std::endl;
+    std::cout << "Room#" << m_roomID  << " Player Count - " << m_playerCount << std::endl;
 
     bool isHost = false;
     int n_pid = 0;
@@ -146,7 +150,6 @@ bool Room::HandleStartGame(PlayerRef player)
         newPlayer.host = (player->playerID == m_hostPlayer->playerID);
         //newPlayer.spawn_index = 0;
         newPlayer.spawn_index = m_indexGen++ % m_maxPlayerCount;
-        newPlayer.player_count = m_players.size();
         newPlayer.server_time = m_gameStartTickCount;
         SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(newPlayer);
         if (auto session = player->ownerSession.lock())
@@ -163,6 +166,23 @@ bool Room::HandleStartGame(PlayerRef player)
 #endif
 
         //std::cout << n_pid << std::endl;
+    }
+
+    // 호스트라면 AI 스폰 정보 전송
+    {
+        if (player->playerID == m_hostPlayer->playerID) 
+        {
+            SC_AI_SPAWN_PKT aiSpawn;
+            aiSpawn.player_count = static_cast<int16>(m_players.size());
+            for (int i = 0; i < m_maxPlayerCount; ++i) {
+                aiSpawn.types[i] = aiPlayerTypes[i];
+                //std::cout << static_cast<int>(aiSpawn.types[i]) << std::endl;
+            }
+
+            SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(aiSpawn);
+            if (auto session = player->ownerSession.lock())
+                session->Send(sendBuffer);
+        }
     }
 
     // 신입 플레이어에게 기존 플레이어들 정보 전송 + AI 정보 전송
@@ -249,7 +269,7 @@ bool Room::HandleLeavePlayer(PlayerRef player)
     bool success = Leave(p_id);
 
 #ifndef _DUMMYTEST
-    std::cout << "Room#" << m_roomID << "Leave PlayerID: " << p_id << std::endl;
+    std::cout << "Room#" << m_roomID << " Leave PlayerID: " << p_id << std::endl;
 #endif
 
     // 다른 플레이어에게 해당 플레이어 퇴장 알림 + Host 라면 AI 플레이어 퇴장 일림
@@ -312,7 +332,7 @@ bool Room::HandleSkillLocked(Protocol::CS_USING_SKILL_PKT& pkt)
         return false;
 
 #ifndef _DUMMYTEST
-    std::cout << "Room#" << m_roomID << "Player" << playerId << " Used Skill " << static_cast<int>(pkt.s_type) << std::endl;
+    std::cout << "Room#" << m_roomID << " Player" << playerId << " Used Skill " << static_cast<int>(pkt.s_type) << std::endl;
     //std::cout << " " << pkt.x << " " << pkt.y << " " << pkt.z << std::endl;
 #endif
 
@@ -332,7 +352,7 @@ bool Room::HandleEnterAIPlayer(Protocol::CS_AI_ENTER_PKT& pkt)
     uint16 aiID = pkt.ai_id;
     if (m_aiPlayers.contains(aiID) == true) return false;
 
-    std::cout << "Room#" << m_roomID << "AI Enter: " << aiID << ", Owner: " << ownerID << std::endl;
+    std::cout << "Room#" << m_roomID << "AI Enter: " << aiID << ", Owner: " << ownerID << ", Type: " << static_cast<int>(pkt.p_type) << std::endl;
 
     AIPlayerRef ai = std::make_shared<AIPlayer>(pkt.x, pkt.y, pkt.z, pkt.rotation);
     ai->aiID = aiID;
@@ -436,7 +456,7 @@ bool Room::HandleDamageLocked(Protocol::CS_DAMAGE_PKT& pkt, const uint16 ownerID
     //player->isAlive = pkt.isAlive;
 
 #ifndef _DUMMYTEST
-    std::cout << "Room#" << m_roomID << "Player#" << player_id << " Got Damage - HP: " << pkt.hp << std::endl;
+    std::cout << "Room#" << m_roomID << " Player#" << player_id << " Got Damage - HP: " << pkt.hp << std::endl;
 #endif
 
     SC_UPDATE_HP_PKT updateHpPkt;
@@ -459,31 +479,26 @@ bool Room::HandleTimeOverLocked(Protocol::CS_TIME_OVER_PKT& pkt)
 
     std::lock_guard lock(m_mutex);
 
-    std::vector<std::pair<int16, int16>> sortedPlayers; // (id, HP) 쌍으로 저장
-    sortedPlayers.reserve(m_players.size() + m_aiPlayers.size());
+    std::vector<std::pair<int16, int16>> sortedPlayersByHp; // (id, HP) 쌍으로 저장
+    sortedPlayersByHp.reserve(m_players.size() + m_aiPlayers.size());
 
     for (auto& kv : m_players)
-        sortedPlayers.emplace_back(std::make_pair(kv.second->playerID, kv.second->playerHP));
+        sortedPlayersByHp.emplace_back(std::make_pair(kv.second->playerID, kv.second->playerHP));
     for (auto& kv : m_aiPlayers)
-        sortedPlayers.emplace_back(std::make_pair(kv.second->playerID, kv.second->playerHP));
+        sortedPlayersByHp.emplace_back(std::make_pair(kv.second->playerID, kv.second->playerHP));
 
-    std::sort(sortedPlayers.begin(), sortedPlayers.end(),
+    std::sort(sortedPlayersByHp.begin(), sortedPlayersByHp.end(),
         [](const std::pair<int16, int16>& a, const std::pair<int16, int16>& b) {
             return a.second > b.second;
         });
 
-    for (auto& item : sortedPlayers) {
+    uint8 scoreBoardIndex = 0;
+    for (auto& item : sortedPlayersByHp) {
 #ifndef _DUMMYTEST
-        std::cout << item.first << ":" << item.second << ", ";
+        //std::cout << item.first << ":" << item.second << ", ";
 #endif
-        uint8 targetId = item.first;
-        auto it = std::find_if(
-            accumRanking.begin(), accumRanking.end(),
-            [targetId](const std::pair<uint8, uint8>& p) {
-                return p.first == targetId;
-            }
-        );
-
+        accumRanking[item.first] += scoreBoard[scoreBoardIndex++];
+        std::cout << item.first << ":" << accumRanking[item.first] << ", ";
     }
     std::cout << std::endl;
 
@@ -495,6 +510,20 @@ bool Room::HandleTimeOverLocked(Protocol::CS_TIME_OVER_PKT& pkt)
         SC_GAME_INIT_PKT initGamePkt;
 
         // 우승자 정보 + ???
+        std::vector<std::pair<int16/*id*/, int16/*score*/>> sortedPlayersByScore;
+        sortedPlayersByScore.reserve(m_maxPlayerCount);
+        for (auto& p : accumRanking)
+            sortedPlayersByScore.emplace_back(p);
+
+        std::sort(sortedPlayersByScore.begin(), sortedPlayersByScore.end(),
+            [](const std::pair<int16, int16>& a, const std::pair<int16, int16>& b) {
+                return a.second > b.second;
+            });
+
+        for (int8 i = 0; i < 8; ++i) {
+            initGamePkt.ranking[i] = sortedPlayersByScore[i].first;
+            initGamePkt.score[i] = sortedPlayersByScore[i].second;
+        }
 
         SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(initGamePkt);
         Broadcast(sendBuffer, 0);
@@ -503,6 +532,8 @@ bool Room::HandleTimeOverLocked(Protocol::CS_TIME_OVER_PKT& pkt)
     else
     {
         m_roundCount = 0;
+        accumRanking.clear();
+        InitAiTypes();
     }
 
     return true;
@@ -621,5 +652,19 @@ void Room::InitItemInfo()
         m_itemInfo[2] = item;
     }
 
+}
+
+void Room::InitAiTypes()
+{
+    std::vector<PlayerType> pool;
+    pool.reserve(static_cast<size_t>(PlayerType::COUNT) - 1);
+    for (uint16_t i = static_cast<uint16_t>(PlayerType::NONE) + 1;
+        i < static_cast<uint16_t>(PlayerType::COUNT); ++i) {
+        pool.push_back(static_cast<PlayerType>(i));
+    }
+
+    std::shuffle(pool.begin(), pool.end(), gen);
+
+    std::copy_n(pool.begin(), aiPlayerTypes.size(), aiPlayerTypes.begin());
 }
 

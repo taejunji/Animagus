@@ -73,98 +73,49 @@ void AAICharacter::InitPlayerMesh()
 {
     if (auto* GameInstance = Cast<UMyGameInstance>(GetGameInstance()))
     {
-        CharacterMesh mesh = static_cast<CharacterMesh>(rand() % static_cast<int>(CharacterMesh::Count));
-        switch (/*GameInstance->player_data.stored_mesh*/mesh)
+        switch (PlayerType)
         {
-
         //case CharacterMesh::Tiger:
         //    if (GameInstance->CharacterMeshes.Contains(TEXT("SM_Tiger"))) GetMesh()->SetSkeletalMesh(GameInstance->CharacterMeshes[TEXT("SM_Tiger")]);
         //    break;
 
-        case CharacterMesh::Monkey:
-            if (GameInstance->CharacterMeshes.Contains(TEXT("SM_Monkey"))) {
-                GetMesh()->SetSkeletalMesh(GameInstance->CharacterMeshes[TEXT("SM_Monkey")]);
-                PlayerType = Protocol::PlayerType::MONKEY;
-            }
+        case Protocol::PlayerType::MONKEY:
+            if (GameInstance->CharacterMeshes.Contains(TEXT("SM_Monkey"))) GetMesh()->SetSkeletalMesh(GameInstance->CharacterMeshes[TEXT("SM_Monkey")]);
             break;
 
-        case CharacterMesh::Koala:
-            if (GameInstance->CharacterMeshes.Contains(TEXT("SM_Koala"))) {
-                GetMesh()->SetSkeletalMesh(GameInstance->CharacterMeshes[TEXT("SM_Koala")]);
-                PlayerType = Protocol::PlayerType::KOALA;
-            }
+        case Protocol::PlayerType::KOALA:
+            if (GameInstance->CharacterMeshes.Contains(TEXT("SM_Koala"))) GetMesh()->SetSkeletalMesh(GameInstance->CharacterMeshes[TEXT("SM_Koala")]);
             break;
-
-        case CharacterMesh::Sheep:
-            if (GameInstance->CharacterMeshes.Contains(TEXT("SM_Sheep"))) {
-                GetMesh()->SetSkeletalMesh(GameInstance->CharacterMeshes[TEXT("SM_Sheep")]);
-                PlayerType = Protocol::PlayerType::RAM;
-            }
+        case Protocol::PlayerType::RAM:
+            if (GameInstance->CharacterMeshes.Contains(TEXT("SM_Sheep"))) GetMesh()->SetSkeletalMesh(GameInstance->CharacterMeshes[TEXT("SM_Sheep")]);
             break;
-
-        case CharacterMesh::Fox:
-            if (GameInstance->CharacterMeshes.Contains(TEXT("SM_Fox"))) {
-                GetMesh()->SetSkeletalMesh(GameInstance->CharacterMeshes[TEXT("SM_Fox")]);
-                PlayerType = Protocol::PlayerType::FOX;
-            }
+        case Protocol::PlayerType::FOX:
+            if (GameInstance->CharacterMeshes.Contains(TEXT("SM_Fox"))) GetMesh()->SetSkeletalMesh(GameInstance->CharacterMeshes[TEXT("SM_Fox")]);
             break;
-
-        case CharacterMesh::Sloth:
-            if (GameInstance->CharacterMeshes.Contains(TEXT("SM_Sloth"))) {
-                GetMesh()->SetSkeletalMesh(GameInstance->CharacterMeshes[TEXT("SM_Sloth")]);
-                PlayerType = Protocol::PlayerType::SLOTH;
-            }
+        case Protocol::PlayerType::SLOTH:
+            if (GameInstance->CharacterMeshes.Contains(TEXT("SM_Sloth"))) GetMesh()->SetSkeletalMesh(GameInstance->CharacterMeshes[TEXT("SM_Sloth")]);
             break;
-
-        case CharacterMesh::Elephant:
-            if (GameInstance->CharacterMeshes.Contains(TEXT("SM_Elephant"))) {
-                GetMesh()->SetSkeletalMesh(GameInstance->CharacterMeshes[TEXT("SM_Elephant")]);
-                PlayerType = Protocol::PlayerType::ELEPHANT;
-            }
+        case Protocol::PlayerType::ELEPHANT:
+            if (GameInstance->CharacterMeshes.Contains(TEXT("SM_Elephant"))) GetMesh()->SetSkeletalMesh(GameInstance->CharacterMeshes[TEXT("SM_Elephant")]);
             break;
-
-        case CharacterMesh::Raccoon:
-            if (GameInstance->CharacterMeshes.Contains(TEXT("SM_Raccoon"))) {
-                GetMesh()->SetSkeletalMesh(GameInstance->CharacterMeshes[TEXT("SM_Raccoon")]);
-                PlayerType = Protocol::PlayerType::RACCOON;
-            }
+        case Protocol::PlayerType::RACCOON:
+            if (GameInstance->CharacterMeshes.Contains(TEXT("SM_Raccoon"))) GetMesh()->SetSkeletalMesh(GameInstance->CharacterMeshes[TEXT("SM_Raccoon")]);
             break;
-
-        case CharacterMesh::Deer:
-            if (GameInstance->CharacterMeshes.Contains(TEXT("SM_Deer"))) {
-                GetMesh()->SetSkeletalMesh(GameInstance->CharacterMeshes[TEXT("SM_Deer")]);
-                PlayerType = Protocol::PlayerType::DEER;
-            }
+        case Protocol::PlayerType::DEER:
+            if (GameInstance->CharacterMeshes.Contains(TEXT("SM_Deer"))) GetMesh()->SetSkeletalMesh(GameInstance->CharacterMeshes[TEXT("SM_Deer")]);
             break;
-
-        case CharacterMesh::Cow:
-            if (GameInstance->CharacterMeshes.Contains(TEXT("SM_Cow"))) {
-                GetMesh()->SetSkeletalMesh(GameInstance->CharacterMeshes[TEXT("SM_Cow")]);
-                PlayerType = Protocol::PlayerType::COW;
-            }
+        case Protocol::PlayerType::COW:
+            if (GameInstance->CharacterMeshes.Contains(TEXT("SM_Cow"))) GetMesh()->SetSkeletalMesh(GameInstance->CharacterMeshes[TEXT("SM_Cow")]);
             break;
-
-        case CharacterMesh::Unicorn:
-            if (GameInstance->CharacterMeshes.Contains(TEXT("SM_Unicorn"))) {
-                GetMesh()->SetSkeletalMesh(GameInstance->CharacterMeshes[TEXT("SM_Unicorn")]);
-                PlayerType = Protocol::PlayerType::UNICORN;
-            }
+        case Protocol::PlayerType::UNICORN:
+            if (GameInstance->CharacterMeshes.Contains(TEXT("SM_Unicorn"))) GetMesh()->SetSkeletalMesh(GameInstance->CharacterMeshes[TEXT("SM_Unicorn")]);
             break;
-
-        case CharacterMesh::Zebra:
-            if (GameInstance->CharacterMeshes.Contains(TEXT("SM_Zebra"))) {
-                GetMesh()->SetSkeletalMesh(GameInstance->CharacterMeshes[TEXT("SM_Zebra")]);
-                PlayerType = Protocol::PlayerType::ZEBRA;
-            }
+        case Protocol::PlayerType::ZEBRA:
+            if (GameInstance->CharacterMeshes.Contains(TEXT("SM_Zebra"))) GetMesh()->SetSkeletalMesh(GameInstance->CharacterMeshes[TEXT("SM_Zebra")]);
             break;
-
-        case CharacterMesh::Donkey:
-            if (GameInstance->CharacterMeshes.Contains(TEXT("SM_Donkey"))) {
-                GetMesh()->SetSkeletalMesh(GameInstance->CharacterMeshes[TEXT("SM_Donkey")]);
-                PlayerType = Protocol::PlayerType::DONKEY;
-            }
+        case Protocol::PlayerType::DONKEY:
+            if (GameInstance->CharacterMeshes.Contains(TEXT("SM_Donkey"))) GetMesh()->SetSkeletalMesh(GameInstance->CharacterMeshes[TEXT("SM_Donkey")]);
             break;
-
         default:
             UE_LOG(LogTemp, Error, TEXT("메쉬 로드 실패"));
             break;
@@ -179,10 +130,10 @@ void AAICharacter::InitPlayerMesh()
     {
         UE_LOG(LogTemp, Log, TEXT("InitPlayerMesh: AuraMaterialInstance 없음, 새로 생성합니다."));
     }
-    
+
     if (BaseAuraMaterial && GetMesh())
     {
-       
+
         AuraMaterialInstance = UMaterialInstanceDynamic::Create(BaseAuraMaterial, this);
 
         if (AuraMaterialInstance)
@@ -200,6 +151,7 @@ void AAICharacter::InitPlayerMesh()
     else
     {
         UE_LOG(LogTemp, Warning, TEXT("aura 머티리얼 설정 실패"));
-    } 
+    }
     UE_LOG(LogTemp, Log, TEXT("InitPlayerMesh() 끝"));
 }
+

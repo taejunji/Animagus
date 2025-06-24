@@ -63,6 +63,7 @@ public:
     static SendBufferRef MakeSendBuffer(SC_SPAWN_ITEM_PKT& pkt) { return MakeSendBuffer(pkt, (uint16)PacketID::SC_SPAWN_ITEM); }
     static SendBufferRef MakeSendBuffer(SC_UPDATE_HP_PKT& pkt) { return MakeSendBuffer(pkt, (uint16)PacketID::SC_UPDATE_HP); }
     static SendBufferRef MakeSendBuffer(SC_GAME_INIT_PKT& pkt) { return MakeSendBuffer(pkt, (uint16)PacketID::SC_GAME_INIT); }
+    static SendBufferRef MakeSendBuffer(SC_AI_SPAWN_PKT& pkt) { return MakeSendBuffer(pkt, (uint16)PacketID::SC_AI_SPAWN); }
 
 
 private:

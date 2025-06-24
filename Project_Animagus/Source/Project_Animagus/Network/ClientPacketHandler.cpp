@@ -114,5 +114,15 @@ bool Handle_SC_GAME_INIT(SessionRef& session, Protocol::SC_GAME_INIT_PKT& pkt)
         GameInstance->HandleInitBattleMode(pkt);
     }
 
-    return false;
+    return true;
+}
+
+bool Handle_SC_AI_SPAWN(SessionRef& session, Protocol::SC_AI_SPAWN_PKT& pkt)
+{
+    if (auto* GameInstance = Cast<UMyGameInstance>(GWorld->GetGameInstance()))
+    {
+        GameInstance->HandleAISpawn(pkt);
+    }
+
+    return true;
 }

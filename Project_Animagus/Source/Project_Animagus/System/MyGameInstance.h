@@ -114,6 +114,7 @@ public:
     void HandleSpawnItem(Protocol::SC_SPAWN_ITEM_PKT& pkt);
     void HandleUpdateHp(Protocol::SC_UPDATE_HP_PKT& pkt);
     void HandleInitBattleMode(Protocol::SC_GAME_INIT_PKT& pkt);
+    void HandleAISpawn(Protocol::SC_AI_SPAWN_PKT& pkt);
 
 public:
     // AI 캐릭터

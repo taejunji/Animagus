@@ -283,8 +283,7 @@ void UMyGameInstance::HandleEnterGame(Protocol::SC_ENTER_GAME_PKT& pkt)
             GameMode->StartTime2Server = pkt.server_time;
             if (pkt.host == true)
             {
-                GameMode->CurrentPlayerCount = pkt.player_count;
-
+                //GameMode->CurrentPlayerCount = pkt.player_count;
                 UE_LOG(LogTemp, Warning, TEXT("I AM THE HOST: %d"), pkt.player_id);
             }
             GameMode->SpawnPlayers();
@@ -435,6 +434,28 @@ void UMyGameInstance::HandleInitBattleMode(Protocol::SC_GAME_INIT_PKT& pkt)
 
             GameMode->InitBattleMode();
             GameMode->PlayBackgroundMusic();
+        }
+    }
+}
+
+void UMyGameInstance::HandleAISpawn(Protocol::SC_AI_SPAWN_PKT& pkt)
+{
+    if (Socket == nullptr || ClientSession == nullptr)
+        return;
+
+    auto* World = GetWorld();
+    if (World == nullptr)
+        return;
+
+    if (false == AmIHost) return;
+
+    AGameModeBase* BaseGameMode = UGameplayStatics::GetGameMode(World);
+    if (BaseGameMode)
+    {
+        ABattleGameMode* GameMode = Cast<ABattleGameMode>(BaseGameMode);
+        if (GameMode)
+        {
+            GameMode->SpawnAIPlayers(pkt);
         }
     }
 }

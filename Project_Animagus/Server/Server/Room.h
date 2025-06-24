@@ -32,6 +32,7 @@ public:
 public:
     void InitializeGame();
     void InitItemInfo();
+    void InitAiTypes();
 
 public:
     uint16 m_roomID;
@@ -41,7 +42,8 @@ public:
 
     uint64 m_gameStartTickCount = 0;
 
-    std::vector<std::pair<uint8/*id*/, uint8/*score*/>> accumRanking;
+    std::unordered_map<uint16/*id*/, uint16/*score*/> accumRanking;
+    std::array<Protocol::PlayerType, 8> aiPlayerTypes;
 
 private:
     std::mutex m_mutex;
@@ -57,3 +59,4 @@ private:
 };
 
 extern std::array<RoomRef, ROOM_COUNT> GRoom;       // 배열 or 벡터로 관리해 여러 게임룸을 생성
+extern std::array<uint8, 8> scoreBoard;

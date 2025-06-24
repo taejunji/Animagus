@@ -44,7 +44,7 @@ public:    // 게임 시스템 관련
     void HandleServerTime(uint64 server_time);
     float GetCurrentRoundTime() const { return CurrentRoundTime; }
 
-    float TIME_OVER = 60.0f * 3.f;    // 라운드 종료 시간
+    float TIME_OVER = 60.0f * 0.5f;    // 라운드 종료 시간
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Battle Settings")
     float start_time;               // 라운드 시작 시간 (안씀)
@@ -71,7 +71,7 @@ public:    // 게임 시스템 관련
 
 public:    // 게임 오브젝트 관련
     void SpawnPlayers();
-    void SpawnAIPlayers();
+    void SpawnAIPlayers(Protocol::SC_AI_SPAWN_PKT& pkt);
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Classes)
     TSubclassOf<APawn> NetPawnClass;

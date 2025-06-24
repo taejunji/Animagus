@@ -24,6 +24,7 @@ bool Handle_CS_USING_SKILL(SessionRef& session, Protocol::CS_USING_SKILL_PKT& pk
 bool Handle_SC_SPAWN_ITEM(SessionRef& session, Protocol::SC_SPAWN_ITEM_PKT& pkt);
 bool Handle_SC_UPDATE_HP(SessionRef& session, Protocol::SC_UPDATE_HP_PKT& pkt);
 bool Handle_SC_GAME_INIT(SessionRef& session, Protocol::SC_GAME_INIT_PKT& pkt);
+bool Handle_SC_AI_SPAWN(SessionRef& session, Protocol::SC_AI_SPAWN_PKT& pkt);
 
 class ClientPacketHandler
 {
@@ -41,6 +42,7 @@ public:
         GClientPacketHandler[(int32)Protocol::PacketID::SC_SPAWN_ITEM] = [](SessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<Protocol::SC_SPAWN_ITEM_PKT>(Handle_SC_SPAWN_ITEM, session, buffer, len); };
         GClientPacketHandler[(int32)Protocol::PacketID::SC_UPDATE_HP] = [](SessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<Protocol::SC_UPDATE_HP_PKT>(Handle_SC_UPDATE_HP, session, buffer, len); };
         GClientPacketHandler[(int32)Protocol::PacketID::SC_GAME_INIT] = [](SessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<Protocol::SC_GAME_INIT_PKT>(Handle_SC_GAME_INIT, session, buffer, len); };
+        GClientPacketHandler[(int32)Protocol::PacketID::SC_AI_SPAWN] = [](SessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<Protocol::SC_AI_SPAWN_PKT>(Handle_SC_AI_SPAWN, session, buffer, len); };
 
     }
 
