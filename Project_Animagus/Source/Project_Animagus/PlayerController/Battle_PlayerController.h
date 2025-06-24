@@ -130,6 +130,17 @@ public:
     
     UPROPERTY()
     int32 Skilltest;
+
+public:
+    
+    // 감도 턴측
+    void TurnAtRate(float Rate);
+    // 감도 룩측
+    void LookUpAtRate(float Rate);
+
+protected:
+   // 감도 정도 
+    float CachedMouseSensitivity = 1.0f;
 };
 
 

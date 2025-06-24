@@ -35,7 +35,9 @@ protected:
 
     UPROPERTY(meta = (BindWidget))
     UTextBlock* CurrentHPText;
-
+protected:
+    UPROPERTY(EditAnywhere, Category="HUD")
+    TArray<UTexture2D*> HUDTextures;
 protected:
 
     // 시작 카운트다운을 표시할 텍스트 블록
