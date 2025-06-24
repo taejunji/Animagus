@@ -31,6 +31,8 @@ public:
 
     UFUNCTION()
     void OnSelectMontageEnded(UAnimMontage* Montage, bool bInterrupted);
+
+    USkeletalMeshComponent* GetPreviewMesh() { return PreviewMesh;  }
     
 protected:
     
@@ -38,11 +40,15 @@ protected:
     USceneComponent* Root;
 
     
-    UPROPERTY(VisibleAnywhere)
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Mesh")
     USkeletalMeshComponent* PreviewMesh;
 
     UPROPERTY(EditAnywhere, Category="Animation")
     UAnimSequence* IdleAnimation;
+
+    UPROPERTY(EditAnywhere, Category = "Animation")
+    TObjectPtr<class UAnimMontage> select_montage;
+
     
     // UPROPERTY(EditAnywhere, Category="Animation")
     // UAnimMontage* SelectMontage;

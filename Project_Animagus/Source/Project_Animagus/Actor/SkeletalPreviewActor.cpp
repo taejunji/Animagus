@@ -16,7 +16,7 @@ ASkeletalPreviewActor::ASkeletalPreviewActor()
     PreviewMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("PreviewMesh"));
     PreviewMesh->SetupAttachment(Root);
     // 애니메이션 모드 설정
-    PreviewMesh->SetAnimationMode(EAnimationMode::AnimationSingleNode);
+    // PreviewMesh->SetAnimationMode(EAnimationMode::AnimationSingleNode);
 
 }
 
@@ -26,10 +26,22 @@ void ASkeletalPreviewActor::SetMesh(USkeletalMesh* Mesh)
 
     PreviewMesh->SetSkeletalMesh(Mesh);
 
-    if (IdleAnimation)
+    UAnimInstance* AnimInst = PreviewMesh->GetAnimInstance();
+    if (AnimInst && select_montage)
     {
-        PreviewMesh->PlayAnimation(IdleAnimation, true);
+        // Duration은 **선택한 몽타주 전체의 총 재생 시간(초)**
+        // 만약 재생에 실패하면 0.0f를 반환
+        float Duration = AnimInst->Montage_Play(select_montage);
+        if (Duration > 0.f)
+        {
+            AnimInst->Montage_JumpToSection(FName("SelectSection"), select_montage);
+        }
     }
+
+    //if (IdleAnimation)
+    //{
+    //    PreviewMesh->PlayAnimation(IdleAnimation, true);
+    //}
     
     // UAnimInstance* AnimInst = PreviewMesh->GetAnimInstance();
     // if (AnimInst && SelectMontage)

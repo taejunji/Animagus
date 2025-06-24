@@ -93,10 +93,10 @@ public:
     UPROPERTY(EditAnywhere, Category = "Item")
     TSubclassOf<class AItem_Box_Base> ItemBoxBpclass;
 
+    class AShrinkingZone* ShrinkingZone;
+
     UPROPERTY(EditAnywhere, Category = "ShrinkZone")
     TSubclassOf<class AShrinkingZone> ShrinkzoneBpclass;
-
-    class AShrinkingZone* ShrinkingZone;
 
     // 라운드 경과 시간 출력
     FTimerHandle battle_timer_handle;
@@ -158,6 +158,12 @@ public:
     // 영역1의 스폰 좌표들을 초기화하는 함수 
     UFUNCTION(BlueprintCallable, Category = "PowerUp")
     void InitializeArea1SpawnPoints();
+
+    UFUNCTION(BlueprintCallable, Category = "PowerUp")
+    void InitializeArea2SpawnPoints();
+
+    UFUNCTION(BlueprintCallable, Category = "PowerUp")
+    void InitializeArea3SpawnPoints();
 
     UFUNCTION(BlueprintCallable, Category = "PowerUp")
     void SpawnItemsInArea1();
