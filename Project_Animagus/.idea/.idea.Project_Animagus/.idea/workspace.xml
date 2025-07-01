@@ -12,18 +12,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="ff584d5e-7706-47aa-b4e0-a974d14f4e4f" name="변경" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.Project_Animagus/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Project_Animagus/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Location_4_Temple/Materials/M_Emission.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Location_4_Temple/Materials/M_Emission.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/WorkFolder/Assets/Sheep/Sheep.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/WorkFolder/Assets/Sheep/Sheep.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/WorkFolder/Levels/L_Connect.umap" beforeDir="false" afterPath="$PROJECT_DIR$/Content/WorkFolder/Levels/L_Connect.umap" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/Project_Animagus/GameMode/BattleGameMode.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Project_Animagus/GameMode/BattleGameMode.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/Project_Animagus/GameMode/BattleGameMode.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Project_Animagus/GameMode/BattleGameMode.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/Project_Animagus/GameMode/MainMenuGameMode.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Project_Animagus/GameMode/MainMenuGameMode.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/Project_Animagus/PlayerController/Battle_PlayerController.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Project_Animagus/PlayerController/Battle_PlayerController.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/Project_Animagus/PlayerController/Battle_PlayerController.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Project_Animagus/PlayerController/Battle_PlayerController.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/Project_Animagus/System/MyGameInstance.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Project_Animagus/System/MyGameInstance.h" afterDir="false" />
-    </list>
+    <list default="true" id="ff584d5e-7706-47aa-b4e0-a974d14f4e4f" name="변경" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -33,6 +22,7 @@
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
   </component>
   <component name="HighlightingSettingsPerFile">
+    <setting file="file://$PROJECT_DIR$/Intermediate/Build/Win64/UnrealEditor/Inc/Project_Animagus/UHT/Battle_PlayerController.gen.cpp" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Source/Project_Animagus/Actor/ResultCharacterActor.cpp" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Source/Project_Animagus/Actor/ResultCharacterActor.h" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Source/Project_Animagus/GameMode/ResultGameMode.cpp" root0="FORCE_HIGHLIGHTING" />
@@ -177,7 +167,7 @@
       <workItem from="1750931759356" duration="9618000" />
       <workItem from="1750989800714" duration="14186000" />
       <workItem from="1751136007335" duration="7473000" />
-      <workItem from="1751365247634" duration="2107000" />
+      <workItem from="1751365247634" duration="2446000" />
     </task>
     <servers />
   </component>
