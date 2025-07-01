@@ -2,6 +2,14 @@
 
 namespace Protocol {
 
+    constexpr char MAX_NAME_LEN = 30;
+    constexpr char MAX_CHAT_LEN = 50;
+
+    constexpr char LOGIN_ERR = 0;
+    constexpr char LOGIN_USING = 1;
+    constexpr char LOGIN_NOEX = 2;
+    constexpr char LOGIN_BUSY = 3;
+
     enum class PlayerType : uint16
     {
         NONE,
@@ -87,6 +95,7 @@ namespace Protocol {
         CS_TIME_OVER,
         CS_SKILL_CHANGE,
 
+        SC_LOGIN_FAIL,
         SC_UR_HOST,
         SC_START_GAME,
         SC_ENTER_GAME,
@@ -135,6 +144,10 @@ namespace Protocol {
     {
         int16 player_id;
         //std::string name;
+        char login_id[MAX_NAME_LEN];
+        char login_pwd[MAX_NAME_LEN];
+        uint8 id_len;
+        uint8 pwd_len;
     };
     struct CS_ENTER_ROOM_PKT
     {
@@ -207,6 +220,15 @@ namespace Protocol {
         uint16 shooter_player_id;
     };
 
+    struct SC_LOGIN_FAIL
+    {
+        int8 reason;
+    };
+    struct SC_LOGIN_SUCC
+    {
+        char player_name[MAX_NAME_LEN];
+        // 더 넣을거 있나?
+    };
     struct SC_UR_HOST_PKT
     {
     };

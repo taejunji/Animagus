@@ -241,3 +241,10 @@ bool Handle_CS_SKILL_CHANGE(SessionRef& session, CS_SKILL_CHANGE_PKT& pkt)
     return true;
 }
 
+bool Handle_CS_LOGIN(SessionRef& session, CS_LOGIN_PKT& pkt)
+{
+    std::cout << "Login ID: " << pkt.login_id << ", Password: " << pkt.login_pwd << std::endl;
+
+    return true;
+}
+

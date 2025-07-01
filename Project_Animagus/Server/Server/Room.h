@@ -6,7 +6,7 @@ class Room : public std::enable_shared_from_this<Room>
 public:
     Room();
     ~Room() = default;
-
+ 
 public:
     bool Enter(PlayerRef player);
     bool Leave(uint16 playerID);

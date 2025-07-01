@@ -182,6 +182,8 @@ bool Room::HandleStartGame(PlayerRef player)
             SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(aiSpawn);
             if (auto session = player->ownerSession.lock())
                 session->Send(sendBuffer);
+
+            std::cout << "AI Spawn" << std::endl;
         }
     }
 
@@ -567,7 +569,7 @@ void Room::InitializeGame()
         player->player_state = PlayerRoomState::WAITING;
         player->s_mutex.unlock();
     }
-    //m_aiPlayers.clear();
+    m_aiPlayers.clear();
     //m_playerCount = 0;
     m_gameStartTickCount = 0;
     m_loadingOverCount = 0;

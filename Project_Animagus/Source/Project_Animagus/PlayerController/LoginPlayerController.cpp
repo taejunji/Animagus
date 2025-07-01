@@ -7,6 +7,11 @@
 #include "Components/TextBlock.h"
 #include "Blueprint/WidgetBlueprintLibrary.h"
 
+#include "../System/MyGameInstance.h"
+#include "../Server/Server/protocol.h"
+#include "../Network/Session.h"
+#include "../Network/ClientPacketHandler.h"
+
 
 void ALoginPlayerController::BeginPlay()
 {
@@ -47,10 +52,26 @@ void ALoginPlayerController::OnLoginClicked()
     // 여기서 서버 로그인 요청 및 openlevel
     // UserId, Password
 
-    FTCHARToUTF8 Converter(*UserID);
-    const char* UTF8Str = Converter.Get();
-    uint16 len = Converter.Length();
+    FTCHARToUTF8 IDConverter(*UserID);
+    const char* IdString = IDConverter.Get();
+    uint16 IdLen = IDConverter.Length();
 
+    FTCHARToUTF8 PwdConverter(*Password);
+    const char* PwdString = PwdConverter.Get();
+    uint16 PwdLen = PwdConverter.Length();
+
+    if (IdLen > Protocol::MAX_NAME_LEN || PwdLen > Protocol::MAX_NAME_LEN) {
+
+    }
+
+    Protocol::CS_LOGIN_PKT LoginPkt;
+    ::strcpy_s(LoginPkt.login_id, IdString);
+    ::strcpy_s(LoginPkt.login_pwd, PwdString);
+    LoginPkt.id_len = IdLen;
+    LoginPkt.pwd_len = PwdLen;
+
+    SendBufferRef SendBuffer = ClientPacketHandler::MakeSendBuffer(LoginPkt);
+    Cast<UMyGameInstance>(GWorld->GetGameInstance())->SendPacket(SendBuffer);
 
     
     // 확인용

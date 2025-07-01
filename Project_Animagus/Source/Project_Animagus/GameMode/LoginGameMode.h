@@ -16,6 +16,6 @@ class PROJECT_ANIMAGUS_API ALoginGameMode : public AGameModeBase
 public:
     ALoginGameMode();
     virtual void BeginPlay() override;
-
+    virtual void Tick(float DeltaTime) override;
 };
 

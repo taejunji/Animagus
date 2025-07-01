@@ -11,8 +11,8 @@ public:
     bool DBConnect();
     bool DBDisconnect();
 
-    bool DBFindById(const char* id, char* name, short* x, short* y);
-
+    bool DBFindById(const char* id, const char* passwd, char* name);
+    bool DBSignUp(const char* id, const char* passwd, char* name);
 
 private:
     SQLHENV henv;

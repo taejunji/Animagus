@@ -60,7 +60,7 @@ bool DBManager::DBConnect()
     SQLSetConnectAttr(hdbc, SQL_LOGIN_TIMEOUT, (SQLPOINTER)5, 0);
 
     // Connect to data source  
-    retcode = SQLConnect(hdbc, (SQLWCHAR*)L"MY DB Name", SQL_NTS, (SQLWCHAR*)NULL, 0, NULL, 0);
+    retcode = SQLConnect(hdbc, (SQLWCHAR*)L"MY ODBC Name", SQL_NTS, (SQLWCHAR*)NULL, 0, NULL, 0);
     if (retcode != SQL_SUCCESS && retcode != SQL_SUCCESS_WITH_INFO) {
         std::wcerr << L"SQLConnect failed\n";
         HandleDiagnosticRecord(hdbc, SQL_HANDLE_DBC, retcode);
@@ -79,7 +79,14 @@ bool DBManager::DBDisconnect()
 {
 }
 
-bool DBManager::DBFindById(const char* id, char* name, short* x, short* y)
+bool DBManager::DBFindById(const char* id, const char* passwd, char* name)
+{
+
+
+    return true;
+}
+
+bool DBManager::DBSignUp(const char* id, const char* passwd, char* name)
 {
 
 

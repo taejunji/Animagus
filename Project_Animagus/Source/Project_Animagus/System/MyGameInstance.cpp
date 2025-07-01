@@ -431,6 +431,8 @@ void UMyGameInstance::HandleInitBattleMode(Protocol::SC_GAME_INIT_PKT& pkt)
                 UE_LOG(LogTemp, Warning, TEXT("Player ID: %d"), Item.Key);
                 if (Item.Value != nullptr) Item.Value->Destroy();
             }
+            //for (auto& Item : GameMode->IndexingSpawnedPlayers)
+            //    if (Item != nullptr) Item->Destroy();
 
             GameMode->InitBattleMode();
             GameMode->PlayBackgroundMusic();
@@ -448,6 +450,7 @@ void UMyGameInstance::HandleAISpawn(Protocol::SC_AI_SPAWN_PKT& pkt)
         return;
 
     if (false == AmIHost) return;
+
 
     AGameModeBase* BaseGameMode = UGameplayStatics::GetGameMode(World);
     if (BaseGameMode)
