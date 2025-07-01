@@ -62,7 +62,7 @@ public:
     // 저장된 플레이어 데이터
     StoredPlayerData player_data;
 
-    UPROPERTY(BlueprintReadOnly, Category = "Character Mesh") 
+   UPROPERTY(BlueprintReadOnly, Category = "Character Mesh") 
     TMap<FString, USkeletalMesh*> CharacterMeshes; 
     // 캐릭터 메쉬 에셋 데이터를 Map으로 저장 
     // -> 로비, 배틀 레벨에서 공통된 메쉬 데이터 사용하기 위해서 인스턴스에서 메쉬 정보를 기억하도록 한다
@@ -73,6 +73,10 @@ public:
 
     UPROPERTY(BlueprintReadWrite, Category="Settings")
     int32 AimImageIndex = 0;
+
+    UPROPERTY(BlueprintReadWrite, Category="Settings")
+    int32 myRank = 0;
+
 public:
     UMyGameInstance(const FObjectInitializer& ObjectInitializer);
 
