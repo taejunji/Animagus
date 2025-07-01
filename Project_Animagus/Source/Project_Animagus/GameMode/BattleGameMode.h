@@ -175,4 +175,18 @@ public:
     void SpawnItemsInArea3();
 
     float GetCurrentRoundTime() const;
+
+    public:
+
+    UFUNCTION()
+    void OnRoundEnd();
+
+    UPROPERTY(BlueprintReadWrite, Category="Round Results")
+    TArray<int32> RoundScores;
+
+    UPROPERTY(BlueprintReadWrite, Category="Round Results")
+    TArray<FString> RoundIDs;
+
+    UPROPERTY(EditAnywhere, Category="Round Results")
+    float ResultDisplayDuration = 10.f;
 };

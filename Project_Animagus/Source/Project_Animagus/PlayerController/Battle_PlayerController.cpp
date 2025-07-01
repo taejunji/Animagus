@@ -13,6 +13,7 @@
 #include "../GameMode/BattleGameMode.h"
 #include "Kismet/GameplayStatics.h"
 #include "Project_Animagus/System/MyGameInstance.h"
+#include "Project_Animagus/UI/RoundResultWidget.h"
 #include "Project_Animagus/UI/SkillSelectionWidget.h"
 
 ABattle_PlayerController::ABattle_PlayerController(const FObjectInitializer& ObjectInitializer)
@@ -460,6 +461,18 @@ void ABattle_PlayerController::TurnAtRate(float Rate)
 void ABattle_PlayerController::LookUpAtRate(float Rate)
 {
     AddPitchInput(Rate * CachedMouseSensitivity);
+}
+
+void ABattle_PlayerController::ShowRoundResults(const TArray<FString>& IDs, const TArray<int32>& Scores,
+    float DisplayTime)
+{
+    if (!RoundResultWidgetClass) return;
+
+    URoundResultWidget* W = CreateWidget<URoundResultWidget>(this, RoundResultWidgetClass);
+    if (!W) return;
+
+    W->AddToViewport();
+    W->SetupResults(IDs, Scores, DisplayTime);
 }
 
 

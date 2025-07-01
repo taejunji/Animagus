@@ -12,7 +12,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="82f90524-bcfc-4556-9fef-0490e524b030" name="변경" comment="" />
+    <list default="true" id="ff584d5e-7706-47aa-b4e0-a974d14f4e4f" name="변경" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -22,18 +22,23 @@
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
   </component>
   <component name="HighlightingSettingsPerFile">
-    <setting file="file://$PROJECT_DIR$/../../../../../../Program Files/Epic Games/UE_5.4/Engine/Source/Runtime/Core/Public/UObject/WeakObjectPtrTemplates.h" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Intermediate/Build/Win64/UnrealEditor/Inc/Project_Animagus/UHT/MyGameInstance.generated.h" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Source/Project_Animagus/GameMode/MainMenuGameMode.cpp" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Source/Project_Animagus/GameMode/MainMenuGameMode.h" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Source/Project_Animagus/PlayerController/MainMenuController.cpp" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Source/Project_Animagus/PlayerController/MainMenuController.h" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Intermediate/Build/Win64/UnrealEditor/Inc/Project_Animagus/UHT/Battle_PlayerController.gen.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Source/Project_Animagus/Actor/ResultCharacterActor.cpp" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Source/Project_Animagus/Actor/ResultCharacterActor.h" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Source/Project_Animagus/GameMode/ResultGameMode.cpp" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Source/Project_Animagus/GameMode/ResultGameMode.h" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Source/Project_Animagus/UI/ResultWidget.cpp" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Source/Project_Animagus/UI/ResultWidget.h" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Source/Project_Animagus/UI/RoundResultRowWidget.cpp" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Source/Project_Animagus/UI/RoundResultRowWidget.h" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Source/Project_Animagus/UI/RoundResultWidget.cpp" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Source/Project_Animagus/UI/RoundResultWidget.h" root0="FORCE_HIGHLIGHTING" />
   </component>
   <component name="ProjectColorInfo">{
   &quot;customColor&quot;: &quot;&quot;,
   &quot;associatedIndex&quot;: 5
 }</component>
-  <component name="ProjectId" id="2yM4cZHcx20CSSyr5p2jSwcCV4C" />
+  <component name="ProjectId" id="2yx67Syop5xjPJqkhfQ9xJ6Yzjp" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
@@ -153,22 +158,16 @@
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="애플리케이션 수준" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="디폴트 작업">
-      <changelist id="82f90524-bcfc-4556-9fef-0490e524b030" name="변경" comment="" />
-      <created>1749631189706</created>
+      <changelist id="ff584d5e-7706-47aa-b4e0-a974d14f4e4f" name="변경" comment="" />
+      <created>1750763711013</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
-      <updated>1749631189706</updated>
-      <workItem from="1749631191260" duration="6885000" />
-      <workItem from="1749640657604" duration="23000" />
-      <workItem from="1749640731852" duration="879000" />
-      <workItem from="1749641810367" duration="2418000" />
-      <workItem from="1749707331993" duration="37823000" />
-      <workItem from="1750068440203" duration="3211000" />
-      <workItem from="1750241024407" duration="3984000" />
-      <workItem from="1750320780787" duration="4969000" />
-      <workItem from="1750410793140" duration="10499000" />
-      <workItem from="1750535722943" duration="13801000" />
-      <workItem from="1750672564886" duration="20080000" />
+      <updated>1750763711013</updated>
+      <workItem from="1750763712890" duration="2727000" />
+      <workItem from="1750931759356" duration="9618000" />
+      <workItem from="1750989800714" duration="14186000" />
+      <workItem from="1751136007335" duration="7473000" />
+      <workItem from="1751365247634" duration="2446000" />
     </task>
     <servers />
   </component>

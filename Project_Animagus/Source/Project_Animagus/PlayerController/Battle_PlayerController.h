@@ -8,6 +8,9 @@
 #include "GameFramework/PlayerController.h"
 #include "Battle_PlayerController.generated.h"
 
+
+class URoundResultWidget;
+
 struct FInputActionValue;
 
 enum class ControllerType { TPS, RPG };
@@ -141,6 +144,18 @@ public:
 protected:
    // 감도 정도 
     float CachedMouseSensitivity = 1.0f;
+
+public:
+    
+    UFUNCTION()
+    void ShowRoundResults(
+        const TArray<FString>& IDs,
+        const TArray<int32>& Scores,
+        float DisplayTime
+    );
+
+    UPROPERTY(EditAnywhere, Category="UI")
+    TSubclassOf<URoundResultWidget> RoundResultWidgetClass;
 };
 
 
