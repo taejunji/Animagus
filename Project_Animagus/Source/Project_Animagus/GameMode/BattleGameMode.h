@@ -220,10 +220,10 @@ public:
     UFUNCTION()
     void OnRoundEnd();
 
-    UPROPERTY(BlueprintReadWrite, Category="Round Results")
+    UPROPERTY(EditAnywhere, Category="Round Results")
     TArray<int32> RoundScores;
 
-    UPROPERTY(BlueprintReadWrite, Category="Round Results")
+    UPROPERTY(EditAnywhere, Category="Round Results")
     TArray<FString> RoundIDs;
 
     UPROPERTY(EditAnywhere, Category="Round Results")

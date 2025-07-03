@@ -19,8 +19,8 @@
  
 */
 
-enum class MontageType { DefaultAttack, Hit };
 enum class PawnType { NONE, PLAYER, AI, NETWORK };
+enum class MontageType { DefaultAttack, Hit, Jump };
 class UNiagaraComponent;
 class UNiagaraSystem;
 
@@ -63,7 +63,9 @@ protected:
     TObjectPtr<class UAnimMontage> attack_montage;
     UPROPERTY(EditAnywhere, Category = "AnimationMontage")
     TObjectPtr<class UAnimMontage> hit_montage;
-
+    UPROPERTY(EditAnywhere, Category = "AnimationMontage")
+    TObjectPtr<class UAnimMontage> jump_montage;
+    
 public:
     ABaseCharacter();
 
@@ -196,6 +198,9 @@ protected:
     Protocol::PlayerType PlayerType = Protocol::PlayerType::RAM;
     Protocol::PlayerState PlayerState = Protocol::PlayerState::MOVE_STATE_NONE;
     PawnType mPawnType = PawnType::NONE;
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Jump")
+    int32 MyjumpMax = 1;
+    
 };
 
 // Called to bind functionality to input
