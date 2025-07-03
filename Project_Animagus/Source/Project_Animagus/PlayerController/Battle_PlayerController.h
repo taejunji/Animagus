@@ -153,9 +153,17 @@ public:
         const TArray<int32>& Scores,
         float DisplayTime
     );
-
+    
+    void ShowRoundResults(
+        const TArray<FString>& IDs,
+        const TArray<int32>& Scores
+    );
+    
     UPROPERTY(EditAnywhere, Category="UI")
     TSubclassOf<URoundResultWidget> RoundResultWidgetClass;
+
+    UPROPERTY(EditAnywhere, Category="UI")
+    URoundResultWidget* RoundResultwidget; 
 };
 
 

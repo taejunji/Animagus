@@ -26,6 +26,11 @@ public:
         float DisplayTime
     );
 
+    void SetupResults(
+        const TArray<FString>& IDs,
+        const TArray<int32>& Scores
+    );
+    
 protected:
     virtual void NativeConstruct() override;
 

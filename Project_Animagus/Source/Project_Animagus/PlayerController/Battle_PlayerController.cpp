@@ -204,6 +204,10 @@ void ABattle_PlayerController::Input_Jump(const FInputActionValue& InputValue)
 {
     if (auto* MyPlayer = Cast<APlayerCharacter>(GetPawn()))
     {
+        if (MyPlayer->JumpMaxCount > MyPlayer->JumpCurrentCount)
+        {
+            MyPlayer->PlayAnimMontageByType(MontageType::Jump);
+        }
         MyPlayer->Jump();
     }
 }
@@ -468,11 +472,22 @@ void ABattle_PlayerController::ShowRoundResults(const TArray<FString>& IDs, cons
 {
     if (!RoundResultWidgetClass) return;
 
-    URoundResultWidget* W = CreateWidget<URoundResultWidget>(this, RoundResultWidgetClass);
-    if (!W) return;
+    RoundResultwidget = CreateWidget<URoundResultWidget>(this, RoundResultWidgetClass);
+    if (!RoundResultwidget) return;
 
-    W->AddToViewport();
-    W->SetupResults(IDs, Scores, DisplayTime);
+    RoundResultwidget->AddToViewport();
+    RoundResultwidget->SetupResults(IDs, Scores, DisplayTime);
+}
+
+void ABattle_PlayerController::ShowRoundResults(const TArray<FString>& IDs, const TArray<int32>& Scores)
+{
+    if (!RoundResultWidgetClass) return;
+
+   RoundResultwidget = CreateWidget<URoundResultWidget>(this, RoundResultWidgetClass);
+    if (!RoundResultwidget) return;
+
+    RoundResultwidget->AddToViewport();
+    RoundResultwidget->SetupResults(IDs, Scores); 
 }
 
 
