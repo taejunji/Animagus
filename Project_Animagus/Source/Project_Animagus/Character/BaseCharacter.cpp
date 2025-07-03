@@ -49,7 +49,7 @@ ABaseCharacter::ABaseCharacter()
         GetMesh()->SetAnimInstanceClass(AnimBP.Class);
     }
 
-
+    JumpMaxCount = 1;
 
 
     // ConstructorHelpers를 사용하여 UFireball 블루프린트 클래스 로드
@@ -219,6 +219,9 @@ void ABaseCharacter::PlayAnimMontageByType(MontageType montage_type)
 
     case MontageType::Hit:
         SelectMontage = hit_montage;
+        break;
+    case MontageType::Jump:
+        SelectMontage = jump_montage;
         break;
     }
 

@@ -36,6 +36,24 @@ void URoundResultWidget::SetupResults(
     }
 }
 
+void URoundResultWidget::SetupResults(const TArray<FString>& IDs, const TArray<int32>& Scores)
+{
+    if (!ResultList || !RowWidgetClass) return;
+
+    ResultList->ClearChildren();
+    int32 Count = FMath::Min(IDs.Num(), Scores.Num());
+    for (int32 i = 0; i < Count; ++i)
+    {
+        
+        URoundResultRowWidget* Row = CreateWidget<URoundResultRowWidget>(this, RowWidgetClass);
+        if (Row)
+        {
+            Row->SetupRow(IDs[i], Scores[i]);
+            ResultList->AddChild(Row);
+        }
+    }
+}
+
 void URoundResultWidget::NativeConstruct()
 {
     Super::NativeConstruct();

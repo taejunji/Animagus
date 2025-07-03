@@ -12,7 +12,20 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="ff584d5e-7706-47aa-b4e0-a974d14f4e4f" name="변경" comment="" />
+    <list default="true" id="ff584d5e-7706-47aa-b4e0-a974d14f4e4f" name="변경" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.Project_Animagus/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Project_Animagus/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/WorkFolder/Bluprints/BP_Player.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/WorkFolder/Bluprints/BP_Player.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/WorkFolder/Bluprints/Rendering/BP_PostProcessVolume.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/WorkFolder/Bluprints/Rendering/BP_PostProcessVolume.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/WorkFolder/Controller/BP_Battle_PlayerController.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/WorkFolder/Controller/BP_Battle_PlayerController.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/WorkFolder/GameMode/BP_BattleGameMode.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/WorkFolder/GameMode/BP_BattleGameMode.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/Project_Animagus/Character/BaseCharacter.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Project_Animagus/Character/BaseCharacter.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/Project_Animagus/Character/BaseCharacter.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Project_Animagus/Character/BaseCharacter.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/Project_Animagus/GameMode/BattleGameMode.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Project_Animagus/GameMode/BattleGameMode.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/Project_Animagus/PlayerController/Battle_PlayerController.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Project_Animagus/PlayerController/Battle_PlayerController.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/Project_Animagus/PlayerController/Battle_PlayerController.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Project_Animagus/PlayerController/Battle_PlayerController.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/Project_Animagus/UI/RoundResultWidget.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Project_Animagus/UI/RoundResultWidget.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/Project_Animagus/UI/RoundResultWidget.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Project_Animagus/UI/RoundResultWidget.h" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -22,6 +35,8 @@
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
   </component>
   <component name="HighlightingSettingsPerFile">
+    <setting file="file://$PROJECT_DIR$/../../../../../../Program Files/Epic Games/UE_5.4/Engine/Source/Runtime/Engine/Classes/GameFramework/CharacterMovementComponent.h" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/../../../../../../Program Files/Epic Games/UE_5.4/Engine/Source/Runtime/Engine/Private/Character.cpp" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Intermediate/Build/Win64/UnrealEditor/Inc/Project_Animagus/UHT/Battle_PlayerController.gen.cpp" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Source/Project_Animagus/Actor/ResultCharacterActor.cpp" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Source/Project_Animagus/Actor/ResultCharacterActor.h" root0="FORCE_HIGHLIGHTING" />
@@ -167,7 +182,9 @@
       <workItem from="1750931759356" duration="9618000" />
       <workItem from="1750989800714" duration="14186000" />
       <workItem from="1751136007335" duration="7473000" />
-      <workItem from="1751365247634" duration="2446000" />
+      <workItem from="1751365247634" duration="4703000" />
+      <workItem from="1751405301934" duration="3652000" />
+      <workItem from="1751501073310" duration="17687000" />
     </task>
     <servers />
   </component>
