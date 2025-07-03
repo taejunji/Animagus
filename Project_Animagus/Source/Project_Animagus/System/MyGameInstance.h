@@ -79,7 +79,7 @@ public:
     int32 AimImageIndex = 0;
 
     UPROPERTY(BlueprintReadWrite, Category="Settings")
-    int32 myRank = 0;
+    int32 myRank = 1;
 
 public:
     UMyGameInstance(const FObjectInitializer& ObjectInitializer);

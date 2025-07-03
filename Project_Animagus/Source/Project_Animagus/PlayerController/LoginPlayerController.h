@@ -7,6 +7,7 @@
 #include "LoginPlayerController.generated.h"
 
 class ULoginWidget;
+class USignUpWidget;
 
 UCLASS()
 class PROJECT_ANIMAGUS_API ALoginPlayerController : public APlayerController
@@ -24,6 +25,12 @@ public:
     // Signup 버튼 클릭
     UFUNCTION() void OnSignupClicked();
 
+    // SignUp Ok 버튼 클릭
+    UFUNCTION() void OnSignOkClicked();
+
+    // SignUp Cancel 버튼 클릭
+    UFUNCTION() void OnSignCancelClicked();
+
 
     
     // Widget Blueprint 클래스 지정
@@ -34,5 +41,11 @@ public:
     ULoginWidget* LoginWidget;
 
 
-   
+    // Widget Blueprint 클래스 지정
+    UPROPERTY(EditAnywhere, Category = "UI")
+    TSubclassOf<USignUpWidget> SignUpWidgetClass;
+
+    UPROPERTY()
+    USignUpWidget* SignUpWidget;
+
 };

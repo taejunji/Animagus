@@ -245,6 +245,17 @@ bool Handle_CS_LOGIN(SessionRef& session, CS_LOGIN_PKT& pkt)
 {
     std::cout << "Login ID: " << pkt.login_id << ", Password: " << pkt.login_pwd << std::endl;
 
+    // DBManager::DBFindById(...);
+
+    return true;
+}
+
+bool Handle_CS_SIGN_UP(SessionRef& session, CS_SIGN_UP_PKT& pkt)
+{
+    std::cout << "Signed ID: " << pkt.sign_id << ", Password: " << pkt.sign_pwd << ", Name: " << pkt.sign_name << std::endl;
+
+    // DBManager::DBSignedUp(...);
+
     return true;
 }
 

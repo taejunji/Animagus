@@ -215,48 +215,6 @@ public:
 
     TArray<AAttractionZone*> AttractionZones;
 
-    // 플레이어 스폰 회전 배열 (에디터에서 조절 가능)
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawning", meta = (AllowPrivateAccess = "true"))
-    TArray<FRotator> SpawnRotations;
-
-    // 내가 소유할 플레이어 인덱스 (예: GameInstance에서 가져올 수 있음)
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawning", meta = (AllowPrivateAccess = "true"))
-    int32 PossessIndex;
-
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawning")
-    TArray<FVector> Area1SpawnPoints;
-
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawning")
-    TArray<FVector> Area2SpawnPoints;
-
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawning")
-    TArray<FVector> Area3SpawnPoints;
-
-    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "PowerUp")
-    TArray<class AItem_Box_Base*> SpawnedItems;
-
-
-    // 영역1의 스폰 좌표들을 초기화하는 함수 
-    UFUNCTION(BlueprintCallable, Category = "PowerUp")
-    void InitializeArea1SpawnPoints();
-
-    UFUNCTION(BlueprintCallable, Category = "PowerUp")
-    void InitializeArea2SpawnPoints();
-
-    UFUNCTION(BlueprintCallable, Category = "PowerUp")
-    void InitializeArea3SpawnPoints();
-
-    UFUNCTION(BlueprintCallable, Category = "PowerUp")
-    void SpawnItemsInArea1();
-
-    UFUNCTION(BlueprintCallable, Category = "PowerUp")
-    void SpawnItemsInArea2();
-
-    UFUNCTION(BlueprintCallable, Category = "PowerUp")
-    void SpawnItemsInArea3();
-
-    float GetCurrentRoundTime() const;
-
 public:
 
     UFUNCTION()

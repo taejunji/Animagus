@@ -80,6 +80,7 @@ namespace Protocol {
         DCS_TEST,
 
         CS_LOGIN,
+        CS_SIGN_UP,
         CS_ENTER_ROOM,
         CS_START_GAME,
         CS_ENTER_GAME,
@@ -148,6 +149,15 @@ namespace Protocol {
         char login_pwd[MAX_NAME_LEN];
         uint8 id_len;
         uint8 pwd_len;
+    };
+    struct CS_SIGN_UP_PKT
+    {
+        char sign_id[MAX_NAME_LEN];
+        char sign_pwd[MAX_NAME_LEN];
+        char sign_name[MAX_NAME_LEN];
+        uint8 id_len;
+        uint8 pwd_len;
+        uint8 name_len;
     };
     struct CS_ENTER_ROOM_PKT
     {
@@ -258,6 +268,7 @@ namespace Protocol {
         PlayerType p_type;
         float x, y, z;
         float rotation;
+        //char name[MAX_NAME_LEN];
     };
     struct SC_SPAWN_ITEM_PKT
     {
@@ -275,6 +286,7 @@ namespace Protocol {
     };
     struct SC_GAME_INIT_PKT
     {
+        char name[MAX_NAME_LEN][8]; // sorted by own score
         char ranking[8];
         char score[8];
     };

@@ -23,7 +23,7 @@ bool Handle_CS_TIME_OVER(SessionRef& session, CS_TIME_OVER_PKT& pkt);
 bool Handle_CS_SELECT_CHARACTER(SessionRef& session, CS_SELECT_CHARACTER_PKT& pkt);
 bool Handle_CS_SKILL_CHANGE(SessionRef& session, CS_SKILL_CHANGE_PKT& pkt);
 bool Handle_CS_LOGIN(SessionRef& session, CS_LOGIN_PKT& pkt);
-
+bool Handle_CS_SIGN_UP(SessionRef& session, CS_SIGN_UP_PKT& pkt);
 
 class ServerPacketHandler
 {
@@ -46,6 +46,7 @@ public:
         GServerPacketHandler[(int32)PacketID::CS_SELECT_CHARACTER] = [](SessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<CS_SELECT_CHARACTER_PKT>(Handle_CS_SELECT_CHARACTER, session, buffer, len); };
         GServerPacketHandler[(int32)PacketID::CS_SKILL_CHANGE] = [](SessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<CS_SKILL_CHANGE_PKT>(Handle_CS_SKILL_CHANGE, session, buffer, len); };
         GServerPacketHandler[(int32)PacketID::CS_LOGIN] = [](SessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<CS_LOGIN_PKT>(Handle_CS_LOGIN, session, buffer, len); };
+        GServerPacketHandler[(int32)PacketID::CS_SIGN_UP] = [](SessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<CS_SIGN_UP_PKT>(Handle_CS_SIGN_UP, session, buffer, len); };
 
     }
 

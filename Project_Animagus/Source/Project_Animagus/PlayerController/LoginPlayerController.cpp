@@ -3,6 +3,7 @@
 
 #include "LoginPlayerController.h"
 #include "../UI/LoginWidget.h"
+#include "../UI/SignUpWidget.h"
 #include "Components/EditableTextBox.h"
 #include "Components/TextBlock.h"
 #include "Blueprint/WidgetBlueprintLibrary.h"
@@ -32,6 +33,22 @@ void ALoginPlayerController::ShowLoginUI()
     LoginWidget->SetupOwner(this);
     LoginWidget->BindButtons();
 
+    if (!SignUpWidgetClass) {
+        UE_LOG(LogTemp, Warning, TEXT("BP 클래스 오류"));
+        return;
+    }
+
+    SignUpWidget = CreateWidget<USignUpWidget>(this, SignUpWidgetClass);
+    if (!SignUpWidget) {
+        UE_LOG(LogTemp, Warning, TEXT("위젯 클래스 오류"));
+        return;
+    }
+
+    SignUpWidget->AddToViewport();
+    SignUpWidget->SetupOwner(this);
+    SignUpWidget->BindButtons();
+    SignUpWidget->SetVisibility(ESlateVisibility::Collapsed);
+
     // UI 전용 입력 모드
     FInputModeUIOnly Mode;
     Mode.SetWidgetToFocus(LoginWidget->TakeWidget());
@@ -60,8 +77,23 @@ void ALoginPlayerController::OnLoginClicked()
     const char* PwdString = PwdConverter.Get();
     uint16 PwdLen = PwdConverter.Length();
 
-    if (IdLen > Protocol::MAX_NAME_LEN || PwdLen > Protocol::MAX_NAME_LEN) {
+    if (IdLen > Protocol::MAX_NAME_LEN || IdLen == 0 || PwdLen > Protocol::MAX_NAME_LEN || PwdLen == 0) {
+        // 확인용
+        LoginWidget->ShowResult(FText::FromString(TEXT("글자 수 오류 (최대 20자)")));
 
+        FTimerHandle UnusedHandle;
+        GetWorldTimerManager().SetTimer(
+            UnusedHandle,
+            [this]()
+            {
+                if (LoginWidget)
+                    LoginWidget->HideResult();
+            },
+            2.0f,
+            false  // 한번만
+        );
+
+        return;
     }
 
     Protocol::CS_LOGIN_PKT LoginPkt;
@@ -72,53 +104,98 @@ void ALoginPlayerController::OnLoginClicked()
 
     SendBufferRef SendBuffer = ClientPacketHandler::MakeSendBuffer(LoginPkt);
     Cast<UMyGameInstance>(GWorld->GetGameInstance())->SendPacket(SendBuffer);
-
-    
-    // 확인용
-    LoginWidget->ShowResult(FText::FromString(TEXT("아이디 확인 실패")));
-
-    FTimerHandle UnusedHandle;
-    GetWorldTimerManager().SetTimer(
-        UnusedHandle,
-        [this]()
-        {
-            if (LoginWidget)
-                LoginWidget->HideResult();
-        },
-        2.0f,  
-        false  // 한번만
-    );
-    
 }
 
 void ALoginPlayerController::OnSignupClicked()
 {
     if (!LoginWidget) return;
+    //if (!SignUpWidget) return;
+
+    UE_LOG(LogTemp, Warning, TEXT("SignUpClicked"));
+
+    SignUpWidget->SetVisibility(ESlateVisibility::Visible);
+
+    //// 텍스트 박스에서 아이디/비번 읽기
+    //const FString UserID   = LoginWidget->TxtUserID->GetText().ToString();
+    //const FString Password = LoginWidget->TxtPassword->GetText().ToString();
+    //// 확인용
+    //LoginWidget->ShowResult(FText::FromString(TEXT("생성 완료")));
+
+    //FTimerHandle UnusedHandle;
+    //GetWorldTimerManager().SetTimer(
+    //    UnusedHandle,
+    //    [this]()
+    //    {
+    //        if (LoginWidget)
+    //            LoginWidget->HideResult();
+    //    },
+    //    2.0f,  
+    //    false  // 한번만
+    //); 
+    
+    // TODO: SignUp 위젯 띄우기
+}
+
+void ALoginPlayerController::OnSignOkClicked()
+{
+    if (!SignUpWidget) return;
+    if (!LoginWidget) return;
+    UE_LOG(LogTemp, Warning, TEXT("SignOkClicked"));
 
     // 텍스트 박스에서 아이디/비번 읽기
-    const FString UserID   = LoginWidget->TxtUserID->GetText().ToString();
-    const FString Password = LoginWidget->TxtPassword->GetText().ToString();
+    const FString UserID = SignUpWidget->TxtUserID->GetText().ToString();
+    const FString Password = SignUpWidget->TxtPassword->GetText().ToString();
+    const FString NickName = SignUpWidget->TxtNickName->GetText().ToString();
 
+    FTCHARToUTF8 IDConverter(*UserID);
+    const char* IdString = IDConverter.Get();
+    uint16 IdLen = IDConverter.Length();
 
+    FTCHARToUTF8 PwdConverter(*Password);
+    const char* PwdString = PwdConverter.Get();
+    uint16 PwdLen = PwdConverter.Length();
 
+    FTCHARToUTF8 NameConverter(*NickName);
+    const char* NameString = NameConverter.Get();
+    uint16 NameLen = NameConverter.Length();
 
+    if (IdLen > Protocol::MAX_NAME_LEN || IdLen == 0 
+        || PwdLen > Protocol::MAX_NAME_LEN || PwdLen == 0
+        || NameLen > Protocol::MAX_NAME_LEN || NameLen == 0)
+    {
+        //SignUpWidget->ShowResult(FText::FromString(TEXT("글자 수 오류 (최대 20자)")));
 
+        //FTimerHandle UnusedHandle;
+        //GetWorldTimerManager().SetTimer(
+        //    UnusedHandle,
+        //    [this]()
+        //    {
+        //        if (SignUpWidget)
+        //            SignUpWidget->HideResult();
+        //    },
+        //    2.0f,
+        //    false  // 한번만
+        //);
 
+        return;
+    }
 
-    
-    // 여기서 서버 회원가입 요청
-    // UserId, Password 
+    Protocol::CS_SIGN_UP_PKT SignUpPkt;
+    ::strcpy_s(SignUpPkt.sign_id, IdString);
+    ::strcpy_s(SignUpPkt.sign_pwd, PwdString);
+    ::strcpy_s(SignUpPkt.sign_name, NameString);
 
+    SignUpPkt.id_len = IdLen;
+    SignUpPkt.pwd_len = PwdLen;
+    SignUpPkt.name_len = NameLen;
 
+    SendBufferRef SendBuffer = ClientPacketHandler::MakeSendBuffer(SignUpPkt);
+    Cast<UMyGameInstance>(GWorld->GetGameInstance())->SendPacket(SendBuffer);
 
+    SignUpWidget->ClearInputs();
+    SignUpWidget->SetVisibility(ESlateVisibility::Collapsed);
 
-
-
-
-
-    
-    // 확인용
-    LoginWidget->ShowResult(FText::FromString(TEXT("생성 완료")));
+    LoginWidget->ShowResult(FText::FromString(TEXT("회원가입 완료")));
 
     FTimerHandle UnusedHandle;
     GetWorldTimerManager().SetTimer(
@@ -128,7 +205,17 @@ void ALoginPlayerController::OnSignupClicked()
             if (LoginWidget)
                 LoginWidget->HideResult();
         },
-        2.0f,  
+        2.0f,
         false  // 한번만
-    ); 
+    );
+}
+
+void ALoginPlayerController::OnSignCancelClicked()
+{
+    if (!SignUpWidget) return;
+    if (!LoginWidget) return;
+    UE_LOG(LogTemp, Warning, TEXT("SignCancleClicked"));
+
+    SignUpWidget->ClearInputs();
+    SignUpWidget->SetVisibility(ESlateVisibility::Collapsed);
 }

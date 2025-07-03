@@ -11,7 +11,7 @@ public:
     bool DBConnect();
     bool DBDisconnect();
 
-    bool DBFindById(const char* id, const char* passwd, char* name);
+    bool DBFindById(const char* id, const char* passwd, char* name, char* flag);
     bool DBSignUp(const char* id, const char* passwd, char* name);
 
 private:
@@ -23,3 +23,4 @@ private:
 
 void HandleDiagnosticRecord(SQLHANDLE hHandle, SQLSMALLINT hType, RETCODE RetCode);
 void show_error();
+bool ConvertCharToWide(const char* src, wchar_t* dst, int dstMaxCount);
