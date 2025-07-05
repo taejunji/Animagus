@@ -44,7 +44,7 @@ public:    // 게임 시스템 관련
     void HandleServerTime(uint64 server_time);
     float GetCurrentRoundTime() const { return CurrentRoundTime; }
 
-    float TIME_OVER = 60.0f * 0.5f;    // 라운드 종료 시간
+    float TIME_OVER = 60.0f * 4.0f;    // 라운드 종료 시간
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Battle Settings")
     float start_time;               // 라운드 시작 시간 (안씀)

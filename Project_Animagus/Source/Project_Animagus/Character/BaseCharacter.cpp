@@ -54,7 +54,7 @@ ABaseCharacter::ABaseCharacter()
         GetMesh()->SetAnimInstanceClass(AnimBP.Class);
     }
 
-    JumpMaxCount = 1;
+    JumpMaxCount = 5;
 
 
     // ConstructorHelpers를 사용하여 UFireball 블루프린트 클래스 로드

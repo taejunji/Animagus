@@ -19,12 +19,12 @@ public:
     bool HandleLeavePlayer(PlayerRef player);
     bool HandleMoveLocked(Protocol::CS_MOVE_PKT& pkt);
     bool HandleSkillLocked(Protocol::CS_USING_SKILL_PKT& pkt);
-    bool HandleEnterAIPlayer(Protocol::CS_AI_ENTER_PKT& pkt);
-    bool HandleAIMoveLocked(Protocol::CS_AI_MOVE_PKT& pkt, const uint16 ownerID);
-    bool HandleAISkillLocked(Protocol::CS_AI_USING_SKILL_PKT& pkt, const uint16 ownerID);
-    bool HandleDamageLocked(Protocol::CS_DAMAGE_PKT& pkt, const uint16 ownerID);
-    bool HandleTimeOverLocked(Protocol::CS_TIME_OVER_PKT& pkt);
-    bool HandleHitChangeSkill(Protocol::CS_SKILL_CHANGE_PKT& pkt);
+    bool HandleEnterAIPlayer(const Protocol::CS_AI_ENTER_PKT& pkt);
+    bool HandleAIMoveLocked(const Protocol::CS_AI_MOVE_PKT& pkt, const uint16 ownerID);
+    bool HandleAISkillLocked(const Protocol::CS_AI_USING_SKILL_PKT& pkt, const uint16 ownerID);
+    bool HandleDamageLocked(const Protocol::CS_DAMAGE_PKT& pkt, const uint16 ownerID);
+    bool HandleTimeOverLocked(const Protocol::CS_TIME_OVER_PKT& pkt);
+    bool HandleHitChangeSkill(const Protocol::CS_SKILL_CHANGE_PKT& pkt);
 
 public:
     uint16 GetPlayerCount() { return m_playerCount; }   // 사람 수 받을 때 동기화 작업 필요
@@ -53,6 +53,7 @@ private:
     std::unordered_map<uint16/*ai_id*/, AIPlayerRef> m_aiPlayers;
     uint16 m_maxPlayerCount = 8;
     std::atomic<uint16> m_nowPlayerCount = 0;
+    std::atomic<uint16> m_alivePlayerCount = 8;
 
     PlayerRef m_hostPlayer = nullptr;
     std::array<Protocol::SC_SPAWN_ITEM_PKT, 3> m_itemInfo;

@@ -346,7 +346,7 @@ bool Room::HandleSkillLocked(Protocol::CS_USING_SKILL_PKT& pkt)
     return true;
 }
 
-bool Room::HandleEnterAIPlayer(Protocol::CS_AI_ENTER_PKT& pkt)
+bool Room::HandleEnterAIPlayer(const Protocol::CS_AI_ENTER_PKT& pkt)
 {
     std::lock_guard lock(m_mutex);
 
@@ -381,7 +381,7 @@ bool Room::HandleEnterAIPlayer(Protocol::CS_AI_ENTER_PKT& pkt)
     return true;
 }
 
-bool Room::HandleAIMoveLocked(Protocol::CS_AI_MOVE_PKT& pkt, const uint16 ownerID)
+bool Room::HandleAIMoveLocked(const Protocol::CS_AI_MOVE_PKT& pkt, const uint16 ownerID)
 {
     std::lock_guard lock(m_mutex);
     const uint16 aiID = pkt.player_info.player_id;
@@ -421,7 +421,7 @@ bool Room::HandleAIMoveLocked(Protocol::CS_AI_MOVE_PKT& pkt, const uint16 ownerI
     return true;
 }
 
-bool Room::HandleAISkillLocked(Protocol::CS_AI_USING_SKILL_PKT& pkt, const uint16 ownerID)
+bool Room::HandleAISkillLocked(const Protocol::CS_AI_USING_SKILL_PKT& pkt, const uint16 ownerID)
 {
     std::lock_guard lock(m_mutex);
 
@@ -444,7 +444,7 @@ bool Room::HandleAISkillLocked(Protocol::CS_AI_USING_SKILL_PKT& pkt, const uint1
     return true;
 }
 
-bool Room::HandleDamageLocked(Protocol::CS_DAMAGE_PKT& pkt, const uint16 ownerID)
+bool Room::HandleDamageLocked(const Protocol::CS_DAMAGE_PKT& pkt, const uint16 ownerID)
 {
     std::lock_guard lock(m_mutex);
 
@@ -463,17 +463,25 @@ bool Room::HandleDamageLocked(Protocol::CS_DAMAGE_PKT& pkt, const uint16 ownerID
 
     SC_UPDATE_HP_PKT updateHpPkt;
     updateHpPkt.player_id = player_id;
-    updateHpPkt.room_id = 0;            // TODO: 로비에서 여러 룸 중 선택
+    //updateHpPkt.room_id = 0;            // TODO: 로비에서 여러 룸 중 선택
     updateHpPkt.hp = pkt.hp;
     updateHpPkt.isAlive = pkt.isAlive;
 
     SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(updateHpPkt);
     Broadcast(sendBuffer, ownerID, true);
 
+    if (player->playerHP <= 0)
+    {
+        if (--m_alivePlayerCount == 1) 
+        {
+            HandleTimeOverLocked(Protocol::CS_TIME_OVER_PKT{});
+        }
+    }
+
     return true;
 }
 
-bool Room::HandleTimeOverLocked(Protocol::CS_TIME_OVER_PKT& pkt)
+bool Room::HandleTimeOverLocked(const Protocol::CS_TIME_OVER_PKT& pkt)
 {
 #ifndef _DUMMYTEST
     std::cout << "Room#" << m_roomID << " Time Over" << std::endl;
@@ -533,15 +541,18 @@ bool Room::HandleTimeOverLocked(Protocol::CS_TIME_OVER_PKT& pkt)
     }
     else
     {
+        // 
+
         m_roundCount = 0;
         accumRanking.clear();
         InitAiTypes();
+        InitializeGame();
     }
 
     return true;
 }
 
-bool Room::HandleHitChangeSkill(Protocol::CS_SKILL_CHANGE_PKT& pkt)
+bool Room::HandleHitChangeSkill(const Protocol::CS_SKILL_CHANGE_PKT& pkt)
 {
     std::lock_guard lock(m_mutex);
 
