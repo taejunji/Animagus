@@ -159,7 +159,7 @@ void ABattleGameMode::InitBattleMode()
     UMyGameInstance* MyGameInstance = Cast<UMyGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));  
     if (MyGameInstance)
     {
-        
+        SetBattleLevel();
 
         SpawnPlayers(); 
 
@@ -411,6 +411,56 @@ void ABattleGameMode::ActivateInput()
     if (StartSound)
     {
         UGameplayStatics::PlaySound2D(GetWorld(), StartSound);
+    }
+}
+
+void ABattleGameMode::SetBattleLevel()
+{
+    if (auto* GameInstance = Cast<UMyGameInstance>(GetGameInstance()))
+    {
+        int32 CurrentRound = GameInstance->GetRoundCount();
+
+        CurrentRound = 2;
+
+        SetPostProcess(CurrentRound);
+
+        SetBluePrintLevel(CurrentRound);
+    }
+}
+
+void ABattleGameMode::SetPostProcess(int32 CurRound)
+{
+    TArray<AActor*> FoundVolumes; 
+
+    UGameplayStatics::GetAllActorsOfClass(GetWorld(), APostProcessVolume::StaticClass(), FoundVolumes); 
+
+    for (AActor* Actor : FoundVolumes) 
+    {
+        APostProcessVolume* PPVolume = Cast<APostProcessVolume>(Actor); 
+        if (PPVolume) 
+        { 
+            // 노출 설정을 조절하려면 해당 속성 오버라이드가 필요합니다
+            PPVolume->Settings.bOverride_AutoExposureMinBrightness = true; 
+            PPVolume->Settings.bOverride_AutoExposureMaxBrightness = true; 
+
+            switch (CurRound)
+            {
+            case static_cast<int32>(RoundDay::Morning): 
+                PPVolume->Settings.AutoExposureMinBrightness = -1.0f; 
+                PPVolume->Settings.AutoExposureMaxBrightness = 20.0f; 
+                break;
+
+            case static_cast<int32>(RoundDay::SunSet): 
+                PPVolume->Settings.AutoExposureMinBrightness = 0.0f; 
+                PPVolume->Settings.AutoExposureMaxBrightness = 20.0f; 
+                break;
+
+            case static_cast<int32>(RoundDay::Night): 
+                PPVolume->Settings.AutoExposureMinBrightness = 2.0f; 
+                PPVolume->Settings.AutoExposureMaxBrightness = 5.0f; 
+                break;
+            }
+        }
     }
 }
 
