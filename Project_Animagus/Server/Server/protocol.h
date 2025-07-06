@@ -95,6 +95,8 @@ namespace Protocol {
         CS_DAMAGE,
         CS_TIME_OVER,
         CS_SKILL_CHANGE,
+        CS_ROUND_END,
+        CS_ROUND_INIT,
 
         SC_LOGIN_FAIL,
         SC_UR_HOST,
@@ -106,6 +108,8 @@ namespace Protocol {
         SC_SPAWN_ITEM,
         SC_UPDATE_HP,
         SC_GAME_INIT,
+        SC_ROUND_END,
+        SC_ROUND_INIT,
     };
 
 
@@ -221,7 +225,13 @@ namespace Protocol {
         float hp;
         bool isAlive;
     };
-    struct CS_TIME_OVER_PKT
+    struct CS_ROUND_END_PKT     // round over by time out (host)
+    {
+    };
+    //struct CS_TIME_OVER_PKT
+    //{
+    //};
+    struct CS_ROUND_INIT_PKT    // host request init round
     {
     };
     struct CS_SKILL_CHANGE_PKT
@@ -286,9 +296,18 @@ namespace Protocol {
     };
     struct SC_GAME_INIT_PKT
     {
-        char name[MAX_NAME_LEN][8]; // sorted by own score
-        char ranking[8];
+        char name[8][MAX_NAME_LEN]; // sorted by own score
+        char ranking[8];            // 일단 id 넘기는 중
         char score[8];
+    };
+    struct SC_ROUND_END_PKT
+    {
+        char name[8][MAX_NAME_LEN]; // sorted by own score
+        char ranking[8];            // 일단 id 넘기는 중
+        char score[8];
+    };
+    struct SC_ROUND_INIT_PKT
+    {
     };
 
 #pragma pack(pop)

@@ -29,6 +29,7 @@ public:
     int16    playerHP = 100;
     float   x, y, z;
     float   rotation;   // y축 회전각
+    bool    isAlive = true;
 
     std::atomic<int8> powerUpLevel = 0;
     

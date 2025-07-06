@@ -105,13 +105,25 @@ bool Handle_SC_UPDATE_HP(SessionRef& session, Protocol::SC_UPDATE_HP_PKT& pkt)
     return true;
 }
 
-bool Handle_SC_GAME_INIT(SessionRef& session, Protocol::SC_GAME_INIT_PKT& pkt)
+bool Handle_SC_ROUND_END(SessionRef& session, Protocol::SC_ROUND_END_PKT& pkt)
+{
+    UE_LOG(LogTemp, Warning, TEXT("DoEnd BattleGameMode"));
+
+    if (auto* GameInstance = Cast<UMyGameInstance>(GWorld->GetGameInstance()))
+    {
+        GameInstance->HandleBattleRoundEnd(pkt);
+    }
+
+    return true;
+}
+
+bool Handle_SC_ROUND_INIT(SessionRef& session, Protocol::SC_ROUND_INIT_PKT& pkt)
 {
     UE_LOG(LogTemp, Warning, TEXT("Init BattleGameMode"));
 
     if (auto* GameInstance = Cast<UMyGameInstance>(GWorld->GetGameInstance()))
     {
-        GameInstance->HandleInitBattleMode(pkt);
+        GameInstance->HandleBattleRoundInit(pkt);
     }
 
     return true;

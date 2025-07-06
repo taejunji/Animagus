@@ -23,7 +23,8 @@ public:
     bool HandleAIMoveLocked(const Protocol::CS_AI_MOVE_PKT& pkt, const uint16 ownerID);
     bool HandleAISkillLocked(const Protocol::CS_AI_USING_SKILL_PKT& pkt, const uint16 ownerID);
     bool HandleDamageLocked(const Protocol::CS_DAMAGE_PKT& pkt, const uint16 ownerID);
-    bool HandleTimeOverLocked(const Protocol::CS_TIME_OVER_PKT& pkt);
+    bool HandleRoundEndLocked(const Protocol::CS_ROUND_END_PKT& pkt);
+    bool HandleRoundInitLocked(const Protocol::CS_ROUND_INIT_PKT& pkt);
     bool HandleHitChangeSkill(const Protocol::CS_SKILL_CHANGE_PKT& pkt);
 
 public:

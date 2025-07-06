@@ -59,6 +59,7 @@ public:    // 게임 시스템 관련
     // 시간별 이벤트 토글
     bool CalledActiveInput = false;
     bool CalledConfirmInput = false;
+    bool isRoundEnd = false;
 
     // 타이머 핸들들
     FTimerHandle SkillSelectionTimerHandle; // 스킬선택 남은시간 갱신 (안씀)
@@ -218,7 +219,7 @@ public:
 public:
 
     UFUNCTION()
-    void OnRoundEnd();
+    void OnRoundEnd(TArray<FString> Names, TArray<int32> Scores);
 
     UPROPERTY(EditAnywhere, Category="Round Results")
     TArray<int32> RoundScores;

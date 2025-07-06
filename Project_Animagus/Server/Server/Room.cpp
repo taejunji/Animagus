@@ -446,48 +446,52 @@ bool Room::HandleAISkillLocked(const Protocol::CS_AI_USING_SKILL_PKT& pkt, const
 
 bool Room::HandleDamageLocked(const Protocol::CS_DAMAGE_PKT& pkt, const uint16 ownerID)
 {
+    const uint16 player_id = pkt.player_id;
     std::lock_guard lock(m_mutex);
 
-    const uint16 player_id = pkt.player_id;
     if (m_players.contains(player_id) == false && m_aiPlayers.contains(player_id) == false) return false;
 
     PlayerRef player;
     if (player_id < 100) player = m_players[player_id];
     else player = m_aiPlayers[player_id];
     player->playerHP = pkt.hp;
-    //player->isAlive = pkt.isAlive;
+    //player->isAlive = pkt.hp > 0;
 
 #ifndef _DUMMYTEST
-    std::cout << "Room#" << m_roomID << " Player#" << player_id << " Got Damage - HP: " << pkt.hp << std::endl;
+    //std::cout << "Room#" << m_roomID << " Player#" << player_id << " Got Damage - HP: " << pkt.hp << std::endl;
 #endif
 
     SC_UPDATE_HP_PKT updateHpPkt;
     updateHpPkt.player_id = player_id;
-    //updateHpPkt.room_id = 0;            // TODO: 로비에서 여러 룸 중 선택
+    //updateHpPkt.room_id = 0;
     updateHpPkt.hp = pkt.hp;
-    updateHpPkt.isAlive = pkt.isAlive;
+    //updateHpPkt.isAlive = pkt.isAlive;
 
     SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(updateHpPkt);
     Broadcast(sendBuffer, ownerID, true);
 
-    if (player->playerHP <= 0)
+    if (pkt.hp <= 0 && player->isAlive == true)
     {
-        if (--m_alivePlayerCount == 1) 
+        player->isAlive = false;
+        m_alivePlayerCount--;
+        std::cout << "Room#" << m_roomID << " Alive Player Count - " << m_alivePlayerCount << std::endl;
+        if (m_alivePlayerCount == 1)
         {
-            HandleTimeOverLocked(Protocol::CS_TIME_OVER_PKT{});
+            std::cout << "Room#" << m_roomID << " Last Player Standing" << std::endl;
+            HandleRoundEndLocked(Protocol::CS_ROUND_END_PKT{});
         }
     }
 
     return true;
 }
 
-bool Room::HandleTimeOverLocked(const Protocol::CS_TIME_OVER_PKT& pkt)
+bool Room::HandleRoundEndLocked(const Protocol::CS_ROUND_END_PKT& pkt)
 {
 #ifndef _DUMMYTEST
     std::cout << "Room#" << m_roomID << " Time Over" << std::endl;
 #endif
 
-    std::lock_guard lock(m_mutex);
+    //std::lock_guard lock(m_mutex);    // recursive locking error
 
     std::vector<std::pair<int16, int16>> sortedPlayersByHp; // (id, HP) 쌍으로 저장
     sortedPlayersByHp.reserve(m_players.size() + m_aiPlayers.size());
@@ -517,7 +521,7 @@ bool Room::HandleTimeOverLocked(const Protocol::CS_TIME_OVER_PKT& pkt)
         InitializeGame();
 
 
-        SC_GAME_INIT_PKT initGamePkt;
+        SC_ROUND_END_PKT roundEndPkt;
 
         // 우승자 정보 + ???
         std::vector<std::pair<int16/*id*/, int16/*score*/>> sortedPlayersByScore;
@@ -531,23 +535,35 @@ bool Room::HandleTimeOverLocked(const Protocol::CS_TIME_OVER_PKT& pkt)
             });
 
         for (int8 i = 0; i < 8; ++i) {
-            initGamePkt.ranking[i] = sortedPlayersByScore[i].first;
-            initGamePkt.score[i] = sortedPlayersByScore[i].second;
+            roundEndPkt.ranking[i] = sortedPlayersByScore[i].first;
+            roundEndPkt.score[i] = sortedPlayersByScore[i].second;
         }
 
-        SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(initGamePkt);
+        SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(roundEndPkt);
         Broadcast(sendBuffer, 0);
 
     }
     else
     {
-        // 
+        // 로비로 보내기
 
+        m_alivePlayerCount = 8;
         m_roundCount = 0;
         accumRanking.clear();
         InitAiTypes();
         InitializeGame();
     }
+
+    return true;
+}
+
+bool Room::HandleRoundInitLocked(const Protocol::CS_ROUND_INIT_PKT& pkt)
+{
+    std::lock_guard lock(m_mutex);
+
+    SC_ROUND_INIT_PKT roundInitPkt;
+    SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(roundInitPkt);
+    Broadcast(sendBuffer, 0);
 
     return true;
 }

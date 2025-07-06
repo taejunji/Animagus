@@ -657,7 +657,7 @@ void ABattleGameMode::HandleServerTime(uint64 server_time)
         // 게임시작 카운트다운 업데이트
         if (ElapsedSecInt >= SelectionTime && ElapsedSecInt <= SelectionTime + CountdownTime) CurrentCountdownTime = SelectionTime + CountdownTime - ElapsedSecInt;
         // 라운드 타이머 업데이트
-        if (ElapsedSecInt >= SelectionTime + CountdownTime && (ElapsedSecInt - CurrentRoundTime) <= (SelectionTime + CountdownTime + 5)) CurrentRoundTime = ElapsedSecInt - (SelectionTime + CountdownTime);
+        if (false == isRoundEnd && ElapsedSecInt >= SelectionTime + CountdownTime && (ElapsedSecInt - CurrentRoundTime) <= (SelectionTime + CountdownTime + 5)) CurrentRoundTime = ElapsedSecInt - (SelectionTime + CountdownTime);
 
         //UE_LOG(LogTemp, Warning, TEXT("%d - Time to Server: %d sec"), PlayerCharacter->GetPlayerId(), ElapsedSecInt);
     }
@@ -993,21 +993,29 @@ void ABattleGameMode::RoundTimerUpdate()
     if (false == Cast<UMyGameInstance>(GWorld->GetGameInstance())->AmIHost) return;
     if (CurrentRoundTime >= TIME_OVER)
     {
-        Protocol::CS_TIME_OVER_PKT timeOverPkt;
+        Protocol::CS_ROUND_END_PKT roundEndPkt;
 
-        SendBufferRef SendBuffer = ClientPacketHandler::MakeSendBuffer(timeOverPkt);
+        SendBufferRef SendBuffer = ClientPacketHandler::MakeSendBuffer(roundEndPkt);
         Cast<UMyGameInstance>(GWorld->GetGameInstance())->SendPacket(SendBuffer);
     }
 }
 
-
-
-void ABattleGameMode::OnRoundEnd()
+void ABattleGameMode::OnRoundEnd(TArray<FString> Names, TArray<int32> Scores)
 {
     if (ABattle_PlayerController* PC = Cast<ABattle_PlayerController>(
     UGameplayStatics::GetPlayerController(this, 0)))
     {
-        PC->ShowRoundResults(RoundIDs, RoundScores, ResultDisplayDuration);
+        //PC->ShowRoundResults(RoundIDs, RoundScores, ResultDisplayDuration);
+        PC->ShowRoundResults(Names, Scores);
+        if (true == AmIHost)    // WidgetHide 는 RoundInit 시작할 때
+        {
+            FTimerHandle UnusedHandle;
+            GetWorld()->GetTimerManager().SetTimer(UnusedHandle, FTimerDelegate::CreateLambda([this]() {
+                Protocol::CS_ROUND_INIT_PKT roundInitPkt;
+                SendBufferRef SendBuffer = ClientPacketHandler::MakeSendBuffer(roundInitPkt);
+                Cast<UMyGameInstance>(GWorld->GetGameInstance())->SendPacket(SendBuffer);
+                }), ResultDisplayDuration, false);
+        }
     }
 }
 

@@ -403,7 +403,44 @@ void UMyGameInstance::HandleUpdateHp(Protocol::SC_UPDATE_HP_PKT& pkt)
     }
 }
 
-void UMyGameInstance::HandleInitBattleMode(Protocol::SC_GAME_INIT_PKT& pkt)
+void UMyGameInstance::HandleBattleRoundEnd(Protocol::SC_ROUND_END_PKT& pkt)
+{
+    if (Socket == nullptr || ClientSession == nullptr)
+        return;
+
+    auto* World = GetWorld();
+    if (World == nullptr)
+        return;
+
+    UE_LOG(LogTemp, Warning, TEXT("라운드 끝!"));
+
+    AGameModeBase* BaseGameMode = UGameplayStatics::GetGameMode(World);
+    if (BaseGameMode)
+    {
+        ABattleGameMode* GameMode = Cast<ABattleGameMode>(BaseGameMode);
+        if (GameMode)
+        {
+            //GameMode->InactiveInput();
+            TArray<FString> Names;
+            TArray<int32>   Scores;
+
+            for (int8 i = 0; i < 8; ++i)
+            {
+                int32 IdValue = static_cast<int32>(pkt.ranking[i]);
+                FString PlayerId = FString::FromInt(IdValue);
+                Names.Add(PlayerId);    // 이름 추가하기 전까지는 Id 로
+
+                //const TCHAR* Name = UTF8_TO_TCHAR(pkt.name[i]);
+                //Names.Add(FString(Name));
+                Scores.Add(static_cast<int32>(pkt.score[i]));
+            }
+
+            GameMode->OnRoundEnd(Names, Scores);
+        }
+    }
+}
+
+void UMyGameInstance::HandleBattleRoundInit(Protocol::SC_ROUND_INIT_PKT& pkt)
 {
     if (Socket == nullptr || ClientSession == nullptr)
         return;
@@ -420,6 +457,7 @@ void UMyGameInstance::HandleInitBattleMode(Protocol::SC_GAME_INIT_PKT& pkt)
         ABattleGameMode* GameMode = Cast<ABattleGameMode>(BaseGameMode);
         if (GameMode)
         {
+            //GameMode->HideResultWidget();
             GameMode->ShrinkingZone->Destroy();
 
             for (auto& Item : GameMode->AttractionZones)

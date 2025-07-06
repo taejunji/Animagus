@@ -19,7 +19,8 @@ bool Handle_CS_AI_ENTER(SessionRef& session, CS_AI_ENTER_PKT& pkt);
 bool Handle_CS_AI_MOVE(SessionRef& session, CS_AI_MOVE_PKT& pkt);
 bool Handle_CS_AI_USING_SKILL(SessionRef& session, CS_AI_USING_SKILL_PKT& pkt);
 bool Handle_CS_DAMAGE(SessionRef& session, CS_DAMAGE_PKT& pkt);
-bool Handle_CS_TIME_OVER(SessionRef& session, CS_TIME_OVER_PKT& pkt);
+bool Handle_CS_ROUND_END(SessionRef& session, CS_ROUND_END_PKT& pkt);
+bool Handle_CS_ROUND_INIT(SessionRef& session, CS_ROUND_INIT_PKT& pkt);
 bool Handle_CS_SELECT_CHARACTER(SessionRef& session, CS_SELECT_CHARACTER_PKT& pkt);
 bool Handle_CS_SKILL_CHANGE(SessionRef& session, CS_SKILL_CHANGE_PKT& pkt);
 bool Handle_CS_LOGIN(SessionRef& session, CS_LOGIN_PKT& pkt);
@@ -42,7 +43,8 @@ public:
         GServerPacketHandler[(int32)PacketID::CS_AI_MOVE] = [](SessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<CS_AI_MOVE_PKT>(Handle_CS_AI_MOVE, session, buffer, len); };
         GServerPacketHandler[(int32)PacketID::CS_AI_USING_SKILL] = [](SessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<CS_AI_USING_SKILL_PKT>(Handle_CS_AI_USING_SKILL, session, buffer, len); };
         GServerPacketHandler[(int32)PacketID::CS_DAMAGE] = [](SessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<CS_DAMAGE_PKT>(Handle_CS_DAMAGE, session, buffer, len); };
-        GServerPacketHandler[(int32)PacketID::CS_TIME_OVER] = [](SessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<CS_TIME_OVER_PKT>(Handle_CS_TIME_OVER, session, buffer, len); };
+        GServerPacketHandler[(int32)PacketID::CS_ROUND_END] = [](SessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<CS_ROUND_END_PKT>(Handle_CS_ROUND_END, session, buffer, len); };
+        GServerPacketHandler[(int32)PacketID::CS_ROUND_INIT] = [](SessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<CS_ROUND_INIT_PKT>(Handle_CS_ROUND_INIT, session, buffer, len); };
         GServerPacketHandler[(int32)PacketID::CS_SELECT_CHARACTER] = [](SessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<CS_SELECT_CHARACTER_PKT>(Handle_CS_SELECT_CHARACTER, session, buffer, len); };
         GServerPacketHandler[(int32)PacketID::CS_SKILL_CHANGE] = [](SessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<CS_SKILL_CHANGE_PKT>(Handle_CS_SKILL_CHANGE, session, buffer, len); };
         GServerPacketHandler[(int32)PacketID::CS_LOGIN] = [](SessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<CS_LOGIN_PKT>(Handle_CS_LOGIN, session, buffer, len); };
@@ -65,8 +67,9 @@ public:
     static SendBufferRef MakeSendBuffer(CS_USING_SKILL_PKT& pkt) { return MakeSendBuffer(pkt, (uint16)PacketID::CS_USING_SKILL); }
     static SendBufferRef MakeSendBuffer(SC_SPAWN_ITEM_PKT& pkt) { return MakeSendBuffer(pkt, (uint16)PacketID::SC_SPAWN_ITEM); }
     static SendBufferRef MakeSendBuffer(SC_UPDATE_HP_PKT& pkt) { return MakeSendBuffer(pkt, (uint16)PacketID::SC_UPDATE_HP); }
-    static SendBufferRef MakeSendBuffer(SC_GAME_INIT_PKT& pkt) { return MakeSendBuffer(pkt, (uint16)PacketID::SC_GAME_INIT); }
+    static SendBufferRef MakeSendBuffer(SC_ROUND_END_PKT& pkt) { return MakeSendBuffer(pkt, (uint16)PacketID::SC_ROUND_END); }
     static SendBufferRef MakeSendBuffer(SC_AI_SPAWN_PKT& pkt) { return MakeSendBuffer(pkt, (uint16)PacketID::SC_AI_SPAWN); }
+    static SendBufferRef MakeSendBuffer(SC_ROUND_INIT_PKT& pkt) { return MakeSendBuffer(pkt, (uint16)PacketID::SC_ROUND_INIT); }
 
 
 private:

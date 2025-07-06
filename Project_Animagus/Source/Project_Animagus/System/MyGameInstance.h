@@ -120,7 +120,8 @@ public:
     void HandleSkill(Protocol::CS_USING_SKILL_PKT& pkt);
     void HandleSpawnItem(Protocol::SC_SPAWN_ITEM_PKT& pkt);
     void HandleUpdateHp(Protocol::SC_UPDATE_HP_PKT& pkt);
-    void HandleInitBattleMode(Protocol::SC_GAME_INIT_PKT& pkt);
+    void HandleBattleRoundEnd(Protocol::SC_ROUND_END_PKT& pkt);
+    void HandleBattleRoundInit(Protocol::SC_ROUND_INIT_PKT& pkt);
     void HandleAISpawn(Protocol::SC_AI_SPAWN_PKT& pkt);
 
 public:

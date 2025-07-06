@@ -18,7 +18,6 @@
 
 #include "../GameMode/BattleGameMode.h"
 #include "Kismet/GameplayStatics.h"
-#include "Project_Animagus/System/MyGameInstance.h"
 #include "Project_Animagus/UI/RoundResultWidget.h"
 #include "Project_Animagus/UI/SkillSelectionWidget.h"
 
@@ -492,7 +491,7 @@ void ABattle_PlayerController::Input_Init(const FInputActionValue& InputValue)
     ABattleGameMode* BattleMode = Cast<ABattleGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
     if (BattleMode != nullptr && BattleMode->AmIHost == true)
     {
-        Protocol::CS_TIME_OVER_PKT timeOverPkt;
+        Protocol::CS_ROUND_END_PKT timeOverPkt;
 
         SendBufferRef SendBuffer = ClientPacketHandler::MakeSendBuffer(timeOverPkt);
         Cast<UMyGameInstance>(GWorld->GetGameInstance())->SendPacket(SendBuffer);
