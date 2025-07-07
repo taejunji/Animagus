@@ -90,7 +90,7 @@ void ABattle_PlayerController::SetupInputComponent()
         // "W,A,S,D", "Mouse", "Space"
         EnhancedInputComponent->BindAction(move_action, ETriggerEvent::Triggered, this, &ThisClass::Input_Move);
         EnhancedInputComponent->BindAction(rotate_action, ETriggerEvent::Triggered, this, &ThisClass::Input_Rotate);
-        EnhancedInputComponent->BindAction(jump_action, ETriggerEvent::Triggered, this, &ThisClass::Input_Jump);
+        EnhancedInputComponent->BindAction(jump_action, ETriggerEvent::Started, this, &ThisClass::Input_Jump);
 
         // "Mosue Left/Right Click"
         EnhancedInputComponent->BindAction(attack_action, ETriggerEvent::Started, this, &ThisClass::Input_Attack); 

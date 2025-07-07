@@ -57,6 +57,9 @@ protected:
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Box|Items")
     TSubclassOf<ABaseItem> HealItemPlusClass;
 
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Box|Items")
+    TSubclassOf<ABaseItem> UpJumpClass;
+    
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "AI")
     class UAIPerceptionStimuliSourceComponent* StimuliSource;
     

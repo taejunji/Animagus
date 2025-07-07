@@ -184,6 +184,10 @@ void AItem_Box_Base::BreakBox()
     {
         ItemToSpawn = HealItemClass;
     }
+    else if (SpawnItemType == 2)
+    {
+        ItemToSpawn = UpJumpClass;
+    }
     else 
     {
         return;
