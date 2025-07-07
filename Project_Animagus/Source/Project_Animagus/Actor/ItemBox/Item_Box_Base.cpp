@@ -10,6 +10,7 @@
 #include "UObject/ConstructorHelpers.h"
 #include "Perception/AIPerceptionStimuliSourceComponent.h"
 #include "Perception/AISense_Sight.h"
+#include "../../GameMode/BattleGameMode.h"
 
 AItem_Box_Base::AItem_Box_Base()
 {
@@ -202,6 +203,10 @@ void AItem_Box_Base::BreakBox()
         if (SpawnedItem)
         {
             UE_LOG(LogTemp, Log, TEXT("Item_Box_Base: Spawned item at %s"), *SpawnLocation.ToString());
+            if (auto GameMode = Cast<ABattleGameMode>(GetWorld()))
+            {
+                GameMode->SpawnedItems.Add(SpawnedItem);
+            }
         }
         else
         {

@@ -128,7 +128,11 @@ public:    // 게임 오브젝트 관련
     TArray<TArray<FVector>> AreaSpawnPoints;
 
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "PowerUp")
-    TArray<class AItem_Box_Base*> SpawnedItems;
+    TArray<class AItem_Box_Base*> SpawnedItemBoxes;
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "PowerUp")
+    TArray<class ABaseItem*> SpawnedItems;
+
 
 
 public:    // 네트워크 서비스 관련
@@ -139,11 +143,16 @@ public:    // 네트워크 서비스 관련
     void SpawnItem(Protocol::SC_SPAWN_ITEM_PKT& pkt);
     void SpawnItemsInArea3(Protocol::SC_SPAWN_ITEM_PKT& pkt);
     void UpdateHp(Protocol::SC_UPDATE_HP_PKT& pkt);
+    void HandleJumpEffect(Protocol::CS_JUMP_EFT_PKT& pkt);
 
 
     bool AmIHost = false;
     int16 RoomId = 0;
     int16 PlayerIndex = 0;
+
+    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Jump")
+    UNiagaraSystem* Jumpeffect;
+
 
 protected:
 

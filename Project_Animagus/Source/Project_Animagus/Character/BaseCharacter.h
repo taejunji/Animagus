@@ -201,6 +201,7 @@ protected:
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Jump")
     int32 MyjumpMax = 1;
 
+public:
     virtual void Jump() override;
 
     UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Jump")

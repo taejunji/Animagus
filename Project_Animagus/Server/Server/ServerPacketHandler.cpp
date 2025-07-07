@@ -276,3 +276,20 @@ bool Handle_CS_SIGN_UP(SessionRef& session, CS_SIGN_UP_PKT& pkt)
     return true;
 }
 
+bool Handle_CS_JUMP_EFT(SessionRef& session, CS_JUMP_EFT_PKT& pkt)
+{
+    auto gameSession = static_pointer_cast<Session>(session);
+
+    PlayerRef player = gameSession->m_player.load();
+    if (player == nullptr)
+        return false;
+
+    RoomRef room = player->room.load().lock();
+    if (room == nullptr)
+        return false;
+
+    room->HandleJumpEffect(pkt);
+
+    return true;
+}
+

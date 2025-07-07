@@ -26,6 +26,7 @@ bool Handle_SC_UPDATE_HP(SessionRef& session, Protocol::SC_UPDATE_HP_PKT& pkt);
 bool Handle_SC_ROUND_END(SessionRef& session, Protocol::SC_ROUND_END_PKT& pkt);
 bool Handle_SC_ROUND_INIT(SessionRef& session, Protocol::SC_ROUND_INIT_PKT& pkt);
 bool Handle_SC_AI_SPAWN(SessionRef& session, Protocol::SC_AI_SPAWN_PKT& pkt);
+bool Handle_CS_JUMP_EFT(SessionRef& session, Protocol::CS_JUMP_EFT_PKT& pkt);
 
 class ClientPacketHandler
 {
@@ -45,6 +46,7 @@ public:
         GClientPacketHandler[(int32)Protocol::PacketID::SC_ROUND_END] = [](SessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<Protocol::SC_ROUND_END_PKT>(Handle_SC_ROUND_END, session, buffer, len); };
         GClientPacketHandler[(int32)Protocol::PacketID::SC_AI_SPAWN] = [](SessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<Protocol::SC_AI_SPAWN_PKT>(Handle_SC_AI_SPAWN, session, buffer, len); };
         GClientPacketHandler[(int32)Protocol::PacketID::SC_ROUND_INIT] = [](SessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<Protocol::SC_ROUND_INIT_PKT>(Handle_SC_ROUND_INIT, session, buffer, len); };
+        GClientPacketHandler[(int32)Protocol::PacketID::CS_JUMP_EFT] = [](SessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<Protocol::CS_JUMP_EFT_PKT>(Handle_CS_JUMP_EFT, session, buffer, len); };
 
     }
 
@@ -71,6 +73,7 @@ public:
     static SendBufferRef MakeSendBuffer(Protocol::CS_LOGIN_PKT& pkt) { return MakeSendBuffer(pkt, (uint16)Protocol::PacketID::CS_LOGIN); }
     static SendBufferRef MakeSendBuffer(Protocol::CS_SIGN_UP_PKT& pkt) { return MakeSendBuffer(pkt, (uint16)Protocol::PacketID::CS_SIGN_UP); }
     static SendBufferRef MakeSendBuffer(Protocol::CS_ROUND_INIT_PKT& pkt) { return MakeSendBuffer(pkt, (uint16)Protocol::PacketID::CS_ROUND_INIT); }
+    static SendBufferRef MakeSendBuffer(Protocol::CS_JUMP_EFT_PKT& pkt) { return MakeSendBuffer(pkt, (uint16)Protocol::PacketID::CS_JUMP_EFT); }
 
 private:
     template<typename PacketType, typename ProcessFunc>

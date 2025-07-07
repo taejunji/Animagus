@@ -778,6 +778,11 @@ void ABaseCharacter::Jump()
     {
         UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), Jumpeffect, GetActorLocation()+ FVector(0.f, 0.f, -40.f), GetActorRotation());
         
+        Protocol::CS_JUMP_EFT_PKT jumpPkt;
+        jumpPkt.jump_player_id = GetPlayerId();
+
+        SendBufferRef SendBuffer = ClientPacketHandler::MakeSendBuffer(jumpPkt);
+        Cast<UMyGameInstance>(GWorld->GetGameInstance())->SendPacket(SendBuffer);
     }
 }
 

@@ -30,6 +30,9 @@
 #include "EngineUtils.h"
 #include "Components/AudioComponent.h"
 
+#include "NiagaraComponent.h"
+#include "NiagaraFunctionLibrary.h"
+
 
 ABattleGameMode::ABattleGameMode()
 {
@@ -289,7 +292,7 @@ void ABattleGameMode::InitBattleMode()
     SpawnedPlayers.Empty();
 
     AreaSpawnPoints.Empty();
-    SpawnedItems.Empty();
+    SpawnedItemBoxes.Empty();
     AttractionZones.Empty();
 
     //FTransform ShrinkSpawnTransform;
@@ -797,7 +800,7 @@ void ABattleGameMode::SpawnItem(Protocol::SC_SPAWN_ITEM_PKT& pkt)
 
         if (NewItem)
         {
-            SpawnedItems.Add(NewItem);
+            SpawnedItemBoxes.Add(NewItem);
             UE_LOG(LogTemp, Log, TEXT("SpawnItemsInArea1: Spawned item at %s"), *SpawnLocation.ToString());
         }
         else
@@ -811,7 +814,7 @@ void ABattleGameMode::SpawnItem(Protocol::SC_SPAWN_ITEM_PKT& pkt)
 void ABattleGameMode::UpdateHp(Protocol::SC_UPDATE_HP_PKT& pkt)
 {
     const uint16 playerId = pkt.player_id;
-    if (SpawnedPlayers.Find(playerId) == nullptr)
+    if (SpawnedPlayers.FindRef(playerId) == nullptr)
         return;
 
     ANetworkCharacter* Player = Cast<ANetworkCharacter>(SpawnedPlayers[playerId]);
@@ -819,6 +822,15 @@ void ABattleGameMode::UpdateHp(Protocol::SC_UPDATE_HP_PKT& pkt)
     Player->SetHP(pkt.hp);
 
     // TODO: 더 할게 있나?
+}
+
+void ABattleGameMode::HandleJumpEffect(Protocol::CS_JUMP_EFT_PKT& pkt)
+{
+    if (auto TargetPlayer = SpawnedPlayers.FindRef(pkt.jump_player_id)) {
+        FVector TargetLocation = TargetPlayer->GetActorLocation() + FVector(0.f, 0.f, -40.f);
+        FRotator TargetRotation = TargetPlayer->GetActorRotation();
+        UNiagaraFunctionLibrary::SpawnSystemAtLocation(this, Jumpeffect, TargetLocation, TargetRotation);
+    }
 }
 
 void ABattleGameMode::PrintElapsedtime()
@@ -1043,8 +1055,8 @@ void ABattleGameMode::SpawnItemsInArea1()
 //    //    UE_LOG(LogTemp, Warning, TEXT("SpawnItemsInArea1: Not enough spawn points available. Reducing item count."));
 //    //}
 //
-//    //// SpawnedItems 배열 초기화
-//    //SpawnedItems.Empty();
+//    //// SpawnedItemBoxes 배열 초기화
+//    //SpawnedItemBoxes.Empty();
 //
 //    //UWorld* World = GetWorld();
 //    //if (!World)
@@ -1072,7 +1084,7 @@ void ABattleGameMode::SpawnItemsInArea1()
 //
 //    //    if (NewItem)
 //    //    {
-//    //        SpawnedItems.Add(NewItem);
+//    //        SpawnedItemBoxes.Add(NewItem);
 //    //        UE_LOG(LogTemp, Log, TEXT("SpawnItemsInArea1: Spawned item at %s"), *SpawnLocation.ToString());
 //    //    }
 //    //    else
@@ -1091,7 +1103,7 @@ void ABattleGameMode::SpawnItemsInArea1()
 //        
 //        if (NewItem)
 //        {
-//            SpawnedItems.Add(NewItem);
+//            SpawnedItemBoxes.Add(NewItem);
 //            UE_LOG(LogTemp, Log, TEXT("SpawnItemsInArea1: Spawned item at %s"), *SpawnLocation.ToString());
 //        }
 //        else
@@ -1363,7 +1375,7 @@ void ABattleGameMode::SpawnItemsInArea3(Protocol::SC_SPAWN_ITEM_PKT& pkt)
         if (NewItem)
         {
             NewItem->SpawnItemType = ItemLevel[i];
-            SpawnedItems.Add(NewItem);
+            SpawnedItemBoxes.Add(NewItem);
             UE_LOG(LogTemp, Log, TEXT("SpawnItemsInArea1: Spawned item at %s"), *SpawnLocation.ToString());
         }
         else

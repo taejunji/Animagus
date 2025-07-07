@@ -97,6 +97,7 @@ namespace Protocol {
         CS_SKILL_CHANGE,
         CS_ROUND_END,
         CS_ROUND_INIT,
+        CS_JUMP_EFT,
 
         SC_LOGIN_FAIL,
         SC_UR_HOST,
@@ -238,6 +239,10 @@ namespace Protocol {
     {
         uint16 hit_player_id;
         uint16 shooter_player_id;
+    };
+    struct CS_JUMP_EFT_PKT
+    {
+        uint16 jump_player_id;
     };
 
     struct SC_LOGIN_FAIL

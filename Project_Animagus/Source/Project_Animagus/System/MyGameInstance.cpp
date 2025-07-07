@@ -429,6 +429,8 @@ void UMyGameInstance::HandleBattleRoundEnd(Protocol::SC_ROUND_END_PKT& pkt)
             for (int8 i = 0; i < 8; ++i)
             {
                 int32 IdValue = static_cast<int32>(pkt.ranking[i]);
+                if (MyPlayerId == IdValue) myRank = i + 1;
+
                 FString PlayerId = FString::FromInt(IdValue);
                 Names.Add(PlayerId);    // 이름 추가하기 전까지는 Id 로
 
@@ -468,6 +470,8 @@ void UMyGameInstance::HandleBattleRoundInit(Protocol::SC_ROUND_INIT_PKT& pkt)
 
             for (auto& Item : GameMode->AttractionZones)
                 if (Item != nullptr) Item->Destroy();
+            for (auto& Item : GameMode->SpawnedItemBoxes)
+                if (Item != nullptr) Item->Destroy();
             for (auto& Item : GameMode->SpawnedItems)
                 if (Item != nullptr) Item->Destroy();
             for (auto& Item : GameMode->SpawnedPlayers)
@@ -503,6 +507,29 @@ void UMyGameInstance::HandleAISpawn(Protocol::SC_AI_SPAWN_PKT& pkt)
         if (GameMode)
         {
             GameMode->SpawnAIPlayers(pkt);
+        }
+    }
+}
+
+void UMyGameInstance::HandleJumpEffect(Protocol::CS_JUMP_EFT_PKT& pkt)
+{
+    if (Socket == nullptr || ClientSession == nullptr)
+        return;
+
+    auto* World = GetWorld();
+    if (World == nullptr)
+        return;
+
+    if (false == AmIHost) return;
+
+
+    AGameModeBase* BaseGameMode = UGameplayStatics::GetGameMode(World);
+    if (BaseGameMode)
+    {
+        ABattleGameMode* GameMode = Cast<ABattleGameMode>(BaseGameMode);
+        if (GameMode)
+        {
+            GameMode->HandleJumpEffect(pkt);
         }
     }
 }

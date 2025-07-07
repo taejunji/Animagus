@@ -138,3 +138,13 @@ bool Handle_SC_AI_SPAWN(SessionRef& session, Protocol::SC_AI_SPAWN_PKT& pkt)
 
     return true;
 }
+
+bool Handle_CS_JUMP_EFT(SessionRef& session, Protocol::CS_JUMP_EFT_PKT& pkt)
+{
+    if (auto* GameInstance = Cast<UMyGameInstance>(GWorld->GetGameInstance()))
+    {
+        GameInstance->HandleJumpEffect(pkt);
+    }
+
+    return false;
+}
