@@ -991,8 +991,9 @@ void ABattleGameMode::RoundTimerUpdate()
     //UE_LOG(LogTemp, Log, TEXT("Round Time: %d"), CurrentRoundTime);
 
     if (false == Cast<UMyGameInstance>(GWorld->GetGameInstance())->AmIHost) return;
-    if (CurrentRoundTime >= TIME_OVER)
+    if (CurrentRoundTime >= TIME_OVER && false == isRoundEnd)
     {
+        isRoundEnd = true;
         Protocol::CS_ROUND_END_PKT roundEndPkt;
 
         SendBufferRef SendBuffer = ClientPacketHandler::MakeSendBuffer(roundEndPkt);

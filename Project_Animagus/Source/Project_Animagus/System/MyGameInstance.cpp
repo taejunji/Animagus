@@ -23,6 +23,8 @@
 #include "../Actor/Zones/ShrinkingZone.h"
 #include "../Actor/Zones/AttractionZone.h"
 #include "../PlayerController/ConnectPlayerController.h"
+#include "../PlayerController/Battle_PlayerController.h"
+#include "../UI/RoundResultWidget.h"
 
 #include "Misc/Paths.h"
 #include "Misc/FileHelper.h"
@@ -457,7 +459,11 @@ void UMyGameInstance::HandleBattleRoundInit(Protocol::SC_ROUND_INIT_PKT& pkt)
         ABattleGameMode* GameMode = Cast<ABattleGameMode>(BaseGameMode);
         if (GameMode)
         {
-            //GameMode->HideResultWidget();
+            if (ABattle_PlayerController* PC = Cast<ABattle_PlayerController>(
+                UGameplayStatics::GetPlayerController(this, 0))) {
+                PC->RoundResultwidget->HideSelf();
+            }
+            GameMode->isRoundEnd = false;
             GameMode->ShrinkingZone->Destroy();
 
             for (auto& Item : GameMode->AttractionZones)
