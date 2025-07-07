@@ -24,6 +24,18 @@ public:
     UFUNCTION()
     void SetupOwner(AMainMenuController* InOwner) { Owner = InOwner; BindButtons(); }
 
+    UPROPERTY(EditAnywhere, Category="Sound")
+    USoundBase* HoverSound;
+
+    UPROPERTY(EditAnywhere, Category="Sound")
+    USoundBase* ClickSound;
+
+    UFUNCTION()
+    void PlayHoverSound();
+
+    UFUNCTION()
+    void PlayClickSound();
+    
 protected:
     virtual void NativeConstruct() override;
     

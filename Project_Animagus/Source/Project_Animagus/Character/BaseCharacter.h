@@ -18,7 +18,7 @@
  
 */
 
-enum class MontageType { DefaultAttack, Hit };
+enum class MontageType { DefaultAttack, Hit, Jump };
 class UNiagaraComponent;
 class UNiagaraSystem;
 
@@ -61,7 +61,9 @@ protected:
     TObjectPtr<class UAnimMontage> attack_montage;
     UPROPERTY(EditAnywhere, Category = "AnimationMontage")
     TObjectPtr<class UAnimMontage> hit_montage;
-
+    UPROPERTY(EditAnywhere, Category = "AnimationMontage")
+    TObjectPtr<class UAnimMontage> jump_montage;
+    
 public:
     ABaseCharacter();
 
@@ -180,7 +182,15 @@ public:
     bool UseSkillByName(const FString& DesiredSkillName);
     
 public:
-   
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Jump")
+    int32 MyjumpMax = 1;
+
+    virtual void Jump() override;
+
+    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Jump")
+    UNiagaraSystem* Jumpeffect;
+
+    bool checkjumppred = false;
 };
 
 // Called to bind functionality to input

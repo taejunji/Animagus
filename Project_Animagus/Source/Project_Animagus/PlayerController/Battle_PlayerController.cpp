@@ -12,6 +12,8 @@
 #include "../UI/MyPlayerHUDWidget.h"
 #include "../GameMode/BattleGameMode.h"
 #include "Kismet/GameplayStatics.h"
+#include "Project_Animagus/System/MyGameInstance.h"
+#include "Project_Animagus/UI/RoundResultWidget.h"
 #include "Project_Animagus/UI/SkillSelectionWidget.h"
 
 ABattle_PlayerController::ABattle_PlayerController(const FObjectInitializer& ObjectInitializer)
@@ -68,6 +70,11 @@ void ABattle_PlayerController::SetupInputComponent()
 {
     Super::SetupInputComponent();
 
+    if (UMyGameInstance* GI = Cast<UMyGameInstance>(GetGameInstance()))
+    {
+        CachedMouseSensitivity = GI->MouseSensitivity;
+    }
+    
     // Triggered : 입력 키를 누르고 있는 동안 지속적으로 발생
     // Started : 키를 누르는 순간 단 한 번 발생
     // Completed : 키를 놓는 순간 한 번 발생
@@ -76,7 +83,7 @@ void ABattle_PlayerController::SetupInputComponent()
         // "W,A,S,D", "Mouse", "Space"
         EnhancedInputComponent->BindAction(move_action, ETriggerEvent::Triggered, this, &ThisClass::Input_Move);
         EnhancedInputComponent->BindAction(rotate_action, ETriggerEvent::Triggered, this, &ThisClass::Input_Rotate);
-        EnhancedInputComponent->BindAction(jump_action, ETriggerEvent::Triggered, this, &ThisClass::Input_Jump);
+        EnhancedInputComponent->BindAction(jump_action, ETriggerEvent::Started, this, &ThisClass::Input_Jump);
 
         // "Mosue Left/Right Click"
         EnhancedInputComponent->BindAction(attack_action, ETriggerEvent::Started, this, &ThisClass::Input_Attack); 
@@ -189,14 +196,18 @@ void ABattle_PlayerController::Input_Rotate(const FInputActionValue& InputValue)
 {
     FVector2D MouseInput = InputValue.Get<FVector2D>();
     
-    AddYawInput(MouseInput.X);
-    AddPitchInput(MouseInput.Y);
+    AddYawInput(MouseInput.X * CachedMouseSensitivity);
+    AddPitchInput(MouseInput.Y * CachedMouseSensitivity);
 }
 
 void ABattle_PlayerController::Input_Jump(const FInputActionValue& InputValue)
 {
     if (auto* MyPlayer = Cast<APlayerCharacter>(GetPawn()))
     {
+        if (MyPlayer->JumpMaxCount > MyPlayer->JumpCurrentCount)
+        {
+            MyPlayer->PlayAnimMontageByType(MontageType::Jump);
+        }
         MyPlayer->Jump();
     }
 }
@@ -444,6 +455,39 @@ void ABattle_PlayerController::OnSkillSelectionConfirmed(const TArray<TSubclassO
        // GM->BeginRoundCountdown();
     }
     
+}
+
+void ABattle_PlayerController::TurnAtRate(float Rate)
+{
+    AddYawInput(Rate * CachedMouseSensitivity);
+}
+
+void ABattle_PlayerController::LookUpAtRate(float Rate)
+{
+    AddPitchInput(Rate * CachedMouseSensitivity);
+}
+
+void ABattle_PlayerController::ShowRoundResults(const TArray<FString>& IDs, const TArray<int32>& Scores,
+    float DisplayTime)
+{
+    if (!RoundResultWidgetClass) return;
+
+    RoundResultwidget = CreateWidget<URoundResultWidget>(this, RoundResultWidgetClass);
+    if (!RoundResultwidget) return;
+
+    RoundResultwidget->AddToViewport();
+    RoundResultwidget->SetupResults(IDs, Scores, DisplayTime);
+}
+
+void ABattle_PlayerController::ShowRoundResults(const TArray<FString>& IDs, const TArray<int32>& Scores)
+{
+    if (!RoundResultWidgetClass) return;
+
+   RoundResultwidget = CreateWidget<URoundResultWidget>(this, RoundResultWidgetClass);
+    if (!RoundResultwidget) return;
+
+    RoundResultwidget->AddToViewport();
+    RoundResultwidget->SetupResults(IDs, Scores); 
 }
 
 

@@ -610,6 +610,15 @@ float ABattleGameMode::GetCurrentRoundTime() const
     return CurrentRoundTime;
 }
 
+void ABattleGameMode::OnRoundEnd()
+{
+    if (ABattle_PlayerController* PC = Cast<ABattle_PlayerController>(
+    UGameplayStatics::GetPlayerController(this, 0)))
+    {
+        PC->ShowRoundResults(RoundIDs, RoundScores, ResultDisplayDuration);
+    }
+}
+
 void ABattleGameMode::SpawnItemsInArea1()
 {
     // 예시로 영역1에 10개의 아이템 스폰

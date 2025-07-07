@@ -12,36 +12,24 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="82f90524-bcfc-4556-9fef-0490e524b030" name="변경" comment="">
+    <list default="true" id="ff584d5e-7706-47aa-b4e0-a974d14f4e4f" name="변경" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.Project_Animagus/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Project_Animagus/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Config/DefaultEngine.ini" beforeDir="false" afterPath="$PROJECT_DIR$/Config/DefaultEngine.ini" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/WorkFolder/Assets/Cow/Cow.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/WorkFolder/Assets/Cow/Cow.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/WorkFolder/Assets/Deer/Deer.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/WorkFolder/Assets/Deer/Deer.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/WorkFolder/Assets/Donkey/Donkey.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/WorkFolder/Assets/Donkey/Donkey.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/WorkFolder/Assets/Elephant/Elephant.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/WorkFolder/Assets/Elephant/Elephant.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/WorkFolder/Assets/Fox/Fox.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/WorkFolder/Assets/Fox/Fox.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/WorkFolder/Assets/Koala/Koala.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/WorkFolder/Assets/Koala/Koala.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/WorkFolder/Assets/Map/materials/m_ground3.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/WorkFolder/Assets/Map/materials/m_ground3.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/WorkFolder/Assets/Monkey/Monkey.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/WorkFolder/Assets/Monkey/Monkey.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/WorkFolder/Assets/Raccoon/Raccoon.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/WorkFolder/Assets/Raccoon/Raccoon.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/WorkFolder/Assets/Sheep/Sheep.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/WorkFolder/Assets/Sheep/Sheep.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/WorkFolder/Assets/Sloth/Sloth.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/WorkFolder/Assets/Sloth/Sloth.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/WorkFolder/Assets/Unicorn/Unicorn.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/WorkFolder/Assets/Unicorn/Unicorn.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/WorkFolder/Assets/Zebra/Zebra.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/WorkFolder/Assets/Zebra/Zebra.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/WorkFolder/Bluprints/Ui/BP_ConnectWidget.uasset" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/WorkFolder/Bluprints/Ui/WBP_Lobby.uasset" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/WorkFolder/Controller/MyLobbyPlayerController.uasset" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/WorkFolder/GameMode/MyLobbyGameMode.uasset" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/WorkFolder/Levels/Lobby.umap" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/WorkFolder/Levels/Login.umap" beforeDir="false" afterPath="$PROJECT_DIR$/Content/WorkFolder/Levels/Login.umap" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/Project_Animagus/GameMode/LobbyGameMode.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Project_Animagus/GameMode/LoginGameMode.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/Project_Animagus/GameMode/LobbyGameMode.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Project_Animagus/GameMode/LoginGameMode.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/Project_Animagus/PlayerController/ConnectPlayerController.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Project_Animagus/PlayerController/ConnectPlayerController.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/Project_Animagus/PlayerController/LobbyPlayerController.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Project_Animagus/PlayerController/LoginPlayerController.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/Project_Animagus/PlayerController/LobbyPlayerController.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Project_Animagus/PlayerController/LoginPlayerController.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/Project_Animagus/UI/MeshSelectWidget.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Project_Animagus/UI/MeshSelectWidget.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/Project_Animagus/UI/UConnectWidget.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Project_Animagus/UI/LoginWidget.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/Project_Animagus/UI/UConnectWidget.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Project_Animagus/UI/LoginWidget.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/WorkFolder/Bluprints/Actor/MyItem_Box_Base.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/WorkFolder/Bluprints/Actor/MyItem_Box_Base.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/WorkFolder/Bluprints/Actor/MyItem_Box_High.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/WorkFolder/Bluprints/Actor/MyItem_Box_High.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/WorkFolder/Bluprints/BP_Player.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/WorkFolder/Bluprints/BP_Player.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/WorkFolder/Bluprints/Item/MyHealItem.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/WorkFolder/Bluprints/Item/MyHealItem.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/WorkFolder/Bluprints/Item/MyPowerUpItem.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/WorkFolder/Bluprints/Item/MyPowerUpItem.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/WorkFolder/Bluprints/Rendering/BP_PostProcessVolume.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/WorkFolder/Bluprints/Rendering/BP_PostProcessVolume.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/WorkFolder/Effect/Niagara/NS_TorchFire.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/WorkFolder/Effect/Niagara/NS_TorchFire.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/WorkFolder/Levels/L_Map.umap" beforeDir="false" afterPath="$PROJECT_DIR$/Content/WorkFolder/Levels/L_Map.umap" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/sA_PickupSet_1/Fx/NiagaraSystems/NS_Pickup_2.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/sA_PickupSet_1/Fx/NiagaraSystems/NS_Pickup_2.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Project_Animagus.sln.DotSettings.user" beforeDir="false" afterPath="$PROJECT_DIR$/Project_Animagus.sln.DotSettings.user" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/Project_Animagus/Actor/ItemBox/Item_Box_Base.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Project_Animagus/Actor/ItemBox/Item_Box_Base.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/Project_Animagus/Actor/ItemBox/Item_Box_Base.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Project_Animagus/Actor/ItemBox/Item_Box_Base.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/Project_Animagus/Actor/ItemBox/Item_Box_High.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Project_Animagus/Actor/ItemBox/Item_Box_High.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/Project_Animagus/Character/BaseCharacter.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Project_Animagus/Character/BaseCharacter.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/Project_Animagus/Character/BaseCharacter.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Project_Animagus/Character/BaseCharacter.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/Project_Animagus/PlayerController/Battle_PlayerController.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Project_Animagus/PlayerController/Battle_PlayerController.cpp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -52,17 +40,28 @@
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
   </component>
   <component name="HighlightingSettingsPerFile">
-    <setting file="file://$PROJECT_DIR$/Intermediate/Build/Win64/UnrealEditor/Inc/Project_Animagus/UHT/MyGameInstance.generated.h" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Source/Project_Animagus/GameMode/MainMenuGameMode.cpp" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Source/Project_Animagus/GameMode/MainMenuGameMode.h" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Source/Project_Animagus/PlayerController/MainMenuController.cpp" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Source/Project_Animagus/PlayerController/MainMenuController.h" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/../../../../../../Program Files/Epic Games/UE_5.4/Engine/Source/Runtime/Engine/Classes/GameFramework/Character.h" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/../../../../../../Program Files/Epic Games/UE_5.4/Engine/Source/Runtime/Engine/Classes/GameFramework/CharacterMovementComponent.h" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/../../../../../../Program Files/Epic Games/UE_5.4/Engine/Source/Runtime/Engine/Private/Character.cpp" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Intermediate/Build/Win64/UnrealEditor/Inc/Project_Animagus/UHT/Battle_PlayerController.gen.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Source/Project_Animagus/Actor/ResultCharacterActor.cpp" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Source/Project_Animagus/Actor/ResultCharacterActor.h" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Source/Project_Animagus/GameMode/ResultGameMode.cpp" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Source/Project_Animagus/GameMode/ResultGameMode.h" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Source/Project_Animagus/Item/DoubleJumpItem.cpp" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Source/Project_Animagus/Item/DoubleJumpItem.h" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Source/Project_Animagus/UI/ResultWidget.cpp" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Source/Project_Animagus/UI/ResultWidget.h" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Source/Project_Animagus/UI/RoundResultRowWidget.cpp" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Source/Project_Animagus/UI/RoundResultRowWidget.h" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Source/Project_Animagus/UI/RoundResultWidget.cpp" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Source/Project_Animagus/UI/RoundResultWidget.h" root0="FORCE_HIGHLIGHTING" />
   </component>
   <component name="ProjectColorInfo">{
   &quot;customColor&quot;: &quot;&quot;,
   &quot;associatedIndex&quot;: 5
 }</component>
-  <component name="ProjectId" id="2yM4cZHcx20CSSyr5p2jSwcCV4C" />
+  <component name="ProjectId" id="2yx67Syop5xjPJqkhfQ9xJ6Yzjp" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
@@ -182,20 +181,21 @@
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="애플리케이션 수준" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="디폴트 작업">
-      <changelist id="82f90524-bcfc-4556-9fef-0490e524b030" name="변경" comment="" />
-      <created>1749631189706</created>
+      <changelist id="ff584d5e-7706-47aa-b4e0-a974d14f4e4f" name="변경" comment="" />
+      <created>1750763711013</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
-      <updated>1749631189706</updated>
-      <workItem from="1749631191260" duration="6885000" />
-      <workItem from="1749640657604" duration="23000" />
-      <workItem from="1749640731852" duration="879000" />
-      <workItem from="1749641810367" duration="2418000" />
-      <workItem from="1749707331993" duration="37823000" />
-      <workItem from="1750068440203" duration="3211000" />
-      <workItem from="1750241024407" duration="3984000" />
-      <workItem from="1750320780787" duration="4969000" />
-      <workItem from="1750410793140" duration="6919000" />
+      <updated>1750763711013</updated>
+      <workItem from="1750763712890" duration="2727000" />
+      <workItem from="1750931759356" duration="9618000" />
+      <workItem from="1750989800714" duration="14186000" />
+      <workItem from="1751136007335" duration="7473000" />
+      <workItem from="1751365247634" duration="4703000" />
+      <workItem from="1751405301934" duration="3652000" />
+      <workItem from="1751501073310" duration="21385000" />
+      <workItem from="1751545724464" duration="62000" />
+      <workItem from="1751620816003" duration="7467000" />
+      <workItem from="1751879837653" duration="5310000" />
     </task>
     <servers />
   </component>

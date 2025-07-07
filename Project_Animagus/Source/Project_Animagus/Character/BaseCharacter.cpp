@@ -16,6 +16,7 @@
 #include "Perception/AISense_Damage.h"
 
 #include "NiagaraComponent.h"
+#include "NiagaraFunctionLibrary.h"
 
 #include "../Projectile/ProjectileBase.h"
 
@@ -49,7 +50,7 @@ ABaseCharacter::ABaseCharacter()
         GetMesh()->SetAnimInstanceClass(AnimBP.Class);
     }
 
-
+    JumpMaxCount = 1;
 
 
     // ConstructorHelpers를 사용하여 UFireball 블루프린트 클래스 로드
@@ -195,7 +196,7 @@ void ABaseCharacter::BeginPlay()
     SetWalkSpeed(default_walk_speed);
 
     // 공중 제어 능력 높임. 기본값이 낮으면 공중에서 이동키가 약하게 반응함.
-    GetCharacterMovement()->AirControl = 0.7f; // 기본 AirControl은 보통 0.2 ~ 0.3 정도임. 높이면 공중 이동이 민감해짐.
+    GetCharacterMovement()->AirControl = 0.6f; // 기본 AirControl은 보통 0.2 ~ 0.3 정도임. 높이면 공중 이동이 민감해짐.
 
     UE_LOG(LogTemp, Log, TEXT("BaseCharacter::BeginPlay() - Capsule Collision Response for Shockwave: %d"),
     (int)GetCapsuleComponent()->GetCollisionResponseToChannel(ECollisionChannel::ECC_GameTraceChannel2));
@@ -219,6 +220,9 @@ void ABaseCharacter::PlayAnimMontageByType(MontageType montage_type)
 
     case MontageType::Hit:
         SelectMontage = hit_montage;
+        break;
+    case MontageType::Jump:
+        SelectMontage = jump_montage;
         break;
     }
 
@@ -688,6 +692,17 @@ bool ABaseCharacter::UseSkillByName(const FString& DesiredSkillName)
     return false;
     /*if (Skills[0]->SkillName != TEXT("Haste"))
         UE_LOG(LogTemp, Warning, TEXT("Skill not found: %s"), *DesiredSkillName);*/
+}
+
+void ABaseCharacter::Jump()
+{
+    Super::Jump();
+    
+    if (JumpCurrentCount > 0 && JumpMaxCount >JumpCurrentCount)
+    {
+        UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), Jumpeffect, GetActorLocation()+ FVector(0.f, 0.f, -40.f), GetActorRotation());
+        
+    }
 }
 
 void ABaseCharacter::IncreasePowerUpLevel()
