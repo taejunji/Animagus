@@ -184,7 +184,13 @@ public:
 public:
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Jump")
     int32 MyjumpMax = 1;
-    
+
+    virtual void Jump() override;
+
+    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Jump")
+    UNiagaraSystem* Jumpeffect;
+
+    bool checkjumppred = false;
 };
 
 // Called to bind functionality to input
