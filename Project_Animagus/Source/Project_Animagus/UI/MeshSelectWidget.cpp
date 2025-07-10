@@ -138,7 +138,8 @@ void UMeshSelectWidget::NativeConstruct()
         BtnStart->OnHovered.AddDynamic(this, &UMeshSelectWidget::PlayHoverSound);
         BtnStart->OnClicked.AddDynamic(this, &UMeshSelectWidget::PlayClickSound);
         BtnStart->OnClicked.AddDynamic(this, &UMeshSelectWidget::HandleStartClicked);
-        
+        //BtnStart->SetVisibility(ESlateVisibility::Collapsed);
+
     }
 
     BtnStart->SetVisibility(ESlateVisibility::Collapsed);

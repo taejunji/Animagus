@@ -61,6 +61,7 @@ public:
     LevelType current_level;
 
     // 라운드 카운트
+    UPROPERTY(BlueprintReadOnly, Category = "Round")
     int32 round_count;
 
     // 저장된 플레이어 데이터
@@ -96,6 +97,8 @@ public:
     void SetRoundCount(int32 new_round_count) { round_count = new_round_count; }
 
     LevelType GetLevelType() const { return current_level; }
+
+    UFUNCTION(BlueprintCallable, Category = "Round")
     int32 GetRoundCount() const { return round_count; }
 
 public:

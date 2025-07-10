@@ -94,6 +94,9 @@ void UMyGameInstance::Shutdown()
 void UMyGameInstance::InitGameInstance()
 {
     // 배틀 처음 시작 시 -> 라운드 0, 레벨 Battle로 설정
+    // 0: 아침
+    // 1: 저녁
+    // 2: 밤
     round_count = 0;
     // current_level = LevelType::Battle;
 }

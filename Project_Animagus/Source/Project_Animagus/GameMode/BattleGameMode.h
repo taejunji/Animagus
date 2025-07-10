@@ -23,6 +23,9 @@ class AAttractionZone;
 class UAudioComponent;
 class USkillSelectionWidget;
 
+enum class RoundDay { Morning, SunSet, Night };
+
+
 UCLASS()
 class PROJECT_ANIMAGUS_API ABattleGameMode : public AGameModeBase
 {
@@ -46,6 +49,18 @@ public:    // 게임 시스템 관련
 
     float TIME_OVER = 60.0f * 1.0f;    // 라운드 종료 시간
 
+    // 서버에서 라운드 받아서 설정하는 함수
+    UFUNCTION(BlueprintCallable, Category = "Level")
+    void SetBattleLevel();
+
+    void SetPostProcess(int32 CurRound);
+
+    // 블루프린트에서 함수를 직접 구현
+    UFUNCTION(BlueprintImplementableEvent, Category = "Level")
+    void SetBluePrintLevel(int32 CurRound);
+
+
+protected:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Battle Settings")
     float start_time;               // 라운드 시작 시간 (안씀)
     uint64 StartTime2Server = 0;    // 라운드 시작 시간

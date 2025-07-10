@@ -253,6 +253,7 @@ void ABattleGameMode::InitBattleMode()
         // GetWorld()->GetTimerManager().SetTimer(battle_timer_handle, this, &ABattleGameMode::PrintElapsedtime, 1.0f, true); 
 
         // TDOO: 서버에 배틀모드 입장 알림
+        SetBattleLevel();
 
 
         // 여기서 스킬셀렉 띄움.
@@ -830,6 +831,54 @@ void ABattleGameMode::HandleJumpEffect(Protocol::CS_JUMP_EFT_PKT& pkt)
         FVector TargetLocation = TargetPlayer->GetActorLocation() + FVector(0.f, 0.f, -40.f);
         FRotator TargetRotation = TargetPlayer->GetActorRotation();
         UNiagaraFunctionLibrary::SpawnSystemAtLocation(this, Jumpeffect, TargetLocation, TargetRotation);
+    }
+}
+
+void ABattleGameMode::SetBattleLevel()
+{
+    if (auto* GameInstance = Cast<UMyGameInstance>(GetGameInstance()))
+    {
+        int32 CurrentRound = GameInstance->GetRoundCount();
+
+        SetPostProcess(CurrentRound);
+
+        SetBluePrintLevel(CurrentRound);
+    }
+}
+
+void ABattleGameMode::SetPostProcess(int32 CurRound)
+{
+    TArray<AActor*> FoundVolumes; 
+
+    UGameplayStatics::GetAllActorsOfClass(GetWorld(), APostProcessVolume::StaticClass(), FoundVolumes); 
+
+    for (AActor* Actor : FoundVolumes) 
+    {
+        APostProcessVolume* PPVolume = Cast<APostProcessVolume>(Actor); 
+        if (PPVolume) 
+        { 
+            // 노출 설정을 조절하려면 해당 속성 오버라이드가 필요합니다
+            PPVolume->Settings.bOverride_AutoExposureMinBrightness = true; 
+            PPVolume->Settings.bOverride_AutoExposureMaxBrightness = true; 
+
+            switch (CurRound)
+            {
+            case static_cast<int32>(RoundDay::Morning): 
+                PPVolume->Settings.AutoExposureMinBrightness = -1.0f; 
+                PPVolume->Settings.AutoExposureMaxBrightness = 20.0f; 
+                break;
+
+            case static_cast<int32>(RoundDay::SunSet): 
+                PPVolume->Settings.AutoExposureMinBrightness = 0.0f; 
+                PPVolume->Settings.AutoExposureMaxBrightness = 20.0f; 
+                break;
+
+            case static_cast<int32>(RoundDay::Night): 
+                PPVolume->Settings.AutoExposureMinBrightness = 3.0f; 
+                PPVolume->Settings.AutoExposureMaxBrightness = 5.0f; 
+                break;
+            }
+        }
     }
 }
 
