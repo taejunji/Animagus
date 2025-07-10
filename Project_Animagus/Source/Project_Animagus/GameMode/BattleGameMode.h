@@ -60,7 +60,7 @@ public:    // 게임 시스템 관련
     void SetBluePrintLevel(int32 CurRound);
 
 
-protected:
+public:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Battle Settings")
     float start_time;               // 라운드 시작 시간 (안씀)
     uint64 StartTime2Server = 0;    // 라운드 시작 시간
@@ -75,6 +75,7 @@ protected:
     bool CalledActiveInput = false;
     bool CalledConfirmInput = false;
     bool isRoundEnd = false;
+    bool GameStartHUDtoggle = false;
 
     // 타이머 핸들들
     FTimerHandle SkillSelectionTimerHandle; // 스킬선택 남은시간 갱신 (안씀)

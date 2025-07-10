@@ -873,9 +873,9 @@ void ABattleGameMode::SetPostProcess(int32 CurRound)
                 PPVolume->Settings.AutoExposureMaxBrightness = 20.0f; 
                 break;
 
-            case static_cast<int32>(RoundDay::Night): 
-                PPVolume->Settings.AutoExposureMinBrightness = 3.0f; 
-                PPVolume->Settings.AutoExposureMaxBrightness = 5.0f; 
+            case static_cast<int32>(RoundDay::Night):
+                PPVolume->Settings.AutoExposureMinBrightness = 4.0f;
+                PPVolume->Settings.AutoExposureMaxBrightness = 6.0f;
                 break;
             }
         }
@@ -985,14 +985,12 @@ void ABattleGameMode::OnSkillSelectionTick()
 
 void ABattleGameMode::CountdownTimerUpdate()
 {
-
     // DisplayTime이 0보다 큰 경우에만 HUD에 업데이트 (즉, 1초 이상일 때)
     float DisplayTime = FMath::CeilToFloat(CurrentCountdownTime);
+    ABattle_PlayerController* PC = Cast<ABattle_PlayerController>(PlayerCharacter->GetController());
+    if (nullptr == PC || nullptr == PC->PlayerHUD) return;
     if (DisplayTime > 0)
     {
-        ABattle_PlayerController* PC = Cast<ABattle_PlayerController>(PlayerCharacter->GetController());
-        if (PC && PC->PlayerHUD)
-        
         // 플레이어의 HUD 업데이트
         PC->PlayerHUD->UpdateCountdown(DisplayTime);
 
@@ -1000,28 +998,14 @@ void ABattleGameMode::CountdownTimerUpdate()
     }
     else
     {
-        ABattle_PlayerController* PC = Cast<ABattle_PlayerController>(PlayerCharacter->GetController());
-        if (PC && PC->PlayerHUD)
-        {
-            PC->PlayerHUD->UpdateCountdown(0.0f);
-        }
-
+        PC->PlayerHUD->UpdateCountdown(0.0f);
         if (CountdownTimerHandle.IsValid())
         {
             GetWorld()->GetTimerManager().ClearTimer(CountdownTimerHandle);
         }
 
-        //if (AmIHost == true)
-        //{
-        //    for (auto& player : SpawnedPlayers)
-        //        UE_LOG(LogTemp, Warning, TEXT("PlayerID: %d"), player.Value->GetPlayerId());
-        //    UE_LOG(LogTemp, Warning, TEXT("My PlayerID: %d"), PlayerCharacter->GetPlayerId());
-        //}
-        // 라운드 진행 타이머 시작 -> SpawnPlayers 부터 타이머 시작
-        //GetWorld()->GetTimerManager().SetTimer(RoundTimerHandle, this, &ABattleGameMode::RoundTimerUpdate, 1.0f, true);
         return;
     }
-       
 }
 
 void ABattleGameMode::RoundTimerUpdate()

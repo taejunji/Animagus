@@ -157,7 +157,7 @@ void UMyPlayerHUDWidget::UpdateCountdown(float CountdownValue)
         else
         {
             CountdownText->SetText(FText::GetEmpty());
-            //PlayAnimation(GameStartTime, 0.f, 1, EUMGSequencePlayMode::Forward, 2.f);
+            PlayAnimation(GameStartTime, 0.f, 1, EUMGSequencePlayMode::Forward, 2.f);
             // 2초짜리 1.333배 -> 1.5초 재생
         }
     }

@@ -516,7 +516,7 @@ bool Room::HandleRoundEndLocked(const Protocol::CS_ROUND_END_PKT& pkt)
     }
     std::cout << std::endl;
 
-    if (m_roundCount++ < 3)
+    if (m_roundCount++ <= 3)
     {
         InitializeGame();
 

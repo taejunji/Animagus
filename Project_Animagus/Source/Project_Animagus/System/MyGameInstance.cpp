@@ -468,6 +468,7 @@ void UMyGameInstance::HandleBattleRoundInit(Protocol::SC_ROUND_INIT_PKT& pkt)
                 UGameplayStatics::GetPlayerController(this, 0))) {
                 PC->RoundResultwidget->HideSelf();
             }
+            round_count++;
             GameMode->isRoundEnd = false;
             GameMode->ShrinkingZone->Destroy();
 
