@@ -547,8 +547,7 @@ bool Room::HandleRoundEndLocked(const Protocol::CS_ROUND_END_PKT& pkt)
     {
         // 로비로 보내기
 
-        m_alivePlayerCount = 8;
-        m_roundCount = 0;
+        m_roundCount = 1;
         accumRanking.clear();
         InitAiTypes();
         InitializeGame();
@@ -611,6 +610,7 @@ void Room::InitializeGame()
     m_gameStartTickCount = 0;
     m_loadingOverCount = 0;
     m_indexGen = 0;
+    m_alivePlayerCount = 8;
 
     InitItemInfo();
 }
