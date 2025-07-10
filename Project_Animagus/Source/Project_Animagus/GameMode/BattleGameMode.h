@@ -17,6 +17,9 @@ class USoundBase;
 class AShrinkingZone;
 class USkillSelectionWidget;
 
+enum class RoundDay { Morning, SunSet, Night };
+
+
 UCLASS()
 class PROJECT_ANIMAGUS_API ABattleGameMode : public AGameModeBase
 {
@@ -31,6 +34,17 @@ public:
 
     void SpawnPlayers();
     void ActivateInput();
+
+    // 서버에서 라운드 받아서 설정하는 함수
+    UFUNCTION(BlueprintCallable, Category = "Level")
+    void SetBattleLevel();
+
+    void SetPostProcess(int32 CurRound);
+
+    // 블루프린트에서 함수를 직접 구현
+    UFUNCTION(BlueprintImplementableEvent, Category = "Level")
+    void SetBluePrintLevel(int32 CurRound);
+
 
 protected:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Battle Settings")
