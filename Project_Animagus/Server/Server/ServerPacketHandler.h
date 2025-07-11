@@ -73,8 +73,9 @@ public:
     static SendBufferRef MakeSendBuffer(SC_AI_SPAWN_PKT& pkt) { return MakeSendBuffer(pkt, (uint16)PacketID::SC_AI_SPAWN); }
     static SendBufferRef MakeSendBuffer(SC_ROUND_INIT_PKT& pkt) { return MakeSendBuffer(pkt, (uint16)PacketID::SC_ROUND_INIT); }
     static SendBufferRef MakeSendBuffer(CS_JUMP_EFT_PKT& pkt) { return MakeSendBuffer(pkt, (uint16)PacketID::CS_JUMP_EFT); }
+    static SendBufferRef MakeSendBuffer(SC_GAME_END_PKT& pkt) { return MakeSendBuffer(pkt, (uint16)PacketID::SC_GAME_END); }
 
-
+    
 private:
     template<typename PacketType, typename ProcessFunc>
     static bool HandlePacket(ProcessFunc func, SessionRef& session, BYTE* buffer, int32 len)

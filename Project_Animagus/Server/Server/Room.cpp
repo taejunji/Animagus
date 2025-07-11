@@ -516,42 +516,31 @@ bool Room::HandleRoundEndLocked(const Protocol::CS_ROUND_END_PKT& pkt)
     }
     std::cout << std::endl;
 
-    if (m_roundCount++ <= 3)
-    {
-        InitializeGame();
+    // 라운드 초기화 작업
+    InitializeGame();
 
+    SC_ROUND_END_PKT roundEndPkt;
 
-        SC_ROUND_END_PKT roundEndPkt;
+    // 우승자 정보 + ???
+    std::vector<std::pair<int16/*id*/, int16/*score*/>> sortedPlayersByScore;
+    sortedPlayersByScore.reserve(m_maxPlayerCount);
+    for (auto& p : accumRanking)
+        sortedPlayersByScore.emplace_back(p);
 
-        // 우승자 정보 + ???
-        std::vector<std::pair<int16/*id*/, int16/*score*/>> sortedPlayersByScore;
-        sortedPlayersByScore.reserve(m_maxPlayerCount);
-        for (auto& p : accumRanking)
-            sortedPlayersByScore.emplace_back(p);
+    std::sort(sortedPlayersByScore.begin(), sortedPlayersByScore.end(),
+        [](const std::pair<int16, int16>& a, const std::pair<int16, int16>& b) {
+            return a.second > b.second;
+        });
 
-        std::sort(sortedPlayersByScore.begin(), sortedPlayersByScore.end(),
-            [](const std::pair<int16, int16>& a, const std::pair<int16, int16>& b) {
-                return a.second > b.second;
-            });
-
-        for (int8 i = 0; i < 8; ++i) {
-            roundEndPkt.ranking[i] = sortedPlayersByScore[i].first;
-            roundEndPkt.score[i] = sortedPlayersByScore[i].second;
-        }
-
-        SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(roundEndPkt);
-        Broadcast(sendBuffer, 0);
-
+    for (int8 i = 0; i < 8; ++i) {
+        roundEndPkt.ranking[i] = sortedPlayersByScore[i].first;
+        roundEndPkt.score[i] = sortedPlayersByScore[i].second;
     }
-    else
-    {
-        // 로비로 보내기
 
-        m_roundCount = 1;
-        accumRanking.clear();
-        InitAiTypes();
-        InitializeGame();
-    }
+    SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(roundEndPkt);
+    Broadcast(sendBuffer, 0);
+
+    ++m_roundCount;
 
     return true;
 }
@@ -560,9 +549,22 @@ bool Room::HandleRoundInitLocked(const Protocol::CS_ROUND_INIT_PKT& pkt)
 {
     std::lock_guard lock(m_mutex);
 
-    SC_ROUND_INIT_PKT roundInitPkt;
-    SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(roundInitPkt);
-    Broadcast(sendBuffer, 0);
+    if (m_roundCount < 3) {
+        SC_ROUND_INIT_PKT roundInitPkt;
+        SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(roundInitPkt);
+        Broadcast(sendBuffer, 0);
+    }
+    else {
+        // 로비로 보내기
+        SC_GAME_END_PKT gameEndPkt;
+        SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(gameEndPkt);
+        Broadcast(sendBuffer, 0);
+
+        m_roundCount = 1;
+        accumRanking.clear();
+        InitAiTypes();
+        InitializeGame();
+    }
 
     return true;
 }

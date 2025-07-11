@@ -111,6 +111,7 @@ namespace Protocol {
         SC_GAME_INIT,
         SC_ROUND_END,
         SC_ROUND_INIT,
+        SC_GAME_END,
     };
 
 
@@ -312,6 +313,9 @@ namespace Protocol {
         char score[8];
     };
     struct SC_ROUND_INIT_PKT
+    {
+    };
+    struct SC_GAME_END_PKT
     {
     };
 
