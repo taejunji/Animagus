@@ -828,9 +828,23 @@ void ABattleGameMode::UpdateHp(Protocol::SC_UPDATE_HP_PKT& pkt)
 void ABattleGameMode::HandleJumpEffect(Protocol::CS_JUMP_EFT_PKT& pkt)
 {
     if (auto TargetPlayer = SpawnedPlayers.FindRef(pkt.jump_player_id)) {
-        FVector TargetLocation = TargetPlayer->GetActorLocation() + FVector(0.f, 0.f, -40.f);
-        FRotator TargetRotation = TargetPlayer->GetActorRotation();
-        UNiagaraFunctionLibrary::SpawnSystemAtLocation(this, Jumpeffect, TargetLocation, TargetRotation);
+
+        TargetPlayer->PlayAnimMontageByType(MontageType::Jump);
+
+        if (false == pkt.is_first_jump) {
+            FVector TargetLocation = TargetPlayer->GetActorLocation();
+            FRotator TargetRotation = TargetPlayer->GetActorRotation();
+            UNiagaraFunctionLibrary::SpawnSystemAtLocation(this, Jumpeffect, TargetLocation + FVector(0.f, 0.f, -40.f), TargetRotation);
+
+            if (JumpSound)
+            {
+                UGameplayStatics::PlaySoundAtLocation(
+                    this, JumpSound, TargetLocation,
+                    FRotator::ZeroRotator, 1.f, 1.f, 0.f,
+                    AttenuationSettings
+                );
+            }
+        }
     }
 }
 
@@ -874,8 +888,8 @@ void ABattleGameMode::SetPostProcess(int32 CurRound)
                 break;
 
             case static_cast<int32>(RoundDay::Night):
-                PPVolume->Settings.AutoExposureMinBrightness = 4.0f;
-                PPVolume->Settings.AutoExposureMaxBrightness = 6.0f;
+                PPVolume->Settings.AutoExposureMinBrightness = 2.0f;
+                PPVolume->Settings.AutoExposureMaxBrightness = 4.0f;
                 break;
             }
         }
@@ -988,7 +1002,7 @@ void ABattleGameMode::CountdownTimerUpdate()
     // DisplayTime이 0보다 큰 경우에만 HUD에 업데이트 (즉, 1초 이상일 때)
     float DisplayTime = FMath::CeilToFloat(CurrentCountdownTime);
     ABattle_PlayerController* PC = Cast<ABattle_PlayerController>(PlayerCharacter->GetController());
-    if (nullptr == PC || nullptr == PC->PlayerHUD) return;
+    //if (nullptr == PC || nullptr == PC->PlayerHUD) return;
     if (DisplayTime > 0)
     {
         // 플레이어의 HUD 업데이트

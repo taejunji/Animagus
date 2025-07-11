@@ -146,5 +146,15 @@ bool Handle_CS_JUMP_EFT(SessionRef& session, Protocol::CS_JUMP_EFT_PKT& pkt)
         GameInstance->HandleJumpEffect(pkt);
     }
 
-    return false;
+    return true;
+}
+
+bool Handle_SC_GAME_END(SessionRef& session, Protocol::SC_GAME_END_PKT& pkt)
+{
+    if (auto* GameInstance = Cast<UMyGameInstance>(GWorld->GetGameInstance()))
+    {
+        GameInstance->HandleBattleModeEnd(pkt);
+    }
+
+    return true;
 }

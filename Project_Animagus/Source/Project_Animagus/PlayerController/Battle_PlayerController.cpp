@@ -191,11 +191,14 @@ void ABattle_PlayerController::Tick(float DeltaTime)
         if (MovePacketSendTimer <= 0 || ForceSendPacket)
         {
             // State 설정
-            if (MyPlayer->GetMovementComponent()->IsFalling() == false)
+            if (false == MyPlayer->GetMovementComponent()->IsFalling())
             {
                 MyPlayer->SetMoveState(Protocol::PlayerState::MOVE_STATE_RUN);
                 if (MyPlayer->GetVelocity().Size2D() == 0.0f)
                     MyPlayer->SetMoveState(Protocol::PlayerState::MOVE_STATE_IDLE);
+            }
+            else {
+                MyPlayer->SetMoveState(Protocol::PlayerState::MOVE_STATE_JUMP);
             }
 
             MovePacketSendTimer = MOVE_PACKET_SEND_DELAY;

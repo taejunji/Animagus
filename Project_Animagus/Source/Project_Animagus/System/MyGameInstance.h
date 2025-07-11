@@ -127,6 +127,7 @@ public:
     void HandleBattleRoundInit(Protocol::SC_ROUND_INIT_PKT& pkt);
     void HandleAISpawn(Protocol::SC_AI_SPAWN_PKT& pkt);
     void HandleJumpEffect(Protocol::CS_JUMP_EFT_PKT& pkt);
+    void HandleBattleModeEnd(Protocol::SC_GAME_END_PKT& pkt);
 
 public:
     // AI 캐릭터

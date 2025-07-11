@@ -503,7 +503,6 @@ void UMyGameInstance::HandleAISpawn(Protocol::SC_AI_SPAWN_PKT& pkt)
 
     if (false == AmIHost) return;
 
-
     AGameModeBase* BaseGameMode = UGameplayStatics::GetGameMode(World);
     if (BaseGameMode)
     {
@@ -524,9 +523,6 @@ void UMyGameInstance::HandleJumpEffect(Protocol::CS_JUMP_EFT_PKT& pkt)
     if (World == nullptr)
         return;
 
-    if (false == AmIHost) return;
-
-
     AGameModeBase* BaseGameMode = UGameplayStatics::GetGameMode(World);
     if (BaseGameMode)
     {
@@ -534,6 +530,25 @@ void UMyGameInstance::HandleJumpEffect(Protocol::CS_JUMP_EFT_PKT& pkt)
         if (GameMode)
         {
             GameMode->HandleJumpEffect(pkt);
+        }
+    }
+}
+
+void UMyGameInstance::HandleBattleModeEnd(Protocol::SC_GAME_END_PKT& pkt)
+{
+    if (Socket == nullptr || ClientSession == nullptr)
+        return;
+
+    auto* World = GetWorld();
+    if (World == nullptr)
+        return;
+
+    AGameModeBase* BaseGameMode = UGameplayStatics::GetGameMode(World);
+    if (BaseGameMode)
+    {
+        if (ABattleGameMode* GameMode = Cast<ABattleGameMode>(BaseGameMode)) 
+        {
+            UGameplayStatics::OpenLevel(GetWorld(), FName("/Game/WorkFolder/Levels/L_Result"));
         }
     }
 }

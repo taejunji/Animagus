@@ -47,7 +47,7 @@ public:    // 게임 시스템 관련
     void HandleServerTime(uint64 server_time);
     float GetCurrentRoundTime() const { return CurrentRoundTime; }
 
-    float TIME_OVER = 60.0f * 1.0f;    // 라운드 종료 시간
+    float TIME_OVER = 60.0f * 3.f;    // 라운드 종료 시간
 
     // 서버에서 라운드 받아서 설정하는 함수
     UFUNCTION(BlueprintCallable, Category = "Level")
@@ -182,6 +182,12 @@ protected:
 
     UPROPERTY(EditAnywhere, Category = "Audio")
     USoundBase* StartSound;
+
+    UPROPERTY(EditAnywhere, Category = "Audio")
+    USoundBase* JumpSound;
+
+    UPROPERTY(EditAnywhere, Category = "Audio")
+    USoundAttenuation* AttenuationSettings;
 
 public:
     

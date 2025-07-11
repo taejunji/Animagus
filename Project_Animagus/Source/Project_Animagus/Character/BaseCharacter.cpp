@@ -787,12 +787,14 @@ void ABaseCharacter::Jump()
             );
         }
 
-        Protocol::CS_JUMP_EFT_PKT jumpPkt;
-        jumpPkt.jump_player_id = GetPlayerId();
-
-        SendBufferRef SendBuffer = ClientPacketHandler::MakeSendBuffer(jumpPkt);
-        Cast<UMyGameInstance>(GWorld->GetGameInstance())->SendPacket(SendBuffer);
     }
+
+    Protocol::CS_JUMP_EFT_PKT jumpPkt;
+    jumpPkt.jump_player_id = GetPlayerId();
+    jumpPkt.is_first_jump = !(JumpCurrentCount > 0 && JumpMaxCount > JumpCurrentCount);
+
+    SendBufferRef SendBuffer = ClientPacketHandler::MakeSendBuffer(jumpPkt);
+    Cast<UMyGameInstance>(GWorld->GetGameInstance())->SendPacket(SendBuffer);
 }
 
 void ABaseCharacter::IncreasePowerUpLevel()

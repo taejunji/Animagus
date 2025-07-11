@@ -244,6 +244,7 @@ namespace Protocol {
     struct CS_JUMP_EFT_PKT
     {
         uint16 jump_player_id;
+        bool is_first_jump;
     };
 
     struct SC_LOGIN_FAIL

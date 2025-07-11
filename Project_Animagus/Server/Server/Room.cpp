@@ -148,8 +148,8 @@ bool Room::HandleStartGame(PlayerRef player)
         //newPlayer.z = player->z;
         //newPlayer.rotation = player->rotation;
         newPlayer.host = (player->playerID == m_hostPlayer->playerID);
-        //newPlayer.spawn_index = 0;
-        newPlayer.spawn_index = m_indexGen++ % m_maxPlayerCount;
+        newPlayer.spawn_index = 0;
+        //newPlayer.spawn_index = m_indexGen++ % m_maxPlayerCount;
         newPlayer.server_time = m_gameStartTickCount;
         SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(newPlayer);
         if (auto session = player->ownerSession.lock())
@@ -549,7 +549,7 @@ bool Room::HandleRoundInitLocked(const Protocol::CS_ROUND_INIT_PKT& pkt)
 {
     std::lock_guard lock(m_mutex);
 
-    if (m_roundCount < 3) {
+    if (m_roundCount <= 3) {
         SC_ROUND_INIT_PKT roundInitPkt;
         SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(roundInitPkt);
         Broadcast(sendBuffer, 0);

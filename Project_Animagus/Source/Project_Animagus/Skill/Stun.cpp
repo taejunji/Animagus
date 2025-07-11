@@ -30,7 +30,7 @@ UStun::UStun()
         UE_LOG(LogTemp, Warning, TEXT("Failed to load StunSkill BP class!"));
     }
 
-    ProjectileBPClass = nullptr;
+    //ProjectileBPClass = nullptr;
     SkillDescription = TEXT("피격시 움직임을 제한 하는 투사체를 발사합니다.");
     BaseCooldownTime = CooldownTime;
     BaseStunDuration = StunDuration;
