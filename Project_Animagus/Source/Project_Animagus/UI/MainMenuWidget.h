@@ -45,8 +45,14 @@ protected:
     UPROPERTY(meta=(BindWidget))
     UButton* BtnSettings;
 
+    UPROPERTY(meta=(BindWidget))
+    UButton* BtnQuit;
+    
 private:
     TWeakObjectPtr<AMainMenuController> Owner;
     
     void BindButtons();
+
+    UFUNCTION()
+    void OnQuitClicked();
 };

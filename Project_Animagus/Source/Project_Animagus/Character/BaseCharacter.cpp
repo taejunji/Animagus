@@ -23,6 +23,7 @@
 #include "../Skill/BaseSkill.h"
 #include "../Skill/Fireball.h"
 #include "../Skill/MagicMissile.h"
+#include "Kismet/GameplayStatics.h"
 
 #include "Project_Animagus/Skill/Bounce.h"
 #include "Project_Animagus/Skill/ChangeSkill.h"
@@ -777,7 +778,15 @@ void ABaseCharacter::Jump()
     if (JumpCurrentCount > 0 && JumpMaxCount >JumpCurrentCount)
     {
         UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), Jumpeffect, GetActorLocation()+ FVector(0.f, 0.f, -40.f), GetActorRotation());
-        
+        if (JumpSound)
+        {
+            UGameplayStatics::PlaySoundAtLocation(
+                this, JumpSound, GetActorLocation(),
+                FRotator::ZeroRotator, 1.f, 1.f, 0.f,
+                AttenuationSettings
+            );
+        }
+
         Protocol::CS_JUMP_EFT_PKT jumpPkt;
         jumpPkt.jump_player_id = GetPlayerId();
 

@@ -30,6 +30,9 @@ public:
     UPROPERTY(meta=(BindWidget))
     UButton* BtnConfirm;
 
+    UPROPERTY(meta=(BindWidget))
+    UButton* BtnQuit;
+    
     UFUNCTION()
     void OnConfirmClicked();
 
@@ -41,5 +44,7 @@ public:
 
     UFUNCTION()
     void PlayHoverSound();
-    
+
+    UFUNCTION()
+    void OnQuitClicked();
 };

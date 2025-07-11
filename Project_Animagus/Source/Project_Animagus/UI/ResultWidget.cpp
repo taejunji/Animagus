@@ -15,6 +15,11 @@ void UResultWidget::NativeConstruct()
         BtnConfirm->OnHovered.AddDynamic(this, &UResultWidget::PlayHoverSound); 
         
     }
+
+    if (BtnQuit){
+        BtnQuit->OnClicked.AddDynamic(this, &UResultWidget::OnQuitClicked);
+        BtnConfirm->OnHovered.AddDynamic(this, &UResultWidget::PlayHoverSound); 
+    }
 }
 
 void UResultWidget::ShowOutcome(bool bIsWinner)
@@ -38,4 +43,9 @@ void UResultWidget::PlayHoverSound()
 {
     if (HoverSound)
         UGameplayStatics::PlaySound2D(this, HoverSound); 
+}
+
+void UResultWidget::OnQuitClicked()
+{
+    UKismetSystemLibrary::QuitGame(this, nullptr, EQuitPreference::Quit, true); 
 }
