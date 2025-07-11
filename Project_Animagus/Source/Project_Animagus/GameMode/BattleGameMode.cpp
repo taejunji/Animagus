@@ -420,7 +420,7 @@ void ABattleGameMode::SetBattleLevel()
     {
         int32 CurrentRound = GameInstance->GetRoundCount();
 
-        CurrentRound = 0;
+        CurrentRound = 2;
 
         SetPostProcess(CurrentRound);
 
@@ -456,7 +456,7 @@ void ABattleGameMode::SetPostProcess(int32 CurRound)
                 break;
 
             case static_cast<int32>(RoundDay::Night): 
-                PPVolume->Settings.AutoExposureMinBrightness = 2.0f; 
+                PPVolume->Settings.AutoExposureMinBrightness = 3.0f; 
                 PPVolume->Settings.AutoExposureMaxBrightness = 5.0f; 
                 break;
             }
