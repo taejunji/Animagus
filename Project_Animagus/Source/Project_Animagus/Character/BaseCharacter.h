@@ -21,6 +21,8 @@
 enum class MontageType { DefaultAttack, Hit, Jump };
 class UNiagaraComponent;
 class UNiagaraSystem;
+class USoundBase;
+class USoundAttenuation;
 
 UCLASS()
 class PROJECT_ANIMAGUS_API ABaseCharacter : public ACharacter
@@ -191,6 +193,12 @@ public:
     UNiagaraSystem* Jumpeffect;
 
     bool checkjumppred = false;
+
+    UPROPERTY(EditAnywhere, Category="Audio")
+    USoundBase* JumpSound;
+
+    UPROPERTY(EditAnywhere, Category="Audio")
+    USoundAttenuation* AttenuationSettings;
 };
 
 // Called to bind functionality to input

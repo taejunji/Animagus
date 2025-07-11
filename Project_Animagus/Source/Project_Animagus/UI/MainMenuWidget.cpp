@@ -5,6 +5,7 @@
 #include "Components/Button.h"
 #include "../PlayerController/MainMenuController.h"
 #include "Kismet/GameplayStatics.h"
+#include "Kismet/KismetSystemLibrary.h"
 
 void UMainMenuWidget::PlayHoverSound()
 {
@@ -39,5 +40,15 @@ void UMainMenuWidget::BindButtons()
         BtnSettings->OnClicked.AddDynamic(this, &UMainMenuWidget::PlayClickSound);
         BtnSettings->OnHovered.AddDynamic(this, &UMainMenuWidget::PlayHoverSound); 
     }
+    if (BtnQuit)
+    {
+        BtnQuit->OnClicked.AddDynamic(this, &UMainMenuWidget::OnQuitClicked);
+        BtnSettings->OnHovered.AddDynamic(this, &UMainMenuWidget::PlayHoverSound); 
+    }
+}
+
+void UMainMenuWidget::OnQuitClicked()
+{
+    UKismetSystemLibrary::QuitGame(this, nullptr, EQuitPreference::Quit, true);
 }
 
