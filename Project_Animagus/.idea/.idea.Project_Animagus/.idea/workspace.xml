@@ -12,24 +12,21 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="ff584d5e-7706-47aa-b4e0-a974d14f4e4f" name="변경" comment="">
+    <list default="true" id="b6b2a1c1-1a2f-4fb1-b365-840865e6d8fb" name="변경" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.Project_Animagus/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Project_Animagus/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/WorkFolder/Bluprints/Actor/MyItem_Box_Base.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/WorkFolder/Bluprints/Actor/MyItem_Box_Base.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/WorkFolder/Bluprints/Actor/MyItem_Box_High.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/WorkFolder/Bluprints/Actor/MyItem_Box_High.uasset" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Content/WorkFolder/Bluprints/BP_Player.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/WorkFolder/Bluprints/BP_Player.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/WorkFolder/Bluprints/Item/MyHealItem.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/WorkFolder/Bluprints/Item/MyHealItem.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/WorkFolder/Bluprints/Item/MyPowerUpItem.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/WorkFolder/Bluprints/Item/MyPowerUpItem.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/WorkFolder/Bluprints/Rendering/BP_PostProcessVolume.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/WorkFolder/Bluprints/Rendering/BP_PostProcessVolume.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/WorkFolder/Bluprints/Ui/BP_MainMenuWidget.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/WorkFolder/Bluprints/Ui/BP_MainMenuWidget.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/WorkFolder/Bluprints/Ui/WBP_ResultWidget.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/WorkFolder/Bluprints/Ui/WBP_ResultWidget.uasset" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Content/WorkFolder/Effect/Niagara/NS_TorchFire.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/WorkFolder/Effect/Niagara/NS_TorchFire.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/WorkFolder/Levels/L_Map.umap" beforeDir="false" afterPath="$PROJECT_DIR$/Content/WorkFolder/Levels/L_Map.umap" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/sA_PickupSet_1/Fx/NiagaraSystems/NS_Pickup_2.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/sA_PickupSet_1/Fx/NiagaraSystems/NS_Pickup_2.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Project_Animagus.sln.DotSettings.user" beforeDir="false" afterPath="$PROJECT_DIR$/Project_Animagus.sln.DotSettings.user" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/Project_Animagus/Actor/ItemBox/Item_Box_Base.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Project_Animagus/Actor/ItemBox/Item_Box_Base.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/Project_Animagus/Actor/ItemBox/Item_Box_Base.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Project_Animagus/Actor/ItemBox/Item_Box_Base.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/Project_Animagus/Actor/ItemBox/Item_Box_High.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Project_Animagus/Actor/ItemBox/Item_Box_High.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/WorkFolder/PostProcess/PPI_OutlineShader.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/WorkFolder/PostProcess/PPI_OutlineShader.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/WorkFolder/PostProcess/PPI_ToonShader.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/WorkFolder/PostProcess/PPI_ToonShader.uasset" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/Project_Animagus/Character/BaseCharacter.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Project_Animagus/Character/BaseCharacter.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/Project_Animagus/Character/BaseCharacter.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Project_Animagus/Character/BaseCharacter.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/Project_Animagus/PlayerController/Battle_PlayerController.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Project_Animagus/PlayerController/Battle_PlayerController.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/Project_Animagus/GameMode/BattleGameMode.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Project_Animagus/GameMode/BattleGameMode.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/Project_Animagus/UI/MainMenuWidget.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Project_Animagus/UI/MainMenuWidget.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/Project_Animagus/UI/MainMenuWidget.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Project_Animagus/UI/MainMenuWidget.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/Project_Animagus/UI/ResultWidget.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Project_Animagus/UI/ResultWidget.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/Project_Animagus/UI/ResultWidget.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Project_Animagus/UI/ResultWidget.h" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -39,29 +36,11 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
   </component>
-  <component name="HighlightingSettingsPerFile">
-    <setting file="file://$PROJECT_DIR$/../../../../../../Program Files/Epic Games/UE_5.4/Engine/Source/Runtime/Engine/Classes/GameFramework/Character.h" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/../../../../../../Program Files/Epic Games/UE_5.4/Engine/Source/Runtime/Engine/Classes/GameFramework/CharacterMovementComponent.h" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/../../../../../../Program Files/Epic Games/UE_5.4/Engine/Source/Runtime/Engine/Private/Character.cpp" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Intermediate/Build/Win64/UnrealEditor/Inc/Project_Animagus/UHT/Battle_PlayerController.gen.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Source/Project_Animagus/Actor/ResultCharacterActor.cpp" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Source/Project_Animagus/Actor/ResultCharacterActor.h" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Source/Project_Animagus/GameMode/ResultGameMode.cpp" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Source/Project_Animagus/GameMode/ResultGameMode.h" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Source/Project_Animagus/Item/DoubleJumpItem.cpp" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Source/Project_Animagus/Item/DoubleJumpItem.h" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Source/Project_Animagus/UI/ResultWidget.cpp" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Source/Project_Animagus/UI/ResultWidget.h" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Source/Project_Animagus/UI/RoundResultRowWidget.cpp" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Source/Project_Animagus/UI/RoundResultRowWidget.h" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Source/Project_Animagus/UI/RoundResultWidget.cpp" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Source/Project_Animagus/UI/RoundResultWidget.h" root0="FORCE_HIGHLIGHTING" />
-  </component>
   <component name="ProjectColorInfo">{
   &quot;customColor&quot;: &quot;&quot;,
   &quot;associatedIndex&quot;: 5
 }</component>
-  <component name="ProjectId" id="2yx67Syop5xjPJqkhfQ9xJ6Yzjp" />
+  <component name="ProjectId" id="2zgB24HmZT9UjwORuCZCu41sMKo" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
@@ -126,6 +105,24 @@
         <option name="Build" />
       </method>
     </configuration>
+    <configuration name="EpicGames.Perforce.Fixture" type="DotNetProject" factoryName=".NET Project">
+      <option name="EXE_PATH" value="" />
+      <option name="PROGRAM_PARAMETERS" value="" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="PASS_PARENT_ENVS" value="1" />
+      <option name="USE_EXTERNAL_CONSOLE" value="0" />
+      <option name="USE_MONO" value="0" />
+      <option name="RUNTIME_ARGUMENTS" value="" />
+      <option name="PROJECT_PATH" value="$PROJECT_DIR$/../../../../../../Program Files/Epic Games/UE_5.4/Engine/Source/Programs/Shared/EpicGames.Perforce.Fixture/EpicGames.Perforce.Fixture.csproj" />
+      <option name="PROJECT_EXE_PATH_TRACKING" value="1" />
+      <option name="PROJECT_ARGUMENTS_TRACKING" value="1" />
+      <option name="PROJECT_WORKING_DIRECTORY_TRACKING" value="1" />
+      <option name="PROJECT_KIND" value="DotNetCore" />
+      <option name="PROJECT_TFM" value="" />
+      <method v="2">
+        <option name="Build" />
+      </method>
+    </configuration>
     <configuration name="UnrealBuildTool" type="DotNetProject" factoryName=".NET Project">
       <option name="EXE_PATH" value="" />
       <option name="PROGRAM_PARAMETERS" value="" />
@@ -181,21 +178,13 @@
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="애플리케이션 수준" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="디폴트 작업">
-      <changelist id="ff584d5e-7706-47aa-b4e0-a974d14f4e4f" name="변경" comment="" />
-      <created>1750763711013</created>
+      <changelist id="b6b2a1c1-1a2f-4fb1-b365-840865e6d8fb" name="변경" comment="" />
+      <created>1752142627143</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
-      <updated>1750763711013</updated>
-      <workItem from="1750763712890" duration="2727000" />
-      <workItem from="1750931759356" duration="9618000" />
-      <workItem from="1750989800714" duration="14186000" />
-      <workItem from="1751136007335" duration="7473000" />
-      <workItem from="1751365247634" duration="4703000" />
-      <workItem from="1751405301934" duration="3652000" />
-      <workItem from="1751501073310" duration="21385000" />
-      <workItem from="1751545724464" duration="62000" />
-      <workItem from="1751620816003" duration="7467000" />
-      <workItem from="1751879837653" duration="5310000" />
+      <updated>1752142627143</updated>
+      <workItem from="1752142628980" duration="3914000" />
+      <workItem from="1752229715385" duration="2997000" />
     </task>
     <servers />
   </component>

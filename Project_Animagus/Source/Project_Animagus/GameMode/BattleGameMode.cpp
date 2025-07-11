@@ -420,7 +420,7 @@ void ABattleGameMode::SetBattleLevel()
     {
         int32 CurrentRound = GameInstance->GetRoundCount();
 
-        //CurrentRound = 2;
+        CurrentRound = 0;
 
         SetPostProcess(CurrentRound);
 
