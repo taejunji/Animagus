@@ -48,9 +48,24 @@ bool Room::Leave(uint16 playerID)
     player->s_mutex.unlock();
     m_players.erase(playerID);
     m_playerCount--;
+    m_alivePlayerCount--;
 
-    if (player->playerID == m_hostPlayer->playerID)
+    // TODO: Leave Pkt 전송
+
+    if (player->playerID == m_hostPlayer->playerID) {
+        for (auto& ai : m_aiPlayers) {
+            // TODO: Leave Pkt 전송
+
+        }
+        m_aiPlayers.clear();
+    }
+
+    if (m_playerCount == 0) {
+        m_roundCount = 1;
+        accumRanking.clear();
+        InitAiTypes();
         InitializeGame();
+    }
 
     return true;
 }
@@ -148,8 +163,8 @@ bool Room::HandleStartGame(PlayerRef player)
         //newPlayer.z = player->z;
         //newPlayer.rotation = player->rotation;
         newPlayer.host = (player->playerID == m_hostPlayer->playerID);
-        newPlayer.spawn_index = 0;
-        //newPlayer.spawn_index = m_indexGen++ % m_maxPlayerCount;
+        //newPlayer.spawn_index = 0;
+        newPlayer.spawn_index = m_indexGen++ % m_maxPlayerCount;
         newPlayer.server_time = m_gameStartTickCount;
         SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(newPlayer);
         if (auto session = player->ownerSession.lock())
