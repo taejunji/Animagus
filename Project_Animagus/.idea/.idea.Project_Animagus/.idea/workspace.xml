@@ -12,22 +12,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="b6b2a1c1-1a2f-4fb1-b365-840865e6d8fb" name="변경" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.Project_Animagus/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Project_Animagus/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/WorkFolder/Bluprints/BP_Player.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/WorkFolder/Bluprints/BP_Player.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/WorkFolder/Bluprints/Ui/BP_MainMenuWidget.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/WorkFolder/Bluprints/Ui/BP_MainMenuWidget.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/WorkFolder/Bluprints/Ui/WBP_ResultWidget.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/WorkFolder/Bluprints/Ui/WBP_ResultWidget.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/WorkFolder/Effect/Niagara/NS_TorchFire.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/WorkFolder/Effect/Niagara/NS_TorchFire.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/WorkFolder/PostProcess/PPI_OutlineShader.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/WorkFolder/PostProcess/PPI_OutlineShader.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/WorkFolder/PostProcess/PPI_ToonShader.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/WorkFolder/PostProcess/PPI_ToonShader.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/Project_Animagus/Character/BaseCharacter.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Project_Animagus/Character/BaseCharacter.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/Project_Animagus/Character/BaseCharacter.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Project_Animagus/Character/BaseCharacter.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/Project_Animagus/GameMode/BattleGameMode.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Project_Animagus/GameMode/BattleGameMode.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/Project_Animagus/UI/MainMenuWidget.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Project_Animagus/UI/MainMenuWidget.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/Project_Animagus/UI/MainMenuWidget.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Project_Animagus/UI/MainMenuWidget.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/Project_Animagus/UI/ResultWidget.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Project_Animagus/UI/ResultWidget.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/Project_Animagus/UI/ResultWidget.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Project_Animagus/UI/ResultWidget.h" afterDir="false" />
-    </list>
+    <list default="true" id="b6b2a1c1-1a2f-4fb1-b365-840865e6d8fb" name="변경" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -184,7 +169,12 @@
       <option name="presentableId" value="Default" />
       <updated>1752142627143</updated>
       <workItem from="1752142628980" duration="3914000" />
-      <workItem from="1752229715385" duration="2997000" />
+      <workItem from="1752229715385" duration="3084000" />
+      <workItem from="1752234631565" duration="4639000" />
+      <workItem from="1752407312411" duration="2908000" />
+      <workItem from="1752580754979" duration="1478000" />
+      <workItem from="1752816186312" duration="2421000" />
+      <workItem from="1752830643411" duration="1950000" />
     </task>
     <servers />
   </component>
