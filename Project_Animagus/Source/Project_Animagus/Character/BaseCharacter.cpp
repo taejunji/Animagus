@@ -5,6 +5,7 @@
 #include "../PlayerController/Battle_PlayerController.h"
 #include "../UI/MyPlayerHUDWidget.h"
 
+#include "../Character/PlayerCharacter.h"
 #include "AICharacter.h"
 #include "../AI/MyAIController.h"
 #include "Animation/AnimInstance.h"
@@ -276,6 +277,12 @@ float ABaseCharacter::TakeDamage(float DamageAmount, struct FDamageEvent const& 
 
     PlayAnimMontageByType(MontageType::Hit);
     hp -= ActualDamage;
+
+    // 플레이어가 아닌 캐릭터인 경우 데미지 UI 띄우기
+    if (nullptr == Cast<APlayerCharacter>(this)) {
+        ShowDmgIndicator(ActualDamage);
+    }
+
 
     // AI에게 데미지를 알림
     if (AAICharacter* AI = Cast<AAICharacter>(this))

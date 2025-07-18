@@ -92,6 +92,9 @@ public:
         AActor* DamageCauser
     ) override;
 
+    // 블루프린트에서 함수를 직접 구현
+    UFUNCTION(BlueprintImplementableEvent, Category = "Level")
+    void ShowDmgIndicator(float ActaulDmg);
 
     // 4개의 스킬 슬롯 (TArray를 사용)
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Skills")
