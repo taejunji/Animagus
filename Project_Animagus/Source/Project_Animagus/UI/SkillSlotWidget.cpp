@@ -17,10 +17,6 @@ void USkillSlotWidget::NativeConstruct()
         EmptySlotBrush.ImageSize = FVector2D(
           100.f,100.f
         );
-        
-        // ✨ Alpha 0.5로 설정
-        EmptySlotBrush.TintColor = FSlateColor(FLinearColor(1.f, 1.f, 1.f, 0.5f));
-
         FButtonStyle NewStyle = SlotButton->GetStyle();
         NewStyle.SetNormal(EmptySlotBrush);
         NewStyle.SetHovered(EmptySlotBrush);
@@ -112,10 +108,7 @@ void USkillSlotWidget::UpdateSlot(const TSubclassOf<UBaseSkill> AssignedClass) c
     {
         if (EmptySlotTexture)
         {
-            // 알파 0.5로 흐리게 표현
-            FSlateBrush NormalBrush = EmptySlotBrush;
-            NormalBrush.TintColor = FSlateColor(FLinearColor(1.f, 1.f, 1.f, 0.5f)); // ✨ 알파 적용
-            NewStyle.SetNormal(NormalBrush);
+            NewStyle.SetNormal(EmptySlotBrush);
 
             FSlateBrush HoverBrush = EmptySlotBrush;
             HoverBrush.TintColor = FSlateColor(FLinearColor(0.9f, 0.9f, 0.9f, 1.f));
@@ -126,9 +119,8 @@ void USkillSlotWidget::UpdateSlot(const TSubclassOf<UBaseSkill> AssignedClass) c
             NewStyle.SetPressed(PressedBrush);
         }
         else{
-            // EmptySlotTexture도 없으면 완전 기본 스타일
             FSlateBrush WhiteBrush;
-            WhiteBrush.TintColor = FSlateColor(FLinearColor(1.f, 1.f, 1.f, 0.5f)); // ✨ 알파 적용
+            WhiteBrush.TintColor = FSlateColor(FLinearColor::White);
             WhiteBrush.ImageSize = FVector2D(100.f, 100.f);
             NewStyle.SetNormal(WhiteBrush);
 

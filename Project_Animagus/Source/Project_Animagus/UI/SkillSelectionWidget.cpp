@@ -33,7 +33,7 @@ void USkillSelectionWidget::NativeConstruct()
         
         UHorizontalBoxSlot* HSlot = SlotContainer->AddChildToHorizontalBox(SkillSlot);
         
-        HSlot->SetPadding(FMargin(15.f, 0.f, 0.f, 0.f));
+        HSlot->SetPadding(FMargin(50.f, 0.f, 50.f, 0.f));
     }
 
    

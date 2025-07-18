@@ -70,8 +70,8 @@ void AShrinkingZone::Tick(float DeltaTime)
 		float Height = 10000.0f;
 		FVector Start = ZoneCenter - FVector(0, 0, Height * 0.5f);
 		FVector End = ZoneCenter + FVector(0, 0, Height * 0.5f);
-		// DrawDebugCylinder(GetWorld(), Start, End, CurrentRadius, 32, FColor::Green, false, 0.2f, 0, 5.0f);
-		// DrawDebugSphere(GetWorld(), ZoneCenter, 50.0f, 12, FColor::Red, false, 0.2f);
+		DrawDebugCylinder(GetWorld(), Start, End, CurrentRadius, 32, FColor::Green, false, 0.2f, 0, 5.0f);
+		DrawDebugSphere(GetWorld(), ZoneCenter, 50.0f, 12, FColor::Red, false, 0.2f);
 	}
 
 

@@ -12,10 +12,6 @@
 #include "Perception/AISense_Sight.h"
 #include "../../GameMode/BattleGameMode.h"
 
-#include "../Zones/AttractionZone.h"
-#include "../Zones/ShrinkingZone.h"
-#include "../../Character/PlayerCharacter.h"
-
 AItem_Box_Base::AItem_Box_Base()
 {
     PrimaryActorTick.bCanEverTick = true;
@@ -123,12 +119,6 @@ void AItem_Box_Base::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor,
     if (Projectile)
     {
         float Damage = Projectile->DamageValue; // ProjectileBase의 공개 멤버
-
-        // 플레이어인 경우 데미지 UI 띄우기
-        if (Cast<APlayerCharacter>(Projectile->Shooter)) {
-            ShowDmgIndicator(Damage);
-        }
-
         ApplyDamage(Damage);
     }
 }

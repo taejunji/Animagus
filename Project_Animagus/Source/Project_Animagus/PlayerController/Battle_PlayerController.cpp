@@ -305,7 +305,7 @@ void ABattle_PlayerController::Input_Jump(const FInputActionValue& InputValue)
 
 void ABattle_PlayerController::Input_Attack(const FInputActionValue& InputValue)
 {
-    // GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Blue, TEXT("Left Mouse Attack!"));
+    GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Blue, TEXT("Left Mouse Attack!"));
 
     if (APawn* MyPawn  = GetPawn())
     {
@@ -352,7 +352,7 @@ void ABattle_PlayerController::Input_Attack(const FInputActionValue& InputValue)
 
 void ABattle_PlayerController::Input_Ready(const FInputActionValue& InputValue)
 {
-    // GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Blue, TEXT("Right Mouse Attack!"));
+    GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Blue, TEXT("Right Mouse Attack!"));
 
     if (APawn* MyPawn  = GetPawn())
     {
