@@ -84,5 +84,9 @@ public:
     // 데미지를 적용하는 함수
     void ApplyDamage(float DamageAmount);
 
+    // 블루프린트에서 함수를 직접 구현
+    UFUNCTION(BlueprintImplementableEvent)
+    void ShowDmgIndicator(float ActualDmg);
+
     float GetHp() const { return HP;  }
 };
