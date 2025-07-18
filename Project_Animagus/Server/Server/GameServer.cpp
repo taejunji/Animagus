@@ -66,7 +66,7 @@ bool GameServer::Initialize()
     std::string UserID = "great1625";
     std::string UserPasswd = "testghksgml2";
 
-    char UserName[20];
+    char UserName[21];
     char flag;
     if (true == instance.DBFindById(UserID.c_str(), UserPasswd.c_str(), UserName, &flag)) 
     {

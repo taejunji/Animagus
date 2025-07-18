@@ -18,7 +18,7 @@ void ADoubleJumpItem::OnPickedUp(class ABaseCharacter* Picker)
         bIsPickedUp = true;
         
         // 플레이어의 더블 점프
-        if (Picker->JumpMaxCount < 3)
+        if (Picker->JumpMaxCount < 2)
         {
             Picker->JumpMaxCount++;
         }

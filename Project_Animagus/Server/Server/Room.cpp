@@ -549,7 +549,7 @@ bool Room::HandleRoundEndLocked(const Protocol::CS_ROUND_END_PKT& pkt)
 
     for (int8 i = 0; i < 8; ++i) {
         roundEndPkt.ranking[i] = sortedPlayersByScore[i].first;
-        roundEndPkt.name[i] = 
+        //roundEndPkt.name[i] = 
         roundEndPkt.score[i] = sortedPlayersByScore[i].second;
     }
 

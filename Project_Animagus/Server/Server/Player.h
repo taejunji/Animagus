@@ -42,10 +42,10 @@ public:
 };
 
 
-std::string AINameList[] = {
-    "James", "AI_KOALA_2", "AI_KOALA_3", "AI_KOALA_4",
-    "AI_PANDA_1", "AI_PANDA_2", "AI_PANDA_3", "AI_PANDA_4"
-};
+//std::string AINameList[] = {
+//    "James", "TaeJun", "JI", "JaeGyeong",
+//    "Hwan", "GwangSin", "DaeHyeon", "YongSik"
+//};
 
 class AIPlayer : public Player
 {

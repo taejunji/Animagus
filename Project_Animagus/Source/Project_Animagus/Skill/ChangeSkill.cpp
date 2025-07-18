@@ -1,4 +1,4 @@
-﻿// Fill out your copyright notice in the Description page of Project Settings.
+// Fill out your copyright notice in the Description page of Project Settings.
 
 
 #include "ChangeSkill.h"
@@ -30,7 +30,7 @@ UChangeSkill::UChangeSkill()
     }
 
     BaseChangeSpeed = ChangeSpeed;
-    ProjectileBPClass = nullptr;  // 에디터에서 할당할 것
+    //ProjectileBPClass = nullptr;  // 에디터에서 할당할 것
 
     SkillType = Protocol::SkillType::CHANGE;
 }
