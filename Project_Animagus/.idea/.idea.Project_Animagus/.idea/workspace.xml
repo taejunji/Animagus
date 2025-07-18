@@ -12,15 +12,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="b6b2a1c1-1a2f-4fb1-b365-840865e6d8fb" name="변경" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.Project_Animagus/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Project_Animagus/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/WorkFolder/Bluprints/Actor/MyItem_Box_Base.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/WorkFolder/Bluprints/Actor/MyItem_Box_Base.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/WorkFolder/Bluprints/Ui/BP_MainMenuWidget.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/WorkFolder/Bluprints/Ui/BP_MainMenuWidget.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/Project_Animagus/Project_Animagus.Build.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Project_Animagus/Project_Animagus.Build.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/Project_Animagus/Projectile/Projectile_change.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Project_Animagus/Projectile/Projectile_change.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/Project_Animagus/UI/MainMenuWidget.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Project_Animagus/UI/MainMenuWidget.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/Project_Animagus/UI/MainMenuWidget.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Project_Animagus/UI/MainMenuWidget.h" afterDir="false" />
-    </list>
+    <list default="true" id="b6b2a1c1-1a2f-4fb1-b365-840865e6d8fb" name="변경" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -182,7 +174,7 @@
       <workItem from="1752407312411" duration="2908000" />
       <workItem from="1752580754979" duration="1478000" />
       <workItem from="1752816186312" duration="2421000" />
-      <workItem from="1752830643411" duration="1753000" />
+      <workItem from="1752830643411" duration="1950000" />
     </task>
     <servers />
   </component>
