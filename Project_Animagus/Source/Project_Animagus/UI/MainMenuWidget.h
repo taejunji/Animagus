@@ -10,7 +10,10 @@
 
 class UButton;
 class AMainMenuController;
-
+class UImage;
+class UMediaSource;
+class UMediaPlayer;
+class UMediaTexture; 
 /**
  * 
  */
@@ -47,6 +50,21 @@ protected:
 
     UPROPERTY(meta=(BindWidget))
     UButton* BtnQuit;
+
+    UPROPERTY(meta = (BindWidget))
+    UImage* VideoImage;
+
+    /** 에디터에서 할당할 MediaPlayer */
+    UPROPERTY(EditAnywhere, Category="Media")
+    UMediaPlayer* MediaPlayer;
+
+    /** MediaPlayer가 출력하는 텍스처 */
+    UPROPERTY(EditAnywhere, Category="Media")
+    UMediaTexture* MediaTexture;
+
+    /** 재생할 미디어 소스 (FileMediaSource) */
+    UPROPERTY(EditAnywhere, Category="Media")
+    UMediaSource* MediaSource;
     
 private:
     TWeakObjectPtr<AMainMenuController> Owner;
