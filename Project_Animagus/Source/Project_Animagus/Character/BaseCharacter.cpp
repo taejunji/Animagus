@@ -12,6 +12,9 @@
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 
+#include "../Actor/Zones/AttractionZone.h"
+#include "../Actor/Zones/ShrinkingZone.h"
+
 #include "BehaviorTree/BlackboardComponent.h"
 #include "BehaviorTree/BehaviorTreeComponent.h"
 #include "Perception/AISense_Damage.h"
@@ -280,7 +283,10 @@ float ABaseCharacter::TakeDamage(float DamageAmount, struct FDamageEvent const& 
 
     // 플레이어가 아닌 캐릭터인 경우 데미지 UI 띄우기
     if (nullptr == Cast<APlayerCharacter>(this)) {
-        ShowDmgIndicator(ActualDamage);
+        if (false == DamageCauser->IsA<AAttractionZone>() && false == DamageCauser->IsA<AShrinkingZone>())
+        {
+            ShowDmgIndicator(ActualDamage);
+        }
     }
 
 
