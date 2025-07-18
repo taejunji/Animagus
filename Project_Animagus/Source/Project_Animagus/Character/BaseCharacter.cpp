@@ -5,11 +5,15 @@
 #include "../PlayerController/Battle_PlayerController.h"
 #include "../UI/MyPlayerHUDWidget.h"
 
+#include "../Character/PlayerCharacter.h"
 #include "AICharacter.h"
 #include "../AI/MyAIController.h"
 #include "Animation/AnimInstance.h"
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
+
+#include "../Actor/Zones/AttractionZone.h"
+#include "../Actor/Zones/ShrinkingZone.h"
 
 #include "BehaviorTree/BlackboardComponent.h"
 #include "BehaviorTree/BehaviorTreeComponent.h"
@@ -299,6 +303,15 @@ float ABaseCharacter::TakeDamage(float DamageAmount, struct FDamageEvent const& 
         SendBufferRef SendBuffer = ClientPacketHandler::MakeSendBuffer(DamagePkt);
         Cast<UMyGameInstance>(GWorld->GetGameInstance())->SendPacket(SendBuffer);
     }
+
+    // 플레이어가 아닌 캐릭터인 경우 데미지 UI 띄우기
+    if (nullptr == Cast<APlayerCharacter>(this)) {
+        if (false == DamageCauser->IsA<AAttractionZone>() && false == DamageCauser->IsA<AShrinkingZone>())
+        {
+            ShowDmgIndicator(ActualDamage);
+        }
+    }
+
 
     // AI에게 데미지를 알림
     if (AAICharacter* AI = Cast<AAICharacter>(this))
