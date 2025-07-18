@@ -854,6 +854,8 @@ void ABattleGameMode::SetBattleLevel()
     {
         int32 CurrentRound = GameInstance->GetRoundCount();
 
+        CurrentRound = 2;
+
         SetPostProcess(CurrentRound);
 
         SetBluePrintLevel(CurrentRound);
@@ -977,6 +979,7 @@ void ABattleGameMode::OnSkillSelectionTimeout()
     FTransform ShrinkSpawnTransform;
     ShrinkSpawnTransform.SetLocation(FVector(0.f, 0.f, 1162.f));
     ShrinkingZone = GWorld->SpawnActor<AShrinkingZone>(ShrinkzoneBpclass, ShrinkSpawnTransform);
+    ShrinkingZone->SetFogPostProcess(0);
 }
 
 void ABattleGameMode::OnSkillSelectionTick()

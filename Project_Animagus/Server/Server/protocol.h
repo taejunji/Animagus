@@ -99,6 +99,7 @@ namespace Protocol {
         CS_ROUND_INIT,
         CS_JUMP_EFT,
 
+        SC_LOGIN_SUCC,
         SC_LOGIN_FAIL,
         SC_UR_HOST,
         SC_START_GAME,

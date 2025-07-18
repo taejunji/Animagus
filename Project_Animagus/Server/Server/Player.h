@@ -30,6 +30,7 @@ public:
     float   x, y, z;
     float   rotation;   // y축 회전각
     bool    isAlive = true;
+    std::string name;
 
     std::atomic<int8> powerUpLevel = 0;
     
@@ -40,6 +41,11 @@ public:
     std::atomic<std::weak_ptr<Room>> room;
 };
 
+
+std::string AINameList[] = {
+    "James", "AI_KOALA_2", "AI_KOALA_3", "AI_KOALA_4",
+    "AI_PANDA_1", "AI_PANDA_2", "AI_PANDA_3", "AI_PANDA_4"
+};
 
 class AIPlayer : public Player
 {

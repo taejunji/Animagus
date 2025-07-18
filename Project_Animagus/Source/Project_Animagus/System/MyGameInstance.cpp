@@ -25,6 +25,7 @@
 #include "../PlayerController/ConnectPlayerController.h"
 #include "../PlayerController/Battle_PlayerController.h"
 #include "../UI/RoundResultWidget.h"
+#include "../UI/MyPlayerHUDWidget.h"
 
 #include "Misc/Paths.h"
 #include "Misc/FileHelper.h"
@@ -467,6 +468,7 @@ void UMyGameInstance::HandleBattleRoundInit(Protocol::SC_ROUND_INIT_PKT& pkt)
             if (ABattle_PlayerController* PC = Cast<ABattle_PlayerController>(
                 UGameplayStatics::GetPlayerController(this, 0))) {
                 PC->RoundResultwidget->HideSelf();
+                PC->PlayerHUD->ResetLevelImgage();
             }
             round_count++;
             GameMode->isRoundEnd = false;

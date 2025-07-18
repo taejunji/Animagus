@@ -16,6 +16,7 @@ PlayerRef PlayerFactory::CreatePlayer(SessionRef session)
 
     player->ownerSession = session;
     session->m_player.store(player);
+    player->name = session->m_userName;
 
     return player;
 }

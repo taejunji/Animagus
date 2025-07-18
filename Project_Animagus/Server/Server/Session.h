@@ -80,7 +80,8 @@ private:
 
 public:
     std::atomic<PlayerRef>      m_player;               // 이 Session을 소유중인 플레이어
-
+    std::string                 m_userId;               // DB에 저장된 유저 아이디
+    std::string                 m_userName;             // DB에 저장된 유저 이름  
 
 private:
     // 버퍼 관리 관련 멤버

@@ -54,6 +54,9 @@
     <ClCompile Include="DBManager.cpp">
       <Filter>DataBase</Filter>
     </ClCompile>
+    <ClCompile Include="TextDBManager.cpp">
+      <Filter>DataBase</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -96,6 +99,9 @@
       <Filter>ServerMain</Filter>
     </ClInclude>
     <ClInclude Include="DBManager.h">
+      <Filter>DataBase</Filter>
+    </ClInclude>
+    <ClInclude Include="TextDBManager.h">
       <Filter>DataBase</Filter>
     </ClInclude>
   </ItemGroup>

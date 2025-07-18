@@ -4,6 +4,7 @@
 #include "ServerPacketHandler.h"
 #include "Player.h"
 #include "Room.h"
+#include "DBManager.h"
 
 using namespace Protocol;
 
@@ -263,6 +264,37 @@ bool Handle_CS_LOGIN(SessionRef& session, CS_LOGIN_PKT& pkt)
     std::cout << "Login ID: " << pkt.login_id << ", Password: " << pkt.login_pwd << std::endl;
 
     // DBManager::DBFindById(...);
+    auto& instance = DBManager::GetInstance();
+
+    char UserName[MAX_NAME_LEN + 1];
+    char flag;
+    if (true == instance.DBFindById(pkt.login_id, pkt.login_pwd, UserName, &flag))
+    {
+        std::string userNameStr(UserName);
+        userNameStr.erase(remove(userNameStr.begin(), userNameStr.end(), ' '), userNameStr.end());
+        std::cout << userNameStr << " LogIn Success" << std::endl;
+
+        session->m_userId = pkt.login_id;
+        session->m_userName = userNameStr;
+
+        SC_LOGIN_SUCC succ_pkt;
+        auto sendBuffer = ServerPacketHandler::MakeSendBuffer(succ_pkt);
+        session->Send(sendBuffer);
+    }
+    else {
+        SC_LOGIN_FAIL fail_pkt;
+        fail_pkt.reason = flag;
+        auto sendBuffer = ServerPacketHandler::MakeSendBuffer(fail_pkt);
+        session->Send(sendBuffer);
+
+        if (flag == Protocol::LOGIN_USING)
+            std::cout << "Someone Using" << std::endl;
+        else if (flag == Protocol::LOGIN_NOEX)
+            std::cout << "NO Data in DB" << std::endl;
+        else {
+            std::cout << "Error" << std::endl;
+        }
+    }
 
     return true;
 }
@@ -272,6 +304,9 @@ bool Handle_CS_SIGN_UP(SessionRef& session, CS_SIGN_UP_PKT& pkt)
     std::cout << "Signed ID: " << pkt.sign_id << ", Password: " << pkt.sign_pwd << ", Name: " << pkt.sign_name << std::endl;
 
     // DBManager::DBSignedUp(...);
+    if (true == DBManager::GetInstance().DBSignUp(pkt.sign_id, pkt.sign_pwd, pkt.sign_name)) {
+        std::cout << "SignUp Success" << std::endl;
+    }
 
     return true;
 }

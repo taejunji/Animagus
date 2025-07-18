@@ -82,7 +82,7 @@ void AShrinkingZone::Tick(float DeltaTime)
         SetFogPostProcess(0);
         return;
     }
-    if (MyPawn && MyPawn->IsLocallyControlled() && MyPawn->GetPawnType() == PawnType::PLAYER)
+    if (MyPawn && MyPawn->IsLocallyControlled() && MyPawn->GetPawnType() != PawnType::NETWORK)
 	{
 		if (!IsActorInsideZone(MyPawn))
 		{

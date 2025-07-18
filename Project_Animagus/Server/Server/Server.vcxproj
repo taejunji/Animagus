@@ -144,6 +144,7 @@
     <ClCompile Include="ServerPacketHandler.cpp" />
     <ClCompile Include="Session.cpp" />
     <ClCompile Include="SocketUtils.cpp" />
+    <ClCompile Include="TextDBManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DBManager.h" />
@@ -159,6 +160,7 @@
     <ClInclude Include="ServerPacketHandler.h" />
     <ClInclude Include="Session.h" />
     <ClInclude Include="SocketUtils.h" />
+    <ClInclude Include="TextDBManager.h" />
     <ClInclude Include="Types.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

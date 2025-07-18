@@ -8,6 +8,7 @@
 #include "ServerPacketHandler.h"
 #include "Room.h"
 #include "Player.h"
+#include "DBManager.h"
 
 
 /*--------------
@@ -365,6 +366,10 @@ void Session::OnDisconnected()
         return;
 
     room->HandleLeavePlayer(player);
+
+    if (true == DBManager::GetInstance().DBLogOutById(m_userId.c_str())) {
+        std::cout << "LogOut Success" << std::endl;
+    }
 }
 
 void Session::OnRecvPacket(BYTE* buffer, int32 len)
