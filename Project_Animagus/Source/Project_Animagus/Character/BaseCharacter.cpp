@@ -278,17 +278,15 @@ float ABaseCharacter::TakeDamage(float DamageAmount, struct FDamageEvent const& 
 {
     float ActualDamage = Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
 
-    PlayAnimMontageByType(MontageType::Hit);
-    hp -= ActualDamage;
+    if (false == DamageCauser->IsA<AAttractionZone>() && false == DamageCauser->IsA<AShrinkingZone>()) {
+        PlayAnimMontageByType(MontageType::Hit);
 
-    // 플레이어가 아닌 캐릭터인 경우 데미지 UI 띄우기
-    if (nullptr == Cast<APlayerCharacter>(this)) {
-        if (false == DamageCauser->IsA<AAttractionZone>() && false == DamageCauser->IsA<AShrinkingZone>())
-        {
+        // 플레이어가 아닌 캐릭터인 경우 데미지 UI 띄우기
+        if (nullptr == Cast<APlayerCharacter>(this)) {
             ShowDmgIndicator(ActualDamage);
         }
     }
-
+    hp -= ActualDamage;
 
     // AI에게 데미지를 알림
     if (AAICharacter* AI = Cast<AAICharacter>(this))
