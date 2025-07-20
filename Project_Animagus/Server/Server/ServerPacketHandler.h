@@ -74,8 +74,9 @@ public:
     static SendBufferRef MakeSendBuffer(SC_ROUND_INIT_PKT& pkt) { return MakeSendBuffer(pkt, (uint16)PacketID::SC_ROUND_INIT); }
     static SendBufferRef MakeSendBuffer(CS_JUMP_EFT_PKT& pkt) { return MakeSendBuffer(pkt, (uint16)PacketID::CS_JUMP_EFT); }
     static SendBufferRef MakeSendBuffer(SC_GAME_END_PKT& pkt) { return MakeSendBuffer(pkt, (uint16)PacketID::SC_GAME_END); }
-    static SendBufferRef MakeSendBuffer(SC_LOGIN_SUCC& pkt) { return MakeSendBuffer(pkt, (uint16)PacketID::SC_LOGIN_SUCC); }
-    static SendBufferRef MakeSendBuffer(SC_LOGIN_FAIL& pkt) { return MakeSendBuffer(pkt, (uint16)PacketID::SC_LOGIN_FAIL); }
+    static SendBufferRef MakeSendBuffer(SC_LOGIN_SUCC_PKT& pkt) { return MakeSendBuffer(pkt, (uint16)PacketID::SC_LOGIN_SUCC); }
+    static SendBufferRef MakeSendBuffer(SC_LOGIN_FAIL_PKT& pkt) { return MakeSendBuffer(pkt, (uint16)PacketID::SC_LOGIN_FAIL); }
+    static SendBufferRef MakeSendBuffer(SC_SIGNUP_SUCC_PKT& pkt) { return MakeSendBuffer(pkt, (uint16)PacketID::SC_SIGNUP_SUCC); }
 
     
 private:

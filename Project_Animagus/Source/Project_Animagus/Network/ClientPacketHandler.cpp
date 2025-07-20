@@ -158,3 +158,33 @@ bool Handle_SC_GAME_END(SessionRef& session, Protocol::SC_GAME_END_PKT& pkt)
 
     return true;
 }
+
+bool Handle_SC_LOGIN_SUCC(SessionRef& session, Protocol::SC_LOGIN_SUCC_PKT& pkt)
+{
+    if (auto* GameInstance = Cast<UMyGameInstance>(GWorld->GetGameInstance()))
+    {
+        GameInstance->HandleLoginSuccess(pkt);
+    }
+
+    return true;
+}
+
+bool Handle_SC_LOGIN_FAIL(SessionRef& session, Protocol::SC_LOGIN_FAIL_PKT& pkt)
+{
+    if (auto* GameInstance = Cast<UMyGameInstance>(GWorld->GetGameInstance()))
+    {
+        GameInstance->HandleLoginFail(pkt);
+    }
+    
+    return true;
+}
+
+bool Handle_SC_SIGNUP_SUCC(SessionRef& session, Protocol::SC_SIGNUP_SUCC_PKT& pkt)
+{
+    if (auto* GameInstance = Cast<UMyGameInstance>(GWorld->GetGameInstance()))
+    {
+        GameInstance->HandleSignUpSuccess();
+    }
+
+    return true;
+}

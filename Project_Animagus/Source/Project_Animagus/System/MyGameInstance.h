@@ -128,6 +128,9 @@ public:
     void HandleAISpawn(Protocol::SC_AI_SPAWN_PKT& pkt);
     void HandleJumpEffect(Protocol::CS_JUMP_EFT_PKT& pkt);
     void HandleBattleModeEnd(Protocol::SC_GAME_END_PKT& pkt);
+    void HandleLoginSuccess(Protocol::SC_LOGIN_SUCC_PKT& pkt);
+    void HandleLoginFail(Protocol::SC_LOGIN_FAIL_PKT& pkt);
+    void HandleSignUpSuccess();
 
 public:
     // AI 캐릭터
@@ -143,4 +146,5 @@ public:
 
     uint16 MyPlayerId = 0;
     bool    AmIHost = false; // 내가 호스트인지 여부
+    FString MyPlayerName; // 플레이어 이름
 };

@@ -194,9 +194,52 @@ void ALoginPlayerController::OnSignOkClicked()
 
     SignUpWidget->ClearInputs();
     SignUpWidget->SetVisibility(ESlateVisibility::Collapsed);
+}
 
-    LoginWidget->ShowResult(FText::FromString(TEXT("회원가입 완료")));
+void ALoginPlayerController::OnSignCancelClicked()
+{
+    if (!SignUpWidget) return;
+    if (!LoginWidget) return;
+    UE_LOG(LogTemp, Warning, TEXT("SignCancleClicked"));
 
+    SignUpWidget->ClearInputs();
+    SignUpWidget->SetVisibility(ESlateVisibility::Collapsed);
+}
+
+void ALoginPlayerController::HandleLoginSuccess()
+{
+    if (nullptr == LoginWidget) return;
+    LoginWidget->ShowResult(FText::FromString(TEXT("로그인 성공!")));;
+    FTimerHandle UnusedHandle;
+    GetWorldTimerManager().SetTimer(
+        UnusedHandle,
+        [this]()
+        {
+            if (LoginWidget)
+                LoginWidget->HideResult();
+        },
+        1.0f,
+        false  // 한번만
+    );
+}
+
+void ALoginPlayerController::HandleLoginFail(Protocol::SC_LOGIN_FAIL_PKT& pkt)
+{
+    if (nullptr == LoginWidget) return;
+    switch (pkt.reason)
+    {
+    case Protocol::LOGIN_ERR:
+        LoginWidget->ShowResult(FText::FromString(TEXT("잘못된 입력입니다.")));
+        break;
+    case Protocol::LOGIN_NOEX:
+        LoginWidget->ShowResult(FText::FromString(TEXT("아이디 또는 비밀번호가 일치하지 않습니다.")));
+        break;
+    case Protocol::LOGIN_USING:
+        LoginWidget->ShowResult(FText::FromString(TEXT("이미 로그인된 계정입니다.")));
+        break;
+    default:
+        break;
+    }
     FTimerHandle UnusedHandle;
     GetWorldTimerManager().SetTimer(
         UnusedHandle,
@@ -210,12 +253,19 @@ void ALoginPlayerController::OnSignOkClicked()
     );
 }
 
-void ALoginPlayerController::OnSignCancelClicked()
+void ALoginPlayerController::HandleSignUpSuccess()
 {
-    if (!SignUpWidget) return;
-    if (!LoginWidget) return;
-    UE_LOG(LogTemp, Warning, TEXT("SignCancleClicked"));
+    LoginWidget->ShowResult(FText::FromString(TEXT("회원가입 완료")));
 
-    SignUpWidget->ClearInputs();
-    SignUpWidget->SetVisibility(ESlateVisibility::Collapsed);
+    FTimerHandle UnusedHandle;
+    GetWorldTimerManager().SetTimer(
+        UnusedHandle,
+        [this]()
+        {
+            if (LoginWidget)
+                LoginWidget->HideResult();
+        },
+        2.0f,
+        false  // 한번만
+    );
 }

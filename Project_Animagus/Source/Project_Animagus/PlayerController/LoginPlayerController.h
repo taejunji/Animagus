@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/PlayerController.h"
+#include "../Server/Server/protocol.h"
 #include "LoginPlayerController.generated.h"
 
 class ULoginWidget;
@@ -31,7 +32,11 @@ public:
     // SignUp Cancel 버튼 클릭
     UFUNCTION() void OnSignCancelClicked();
 
+    void HandleLoginSuccess();
+    void HandleLoginFail(Protocol::SC_LOGIN_FAIL_PKT& pkt);
+    void HandleSignUpSuccess();
 
+public:
     
     // Widget Blueprint 클래스 지정
     UPROPERTY(EditAnywhere, Category="UI")

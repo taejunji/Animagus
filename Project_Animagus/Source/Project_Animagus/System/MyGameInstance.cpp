@@ -435,11 +435,11 @@ void UMyGameInstance::HandleBattleRoundEnd(Protocol::SC_ROUND_END_PKT& pkt)
                 int32 IdValue = static_cast<int32>(pkt.ranking[i]);
                 if (MyPlayerId == IdValue) myRank = i + 1;
 
-                FString PlayerId = FString::FromInt(IdValue);
-                Names.Add(PlayerId);    // 이름 추가하기 전까지는 Id 로
+                //FString PlayerId = FString::FromInt(IdValue);
+                //Names.Add(PlayerId);    // 이름 추가하기 전까지는 Id 로
 
-                //const TCHAR* Name = UTF8_TO_TCHAR(pkt.name[i]);
-                //Names.Add(FString(Name));
+                const TCHAR* Name = UTF8_TO_TCHAR(pkt.name[i]);
+                Names.Add(FString(Name));
                 Scores.Add(static_cast<int32>(pkt.score[i]));
             }
 
@@ -551,6 +551,69 @@ void UMyGameInstance::HandleBattleModeEnd(Protocol::SC_GAME_END_PKT& pkt)
         if (ABattleGameMode* GameMode = Cast<ABattleGameMode>(BaseGameMode)) 
         {
             UGameplayStatics::OpenLevel(GetWorld(), FName("/Game/WorkFolder/Levels/L_Result"));
+        }
+    }
+}
+
+void UMyGameInstance::HandleLoginSuccess(Protocol::SC_LOGIN_SUCC_PKT& pkt)
+{
+    if (Socket == nullptr || ClientSession == nullptr)
+        return;
+
+    auto* World = GetWorld();
+    if (World == nullptr)
+        return;
+
+    AGameModeBase* BaseGameMode = UGameplayStatics::GetGameMode(World);
+    if (BaseGameMode)
+    {
+        if (ALoginGameMode* GameMode = Cast<ALoginGameMode>(BaseGameMode))
+        {
+            UE_LOG(LogTemp, Warning, TEXT("로그인 성공"));
+
+            MyPlayerName = FString(UTF8_TO_TCHAR(pkt.player_name));
+            GameMode->HandleLoginSuccess();
+            //UGameplayStatics::OpenLevel(GetWorld(), FName("/Game/WorkFolder/Levels/L_MainMenu"));
+        }
+    }
+}
+
+void UMyGameInstance::HandleLoginFail(Protocol::SC_LOGIN_FAIL_PKT& pkt)
+{
+    if (Socket == nullptr || ClientSession == nullptr)
+        return;
+
+    auto* World = GetWorld();
+    if (World == nullptr)
+        return;
+
+    AGameModeBase* BaseGameMode = UGameplayStatics::GetGameMode(World);
+    if (BaseGameMode)
+    {
+        if (ALoginGameMode* GameMode = Cast<ALoginGameMode>(BaseGameMode))
+        {
+            UE_LOG(LogTemp, Warning, TEXT("로그인 실패"));
+
+            GameMode->HandleLoginFail(pkt);
+        }
+    }
+}
+
+void UMyGameInstance::HandleSignUpSuccess()
+{
+    if (Socket == nullptr || ClientSession == nullptr)
+        return;
+
+    auto* World = GetWorld();
+    if (World == nullptr)
+        return;
+
+    AGameModeBase* BaseGameMode = UGameplayStatics::GetGameMode(World);
+    if (BaseGameMode)
+    {
+        if (ALoginGameMode* GameMode = Cast<ALoginGameMode>(BaseGameMode))
+        {
+            GameMode->HandleSignUpSuccess();
         }
     }
 }

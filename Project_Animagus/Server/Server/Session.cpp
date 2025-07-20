@@ -357,19 +357,20 @@ int32 Session::OnRecv(BYTE* buffer, int32 len)
 
 void Session::OnDisconnected()
 {
-    PlayerRef player = m_player.load();
-    if (player == nullptr)
-        return;
+    if (true == m_loggedIn) {
+        if (true == DBManager::GetInstance().DBLogOutById(m_userId.c_str())) {
+            std::cout << "LogOut Success" << std::endl;
+        }
+    }
 
-    RoomRef room = player->room.load().lock(); 
-    if (room == nullptr)
-        return;
+    PlayerRef player = m_player.load();
+    if (player == nullptr) return;
+
+    RoomRef room = player->room.load().lock();
+    if (room == nullptr) return;
 
     room->HandleLeavePlayer(player);
 
-    //if (true == DBManager::GetInstance().DBLogOutById(m_userId.c_str())) {
-    //    std::cout << "LogOut Success" << std::endl;
-    //}
 }
 
 void Session::OnRecvPacket(BYTE* buffer, int32 len)

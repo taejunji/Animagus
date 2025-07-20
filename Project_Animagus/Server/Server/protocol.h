@@ -101,6 +101,7 @@ namespace Protocol {
 
         SC_LOGIN_SUCC,
         SC_LOGIN_FAIL,
+        SC_SIGNUP_SUCC,
         SC_UR_HOST,
         SC_START_GAME,
         SC_ENTER_GAME,
@@ -248,14 +249,17 @@ namespace Protocol {
         bool is_first_jump;
     };
 
-    struct SC_LOGIN_FAIL
+    struct SC_LOGIN_FAIL_PKT
     {
         int8 reason;
     };
-    struct SC_LOGIN_SUCC
+    struct SC_LOGIN_SUCC_PKT
     {
         char player_name[MAX_NAME_LEN];
         // 더 넣을거 있나?
+    };
+    struct SC_SIGNUP_SUCC_PKT
+    {
     };
     struct SC_UR_HOST_PKT
     {

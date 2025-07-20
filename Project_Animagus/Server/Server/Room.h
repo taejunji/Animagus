@@ -51,8 +51,10 @@ private:
     std::mutex m_mutex;
 
     std::atomic<uint16> m_playerCount = 0;
-    std::unordered_map<uint16/*player_id*/, PlayerRef> m_players; // thread safe 한 자료구조로?
-    std::unordered_map<uint16/*ai_id*/, AIPlayerRef> m_aiPlayers;
+    std::unordered_map<uint16/*player_id*/, PlayerRef>  m_players; // thread safe 한 자료구조로?
+    std::unordered_map<uint16/*ai_id*/, AIPlayerRef>    m_aiPlayers;
+    std::unordered_map<uint16, std::string>             m_playerNames;
+    std::atomic<uint16>                                 m_aiNameGen = 0;
     uint16 m_maxPlayerCount = 8;
     std::atomic<uint16> m_nowPlayerCount = 0;
     std::atomic<uint16> m_alivePlayerCount = 8;
@@ -63,3 +65,4 @@ private:
 
 extern std::array<RoomRef, ROOM_COUNT> GRoom;       // 배열 or 벡터로 관리해 여러 게임룸을 생성
 extern std::array<uint8, 8> scoreBoard;
+

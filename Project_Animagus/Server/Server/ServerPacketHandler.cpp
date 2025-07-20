@@ -276,13 +276,15 @@ bool Handle_CS_LOGIN(SessionRef& session, CS_LOGIN_PKT& pkt)
 
         session->m_userId = pkt.login_id;
         session->m_userName = userNameStr;
+        session->m_loggedIn = true;
 
-        SC_LOGIN_SUCC succ_pkt;
+        SC_LOGIN_SUCC_PKT succ_pkt;
+        strcpy_s(succ_pkt.player_name, userNameStr.c_str());
         auto sendBuffer = ServerPacketHandler::MakeSendBuffer(succ_pkt);
         session->Send(sendBuffer);
     }
     else {
-        SC_LOGIN_FAIL fail_pkt;
+        SC_LOGIN_FAIL_PKT fail_pkt;
         fail_pkt.reason = flag;
         auto sendBuffer = ServerPacketHandler::MakeSendBuffer(fail_pkt);
         session->Send(sendBuffer);
@@ -305,6 +307,10 @@ bool Handle_CS_SIGN_UP(SessionRef& session, CS_SIGN_UP_PKT& pkt)
 
     // DBManager::DBSignedUp(...);
     if (true == DBManager::GetInstance().DBSignUp(pkt.sign_id, pkt.sign_pwd, pkt.sign_name)) {
+        SC_SIGNUP_SUCC_PKT succ_pkt;
+        auto sendBuffer = ServerPacketHandler::MakeSendBuffer(succ_pkt);
+        session->Send(sendBuffer);
+
         std::cout << "SignUp Success" << std::endl;
     }
 

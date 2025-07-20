@@ -12,6 +12,11 @@ static std::mt19937       gen(rd());
 std::array<RoomRef, ROOM_COUNT> GRoom{};
 std::array<uint8, 8> scoreBoard = {10, 7, 6, 5, 4, 3, 2, 1};
 
+std::string AINameList[] = {
+    "James", "TaeJun", "HoDoonLee", "JaeGyeong",
+    "Hwan", "GwangSin", "DaeHyeon", "YongSik"
+};
+
 Room::Room()
 {
     InitializeGame();
@@ -29,6 +34,7 @@ bool Room::Enter(PlayerRef player)
     player->room.store(shared_from_this());
     player->player_state = PlayerRoomState::WAITING;
     player->s_mutex.unlock();
+    m_playerNames[player->playerID] = player->name;
     m_playerCount++;
 
     return true;
@@ -47,6 +53,8 @@ bool Room::Leave(uint16 playerID)
     player->player_state = PlayerRoomState::LOBBY;
     player->s_mutex.unlock();
     m_players.erase(playerID);
+    if (0 != m_playerNames.count(playerID))
+        m_playerNames.erase(playerID);
     m_playerCount--;
     m_alivePlayerCount--;
 
@@ -56,6 +64,8 @@ bool Room::Leave(uint16 playerID)
         for (auto& ai : m_aiPlayers) {
             // TODO: Leave Pkt 전송
 
+            if (0 != m_playerNames.count(ai.first))
+                m_playerNames.erase(ai.first);
         }
         m_aiPlayers.clear();
     }
@@ -379,6 +389,12 @@ bool Room::HandleEnterAIPlayer(const Protocol::CS_AI_ENTER_PKT& pkt)
     m_aiPlayers.insert(make_pair(aiID, ai));
     ai->room.store(shared_from_this());
 
+    if (false == m_players.contains(aiID))
+    {
+        m_aiNameGen = m_aiNameGen >= m_maxPlayerCount - 1 ? 0 : m_aiNameGen + 1;
+        m_playerNames[aiID] = AINameList[m_aiNameGen];
+    }
+
     //m_playerCount++;
 
     // Host 를 제외한 클라이언트에서는 AI 를 일반 NetworkPlayer 로 인식
@@ -549,7 +565,7 @@ bool Room::HandleRoundEndLocked(const Protocol::CS_ROUND_END_PKT& pkt)
 
     for (int8 i = 0; i < 8; ++i) {
         roundEndPkt.ranking[i] = sortedPlayersByScore[i].first;
-        //roundEndPkt.name[i] = 
+        strcpy_s(roundEndPkt.name[i], m_playerNames[sortedPlayersByScore[i].first].c_str());
         roundEndPkt.score[i] = sortedPlayersByScore[i].second;
     }
 
