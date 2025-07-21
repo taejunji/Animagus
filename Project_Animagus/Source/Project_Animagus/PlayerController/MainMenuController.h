@@ -18,6 +18,7 @@ class PROJECT_ANIMAGUS_API AMainMenuController : public APlayerController
 
 public:
     virtual void BeginPlay() override;
+    virtual void Tick(float DeltaTime) override;
 
     /** Start 버튼 클릭 */
     UFUNCTION() void OnStartClicked();
@@ -58,4 +59,14 @@ protected:
     
     // 마우스 감도
     float CachedMouseSensitivity = 1.0f;
+
+private:
+    void SetHideCursor(); 
+
+    FVector2D LastMousPosition;
+    float InactivityTime = 0.0f;
+    bool bCursorHidden = false;
+
+    UPROPERTY(EditAnywhere, Category = "UI")
+    float CursorHideDelay = 4.0f; // 마우스 움직임 없으면 5초 후에 커서 숨김
 };

@@ -283,17 +283,24 @@ float ABaseCharacter::TakeDamage(float DamageAmount, struct FDamageEvent const& 
 {
     float ActualDamage = Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
 
-    PlayAnimMontageByType(MontageType::Hit);
     //hp -= ActualDamage;
 
     // 1. Move 패킷에 현재 내 HP 정보를 포함시킨다. 내 캐릭터, AI에 대한 데미지 검사만 실시한다.
 
 
     // 2. 내가 데미지를 받으면 서버로 패킷을 전송한다. 서버에서 데미지를 계산해 Broadcast. 다른 클라에서는 그걸로 SetHp
+    if (false == DamageCauser->IsA<AAttractionZone>() && false == DamageCauser->IsA<AShrinkingZone>()) {
+        PlayAnimMontageByType(MontageType::Hit);
+
+        // 플레이어가 아닌 캐릭터인 경우 데미지 UI 띄우기
+        if (nullptr == Cast<APlayerCharacter>(this)) {
+            ShowDmgIndicator(ActualDamage);
+        }
+    }
+    hp -= ActualDamage;
+
     if (GetPawnType() == PawnType::PLAYER || GetPawnType() == PawnType::AI)
     {
-        hp -= ActualDamage;
-
         Protocol::CS_DAMAGE_PKT DamagePkt;
         DamagePkt.player_id = GetPlayerId();
         DamagePkt.room_id = 0;                // TODO: 로비에서 룸 선택 그거
@@ -303,15 +310,6 @@ float ABaseCharacter::TakeDamage(float DamageAmount, struct FDamageEvent const& 
         SendBufferRef SendBuffer = ClientPacketHandler::MakeSendBuffer(DamagePkt);
         Cast<UMyGameInstance>(GWorld->GetGameInstance())->SendPacket(SendBuffer);
     }
-
-    // 플레이어가 아닌 캐릭터인 경우 데미지 UI 띄우기
-    if (nullptr == Cast<APlayerCharacter>(this)) {
-        if (false == DamageCauser->IsA<AAttractionZone>() && false == DamageCauser->IsA<AShrinkingZone>())
-        {
-            ShowDmgIndicator(ActualDamage);
-        }
-    }
-
 
     // AI에게 데미지를 알림
     if (AAICharacter* AI = Cast<AAICharacter>(this))
