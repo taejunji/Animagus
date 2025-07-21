@@ -389,7 +389,7 @@ bool Room::HandleEnterAIPlayer(const Protocol::CS_AI_ENTER_PKT& pkt)
     m_aiPlayers.insert(make_pair(aiID, ai));
     ai->room.store(shared_from_this());
 
-    if (false == m_players.contains(aiID))
+    if (false == m_playerNames.contains(aiID))
     {
         m_aiNameGen = m_aiNameGen >= m_maxPlayerCount - 1 ? 0 : m_aiNameGen + 1;
         m_playerNames[aiID] = AINameList[m_aiNameGen];
