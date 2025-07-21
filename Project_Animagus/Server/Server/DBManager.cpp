@@ -89,6 +89,8 @@ bool DBManager::DBDisconnect()
 
 bool DBManager::DBFindById(const char* id, const char* passwd, char* name, char* flag)
 {
+    std::lock_guard<std::mutex> lock(m_mutex);
+
     if (hdbc == SQL_NULL_HDBC) {
         return false;
     }
@@ -174,6 +176,8 @@ bool DBManager::DBFindById(const char* id, const char* passwd, char* name, char*
 
 bool DBManager::DBLogOutById(const char* id)
 {
+    std::lock_guard<std::mutex> lock(m_mutex);
+
     if (hdbc == SQL_NULL_HDBC) {
         return false;
     }
@@ -215,6 +219,8 @@ bool DBManager::DBLogOutById(const char* id)
 
 bool DBManager::DBSignUp(const char* id, const char* passwd, const char* name)
 {
+    std::lock_guard<std::mutex> lock(m_mutex);
+
     if (hdbc == SQL_NULL_HDBC) {
         return false;
     }
@@ -277,6 +283,8 @@ bool DBManager::DBSignUp(const char* id, const char* passwd, const char* name)
 
 bool DBManager::DBDeleteUserById(const char* id)
 {
+    std::lock_guard<std::mutex> lock(m_mutex);
+
     if (hdbc == SQL_NULL_HDBC) {
         return false;
     }

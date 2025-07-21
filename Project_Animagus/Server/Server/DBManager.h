@@ -31,6 +31,7 @@ private:
     SQLHDBC hdbc;
     SQLHSTMT hstmt = 0;
 
+    std::mutex m_mutex;
 };
 
 void HandleDiagnosticRecord(SQLHANDLE hHandle, SQLSMALLINT hType, RETCODE RetCode);
