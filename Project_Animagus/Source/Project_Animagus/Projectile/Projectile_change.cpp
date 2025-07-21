@@ -2,6 +2,7 @@
 #include "GameFramework/Character.h"
 #include "Kismet/GameplayStatics.h"
 #include "../Character/BaseCharacter.h"
+#include "GameFramework/ProjectileMovementComponent.h"
 
 AProjectile_change::AProjectile_change()
 {
@@ -12,49 +13,48 @@ void AProjectile_change::OnHit(UPrimitiveComponent* OverlappedComponent, AActor*
                                 UPrimitiveComponent* OtherComp, FVector NormalImpulse,
                                 const FHitResult& Hit)
 {
-    // 충돌한 대상이 유효하고, 자기 자신 및 발사자(Shooter)가 아닐 때 처리함
-    if (OtherActor && OtherActor != this)// && OtherActor != Shooter)
+    if (!OtherActor || OtherActor == this || OtherActor == Shooter)
     {
-       
-        ABaseCharacter* HitCharacter = Cast<ABaseCharacter>(OtherActor);
+        return;
+    }
 
+   
+    ABaseCharacter* HitCharacter = Cast<ABaseCharacter>(OtherActor);
+    
+    if (HitCharacter)
+    {
+        PlayHitSound(Hit.Location); 
+        FVector ProjectileDir = ProjectileMovement
+            ? ProjectileMovement->Velocity.GetSafeNormal()
+            : GetActorForwardVector();
+
+        const float OffsetDistance = 100.f;
+        FVector HitLocation      = HitCharacter->GetActorLocation();
+        FVector TeleportLocation = HitLocation - ProjectileDir * OffsetDistance;
+        TeleportLocation.Z       = Shooter->GetActorLocation().Z;
+
+        Shooter->TeleportTo(TeleportLocation, Shooter->GetActorRotation(), false, true);
+        DestroySkill();
+    }
+    else
+    {
+        
         if (HitSound_noPlayer)
         {
             UGameplayStatics::PlaySoundAtLocation(
                 this,
                 HitSound_noPlayer,
-                this->GetActorLocation(),
+                GetActorLocation(),
                 FRotator::ZeroRotator,
                 1.f, 1.f, 0.f,
                 AttenuationSettings
             );
         }
-        
-        if (HitCharacter)
-        {
-            if (HitCharacter->GetIsDead()) return;
-            PlayHitSound(Hit.Location);
-            // 발사자(Shooter)가 있으면 두 캐릭터의 위치를 교환
-            if (Shooter)
-            {
-                // FVector ShooterLocation = Shooter->GetActorLocation();
-                FVector HitLocation = HitCharacter->GetActorLocation();
-                Shooter->TeleportTo(HitLocation, Shooter->GetActorRotation(), false, true);
-                // HitCharacter->TeleportTo(ShooterLocation, HitCharacter->GetActorRotation(), false, true);
-                
-            }
-            else
-            { 
-                UE_LOG(LogTemp, Log, TEXT("AProjectile_change: Shooter 없음 - error"), *HitCharacter->GetName());
-            }
-            DestroySkill();
-        }
-        else
-        {
-            
-            UE_LOG(LogTemp, Log, TEXT("AProjectile_change: 캐릭터가 아닌 객체와 충돌, 기본 OnHit 호출"));
-            AProjectileBase::OnHit(OverlappedComponent, OtherActor, OtherComp, NormalImpulse, Hit);
-        }
+
+        UE_LOG(LogTemp, Log, TEXT("AProjectile_change: 캐릭터 외 충돌, 기본 OnHit 호출"));
+        AProjectileBase::OnHit(OverlappedComponent, OtherActor, OtherComp, NormalImpulse, Hit);
     }
+   
 }
+
 

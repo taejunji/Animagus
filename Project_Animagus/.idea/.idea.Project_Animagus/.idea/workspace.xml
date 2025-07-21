@@ -12,7 +12,12 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="b6b2a1c1-1a2f-4fb1-b365-840865e6d8fb" name="변경" comment="" />
+    <list default="true" id="b6b2a1c1-1a2f-4fb1-b365-840865e6d8fb" name="변경" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.Project_Animagus/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Project_Animagus/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/WorkFolder/Bluprints/Ui/WBP_DmgIndicator.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/WorkFolder/Bluprints/Ui/WBP_DmgIndicator.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/WorkFolder/Bluprints/Ui/WBP_Loding.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/WorkFolder/Bluprints/Ui/WBP_Loding.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/Project_Animagus/Projectile/Projectile_change.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Project_Animagus/Projectile/Projectile_change.cpp" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -175,6 +180,9 @@
       <workItem from="1752580754979" duration="1478000" />
       <workItem from="1752816186312" duration="2421000" />
       <workItem from="1752830643411" duration="1950000" />
+      <workItem from="1752839645380" duration="3057000" />
+      <workItem from="1753090036281" duration="662000" />
+      <workItem from="1753090781966" duration="2388000" />
     </task>
     <servers />
   </component>
