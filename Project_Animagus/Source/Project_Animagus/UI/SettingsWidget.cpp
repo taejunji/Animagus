@@ -143,7 +143,7 @@ void USettingsWidget::OnSelectImg3()
 void USettingsWidget::UpdateImageSelectionVisuals()
 {
     // 기본 테두리 색
-    const FLinearColor UnselectedColor = FLinearColor(0,0,0,0);
+    const FLinearColor UnselectedColor = FLinearColor(0,0,0,0.4);
 
     // 선택 시 강조 색상
     const FLinearColor SelectedColor   = FLinearColor(0.2f, 0.6f, 1.f, 0.5f);
