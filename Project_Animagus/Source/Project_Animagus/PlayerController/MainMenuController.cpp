@@ -24,6 +24,7 @@ void AMainMenuController::BeginPlay()
 
     MainMenuWidget->AddToViewport();
     MainMenuWidget->SetupOwner(this);
+    MainMenuWidget->SetIsFocusable(true);
 
     // UI 전용 입력 모드
     FInputModeUIOnly Mode;
@@ -31,6 +32,59 @@ void AMainMenuController::BeginPlay()
     Mode.SetLockMouseToViewportBehavior(EMouseLockMode::DoNotLock);
     SetInputMode(Mode);
     bShowMouseCursor = true;
+
+    GetMousePosition(LastMousPosition.X, LastMousPosition.Y);
+    bCursorHidden = false;
+    InactivityTime = 0.f;
+
+    PrimaryActorTick.bCanEverTick = true;
+}
+
+void AMainMenuController::Tick(float DeltaTime)
+{
+    Super::Tick(DeltaTime);
+
+    FVector2D CurrentMousePosition;
+    if (GetMousePosition(CurrentMousePosition.X, CurrentMousePosition.Y))
+    {
+        if (false == CurrentMousePosition.Equals(LastMousPosition, 1.0f))
+        {
+            // 마우스 움직였음
+            LastMousPosition = CurrentMousePosition;
+            InactivityTime = 0.f;
+
+            if (bCursorHidden)
+            {
+                bShowMouseCursor = true;
+                bCursorHidden = false;
+
+                // 커서 표시할 땐 다시 UIOnly 모드로 설정
+                FInputModeUIOnly InputMode;
+                InputMode.SetLockMouseToViewportBehavior(EMouseLockMode::DoNotLock);
+                InputMode.SetWidgetToFocus(MainMenuWidget->TakeWidget());
+                SetInputMode(InputMode);
+            }
+        }
+        else
+        {
+            // 마우스 움직임 없음 
+            InactivityTime += DeltaTime;
+            if (false == bCursorHidden && InactivityTime >= CursorHideDelay)
+            {
+                SetHideCursor();
+            }
+        }
+    }
+    else
+    {
+        // 마우스 위치 자체를 가져올 수 없을 경우에도 시간 증가
+        InactivityTime += DeltaTime;
+
+        if (!bCursorHidden && InactivityTime >= CursorHideDelay)
+        {
+            SetHideCursor();
+        }
+    }
 }
 
 void AMainMenuController::OnStartClicked()
@@ -150,4 +204,14 @@ void AMainMenuController::HandleHUDImageIndexChanged(int32 NewIndex)
         GI->AimImageIndex = NewIndex;
         UE_LOG(LogTemp, Log, TEXT("HUDImageIndex set to %d"), NewIndex);
     }
+}
+
+void AMainMenuController::SetHideCursor()
+{
+    bShowMouseCursor = false;
+    bCursorHidden = true;
+
+    // 마우스 커서를 숨기려면 GameOnly 모드로 전환
+    FInputModeGameOnly GameOnlyInput;
+    SetInputMode(GameOnlyInput);
 }
