@@ -306,12 +306,21 @@ bool Handle_CS_SIGN_UP(SessionRef& session, CS_SIGN_UP_PKT& pkt)
     std::cout << "Signed ID: " << pkt.sign_id << ", Password: " << pkt.sign_pwd << ", Name: " << pkt.sign_name << std::endl;
 
     // DBManager::DBSignedUp(...);
-    if (true == DBManager::GetInstance().DBSignUp(pkt.sign_id, pkt.sign_pwd, pkt.sign_name)) {
+    if (true == DBManager::GetInstance().DBSignUp(pkt.sign_id, pkt.sign_pwd, pkt.sign_name)) 
+    {
         SC_SIGNUP_SUCC_PKT succ_pkt;
         auto sendBuffer = ServerPacketHandler::MakeSendBuffer(succ_pkt);
         session->Send(sendBuffer);
 
         std::cout << "SignUp Success" << std::endl;
+    }
+    else 
+    {
+        SC_SIGNUP_FAIL_PKT fail_pkt;
+        auto sendBuffer = ServerPacketHandler::MakeSendBuffer(fail_pkt);
+        session->Send(sendBuffer);
+
+        std::cout << "SignUp Failed" << std::endl;
     }
 
     return true;

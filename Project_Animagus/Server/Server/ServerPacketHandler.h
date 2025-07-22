@@ -77,6 +77,7 @@ public:
     static SendBufferRef MakeSendBuffer(SC_LOGIN_SUCC_PKT& pkt) { return MakeSendBuffer(pkt, (uint16)PacketID::SC_LOGIN_SUCC); }
     static SendBufferRef MakeSendBuffer(SC_LOGIN_FAIL_PKT& pkt) { return MakeSendBuffer(pkt, (uint16)PacketID::SC_LOGIN_FAIL); }
     static SendBufferRef MakeSendBuffer(SC_SIGNUP_SUCC_PKT& pkt) { return MakeSendBuffer(pkt, (uint16)PacketID::SC_SIGNUP_SUCC); }
+    static SendBufferRef MakeSendBuffer(SC_SIGNUP_FAIL_PKT& pkt) { return MakeSendBuffer(pkt, (uint16)PacketID::SC_SIGNUP_FAIL); }
 
     
 private:

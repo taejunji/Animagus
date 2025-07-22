@@ -221,19 +221,17 @@ bool DBManager::DBSignUp(const char* id, const char* passwd, const char* name)
 {
     std::lock_guard<std::mutex> lock(m_mutex);
 
-    if (hdbc == SQL_NULL_HDBC) {
+    if (hdbc == SQL_NULL_HDBC)
         return false;
-    }
 
     SQLRETURN retcode;
-
     retcode = SQLAllocHandle(SQL_HANDLE_STMT, hdbc, &hstmt);
     if (!SQL_SUCCEEDED(retcode)) {
         HandleDiagnosticRecord(hstmt, SQL_HANDLE_STMT, retcode);
         return false;
     }
 
-    static const wchar_t* sql = L"{CALL dbo.sign_up_user(?, ?, ?)}";
+    static const wchar_t* sql = L"{? = CALL dbo.sign_up_user(?, ?, ?)}";
     retcode = SQLPrepare(hstmt, (SQLWCHAR*)sql, SQL_NTS);
     if (!SQL_SUCCEEDED(retcode)) {
         HandleDiagnosticRecord(hstmt, SQL_HANDLE_STMT, retcode);
@@ -241,44 +239,48 @@ bool DBManager::DBSignUp(const char* id, const char* passwd, const char* name)
         return false;
     }
 
+    // return code
+    SQLINTEGER returnCode = 0;
+    SQLLEN cbReturn = 0;
+    retcode = SQLBindParameter(hstmt, 1, SQL_PARAM_OUTPUT, SQL_C_LONG, SQL_INTEGER,
+        0, 0, &returnCode, 0, &cbReturn);
+
+    // ID
     wchar_t wid[21] = { 0 };
     ConvertCharToWide(id, wid, 21);
     SQLLEN cbId = SQL_NTS;
-    retcode = SQLBindParameter(hstmt, 1, SQL_PARAM_INPUT, SQL_C_WCHAR, SQL_WCHAR,
-        20, 0, (SQLPOINTER)wid, sizeof(wid), &cbId);
-    if (!(retcode == SQL_SUCCESS || retcode == SQL_SUCCESS_WITH_INFO)) {
-        HandleDiagnosticRecord(hstmt, SQL_HANDLE_STMT, retcode);
-        return false;
-    }
+    retcode = SQLBindParameter(hstmt, 2, SQL_PARAM_INPUT, SQL_C_WCHAR, SQL_WCHAR,
+        20, 0, wid, sizeof(wid), &cbId);
 
+    // Password
     wchar_t wpasswd[21] = { 0 };
     ConvertCharToWide(passwd, wpasswd, 21);
     SQLLEN cbPasswd = SQL_NTS;
-    retcode = SQLBindParameter(hstmt, 2, SQL_PARAM_INPUT, SQL_C_WCHAR, SQL_WCHAR,
-        20, 0, (SQLPOINTER)wpasswd, sizeof(wpasswd), &cbPasswd);
-    if (!(retcode == SQL_SUCCESS || retcode == SQL_SUCCESS_WITH_INFO)) {
-        HandleDiagnosticRecord(hstmt, SQL_HANDLE_STMT, retcode);
-        return false;
-    }
+    retcode |= SQLBindParameter(hstmt, 3, SQL_PARAM_INPUT, SQL_C_WCHAR, SQL_WCHAR,
+        20, 0, wpasswd, sizeof(wpasswd), &cbPasswd);
 
+    // Name
     wchar_t wname[21] = { 0 };
     ConvertCharToWide(name, wname, 21);
     SQLLEN cbName = SQL_NTS;
-    retcode = SQLBindParameter(hstmt, 3, SQL_PARAM_INPUT, SQL_C_WCHAR, SQL_WCHAR,
-        20, 0, (SQLPOINTER)wname, sizeof(wname), &cbName);
-    if (!(retcode == SQL_SUCCESS || retcode == SQL_SUCCESS_WITH_INFO)) {
-        HandleDiagnosticRecord(hstmt, SQL_HANDLE_STMT, retcode);
-        return false;
-    }
+    retcode |= SQLBindParameter(hstmt, 4, SQL_PARAM_INPUT, SQL_C_WCHAR, SQL_WCHAR,
+        20, 0, wname, sizeof(wname), &cbName);
 
-    retcode = SQLExecute(hstmt);
     if (!SQL_SUCCEEDED(retcode)) {
         HandleDiagnosticRecord(hstmt, SQL_HANDLE_STMT, retcode);
         SQLFreeHandle(SQL_HANDLE_STMT, hstmt);
         return false;
     }
 
-    return true;
+    retcode = SQLExecute(hstmt);
+    SQLFreeHandle(SQL_HANDLE_STMT, hstmt);
+    if (!SQL_SUCCEEDED(retcode)) {
+        HandleDiagnosticRecord(hstmt, SQL_HANDLE_STMT, retcode);
+        return false;
+    }
+
+    // ReturnCode: 0 = success, 1 = duplicate ID, -1 = DB error
+    return (returnCode == 0);
 }
 
 bool DBManager::DBDeleteUserById(const char* id)

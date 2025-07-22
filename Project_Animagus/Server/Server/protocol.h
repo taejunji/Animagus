@@ -2,7 +2,7 @@
 
 namespace Protocol {
 
-    constexpr char MAX_NAME_LEN = 30;
+    constexpr char MAX_NAME_LEN = 20;
     constexpr char MAX_CHAT_LEN = 50;
 
     constexpr char LOGIN_ERR = 0;
@@ -102,6 +102,7 @@ namespace Protocol {
         SC_LOGIN_SUCC,
         SC_LOGIN_FAIL,
         SC_SIGNUP_SUCC,
+        SC_SIGNUP_FAIL,
         SC_UR_HOST,
         SC_START_GAME,
         SC_ENTER_GAME,
@@ -259,6 +260,9 @@ namespace Protocol {
         // 더 넣을거 있나?
     };
     struct SC_SIGNUP_SUCC_PKT
+    {
+    };
+    struct SC_SIGNUP_FAIL_PKT
     {
     };
     struct SC_UR_HOST_PKT

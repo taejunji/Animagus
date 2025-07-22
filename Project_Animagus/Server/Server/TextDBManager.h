@@ -15,7 +15,9 @@ public:
     bool DBDisconnect();
 
     bool DBFindById(const char* id, const char* passwd, char* name, char* flag);
+    bool DBLogOutById(const char* id);
     bool DBSignUp(const char* id, const char* passwd, char* name);
+    bool DBDeleteUserById(const char* id);
 
 
 private:
@@ -27,13 +29,13 @@ private:
 
 private:
     struct UserInfo {
-        char id[21];
-        char passwd[21];
-        char name[Protocol::MAX_NAME_LEN + 1];
-        bool is_login;
+        std::string id;
+        std::string password;
+        std::string name;
+        bool        is_login;
     };
 
-    std::list<UserInfo> m_userList;
-    std::mutex          m_mutex;
+    std::unordered_map<std::string/*id*/, UserInfo> m_userList;
+    std::mutex                                      m_mutex;
 };
 
