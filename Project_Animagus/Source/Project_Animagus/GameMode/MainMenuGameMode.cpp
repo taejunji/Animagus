@@ -3,6 +3,7 @@
 
 #include "MainMenuGameMode.h"
 #include "../PlayerController/MainMenuController.h"
+#include "Project_Animagus/System/MyGameInstance.h"
 
 AMainMenuGameMode::AMainMenuGameMode()
 {
@@ -15,6 +16,10 @@ AMainMenuGameMode::AMainMenuGameMode()
 void AMainMenuGameMode::BeginPlay()
 {
     Super::BeginPlay();
-   
+
+    if (auto* GI = Cast<UMyGameInstance>(GetGameInstance()))
+    {
+        GI->PlayMenuBGM();
+    }
 }
 

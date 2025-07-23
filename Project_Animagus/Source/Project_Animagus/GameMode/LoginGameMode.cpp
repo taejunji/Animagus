@@ -9,7 +9,6 @@
 #include "../PlayerController/LoginPlayerController.h"
 #include "../Server/Server/protocol.h"
 
-
 ALoginGameMode::ALoginGameMode()
 {
     PrimaryActorTick.bCanEverTick = true;
@@ -79,5 +78,10 @@ void ALoginGameMode::HandleSignUpFail()
     if (ALoginPlayerController* LoginPC = Cast<ALoginPlayerController>(PC))
     {
         LoginPC->HandleSignUpFail();
+    }
+
+    if (auto* GI = Cast<UMyGameInstance>(GetGameInstance()))
+    {
+        GI->PlayMenuBGM();
     }
 }

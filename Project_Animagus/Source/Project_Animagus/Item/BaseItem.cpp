@@ -13,7 +13,7 @@ ABaseItem::ABaseItem()
 
     // Collision 컴포넌트 생성 및 초기화
     CollisionComp = CreateDefaultSubobject<USphereComponent>(TEXT("CollisionComp"));
-    CollisionComp->InitSphereRadius(50.f);
+    CollisionComp->InitSphereRadius(40.f);
     CollisionComp->SetCollisionObjectType(ECollisionChannel::ECC_WorldDynamic);
 
     // 모든 채널은 무시하도록 설정한 뒤

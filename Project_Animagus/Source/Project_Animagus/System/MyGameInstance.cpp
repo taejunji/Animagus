@@ -31,6 +31,7 @@
 #include "Misc/FileHelper.h"
 #include "../Server/Server/protocol.h"
 
+#include "Components/AudioComponent.h"
 
 UMyGameInstance::UMyGameInstance(const FObjectInitializer& ObjectInitializer)
     : Super(ObjectInitializer)
@@ -202,6 +203,32 @@ void UMyGameInstance::SendPacket(SendBufferRef SendBuffer)
         return;
 
     ClientSession->SendPacket(SendBuffer);
+}
+
+void UMyGameInstance::PlayMenuBGM()
+{
+    if (!MenuBGM || MenuBGMComponent)
+        return;
+
+    // 월드가 없으면 못 만듦
+    if (UWorld* W = GetWorld())
+    {
+        MenuBGMComponent = UGameplayStatics::SpawnSound2D(W, MenuBGM);
+        if (MenuBGMComponent)
+        {
+            MenuBGMComponent->bIsUISound = true;  // UI 사운드로 분류
+            MenuBGMComponent->Play();
+        }
+    }
+}
+
+void UMyGameInstance::StopMenuBGM()
+{
+    if (MenuBGMComponent)
+    {
+        MenuBGMComponent->Stop();
+        MenuBGMComponent = nullptr;
+    }
 }
 
 //void UMyGameInstance::AddAICharacter(AAICharacter* AICharacter)

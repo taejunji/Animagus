@@ -25,6 +25,7 @@ class UNiagaraComponent;
 class UNiagaraSystem;
 class USoundBase;
 class USoundAttenuation;
+class ADeathPowerUpItem;
 
 UCLASS()
 class PROJECT_ANIMAGUS_API ABaseCharacter : public ACharacter
@@ -133,7 +134,8 @@ public:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Skills")
     TSubclassOf<class UHasteSkill> HasteBPClass;
 
-
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Item")
+    TSubclassOf<class ADeathPowerUpItem> DeathPowerClass;
     
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Visual")
     UMaterialInstanceDynamic* AuraMaterialInstance;

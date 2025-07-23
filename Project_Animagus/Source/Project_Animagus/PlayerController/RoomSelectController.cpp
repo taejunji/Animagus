@@ -28,6 +28,7 @@ void ARoomSelectController::ShowRoomSelectUI()
 
     RoomSelectWidget->AddToViewport();
     RoomSelectWidget->SetupOwner(this);
+    RoomSelectWidget->SetIsFocusable(true);
 
     // 입력 모드 전환(선택 UI 전용)
     FInputModeUIOnly Mode;

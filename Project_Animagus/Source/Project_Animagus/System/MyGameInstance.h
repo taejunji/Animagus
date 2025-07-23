@@ -37,7 +37,8 @@ struct StoredPlayerData
     // 악세서리 메쉬 
     // 승패 전적 등등 
 };
-
+class UAudioComponent;
+class USoundBase;
 // ------------------------------------------------------------------------------
 // 게임 인스턴스는 프로그램이 시작할 때 생기는 싱글 톤 객체
 // 플레이어가 DB로 갖던 정보를 동기화하거나 레벨 간( 로그인, 로비, 배틀 ) 공유 데이터를 관리할 수 있다.
@@ -133,6 +134,22 @@ public:
     void HandleSignUpSuccess();
     void HandleSignUpFail();
 
+    // 로그인 메인 룸 BGM
+    UPROPERTY(EditDefaultsOnly, Category="Audio")
+    USoundBase* MenuBGM;
+
+    // 재생용 컴포넌트
+    UPROPERTY(Transient)
+    UAudioComponent* MenuBGMComponent;
+
+    // 메뉴 BGM 재생
+    UFUNCTION()
+    void PlayMenuBGM();
+
+    // 메뉴 BGM 정지
+    UFUNCTION()
+    void StopMenuBGM();
+    
 public:
     // AI 캐릭터
     // TArray<class AAICharacter*> AIPlayers;
