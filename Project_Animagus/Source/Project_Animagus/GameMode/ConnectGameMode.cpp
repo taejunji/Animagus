@@ -13,6 +13,11 @@ void AConnectGameMode::BeginPlay()
 {
     Super::BeginPlay();
 
+    if (auto* GI = Cast<UMyGameInstance>(GetGameInstance()))
+    {
+        GI->PlayMenuBGM();
+    }
+    
     // PreviewActor 스폰 (GameMode가 담당)
     if (PreviewActorClass)
     {
@@ -36,6 +41,6 @@ void AConnectGameMode::PostLogin(APlayerController* NewPlayer)
         
         NewPlayer->SetControlRotation(SpawnRotation);
     }
-
+    
 }
 
