@@ -32,6 +32,8 @@
 #include "../Server/Server/protocol.h"
 
 #include "Components/AudioComponent.h"
+#include "GameFramework/GameUserSettings.h"
+
 
 UMyGameInstance::UMyGameInstance(const FObjectInitializer& ObjectInitializer)
     : Super(ObjectInitializer)
@@ -76,6 +78,14 @@ UMyGameInstance::UMyGameInstance(const FObjectInitializer& ObjectInitializer)
 void UMyGameInstance::Init()
 {
     Super::Init();
+
+    UGameUserSettings* Settings = GEngine->GetGameUserSettings();
+    if (Settings)
+    {
+        Settings->SetFullscreenMode(EWindowMode::Fullscreen);
+        Settings->SetScreenResolution(FIntPoint(1920, 1080));
+        Settings->ApplySettings(false);  // 즉시 적용, false=재시작 불필요
+    }
 
     ConnectToGameServer();
 
@@ -205,10 +215,30 @@ void UMyGameInstance::SendPacket(SendBufferRef SendBuffer)
     ClientSession->SendPacket(SendBuffer);
 }
 
+void UMyGameInstance::SaveBGMPlaybackTime()
+{
+    if (MenuBGMComponent && MenuBGMComponent->IsPlaying())
+    {
+        //MenuBGMPlaybackTime = MenuBGMComponent->GetPlaybackTime();
+    }
+}
+
 void UMyGameInstance::PlayMenuBGM()
 {
     if (!MenuBGM || MenuBGMComponent)
         return;
+
+    //if (UWorld* W = GetWorld())
+    //{
+    //    MenuBGMComponent = UGameplayStatics::SpawnSound2D(W, MenuBGM);
+    //    if (MenuBGMComponent)
+    //    {
+    //        MenuBGMComponent->bIsUISound = true;
+
+    //        // 지정된 위치부터 재생
+    //        MenuBGMComponent->Play(MenuBGMPlaybackTime);
+    //    }
+    //}
 
     // 월드가 없으면 못 만듦
     if (UWorld* W = GetWorld())

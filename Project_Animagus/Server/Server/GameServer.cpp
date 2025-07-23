@@ -100,7 +100,7 @@ bool GameServer::Initialize()
     }
     //-------------------------------------
 
-#elif
+#else
     auto& textDbManager = TextDBManager::GetInstance();
     textDbManager.DBConnect();
 
@@ -139,6 +139,9 @@ bool GameServer::Initialize()
         if (true == textDbManager.DBDeleteUserById(SignID.c_str())) {
             std::cout << "Delete User Success" << std::endl;
         }
+    }
+    else {
+        std::cout << "SignUp Failed" << std::endl;
     }
     // --------------------------------------
 #endif

@@ -541,7 +541,7 @@ bool Room::HandleRoundEndLocked(const Protocol::CS_ROUND_END_PKT& pkt)
 #ifndef _DUMMYTEST
         //std::cout << item.first << ":" << item.second << ", ";
 #endif
-        accumRanking[item.first] += scoreBoard[scoreBoardIndex++];
+        accumRanking[item.first] += scoreBoard[scoreBoardIndex++];  // 여기가 문젠가?
         std::cout << item.first << ":" << accumRanking[item.first] << ", ";
     }
     std::cout << std::endl;

@@ -142,6 +142,12 @@ public:
     UPROPERTY(Transient)
     UAudioComponent* MenuBGMComponent;
 
+    UPROPERTY()
+    float MenuBGMPlaybackTime = 0.f; // 저장된 재생 위치
+
+    UFUNCTION()
+    void SaveBGMPlaybackTime();
+
     // 메뉴 BGM 재생
     UFUNCTION()
     void PlayMenuBGM();

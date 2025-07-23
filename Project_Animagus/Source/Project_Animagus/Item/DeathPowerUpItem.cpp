@@ -12,6 +12,11 @@ ADeathPowerUpItem::ADeathPowerUpItem()
 {
     // 생성 직후 충돌 비활성화
     CollisionComp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+
+    if (AActor* Spawner = GetOwner())
+    {
+        CollisionComp->IgnoreActorWhenMoving(Spawner, true);
+    }
 }
 
 void ADeathPowerUpItem::BeginPlay()

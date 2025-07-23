@@ -19,6 +19,10 @@ void ALoginGameMode::BeginPlay()
 {
     Super::BeginPlay();
     
+    if (auto* GI = Cast<UMyGameInstance>(GetGameInstance()))
+    {
+        GI->PlayMenuBGM();
+    }
 }
 
 void ALoginGameMode::Tick(float DeltaTime)
@@ -78,10 +82,5 @@ void ALoginGameMode::HandleSignUpFail()
     if (ALoginPlayerController* LoginPC = Cast<ALoginPlayerController>(PC))
     {
         LoginPC->HandleSignUpFail();
-    }
-
-    if (auto* GI = Cast<UMyGameInstance>(GetGameInstance()))
-    {
-        GI->PlayMenuBGM();
     }
 }

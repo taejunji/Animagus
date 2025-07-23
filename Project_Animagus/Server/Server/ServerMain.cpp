@@ -12,7 +12,7 @@ BOOL WINAPI ConsoleHandler(DWORD signal)
 
 #ifdef _DBMODE
         auto& instance = DBManager::GetInstance();
-#elif
+#else
         auto& instance = TextDBManager::GetInstance();
 #endif
         instance.DBDisconnect();

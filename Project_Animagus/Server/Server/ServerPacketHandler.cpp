@@ -5,6 +5,7 @@
 #include "Player.h"
 #include "Room.h"
 #include "DBManager.h"
+#include "TextDBManager.h"
 
 using namespace Protocol;
 
@@ -267,7 +268,7 @@ bool Handle_CS_LOGIN(SessionRef& session, CS_LOGIN_PKT& pkt)
 
 #ifdef _DBMODE
     auto& instance = DBManager::GetInstance();
-#elif
+#else
     auto& instance = TextDBManager::GetInstance();
 #endif
 
@@ -313,7 +314,7 @@ bool Handle_CS_SIGN_UP(SessionRef& session, CS_SIGN_UP_PKT& pkt)
     // DBManager::DBSignedUp(...);
 #ifdef _DBMODE
     auto& instance = DBManager::GetInstance();
-#elif
+#else
     auto& instance = TextDBManager::GetInstance();
 #endif
 

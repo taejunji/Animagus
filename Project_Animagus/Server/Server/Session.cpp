@@ -9,7 +9,7 @@
 #include "Room.h"
 #include "Player.h"
 #include "DBManager.h"
-
+#include "TextDBManager.h"
 
 /*--------------
 	Session
@@ -358,7 +358,13 @@ int32 Session::OnRecv(BYTE* buffer, int32 len)
 void Session::OnDisconnected()
 {
     if (true == m_loggedIn) {
-        if (true == DBManager::GetInstance().DBLogOutById(m_userId.c_str())) {
+#ifdef _DBMODE
+        auto& instance = DBManager::GetInstance();
+#else
+        auto& instance = TextDBManager::GetInstance();
+#endif
+
+        if (true == instance.DBLogOutById(m_userId.c_str())) {
             std::cout << "LogOut Success" << std::endl;
         }
     }
