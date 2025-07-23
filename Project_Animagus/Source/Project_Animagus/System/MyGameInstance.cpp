@@ -618,6 +618,25 @@ void UMyGameInstance::HandleSignUpSuccess()
     }
 }
 
+void UMyGameInstance::HandleSignUpFail()
+{
+    if (Socket == nullptr || ClientSession == nullptr)
+        return;
+
+    auto* World = GetWorld();
+    if (World == nullptr)
+        return;
+
+    AGameModeBase* BaseGameMode = UGameplayStatics::GetGameMode(World);
+    if (BaseGameMode)
+    {
+        if (ALoginGameMode* GameMode = Cast<ALoginGameMode>(BaseGameMode))
+        {
+            GameMode->HandleSignUpFail();
+        }
+    }
+}
+
 
 
 //void UMyGameInstance::SetMyPlayerIndex(uint16 playerIndex)

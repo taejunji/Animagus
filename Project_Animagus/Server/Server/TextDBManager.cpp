@@ -94,7 +94,7 @@ bool TextDBManager::DBLogOutById(const char* id)
     return true;
 }
 
-bool TextDBManager::DBSignUp(const char* id, const char* passwd, char* name)
+bool TextDBManager::DBSignUp(const char* id, const char* passwd, const char* name)
 {
     std::lock_guard<std::mutex> lock(m_mutex);
 

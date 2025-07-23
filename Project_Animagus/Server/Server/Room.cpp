@@ -13,8 +13,8 @@ std::array<RoomRef, ROOM_COUNT> GRoom{};
 std::array<uint8, 8> scoreBoard = {10, 7, 6, 5, 4, 3, 2, 1};
 
 std::string AINameList[] = {
-    "James", "TaeJun", "HoDoonLee", "JaeGyeong",
-    "Hwan", "GwangSin", "DaeHyeon", "YongSik"
+    "HwanHee", "TaeJun", "GwangSin", "JaeGyeong",
+    "DaeHyeon", "YongSik", "JiWoong", "NaeHoon"
 };
 
 Room::Room()
@@ -60,7 +60,8 @@ bool Room::Leave(uint16 playerID)
 
     // TODO: Leave Pkt 전송
 
-    if (player->playerID == m_hostPlayer->playerID) {
+    if (player->playerID == m_hostPlayer->playerID) 
+    {
         for (auto& ai : m_aiPlayers) {
             // TODO: Leave Pkt 전송
 
@@ -71,10 +72,7 @@ bool Room::Leave(uint16 playerID)
     }
 
     if (m_playerCount == 0) {
-        m_roundCount = 1;
-        accumRanking.clear();
-        InitAiTypes();
-        InitializeGame();
+        InitializeRoom();
     }
 
     return true;
@@ -141,7 +139,8 @@ bool Room::HandleEnterGame()
     if (m_loadingOverCount == m_players.size())
     {
         m_gameStartTickCount = GetTickCount64();
-        for (auto& item : m_players) {
+        for (auto& item : m_players) 
+        {
             HandleStartGame(item.second);
             if (item.first == m_hostPlayer->playerID) {
                 //MakeAIPlayer();
@@ -592,10 +591,7 @@ bool Room::HandleRoundInitLocked(const Protocol::CS_ROUND_INIT_PKT& pkt)
         SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(gameEndPkt);
         Broadcast(sendBuffer, 0);
 
-        m_roundCount = 1;
-        accumRanking.clear();
-        InitAiTypes();
-        InitializeGame();
+        InitializeRoom();
     }
 
     return true;
@@ -741,5 +737,26 @@ void Room::InitAiTypes()
     std::shuffle(pool.begin(), pool.end(), gen);
 
     std::copy_n(pool.begin(), aiPlayerTypes.size(), aiPlayerTypes.begin());
+}
+
+void Room::InitializeRoom()
+{
+    InitializeGame();
+    InitAiTypes();
+
+    m_players.clear();
+    m_aiPlayers.clear();
+    m_playerCount = 0;
+    m_alivePlayerCount = 8;
+    m_hostPlayer = nullptr;
+    m_roundCount = 1;
+    m_indexGen = 0;
+    m_loadingOverCount = 0;
+    m_gameStartTickCount = 0;
+    m_playerNames.clear();
+    m_aiNameGen = 0;
+    accumRanking.clear();
+    m_nowPlayerCount = 0;
+
 }
 

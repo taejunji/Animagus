@@ -191,9 +191,6 @@ void ALoginPlayerController::OnSignOkClicked()
 
     SendBufferRef SendBuffer = ClientPacketHandler::MakeSendBuffer(SignUpPkt);
     Cast<UMyGameInstance>(GWorld->GetGameInstance())->SendPacket(SendBuffer);
-
-    SignUpWidget->ClearInputs();
-    SignUpWidget->SetVisibility(ESlateVisibility::Collapsed);
 }
 
 void ALoginPlayerController::OnSignCancelClicked()
@@ -255,6 +252,9 @@ void ALoginPlayerController::HandleLoginFail(Protocol::SC_LOGIN_FAIL_PKT& pkt)
 
 void ALoginPlayerController::HandleSignUpSuccess()
 {
+    SignUpWidget->ClearInputs();
+    SignUpWidget->SetVisibility(ESlateVisibility::Collapsed);
+
     LoginWidget->ShowResult(FText::FromString(TEXT("회원가입 완료")));
 
     FTimerHandle UnusedHandle;
@@ -264,6 +264,23 @@ void ALoginPlayerController::HandleSignUpSuccess()
         {
             if (LoginWidget)
                 LoginWidget->HideResult();
+        },
+        2.0f,
+        false  // 한번만
+    );
+}
+
+void ALoginPlayerController::HandleSignUpFail()
+{
+    SignUpWidget->ShowResult(FText::FromString(TEXT("회원가입 실패 (중복ID)")));
+
+    FTimerHandle UnusedHandle;
+    GetWorldTimerManager().SetTimer(
+        UnusedHandle,
+        [this]()
+        {
+            if (SignUpWidget)
+                SignUpWidget->HideResult();
         },
         2.0f,
         false  // 한번만

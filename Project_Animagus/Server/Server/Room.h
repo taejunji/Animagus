@@ -35,6 +35,7 @@ public:
     void InitializeGame();
     void InitItemInfo();
     void InitAiTypes();
+    void InitializeRoom();
 
 public:
     uint16 m_roomID;

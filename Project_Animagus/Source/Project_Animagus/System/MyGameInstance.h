@@ -131,6 +131,7 @@ public:
     void HandleLoginSuccess(Protocol::SC_LOGIN_SUCC_PKT& pkt);
     void HandleLoginFail(Protocol::SC_LOGIN_FAIL_PKT& pkt);
     void HandleSignUpSuccess();
+    void HandleSignUpFail();
 
 public:
     // AI 캐릭터

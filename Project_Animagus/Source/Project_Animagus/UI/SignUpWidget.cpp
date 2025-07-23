@@ -6,6 +6,7 @@
 #include "Components/Button.h"
 #include "Components/TextBlock.h"
 #include "Kismet/GameplayStatics.h"
+#include "TimerManager.h"
 #include "Project_Animagus/PlayerController/LoginPlayerController.h"
 
 
@@ -27,17 +28,12 @@ void USignUpWidget::ShowResult(const FText& Message)
     if (!TxtResult) return;
     TxtResult->SetText(Message);
     TxtResult->SetVisibility(ESlateVisibility::Visible);
+}
 
-    //FTimerHandle UnusedHandle;
-    //GetWorldTimerManager().SetTimer(
-    //    UnusedHandle,
-    //    [this]()
-    //    {
-    //        TxtResult->SetVisibility(ESlateVisibility::Collapsed);
-    //    },
-    //    2.0f,
-    //    false  // 한번만
-    //);
+void USignUpWidget::HideResult()
+{
+    if (!TxtResult) return;
+    TxtResult->SetVisibility(ESlateVisibility::Collapsed);
 }
 
 void USignUpWidget::PlayHoverSound()

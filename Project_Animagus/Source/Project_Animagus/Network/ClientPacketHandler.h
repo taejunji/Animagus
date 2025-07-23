@@ -31,6 +31,7 @@ bool Handle_SC_GAME_END(SessionRef& session, Protocol::SC_GAME_END_PKT& pkt);
 bool Handle_SC_LOGIN_SUCC(SessionRef& session, Protocol::SC_LOGIN_SUCC_PKT& pkt);
 bool Handle_SC_LOGIN_FAIL(SessionRef& session, Protocol::SC_LOGIN_FAIL_PKT& pkt);
 bool Handle_SC_SIGNUP_SUCC(SessionRef& session, Protocol::SC_SIGNUP_SUCC_PKT& pkt);
+bool Handle_SC_SIGNUP_FAIL(SessionRef& session, Protocol::SC_SIGNUP_FAIL_PKT& pkt);
 
 class ClientPacketHandler
 {
@@ -55,6 +56,7 @@ public:
         GClientPacketHandler[(int32)Protocol::PacketID::SC_LOGIN_SUCC] = [](SessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<Protocol::SC_LOGIN_SUCC_PKT>(Handle_SC_LOGIN_SUCC, session, buffer, len); };
         GClientPacketHandler[(int32)Protocol::PacketID::SC_LOGIN_FAIL] = [](SessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<Protocol::SC_LOGIN_FAIL_PKT>(Handle_SC_LOGIN_FAIL, session, buffer, len); };
         GClientPacketHandler[(int32)Protocol::PacketID::SC_SIGNUP_SUCC] = [](SessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<Protocol::SC_SIGNUP_SUCC_PKT>(Handle_SC_SIGNUP_SUCC, session, buffer, len); };
+        GClientPacketHandler[(int32)Protocol::PacketID::SC_SIGNUP_FAIL] = [](SessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<Protocol::SC_SIGNUP_FAIL_PKT>(Handle_SC_SIGNUP_FAIL, session, buffer, len); };
 
     }
 

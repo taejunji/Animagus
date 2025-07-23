@@ -22,5 +22,6 @@ public:
     void HandleLoginSuccess();
     void HandleLoginFail(Protocol::SC_LOGIN_FAIL_PKT& pkt);
     void HandleSignUpSuccess();
+    void HandleSignUpFail();
 };
 

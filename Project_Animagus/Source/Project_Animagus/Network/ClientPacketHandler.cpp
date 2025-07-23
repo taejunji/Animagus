@@ -188,3 +188,13 @@ bool Handle_SC_SIGNUP_SUCC(SessionRef& session, Protocol::SC_SIGNUP_SUCC_PKT& pk
 
     return true;
 }
+
+bool Handle_SC_SIGNUP_FAIL(SessionRef& session, Protocol::SC_SIGNUP_FAIL_PKT& pkt)
+{
+    if (auto* GameInstance = Cast<UMyGameInstance>(GWorld->GetGameInstance()))
+    {
+        GameInstance->HandleSignUpFail();
+    }
+
+    return true;
+}

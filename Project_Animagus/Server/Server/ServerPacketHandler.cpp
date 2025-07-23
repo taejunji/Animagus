@@ -264,7 +264,12 @@ bool Handle_CS_LOGIN(SessionRef& session, CS_LOGIN_PKT& pkt)
     std::cout << "Login ID: " << pkt.login_id << ", Password: " << pkt.login_pwd << std::endl;
 
     // DBManager::DBFindById(...);
+
+#ifdef _DBMODE
     auto& instance = DBManager::GetInstance();
+#elif
+    auto& instance = TextDBManager::GetInstance();
+#endif
 
     char UserName[MAX_NAME_LEN + 1];
     char flag;
@@ -306,7 +311,13 @@ bool Handle_CS_SIGN_UP(SessionRef& session, CS_SIGN_UP_PKT& pkt)
     std::cout << "Signed ID: " << pkt.sign_id << ", Password: " << pkt.sign_pwd << ", Name: " << pkt.sign_name << std::endl;
 
     // DBManager::DBSignedUp(...);
-    if (true == DBManager::GetInstance().DBSignUp(pkt.sign_id, pkt.sign_pwd, pkt.sign_name)) 
+#ifdef _DBMODE
+    auto& instance = DBManager::GetInstance();
+#elif
+    auto& instance = TextDBManager::GetInstance();
+#endif
+
+    if (true == instance.DBSignUp(pkt.sign_id, pkt.sign_pwd, pkt.sign_name))
     {
         SC_SIGNUP_SUCC_PKT succ_pkt;
         auto sendBuffer = ServerPacketHandler::MakeSendBuffer(succ_pkt);

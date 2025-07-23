@@ -16,7 +16,7 @@ public:
 
     bool DBFindById(const char* id, const char* passwd, char* name, char* flag);
     bool DBLogOutById(const char* id);
-    bool DBSignUp(const char* id, const char* passwd, char* name);
+    bool DBSignUp(const char* id, const char* passwd, const char* name);
     bool DBDeleteUserById(const char* id);
 
 

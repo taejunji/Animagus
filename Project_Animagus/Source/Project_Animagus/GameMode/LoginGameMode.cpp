@@ -71,3 +71,13 @@ void ALoginGameMode::HandleSignUpSuccess()
         LoginPC->HandleSignUpSuccess();
     }
 }
+
+void ALoginGameMode::HandleSignUpFail()
+{
+    APlayerController* PC = UGameplayStatics::GetPlayerController(GetWorld(), 0);
+    if (nullptr == PC) return;
+    if (ALoginPlayerController* LoginPC = Cast<ALoginPlayerController>(PC))
+    {
+        LoginPC->HandleSignUpFail();
+    }
+}

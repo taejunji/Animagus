@@ -36,6 +36,9 @@ public:
     UFUNCTION()
     void ShowResult(const FText& Message);
 
+    UFUNCTION()
+    void HideResult();
+
     TWeakObjectPtr<ALoginPlayerController> Owner;
 
     UPROPERTY(EditAnywhere, Category = "Sound")
