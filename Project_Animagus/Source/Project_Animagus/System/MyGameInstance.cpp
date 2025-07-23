@@ -4,6 +4,7 @@
 #include "MyGameInstance.h"
 #include "Kismet/GameplayStatics.h"
 #include "../Character/AICharacter.h"
+#include "Components/AudioComponent.h"
 
 UMyGameInstance::UMyGameInstance(const FObjectInitializer& ObjectInitializer)
     : Super(ObjectInitializer)
@@ -85,6 +86,32 @@ void UMyGameInstance::SwitchLevel(LevelType level)
     case LevelType::Battle:
         UGameplayStatics::OpenLevel(GetWorld(), FName("/Game/WorkFolder/Levels/L_Map"));
         break;
+    }
+}
+
+void UMyGameInstance::PlayMenuBGM()
+{
+    if (!MenuBGM || MenuBGMComponent)
+        return;
+
+    // 월드가 없으면 못 만듦
+    if (UWorld* W = GetWorld())
+    {
+        MenuBGMComponent = UGameplayStatics::SpawnSound2D(W, MenuBGM);
+        if (MenuBGMComponent)
+        {
+            MenuBGMComponent->bIsUISound = true;  // UI 사운드로 분류
+            MenuBGMComponent->Play();
+        }
+    }
+}
+
+void UMyGameInstance::StopMenuBGM()
+{
+    if (MenuBGMComponent)
+    {
+        MenuBGMComponent->Stop();
+        MenuBGMComponent = nullptr;
     }
 }
 

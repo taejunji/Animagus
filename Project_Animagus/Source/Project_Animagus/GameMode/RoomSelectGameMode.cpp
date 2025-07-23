@@ -5,6 +5,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "Blueprint/UserWidget.h"
 #include "../PlayerController/RoomSelectController.h"
+#include "Project_Animagus/System/MyGameInstance.h"
 
 
 ARoomSelectGameMode::ARoomSelectGameMode()
@@ -18,6 +19,10 @@ ARoomSelectGameMode::ARoomSelectGameMode()
 void ARoomSelectGameMode::BeginPlay()
 {
     Super::BeginPlay();
-    
+
+    if (auto* GI = Cast<UMyGameInstance>(GetGameInstance()))
+    {
+        GI->PlayMenuBGM();
+    }
 }
 

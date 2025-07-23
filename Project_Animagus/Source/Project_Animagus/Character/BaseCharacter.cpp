@@ -28,6 +28,7 @@
 #include "../Skill/Fireball.h"
 #include "../Skill/MagicMissile.h"
 #include "Kismet/GameplayStatics.h"
+#include "Project_Animagus/Item/DeathPowerUpItem.h"
 
 #include "Project_Animagus/Skill/Bounce.h"
 #include "Project_Animagus/Skill/ChangeSkill.h"
@@ -245,6 +246,29 @@ void ABaseCharacter::Tick(float DeltaTime)
     if (hp <= 0.f) {        
         if (is_dead == false) {
             is_dead = true;
+
+            if (DeathPowerClass)
+            {
+                FVector SpawnLoc = GetActorLocation();
+                const float ZOffsetDown = 30.f; 
+                SpawnLoc.Z -= ZOffsetDown;
+                
+                FActorSpawnParameters Params;
+                Params.Owner = this;
+                ADeathPowerUpItem* NewItem = GetWorld()->SpawnActor<ADeathPowerUpItem>(
+                    DeathPowerClass,
+                    SpawnLoc,
+                    FRotator::ZeroRotator,
+                    Params
+                );
+                if (NewItem)
+                {
+                    // 사망 캐릭터의 강화 횟수 저장
+                    NewItem->StoredPowerUpCount = PowerUpLevel;
+
+                    // (충돌 컴포넌트는 생성자에서 이미 NoCollision)
+                }
+            }
             // Player면 죽은 시점에서 마지막 업데이트
             /*ABattle_PlayerController* PC = Cast<ABattle_PlayerController>(GetController());
             if (PC && PC->PlayerHUD)
