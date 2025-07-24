@@ -904,7 +904,8 @@ void ABattleGameMode::PrintElapsedtime()
     elasped_time += 1.0f; 
      
     FString DebugMessage = FString::Printf(TEXT("라운드 경과 시간: %f초"), elasped_time);
-    GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Yellow, DebugMessage); 
+    //GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Yellow, DebugMessage); 
+    UE_LOG(LogTemp, Warning, TEXT("%s"), *DebugMessage);
 
     UMyGameInstance* MyGameInstance = Cast<UMyGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
     if (MyGameInstance)

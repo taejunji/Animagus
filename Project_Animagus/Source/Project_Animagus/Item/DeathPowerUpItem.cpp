@@ -59,6 +59,11 @@ void ADeathPowerUpItem::OnItemOverlapBegin(UPrimitiveComponent* OverlappedComp, 
         return;
     }
 
+    if (OtherActor == GetOwner())
+    {
+        return;
+    }
+
     ABaseCharacter* Picker = Cast<ABaseCharacter>(OtherActor);
     if (Picker)
     {

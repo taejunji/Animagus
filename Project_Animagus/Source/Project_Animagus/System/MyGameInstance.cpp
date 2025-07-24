@@ -161,14 +161,17 @@ void UMyGameInstance::ConnectToGameServer()
     InternetAddr->SetPort(Port);
 
     // Log
-    GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Connecting To Server...")));
+    //GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Connecting To Server...")));
+    UE_LOG(LogTemp, Warning, TEXT("Connecting To Server..."));
+
 
     bool Connected = Socket->Connect(*InternetAddr);	// Blocking 방식 Connect
 
     if (Connected)
     {
         // Log
-        GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Connection Success")));
+        //GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Connection Success")));
+        UE_LOG(LogTemp, Warning, TEXT("Connection Success"));
 
         // Session
         ClientSession = MakeShared<Session>(Socket);
@@ -184,7 +187,8 @@ void UMyGameInstance::ConnectToGameServer()
     }
     else
     {
-        GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Connection Failed")));
+        //GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Connection Failed")));
+        UE_LOG(LogTemp, Warning, TEXT("Connection Failed"));
     }
 }
 
@@ -272,7 +276,8 @@ void UMyGameInstance::StopMenuBGM()
 void UMyGameInstance::PrintGameInstanceData()
 {
     FString DebugMessage = FString::Printf(TEXT("게임 인스턴스 - 배틀 라운드 수: %d"), round_count);
-    GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Red, DebugMessage);
+    //GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Red, DebugMessage);
+    UE_LOG(LogTemp, Warning, TEXT("%s"), *DebugMessage);
 }
 
 
@@ -601,6 +606,8 @@ void UMyGameInstance::HandleBattleModeEnd(Protocol::SC_GAME_END_PKT& pkt)
     auto* World = GetWorld();
     if (World == nullptr)
         return;
+
+    round_count = 0;
 
     AGameModeBase* BaseGameMode = UGameplayStatics::GetGameMode(World);
     if (BaseGameMode)

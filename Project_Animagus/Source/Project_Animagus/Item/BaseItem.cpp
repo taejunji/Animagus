@@ -7,6 +7,12 @@
 #include "Perception/AIPerceptionStimuliSourceComponent.h"
 #include "Perception/AISense_Sight.h"
 
+#include "../System/MyGameInstance.h"
+#include "../Server/Server/protocol.h"
+#include "../Network/Session.h"
+#include "../Network/ClientPacketHandler.h"
+
+
 ABaseItem::ABaseItem()
 {
     PrimaryActorTick.bCanEverTick = true;
@@ -104,6 +110,18 @@ void ABaseItem::OnPickedUp(ABaseCharacter* Picker)
         bIsPickedUp = true;
        
         DestroyItem();
+
+        // 아이템 획득 시에도 HP 업데이트
+        if (PawnType::NETWORK != Picker->GetPawnType())
+        {
+            Protocol::CS_DAMAGE_PKT DamagePkt;
+            DamagePkt.player_id = Picker->GetPlayerId();
+            DamagePkt.hp = Picker->GetHP();
+            DamagePkt.isAlive = (Picker->GetHP() <= 0.f);
+
+            SendBufferRef SendBuffer = ClientPacketHandler::MakeSendBuffer(DamagePkt);
+            Cast<UMyGameInstance>(GWorld->GetGameInstance())->SendPacket(SendBuffer);
+        }
     }
 }
 

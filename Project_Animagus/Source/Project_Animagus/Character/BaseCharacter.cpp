@@ -11,6 +11,7 @@
 #include "Animation/AnimInstance.h"
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "../GameMode/BattleGameMode.h"
 
 #include "../Actor/Zones/AttractionZone.h"
 #include "../Actor/Zones/ShrinkingZone.h"
@@ -251,7 +252,6 @@ void ABaseCharacter::Tick(float DeltaTime)
     if (hp <= 0.f) {        
         if (is_dead == false) {
             is_dead = true;
-            GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 
             if (DeathPowerClass)
             {
@@ -273,6 +273,12 @@ void ABaseCharacter::Tick(float DeltaTime)
                     NewItem->StoredPowerUpCount = PowerUpLevel;
 
                     // (충돌 컴포넌트는 생성자에서 이미 NoCollision)
+
+                    // 라운드 초기화 시 삭제시킬 관심목록에 등록
+                    if (auto GameMode = Cast<ABattleGameMode>(GetWorld()))
+                    {
+                        GameMode->SpawnedItems.Add(NewItem);
+                    }
                 }
             }
             // Player면 죽은 시점에서 마지막 업데이트
@@ -287,7 +293,7 @@ void ABaseCharacter::Tick(float DeltaTime)
             // 일시적으로 이동을 멈추고 싶다면? → DisableMovement()
             // 이동을 완전히 비활성화하고 싶다면 ? → SetMovementMode(MOVE_None)
             GetCharacterMovement()->DisableMovement();
-            //GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+            GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
         }
 
         return;
@@ -310,10 +316,9 @@ float ABaseCharacter::TakeDamage(float DamageAmount, struct FDamageEvent const& 
 
     //hp -= ActualDamage;
 
-    // 1. Move 패킷에 현재 내 HP 정보를 포함시킨다. 내 캐릭터, AI에 대한 데미지 검사만 실시한다.
+    // 내가 데미지를 받으면 서버로 패킷을 전송한다. 서버에서 데미지를 계산해 Broadcast. 다른 클라에서는 그걸로 SetHp
 
 
-    // 2. 내가 데미지를 받으면 서버로 패킷을 전송한다. 서버에서 데미지를 계산해 Broadcast. 다른 클라에서는 그걸로 SetHp
     if (false == DamageCauser->IsA<AAttractionZone>() && false == DamageCauser->IsA<AShrinkingZone>()) {
         PlayAnimMontageByType(MontageType::Hit);
 
@@ -322,13 +327,14 @@ float ABaseCharacter::TakeDamage(float DamageAmount, struct FDamageEvent const& 
             ShowDmgIndicator(ActualDamage);
         }
     }
-    hp -= ActualDamage;
 
     if (GetPawnType() == PawnType::PLAYER || GetPawnType() == PawnType::AI)
     {
+        hp -= ActualDamage;
+
         Protocol::CS_DAMAGE_PKT DamagePkt;
         DamagePkt.player_id = GetPlayerId();
-        DamagePkt.room_id = 0;                // TODO: 로비에서 룸 선택 그거
+        DamagePkt.room_id = 0;
         DamagePkt.hp = GetHP();
         DamagePkt.isAlive = (hp <= 0.f);
 

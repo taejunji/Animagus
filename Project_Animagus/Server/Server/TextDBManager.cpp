@@ -27,6 +27,8 @@ bool TextDBManager::DBConnect()
     }
 
     file.close();
+
+    std::cout << "[DB] Connection Success" << std::endl;
     return true;
 }
 
