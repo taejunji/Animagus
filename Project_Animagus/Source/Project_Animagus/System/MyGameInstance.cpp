@@ -5,6 +5,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "../Character/AICharacter.h"
 #include "Components/AudioComponent.h"
+#include "GameFramework/GameUserSettings.h"
 
 UMyGameInstance::UMyGameInstance(const FObjectInitializer& ObjectInitializer)
     : Super(ObjectInitializer)
@@ -89,30 +90,36 @@ void UMyGameInstance::SwitchLevel(LevelType level)
     }
 }
 
-void UMyGameInstance::PlayMenuBGM()
+void UMyGameInstance::PauseMenuBGM()
 {
-    if (!MenuBGM || MenuBGMComponent)
-        return;
-
-    // 월드가 없으면 못 만듦
-    if (UWorld* W = GetWorld())
+    if (MenuBGMComponent && MenuBGMComponent->IsPlaying())
     {
-        MenuBGMComponent = UGameplayStatics::SpawnSound2D(W, MenuBGM);
-        if (MenuBGMComponent)
-        {
-            MenuBGMComponent->bIsUISound = true;  // UI 사운드로 분류
-            MenuBGMComponent->Play();
-        }
+        MenuBGMComponent->SetPaused(true);
     }
 }
 
-void UMyGameInstance::StopMenuBGM()
+void UMyGameInstance::ResetMenuBGM()
 {
     if (MenuBGMComponent)
     {
-        MenuBGMComponent->Stop();
-        MenuBGMComponent = nullptr;
+        MenuBGMComponent->Stop();  // 재생 위치를 0으로 되돌리고
+        MenuBGMComponent->Play();  // 다시 처음부터 재생
     }
+}
+
+void UMyGameInstance::OnStart()
+{
+    Super::OnStart();
+
+    UE_LOG(LogTemp, Log, TEXT(">>> MenuBGM 부분 호출됨"));
+
+    if (MenuBGM && !MenuBGMComponent)
+    {
+        // 이제는 GetWorld()가 유효하고 AudioDevice도 준비된 후
+        MenuBGMComponent = UGameplayStatics::SpawnSound2D(GetWorld(), MenuBGM, 1.f, 1.f, 0.f, nullptr, true);
+        // 마지막 파라미터(true)로 Looping까지 한 번에 걸 수 있습니다.
+    }
+
 }
 
 //void UMyGameInstance::AddAICharacter(AAICharacter* AICharacter)

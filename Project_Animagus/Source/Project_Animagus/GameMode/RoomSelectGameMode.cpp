@@ -19,10 +19,6 @@ ARoomSelectGameMode::ARoomSelectGameMode()
 void ARoomSelectGameMode::BeginPlay()
 {
     Super::BeginPlay();
-
-    if (auto* GI = Cast<UMyGameInstance>(GetGameInstance()))
-    {
-        GI->PlayMenuBGM();
-    }
+    
 }
 

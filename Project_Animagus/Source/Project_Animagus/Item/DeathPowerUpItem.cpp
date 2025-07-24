@@ -18,12 +18,17 @@ void ADeathPowerUpItem::BeginPlay()
 {
     Super::BeginPlay();
 
+    if (AActor* Spawner = GetOwner())
+    {
+        CollisionComp->IgnoreActorWhenMoving(Spawner, true);
+    }
+    
     // 1.5초 뒤에 충돌 활성화 & 이펙트 재생
     GetWorldTimerManager().SetTimer(
         EnableTimerHandle,
         this,
         &ADeathPowerUpItem::EnableCollisionAndEffect,
-        1.5f,
+        3.f,
         false
     );
 }
