@@ -47,5 +47,18 @@ void UResultWidget::PlayHoverSound()
 
 void UResultWidget::OnQuitClicked()
 {
-    UKismetSystemLibrary::QuitGame(this, nullptr, EQuitPreference::Quit, true); 
+    APlayerController* PC = GetOwningPlayer();
+    if (!PC)
+    {
+        UE_LOG(LogTemp, Warning, TEXT("QuitGame 실패: PlayerController가 없습니다."));
+        return;
+    }
+
+    // 2) QuitGame 호출
+    UKismetSystemLibrary::QuitGame(
+        this,           // WorldContextObject: UUserWidget은 OK
+        PC,             // SpecificPlayer: nullptr 금지!
+        EQuitPreference::Quit,
+        true            // bIgnorePlatformRestrictions
+    );
 }
