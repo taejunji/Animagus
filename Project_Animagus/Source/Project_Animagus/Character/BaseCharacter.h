@@ -58,7 +58,8 @@ protected:
     float max_hp; // MaxHP 체력
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stat")
     bool is_dead; // 죽었는지
-    
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stat")
+    bool is_grounddead = false; 
 protected:
     UPROPERTY(EditAnywhere, Category = "AnimationMontage")
     TObjectPtr<class UAnimMontage> attack_montage;

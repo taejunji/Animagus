@@ -14,19 +14,9 @@
   <component name="ChangeListManager">
     <list default="true" id="5ffdce93-5b01-47d1-b9ac-621fdc3dde67" name="변경" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.Project_Animagus/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Project_Animagus/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Config/DefaultEngine.ini" beforeDir="false" afterPath="$PROJECT_DIR$/Config/DefaultEngine.ini" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/WorkFolder/Sound/Bgm/SW_MenuBGM.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/WorkFolder/Sound/Bgm/SW_MenuBGM.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/Project_Animagus/Actor/ItemBox/Item_Box_Base.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Project_Animagus/Actor/ItemBox/Item_Box_Base.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/Project_Animagus/GameMode/ConnectGameMode.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Project_Animagus/GameMode/ConnectGameMode.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/Project_Animagus/GameMode/LoginGameMode.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Project_Animagus/GameMode/LoginGameMode.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/Project_Animagus/GameMode/MainMenuGameMode.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Project_Animagus/GameMode/MainMenuGameMode.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/Project_Animagus/GameMode/ResultGameMode.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Project_Animagus/GameMode/ResultGameMode.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/Project_Animagus/GameMode/RoomSelectGameMode.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Project_Animagus/GameMode/RoomSelectGameMode.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/Project_Animagus/Character/BaseCharacter.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Project_Animagus/Character/BaseCharacter.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/Project_Animagus/Character/BaseCharacter.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Project_Animagus/Character/BaseCharacter.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/Project_Animagus/Item/DeathPowerUpItem.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Project_Animagus/Item/DeathPowerUpItem.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/Project_Animagus/System/MyGameInstance.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Project_Animagus/System/MyGameInstance.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/Project_Animagus/System/MyGameInstance.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Project_Animagus/System/MyGameInstance.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/Project_Animagus/UI/MainMenuWidget.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Project_Animagus/UI/MainMenuWidget.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/Project_Animagus/UI/ResultWidget.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/Project_Animagus/UI/ResultWidget.cpp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -169,7 +159,7 @@
       <option name="presentableId" value="Default" />
       <updated>1753275751825</updated>
       <workItem from="1753275754155" duration="2614000" />
-      <workItem from="1753340757030" duration="5918000" />
+      <workItem from="1753340757030" duration="10390000" />
     </task>
     <servers />
   </component>
