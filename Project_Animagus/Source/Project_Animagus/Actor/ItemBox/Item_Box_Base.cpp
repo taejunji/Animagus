@@ -159,6 +159,7 @@ void AItem_Box_Base::BreakBox()
     {
         MeshComp->SetVisibility(false);
         MeshComp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+        MeshComp->SetCastShadow(false);
     }
 
     if (BreakSound)

@@ -253,6 +253,18 @@ void ABaseCharacter::Tick(float DeltaTime)
         if (is_dead == false) {
             is_dead = true;
 
+            
+            // Player면 죽은 시점에서 마지막 업데이트
+            /*ABattle_PlayerController* PC = Cast<ABattle_PlayerController>(GetController());
+            if (PC && PC->PlayerHUD)
+            {
+                PC->PlayerHUD->SetCurrentHP(GetHP(), GetMax_Hp());
+            }*/
+        }
+
+        if (GetCharacterMovement()->IsFalling() == false &&  is_grounddead == false) {
+            is_grounddead = true;
+
             if (DeathPowerClass)
             {
                 FVector SpawnLoc = GetActorLocation();
@@ -281,15 +293,7 @@ void ABaseCharacter::Tick(float DeltaTime)
                     }
                 }
             }
-            // Player면 죽은 시점에서 마지막 업데이트
-            /*ABattle_PlayerController* PC = Cast<ABattle_PlayerController>(GetController());
-            if (PC && PC->PlayerHUD)
-            {
-                PC->PlayerHUD->SetCurrentHP(GetHP(), GetMax_Hp());
-            }*/
-        }
-
-        if (GetCharacterMovement()->IsFalling() == false) {
+            
             // 일시적으로 이동을 멈추고 싶다면? → DisableMovement()
             // 이동을 완전히 비활성화하고 싶다면 ? → SetMovementMode(MOVE_None)
             GetCharacterMovement()->DisableMovement();

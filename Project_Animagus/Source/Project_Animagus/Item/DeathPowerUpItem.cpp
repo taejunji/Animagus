@@ -23,12 +23,17 @@ void ADeathPowerUpItem::BeginPlay()
 {
     Super::BeginPlay();
 
+    if (AActor* Spawner = GetOwner())
+    {
+        CollisionComp->IgnoreActorWhenMoving(Spawner, true);
+    }
+    
     // 1.5초 뒤에 충돌 활성화 & 이펙트 재생
     GetWorldTimerManager().SetTimer(
         EnableTimerHandle,
         this,
         &ADeathPowerUpItem::EnableCollisionAndEffect,
-        1.5f,
+        3.f,
         false
     );
 }
@@ -53,6 +58,12 @@ void ADeathPowerUpItem::EnableCollisionAndEffect()
 void ADeathPowerUpItem::OnItemOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
     UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
+
+    if (OtherActor == GetOwner())
+    {
+        return;
+    }
+    
     // 활성화 전엔 무시
     if (GetWorldTimerManager().IsTimerActive(EnableTimerHandle))
     {

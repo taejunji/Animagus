@@ -151,11 +151,10 @@ public:
     // 메뉴 BGM 재생
     UFUNCTION()
     void PlayMenuBGM();
+    void PauseMenuBGM();         
+    void ResetMenuBGM(); 
 
-    // 메뉴 BGM 정지
-    UFUNCTION()
-    void StopMenuBGM();
-    
+    virtual void OnStart() override;
 public:
     // AI 캐릭터
     // TArray<class AAICharacter*> AIPlayers;

@@ -21,7 +21,7 @@ void ALoginGameMode::BeginPlay()
     
     if (auto* GI = Cast<UMyGameInstance>(GetGameInstance()))
     {
-        GI->PlayMenuBGM();
+        GI->ResetMenuBGM();
     }
 }
 
