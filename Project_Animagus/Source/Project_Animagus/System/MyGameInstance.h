@@ -149,8 +149,6 @@ public:
     void SaveBGMPlaybackTime();
 
     // 메뉴 BGM 재생
-    UFUNCTION()
-    void PlayMenuBGM();
     void PauseMenuBGM();         
     void ResetMenuBGM(); 
 

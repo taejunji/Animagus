@@ -18,7 +18,7 @@ void UResultWidget::NativeConstruct()
 
     if (BtnQuit){
         BtnQuit->OnClicked.AddDynamic(this, &UResultWidget::OnQuitClicked);
-        BtnConfirm->OnHovered.AddDynamic(this, &UResultWidget::PlayHoverSound); 
+        BtnQuit->OnHovered.AddDynamic(this, &UResultWidget::PlayHoverSound);
     }
 }
 
@@ -32,7 +32,6 @@ void UResultWidget::ShowOutcome(bool bIsWinner)
 
 void UResultWidget::OnConfirmClicked()
 {
-
     if (ClickSound)
         UGameplayStatics::PlaySound2D(this, ClickSound);
     

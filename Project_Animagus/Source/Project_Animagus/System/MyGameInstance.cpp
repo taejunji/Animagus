@@ -33,6 +33,7 @@
 
 #include "Components/AudioComponent.h"
 #include "GameFramework/GameUserSettings.h"
+//#include "Misc/DisplayMetrics.h"
 
 
 UMyGameInstance::UMyGameInstance(const FObjectInitializer& ObjectInitializer)
@@ -82,9 +83,22 @@ void UMyGameInstance::Init()
     UGameUserSettings* Settings = GEngine->GetGameUserSettings();
     if (Settings)
     {
+        FDisplayMetrics DisplayMetrics;
+        FDisplayMetrics::RebuildDisplayMetrics(DisplayMetrics);
+
+        FIntPoint MaxResolution = FIntPoint(
+            DisplayMetrics.PrimaryDisplayWidth,
+            DisplayMetrics.PrimaryDisplayHeight
+        );
+
+        //FVector2D resolution;
+        //resolution.X = GSystemResolution.ResX;
+        //resolution.Y = GSystemResolution.ResY;
+
         Settings->SetFullscreenMode(EWindowMode::Fullscreen);
-        Settings->SetScreenResolution(FIntPoint(1920, 1080));
-        Settings->ApplySettings(false);  // 즉시 적용, false=재시작 불필요
+        //Settings->SetScreenResolution(FIntPoint(resolution.X, resolution.Y));
+        Settings->SetScreenResolution(MaxResolution);
+        Settings->ApplySettings(false);
     }
 
     ConnectToGameServer();
@@ -227,48 +241,36 @@ void UMyGameInstance::SaveBGMPlaybackTime()
     }
 }
 
-void UMyGameInstance::PlayMenuBGM()
+void UMyGameInstance::PauseMenuBGM()
 {
-    if (!MenuBGM || MenuBGMComponent)
-        return;
-
-    //if (UWorld* W = GetWorld())
-    //{
-    //    MenuBGMComponent = UGameplayStatics::SpawnSound2D(W, MenuBGM);
-    //    if (MenuBGMComponent)
-    //    {
-    //        MenuBGMComponent->bIsUISound = true;
-
-    //        // 지정된 위치부터 재생
-    //        MenuBGMComponent->Play(MenuBGMPlaybackTime);
-    //    }
-    //}
-
-    // 월드가 없으면 못 만듦
-    if (UWorld* W = GetWorld())
-        void UMyGameInstance::PauseMenuBGM()
+    if (MenuBGMComponent && MenuBGMComponent->IsPlaying())
     {
-        if (MenuBGMComponent && MenuBGMComponent->IsPlaying())
-        {
-            MenuBGMComponent->SetPaused(true);
-        }
+        MenuBGMComponent->SetPaused(true);
     }
 }
 
 void UMyGameInstance::ResetMenuBGM()
 {
-    if (MenuBGMComponent)
+    if (MenuBGMComponent && MenuBGMComponent->IsValidLowLevel())
     {
-        MenuBGMComponent->Stop();  // 재생 위치를 0으로 되돌리고
-        MenuBGMComponent->Play();  // 다시 처음부터 재생
+        MenuBGMComponent->Stop();
+        MenuBGMComponent->DestroyComponent();
     }
+
+    // 메뉴 레벨로 돌아올 때마다 새로 생성 & Looping
+    MenuBGMComponent = UGameplayStatics::SpawnSound2D(
+        GetWorld(),       // 반드시 현재 월드 컨텍스트
+        MenuBGM,          // SoundBase*
+        1.f, 1.f, 0.f,    // 볼륨, 피치, 스타트타임
+        nullptr,          // Attenuation
+        true // 반복 재생
+    );
+
 }
 
 void UMyGameInstance::OnStart()
 {
     Super::OnStart();
-
-    UE_LOG(LogTemp, Log, TEXT(">>> MenuBGM 부분 호출됨"));
 
     if (MenuBGM && !MenuBGMComponent)
     {

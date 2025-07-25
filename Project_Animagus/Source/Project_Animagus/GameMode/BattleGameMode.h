@@ -37,6 +37,8 @@ public:
 
 public:    // 게임 시스템 관련
     ABattleGameMode();
+    TArray<ABaseCharacter*> GetSpawnedPlayers();
+
     void InitBattleMode();
     void ActivateInput();
 

@@ -148,9 +148,28 @@ ABattleGameMode::ABattleGameMode()
 
 }
 
+TArray<ABaseCharacter*> ABattleGameMode::GetSpawnedPlayers()
+{
+    TArray<ABaseCharacter*> Players;
+    Players.Add(Cast<ABaseCharacter>(GetWorld()->GetFirstPlayerController()->GetPawn())); // 첫번째 플레이어는 항상 포함
+    for (auto Item : SpawnedPlayers)
+    {
+        auto Player = Cast<ABaseCharacter>(Item.Value);
+        if (Player && Player->GetPawnType() != PawnType::NETWORK)
+            Players.Add(Player);
+    }
+
+    return Players;
+}
+
 void ABattleGameMode::StartPlay()
 {
     Super::StartPlay();
+
+    if (auto* GI = Cast<UMyGameInstance>(GetGameInstance()))
+    {
+        GI->PauseMenuBGM();
+    }
 
     // 1) 로딩 UI 띄우기
     if (LoadingWidgetClass)
@@ -1047,7 +1066,8 @@ void ABattleGameMode::RoundTimerUpdate()
         ABattle_PlayerController* PC = Cast<ABattle_PlayerController>(PlayerCharacter->GetController());
         if (PC && PC->PlayerHUD)
         {
-            PC->PlayerHUD->UpdateRoundTime(CurrentRoundTime);
+            float RoundTimeCountdown = TIME_OVER - CurrentRoundTime;
+            PC->PlayerHUD->UpdateRoundTime(RoundTimeCountdown);
         }
     }
 

@@ -1,4 +1,4 @@
-﻿#include "Fireball.h"
+#include "Fireball.h"
 #include "../Projectile/Projectile_FireBall.h"
 #include "Kismet/GameplayStatics.h"
 #include "../Character/BaseCharacter.h"
@@ -16,8 +16,8 @@ UFireball::UFireball()
     SkillName = "Fireball";
     
     CooldownTime = 3.f;
-    FireballDamage = 5.0f;
-    FireballSpeed = 1500.f;
+    FireballDamage = 10.0f;
+    FireballSpeed = 2000.f;
     static ConstructorHelpers::FClassFinder<AProjectile_FireBall> FireballBPFinder(TEXT("/Game/WorkFolder/Bluprints/Projectiles/MyProjectile_FireBall"));
     if (FireballBPFinder.Succeeded())
     {
@@ -107,6 +107,9 @@ void UFireball::ActiveSkill_Implementation()
             {
                 FireballProj->ProjectileMovement->InitialSpeed = FireballSpeed;
                 FireballProj->ProjectileMovement->MaxSpeed = FireballSpeed;
+
+                FVector Dir = FireballProj->ProjectileMovement->Velocity.GetSafeNormal();
+                FireballProj->ProjectileMovement->Velocity = Dir * FireballSpeed;
             }
             UE_LOG(LogTemp, Log, TEXT("Fireball Skill: Projectile spawned successfully."));
             UE_LOG(LogTemp, Log, TEXT("FireballProj->Shooter set to: %s"), 
@@ -132,11 +135,11 @@ void UFireball::ActiveSkill_Implementation()
 
 void UFireball::UpgradeSkill(int32 NewPowerUpLevel)
 {
-
     float CooldownMultiplier = FMath::Clamp(1.0f - (0.05f * NewPowerUpLevel), 0.5f, 1.0f);
 
     FireballDamage = BaseFireballDamage + (3.f * NewPowerUpLevel);
     CooldownTime = BaseCooldownTime * CooldownMultiplier;
+    FireballSpeed = 2000.f + (150.f * NewPowerUpLevel);
 
     UE_LOG(LogTemp, Log, TEXT("Fireball upgraded: PowerUpLevel %d, Damage: %f, Cooldown: %f"), 
         NewPowerUpLevel, FireballDamage, CooldownTime);

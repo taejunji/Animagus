@@ -514,7 +514,8 @@ void ABattle_PlayerController::Input_ControlToggle_Pressed()
         {
             MyPlayer->Initialize_RPG_Settings();
         }
-        GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Emerald, TEXT("RPG 컨트롤 모드"));
+        //GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Emerald, TEXT("RPG 컨트롤 모드"));
+        UE_LOG(LogTemp, Warning, TEXT("RPG 컨트롤 모드"));
     }
 }
 
@@ -532,7 +533,8 @@ void ABattle_PlayerController::Input_ControlToggle_Released()
             MyPlayer->Initialize_TPS_Settings();
         }
     }
-    GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Emerald, TEXT("TPS 컨트롤 모드"));
+    //GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Emerald, TEXT("TPS 컨트롤 모드"));
+    UE_LOG(LogTemp, Warning, TEXT("TPS 컨트롤 모드"));
 }
 
 void ABattle_PlayerController::Input_RunToggle_Pressed()

@@ -32,7 +32,7 @@ void AProjectile_Bounce::OnHit(UPrimitiveComponent* OverlappedComponent, AActor*
                                 const FHitResult& Hit)
 {
 
-    if (OtherActor == Shooter )
+    if (OtherActor == Shooter || OtherActor->Owner == this->Owner)
     {
         return;
 

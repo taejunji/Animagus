@@ -1,4 +1,4 @@
-﻿#include "ShockwaveSkill.h"
+#include "ShockwaveSkill.h"
 #include "Project_Animagus/Actor/Shockwave/ShockwaveActor.h"
 #include "Engine/World.h"
 #include "Kismet/GameplayStatics.h"

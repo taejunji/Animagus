@@ -62,7 +62,7 @@ ABaseCharacter::ABaseCharacter()
         GetMesh()->SetAnimInstanceClass(AnimBP.Class);
     }
 
-    JumpMaxCount = 5;
+    JumpMaxCount = 1;
 
 
     // ConstructorHelpers를 사용하여 UFireball 블루프린트 클래스 로드
@@ -332,7 +332,7 @@ float ABaseCharacter::TakeDamage(float DamageAmount, struct FDamageEvent const& 
         }
     }
 
-    if (GetPawnType() == PawnType::PLAYER || GetPawnType() == PawnType::AI)
+    if (hp >= -10.f && GetPawnType() != PawnType::NETWORK)
     {
         hp -= ActualDamage;
 

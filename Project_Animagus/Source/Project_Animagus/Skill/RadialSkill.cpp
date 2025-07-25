@@ -1,4 +1,4 @@
-﻿#include "RadialSkill.h"
+#include "RadialSkill.h"
 #include "../Projectile/ProjectileBase.h"
 #include "../Projectile/Projectile_Radial.h"
 #include "Kismet/GameplayStatics.h"
@@ -149,7 +149,7 @@ void URadialSkill::UpgradeSkill(int32 NewPowerUpLevel)
     
     int32 EvenLevelSteps = Level;
     float DamageMultiplier = 1.0f * EvenLevelSteps; 
-    RadialDamage = BaseRadialDamage  + (NewPowerUpLevel * 1.f);
+    RadialDamage = BaseRadialDamage  + (NewPowerUpLevel * 5.f);
 
 
     UE_LOG(LogTemp, Log, TEXT("RadialSkill upgraded: Level %d, Projectiles: %d, Damage: %f"), Level, NumberOfProjectiles, RadialDamage);

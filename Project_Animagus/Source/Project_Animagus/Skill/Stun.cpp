@@ -15,7 +15,7 @@ UStun::UStun()
     SkillName = "Stun";
     CooldownTime = 8.0f; // 예시 쿨타임
     StunDamage = 10.0f;  // 예시 데미지
-    StunSpeed = 2500.f;  // 예시 이동 속도
+    StunSpeed = 3000.f;  // 예시 이동 속도
     StunDuration = 1.67f; // 예시 스턴 지속 시간
 
     // ProjectileBPClass는 에디터에서 할당 (예: MyProjectile_Stun_BP)

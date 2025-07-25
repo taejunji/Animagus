@@ -63,12 +63,6 @@ void AProjectile_MagicMissile::OnHit(UPrimitiveComponent* OverlappedComponent, A
                                       UPrimitiveComponent* OtherComp, FVector NormalImpulse,
                                       const FHitResult& Hit)
 {
-    
-    if (OtherActor == Shooter )
-    {
-        return;
-    }
-    
     if (OtherActor && OtherActor != this && OtherActor != Shooter)
     {
 
