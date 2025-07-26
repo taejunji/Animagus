@@ -64,6 +64,12 @@ void ABattle_PlayerController::DisPlayPlayerWidget()
         PlayerHUD = CreateWidget<UMyPlayerHUDWidget>(this, PlayerHUDClass);
         if (PlayerHUD)
         {
+            if (auto* GameInstance = Cast<UMyGameInstance>(GetGameInstance())) {
+                int32 CurrentRound = GameInstance->GetRoundCount();
+                // CurrentRound = 2;
+                PlayerHUD->SetRoundText(CurrentRound);
+            }
+
             PlayerHUD->AddToViewport();
             PlayerHUD->UpdateSelectedSkillOutline(0);
         }

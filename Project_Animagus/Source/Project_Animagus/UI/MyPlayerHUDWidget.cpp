@@ -236,3 +236,21 @@ void UMyPlayerHUDWidget::SetLevelImage(int32 num)
         ArrayLevel[i]->SetVisibility(ESlateVisibility::Visible);
     }
 }
+
+void UMyPlayerHUDWidget::SetRoundText(int32 CurrentRound)
+{
+    if (TextRoundCount && TextMaxRoundCount)
+    {
+        int curRound = CurrentRound + 1;
+
+        // 색상 설정
+        FLinearColor Color = (curRound == 3) ? FLinearColor::Red : FLinearColor::White;
+
+        // TextMaxRoundCount->SetColorAndOpacity(FSlateColor(Color));
+        // TextRoundCount->SetColorAndOpacity(FSlateColor(Color));
+
+        FString NewText = FString::Printf(TEXT("%d"), curRound);
+
+        TextRoundCount->SetText(FText::FromString(NewText));
+    }
+}

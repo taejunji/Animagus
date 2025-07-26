@@ -77,27 +77,76 @@ void AResultPlayerController::BeginPlay()
             RA->Initialize(ChosenMesh, OutcomeAnim);
         }
     }
-
     
-        USoundBase* ToPlay = bIsWin ? WinnerBGM : LoserBGM;
-        if (ToPlay)
-            UGameplayStatics::PlaySound2D(this, ToPlay);
-   
+    USoundBase* ToPlay = bIsWin ? WinnerBGM : LoserBGM;
+    if (ToPlay) UGameplayStatics::PlaySound2D(this, ToPlay);   
 
-    if (bIsWin && ConfettiFX)
+    if (ConfettiFX && LostFX)
     {
-        for (const FTransform& T : ConfettiSpawnTransforms)
+        if (bIsWin) {
+            for (const FTransform& T : ConfettiSpawnTransforms)
+            {
+                UNiagaraFunctionLibrary::SpawnSystemAtLocation(
+                    this,
+                    ConfettiFX,
+                    T.GetLocation(),
+                    T.GetRotation().Rotator(),
+                    T.GetScale3D()
+                );
+            }
+        }
+        else if (false == bIsWin) {
+            for (const FTransform& Tfm : LostFXSpawnTransforms)
+            {
+                UNiagaraFunctionLibrary::SpawnSystemAtLocation(
+                    this,
+                    LostFX,
+                    Tfm.GetLocation(),
+                    Tfm.GetRotation().Rotator(),
+                    Tfm.GetScale3D()
+                );
+            }
+        }
+
+        // 승리/패배에 다른 맵 수정
+        SetPostProcess(bIsWin);
+        SetBluePrintLevel(bIsWin);
+    }
+}
+
+void AResultPlayerController::SetPostProcess(bool isWin)
+{
+    TArray<AActor*> FoundVolumes;
+
+    UGameplayStatics::GetAllActorsOfClass(GetWorld(), APostProcessVolume::StaticClass(), FoundVolumes);
+
+    for (AActor* Actor : FoundVolumes)
+    {
+        APostProcessVolume* PPVolume = Cast<APostProcessVolume>(Actor);
+        if (PPVolume)
         {
-            UNiagaraFunctionLibrary::SpawnSystemAtLocation(
-                this,
-                ConfettiFX,
-                T.GetLocation(),
-                T.GetRotation().Rotator(),
-                T.GetScale3D()
-            );
+            // 노출 설정을 조절하려면 해당 속성 오버라이드가 필요합니다
+            PPVolume->Settings.bOverride_AutoExposureMinBrightness = true;
+            PPVolume->Settings.bOverride_AutoExposureMaxBrightness = true;
+
+            switch (isWin)
+            {
+            case static_cast<int32>(Result::Win):
+                PPVolume->Settings.AutoExposureMinBrightness = -1.0f;
+                PPVolume->Settings.AutoExposureMaxBrightness = 20.0f;
+                break;
+
+            case static_cast<int32>(Result::Lose):
+                PPVolume->Settings.AutoExposureMinBrightness = 2.0f;
+                PPVolume->Settings.AutoExposureMaxBrightness = 5.0f;
+                break;
+            }
         }
     }
+}
 
+
+/*
     if (!bIsWin && LostFX)
     {
         for (const FTransform& Tfm : LostFXSpawnTransforms)
@@ -124,7 +173,7 @@ void AResultPlayerController::BeginPlay()
             }
         }
     }
-    
+
     for (TActorIterator<ACameraActor> It(GetWorld()); It; ++It)
     {
         ACameraActor* Cam = *It;
@@ -134,5 +183,4 @@ void AResultPlayerController::BeginPlay()
             break;
         }
     }
-}
-
+*/
