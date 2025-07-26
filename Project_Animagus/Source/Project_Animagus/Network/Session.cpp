@@ -60,6 +60,10 @@ void Session::Disconnect()
         SendWorkerThread = nullptr;
     }
 
-    if (Socket)
+    if (Socket) 
+    {
         Socket->Close();
+        ISocketSubsystem::Get()->DestroySocket(Socket);
+        Socket = nullptr;
+    }
 }

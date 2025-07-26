@@ -83,6 +83,32 @@ bool DBManager::DBConnect()
 
 bool DBManager::DBDisconnect()
 {
+    std::lock_guard<std::mutex> lock(m_mutex);
+
+    if (hdbc == SQL_NULL_HDBC) {
+        return false;
+    }
+
+    SQLRETURN retcode;
+
+    retcode = SQLAllocHandle(SQL_HANDLE_STMT, hdbc, &hstmt);
+    if (!(retcode == SQL_SUCCESS || retcode == SQL_SUCCESS_WITH_INFO)) {
+        HandleDiagnosticRecord(hstmt, SQL_HANDLE_STMT, retcode);
+        return false;
+    }
+
+    const wchar_t* sqlQuery = L"{CALL user_logout_all()}";
+    retcode = SQLPrepare(hstmt, (SQLWCHAR*)sqlQuery, SQL_NTS);
+    if (!(retcode == SQL_SUCCESS || retcode == SQL_SUCCESS_WITH_INFO)) {
+        HandleDiagnosticRecord(hstmt, SQL_HANDLE_STMT, retcode);
+        return false;
+    }
+
+    retcode = SQLExecute(hstmt);
+    if (!(retcode == SQL_SUCCESS || retcode == SQL_SUCCESS_WITH_INFO)) {
+        HandleDiagnosticRecord(hstmt, SQL_HANDLE_STMT, retcode);
+        return false;
+    }
 
     return true;
 }

@@ -33,6 +33,7 @@
 
 #include "Components/AudioComponent.h"
 #include "GameFramework/GameUserSettings.h"
+#include "TimerManager.h"
 //#include "Misc/DisplayMetrics.h"
 
 
@@ -111,10 +112,15 @@ void UMyGameInstance::Init()
 
 void UMyGameInstance::Shutdown()
 {
-    Super::Shutdown();
+    if (UWorld* World = GetWorld())
+    {
+        World->GetTimerManager().ClearAllTimersForObject(this);
+    }
 
     DisconnectFromGameServer();
     ClientSession->Disconnect();
+
+    Super::Shutdown();
 }
 
 void UMyGameInstance::InitGameInstance()

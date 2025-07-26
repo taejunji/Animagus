@@ -56,4 +56,4 @@ void error_display(int err_no);
 
 
 //#define _DUMMYTEST
-//#define _DBMODE
+#define _DBMODE
