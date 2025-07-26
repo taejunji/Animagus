@@ -12,6 +12,9 @@ class UAnimSequence;
 class UNiagaraSystem;
 class USoundBase;
 
+enum class Result { Lose, Win };
+
+
 UCLASS()
 class PROJECT_ANIMAGUS_API AResultPlayerController : public APlayerController
 {
@@ -20,6 +23,14 @@ class PROJECT_ANIMAGUS_API AResultPlayerController : public APlayerController
 public:
     virtual void BeginPlay() override;
 
+
+    void SetPostProcess(bool isWin);
+
+    // 블루프린트에서 함수를 직접 구현
+    UFUNCTION(BlueprintImplementableEvent, Category = "Level")
+    void SetBluePrintLevel(bool isWin);
+
+public:
     UPROPERTY(EditAnywhere, Category="UI")
     TSubclassOf<UResultWidget> ResultWidgetClass;
 
