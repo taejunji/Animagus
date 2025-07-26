@@ -75,6 +75,14 @@ namespace Protocol {
         MOVE_STATE_DEAD,
     };
 
+    enum class ItemType : uint16
+    {
+        NONE,
+        HEAL,
+        POWERUP,
+        JUMP,
+    };
+
     enum class PacketID : uint16
     {
         DCS_TEST,
@@ -98,6 +106,7 @@ namespace Protocol {
         CS_ROUND_END,
         CS_ROUND_INIT,
         CS_JUMP_EFT,
+        CS_ITEM_PICK,
 
         SC_LOGIN_SUCC,
         SC_LOGIN_FAIL,
@@ -115,6 +124,7 @@ namespace Protocol {
         SC_ROUND_END,
         SC_ROUND_INIT,
         SC_GAME_END,
+        SC_SET_POWERUP,
     };
 
 
@@ -249,6 +259,13 @@ namespace Protocol {
         uint16 jump_player_id;
         bool is_first_jump;
     };
+    struct CS_ITEM_PICK_PKT
+    {
+        uint16 player_id;
+        ItemType item_type;
+        int32 powerup_level;    // Picker 의 현재 파워업 레벨
+        float hp;               // 파워업, 힐 아이템 획득 시 HP 업데이트 필요
+    };
 
     struct SC_LOGIN_FAIL_PKT
     {
@@ -327,6 +344,11 @@ namespace Protocol {
     };
     struct SC_GAME_END_PKT
     {
+    };
+    struct SC_SET_POWERUP_PKT
+    {
+        uint16 player_id;
+        int32 powerup_level;    // Picker 의 현재 파워업 레벨
     };
 
 #pragma pack(pop)

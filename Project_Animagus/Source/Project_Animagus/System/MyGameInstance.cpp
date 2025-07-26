@@ -723,6 +723,25 @@ void UMyGameInstance::HandleSignUpFail()
     }
 }
 
+void UMyGameInstance::HandleSetPowerUp(Protocol::SC_SET_POWERUP_PKT& pkt)
+{
+    if (Socket == nullptr || ClientSession == nullptr)
+        return;
+
+    auto* World = GetWorld();
+    if (World == nullptr)
+        return;
+
+    AGameModeBase* BaseGameMode = UGameplayStatics::GetGameMode(World);
+    if (BaseGameMode)
+    {
+        if (ABattleGameMode* GameMode = Cast<ABattleGameMode>(BaseGameMode))
+        {
+            GameMode->HandleSetPowerUp(pkt);
+        }
+    }
+}
+
 
 
 //void UMyGameInstance::SetMyPlayerIndex(uint16 playerIndex)

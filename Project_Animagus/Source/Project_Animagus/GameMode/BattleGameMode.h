@@ -162,6 +162,7 @@ public:    // 네트워크 서비스 관련
     void SpawnItemsInArea3(Protocol::SC_SPAWN_ITEM_PKT& pkt);
     void UpdateHp(Protocol::SC_UPDATE_HP_PKT& pkt);
     void HandleJumpEffect(Protocol::CS_JUMP_EFT_PKT& pkt);
+    void HandleSetPowerUp(Protocol::SC_SET_POWERUP_PKT& pkt);
 
 
     bool AmIHost = false;

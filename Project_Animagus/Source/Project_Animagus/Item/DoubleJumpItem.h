@@ -18,5 +18,6 @@ public:
     
     ADoubleJumpItem();
 
+    virtual void BeginPlay() override;
     virtual void OnPickedUp(class ABaseCharacter* Picker) override;
 };

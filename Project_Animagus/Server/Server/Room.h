@@ -27,6 +27,7 @@ public:
     bool HandleRoundInitLocked(const Protocol::CS_ROUND_INIT_PKT& pkt);
     bool HandleHitChangeSkill(const Protocol::CS_SKILL_CHANGE_PKT& pkt);
     bool HandleJumpEffect(Protocol::CS_JUMP_EFT_PKT& pkt);
+    bool HandleItemPickedUp(Protocol::CS_ITEM_PICK_PKT& pkt, const uint16 ownerID);
 
 public:
     uint16 GetPlayerCount() { return m_playerCount; }   // 사람 수 받을 때 동기화 작업 필요

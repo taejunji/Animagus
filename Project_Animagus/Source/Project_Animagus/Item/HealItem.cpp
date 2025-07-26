@@ -9,6 +9,14 @@
 AHealItem::AHealItem()
 {
     PickupEffect = nullptr;
+    SetItemType(Protocol::ItemType::HEAL);
+}
+
+void AHealItem::BeginPlay()
+{
+    Super::BeginPlay();
+
+    SetItemType(Protocol::ItemType::HEAL);
 }
 
 void AHealItem::OnPickedUp(class ABaseCharacter* Picker)
@@ -18,17 +26,19 @@ void AHealItem::OnPickedUp(class ABaseCharacter* Picker)
         bIsPickedUp = true;
         UE_LOG(LogTemp, Log, TEXT("APowerUpItem: Picked up by %s"), *Picker->GetName());
 
-        // 플레이어의 파워업 상태 증가 처리
-        Picker->PickHealingItem();
+        if (Picker->GetPawnType() != PawnType::NETWORK)
+        {
+            // 플레이어의 파워업 상태 증가 처리
+            Picker->PickHealingItem();
+            SendItemPickedUp2Server(Picker);
+        }
 
         // 피크업 이펙트 재생
         if (PickupEffect)
         {
             UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), PickupEffect, GetActorLocation()+ FVector(0.f, 0.f, 20.f), GetActorRotation());
         }
-        
-
-        
+                
         // 아이템 소멸
         DestroyItem();
     }

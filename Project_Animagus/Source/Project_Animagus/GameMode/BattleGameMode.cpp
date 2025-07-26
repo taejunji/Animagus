@@ -867,17 +867,32 @@ void ABattleGameMode::HandleJumpEffect(Protocol::CS_JUMP_EFT_PKT& pkt)
     }
 }
 
+void ABattleGameMode::HandleSetPowerUp(Protocol::SC_SET_POWERUP_PKT& pkt)
+{
+    const uint16 playerId = pkt.player_id;
+    if (SpawnedPlayers.FindRef(playerId) == nullptr)
+        return;
+
+    ANetworkCharacter* Player = Cast<ANetworkCharacter>(SpawnedPlayers[playerId]);
+    if (Player == nullptr) return;
+    Player->PowerUpLevel = pkt.powerup_level;
+    Player->UpdateAuraColorBasedOnPowerUpLevel();
+}
+
 void ABattleGameMode::SetBattleLevel()
 {
     if (auto* GameInstance = Cast<UMyGameInstance>(GetGameInstance()))
     {
         int32 CurrentRound = GameInstance->GetRoundCount();
 
-        //CurrentRound = 2;
-
         SetPostProcess(CurrentRound);
 
         SetBluePrintLevel(CurrentRound);
+
+        if (ABattle_PlayerController* BPC = Cast<ABattle_PlayerController>(GetWorld()->GetFirstPlayerController()))
+        {
+            if (BPC->PlayerHUD) BPC->PlayerHUD->SetRoundText(CurrentRound);
+        }
     }
 }
 

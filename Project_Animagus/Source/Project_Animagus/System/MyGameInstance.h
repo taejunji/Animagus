@@ -133,6 +133,7 @@ public:
     void HandleLoginFail(Protocol::SC_LOGIN_FAIL_PKT& pkt);
     void HandleSignUpSuccess();
     void HandleSignUpFail();
+    void HandleSetPowerUp(Protocol::SC_SET_POWERUP_PKT& pkt);
 
     // 로그인 메인 룸 BGM
     UPROPERTY(EditDefaultsOnly, Category="Audio")
@@ -141,6 +142,9 @@ public:
     // 재생용 컴포넌트
     UPROPERTY(Transient)
     UAudioComponent* MenuBGMComponent;
+
+    UPROPERTY(BlueprintReadWrite, Category = "Settings")
+    float MasterVolume = 1.0f;
 
     UPROPERTY()
     float MenuBGMPlaybackTime = 0.f; // 저장된 재생 위치

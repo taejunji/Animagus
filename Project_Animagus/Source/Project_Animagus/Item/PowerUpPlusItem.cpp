@@ -10,6 +10,14 @@ APowerUpPlusItem::APowerUpPlusItem()
 {
     // 에디터에서 할당하도록 기본값은 nullptr로 설정
     PickupEffect = nullptr;
+    SetItemType(Protocol::ItemType::POWERUP);
+}
+
+void APowerUpPlusItem::BeginPlay()
+{
+    Super::BeginPlay();
+
+    SetItemType(Protocol::ItemType::POWERUP);
 }
 
 void APowerUpPlusItem::OnPickedUp(ABaseCharacter* Picker)
@@ -19,11 +27,15 @@ void APowerUpPlusItem::OnPickedUp(ABaseCharacter* Picker)
         bIsPickedUp = true;
         UE_LOG(LogTemp, Log, TEXT("APowerUpItem: Picked up by %s"), *Picker->GetName());
 
-        // 플레이어의 파워업 상태 증가 처리
-        Picker->IncreasePowerUpLevel();
-        Picker->IncreasePowerUpLevel();
-        Picker->IncreasePowerUpLevel();
+        if (Picker->GetPawnType() != PawnType::NETWORK)
+        {
 
+            // 플레이어의 파워업 상태 증가 처리
+            Picker->IncreasePowerUpLevel();
+            Picker->IncreasePowerUpLevel();
+            Picker->IncreasePowerUpLevel();
+            SendItemPickedUp2Server(Picker);
+        }
         
         // 피크업 이펙트 재생
         if (PickupEffect)

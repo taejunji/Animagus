@@ -17,6 +17,8 @@ class PROJECT_ANIMAGUS_API APowerUpItem : public ABaseItem
 public:
     APowerUpItem();
 
+    virtual void BeginPlay() override;
+
     /** 아이템 획득 시 처리 로직 오버라이드 */
     virtual void OnPickedUp(class ABaseCharacter* Picker) override;
 };

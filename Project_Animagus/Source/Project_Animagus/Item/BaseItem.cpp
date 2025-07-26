@@ -109,19 +109,12 @@ void ABaseItem::OnPickedUp(ABaseCharacter* Picker)
     {
         bIsPickedUp = true;
        
-        DestroyItem();
-
-        // 아이템 획득 시에도 HP 업데이트
-        if (PawnType::NETWORK != Picker->GetPawnType())
+        if (Picker->GetPawnType() != PawnType::NETWORK)
         {
-            Protocol::CS_DAMAGE_PKT DamagePkt;
-            DamagePkt.player_id = Picker->GetPlayerId();
-            DamagePkt.hp = Picker->GetHP();
-            DamagePkt.isAlive = (Picker->GetHP() <= 0.f);
-
-            SendBufferRef SendBuffer = ClientPacketHandler::MakeSendBuffer(DamagePkt);
-            Cast<UMyGameInstance>(GWorld->GetGameInstance())->SendPacket(SendBuffer);
+            SendItemPickedUp2Server(Picker);
         }
+
+        DestroyItem();
     }
 }
 
@@ -140,6 +133,21 @@ void ABaseItem::DestroyItem()
         ItemEffect->Deactivate();
     }
     Destroy();
+}
+
+void ABaseItem::SendItemPickedUp2Server(ABaseCharacter* Picker)
+{
+    if (PawnType::NETWORK != Picker->GetPawnType())
+    {
+        Protocol::CS_ITEM_PICK_PKT ItemPickPkt;
+        ItemPickPkt.player_id = Picker->GetPlayerId();
+        ItemPickPkt.hp = Picker->GetHP();
+        ItemPickPkt.item_type = ItemType;
+        ItemPickPkt.powerup_level = Picker->PowerUpLevel;
+
+        SendBufferRef SendBuffer = ClientPacketHandler::MakeSendBuffer(ItemPickPkt);
+        Cast<UMyGameInstance>(GWorld->GetGameInstance())->SendPacket(SendBuffer);
+    }
 }
 
 

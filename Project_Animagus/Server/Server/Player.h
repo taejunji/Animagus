@@ -32,7 +32,7 @@ public:
     bool    isAlive = true;
     std::string name;
 
-    std::atomic<int8> powerUpLevel = 0;
+    std::atomic<int32> powerUpLevel = 0;
     
     Protocol::PlayerType type = Protocol::PlayerType::KOALA;     // TODO : 선택한 캐릭터로 보여지게
 

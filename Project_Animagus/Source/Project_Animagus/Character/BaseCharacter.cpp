@@ -287,8 +287,10 @@ void ABaseCharacter::Tick(float DeltaTime)
                     // (충돌 컴포넌트는 생성자에서 이미 NoCollision)
 
                     // 라운드 초기화 시 삭제시킬 관심목록에 등록
-                    if (auto GameMode = Cast<ABattleGameMode>(GetWorld()))
+                    if (auto GameMode = GetWorld()->GetAuthGameMode<ABattleGameMode>())
                     {
+                        UE_LOG(LogTemp, Warning, TEXT("죽음아이템 추가"));
+
                         GameMode->SpawnedItems.Add(NewItem);
                     }
                 }
@@ -885,7 +887,11 @@ void ABaseCharacter::UpdateAuraColorBasedOnPowerUpLevel()
 
     FLinearColor NewColor;
     // PowerUpLevel에 따라 색상 결정 (예시: 1~2: Red, 3~4: Orange, 5~6: Yellow, 7~8: Green, 9~10: Blue, 11~12: Indigo, 13~14: Purple)
-    if (PowerUpLevel == 1 || PowerUpLevel == 7)
+    if (PowerUpLevel == 0) 
+    {
+        NewColor = FLinearColor::White;
+    }
+    else if (PowerUpLevel == 1 || PowerUpLevel == 7)
     {
         NewColor = FLinearColor::Red;
     }

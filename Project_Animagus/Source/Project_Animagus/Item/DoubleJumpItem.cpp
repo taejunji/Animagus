@@ -9,6 +9,14 @@
 ADoubleJumpItem::ADoubleJumpItem()
 {
     PickupEffect = nullptr;
+    SetItemType(Protocol::ItemType::JUMP);
+}
+
+void ADoubleJumpItem::BeginPlay()
+{
+    Super::BeginPlay();
+   
+    SetItemType(Protocol::ItemType::JUMP);
 }
 
 void ADoubleJumpItem::OnPickedUp(class ABaseCharacter* Picker)
@@ -30,7 +38,8 @@ void ADoubleJumpItem::OnPickedUp(class ABaseCharacter* Picker)
             UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), PickupEffect, GetActorLocation()+ FVector(0.f, 0.f, 20.f), GetActorRotation());
         }
         
-        
+        SendItemPickedUp2Server(Picker);
+
         // 아이템 소멸
         DestroyItem();
     }

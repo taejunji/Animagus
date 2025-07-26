@@ -193,29 +193,31 @@ void AMyAIController::Tick(float DeltaTime)
     Super::Tick(DeltaTime);
 
     ABaseCharacter* AI = Cast<ABaseCharacter>(GetPawn());
-    if (AI == nullptr || AI->GetIsDead()) return;
+    if (AI == nullptr) return;
     
-    UBlackboardComponent* BlackboardComponent = GetBlackboardComponent();
-    if (!BlackboardComponent) return;
+    if (false == AI->GetIsDead())
+    {
+        UBlackboardComponent* BlackboardComponent = GetBlackboardComponent();
+        if (!BlackboardComponent) return;
 
-    // 유요한 네비 경로 확인
-    CheckAndRecoverFromNavMesh();
+        // 유요한 네비 경로 확인
+        CheckAndRecoverFromNavMesh();
 
-    // 유효한 네비 경로 확인
-    // CheckFindPathFromNavMesh();
+        // 유효한 네비 경로 확인
+        // CheckFindPathFromNavMesh();
 
-    // 타겟을 해제해야하는지 확인
-    CheckDisableTarget();
+        // 타겟을 해제해야하는지 확인
+        CheckDisableTarget();
 
-    // 스킬 쿨타임 확인
-    // CheckSkillCoolTime(AI);
+        // 스킬 쿨타임 확인
+        // CheckSkillCoolTime(AI);
 
-    // 달리기 속도 설정
-    SetAIRunSpeed(AI, DeltaTime);
+        // 달리기 속도 설정
+        SetAIRunSpeed(AI, DeltaTime);
 
-    // 고정 액터 회전
-    SetStaticActorRotation(DeltaTime);
-
+        // 고정 액터 회전
+        SetStaticActorRotation(DeltaTime);
+    }
 
     // Send 판정
     bool ForceSendPacket = false;

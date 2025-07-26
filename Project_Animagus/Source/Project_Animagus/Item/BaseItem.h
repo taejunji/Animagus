@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "../Server/Server/protocol.h"
 #include "BaseItem.generated.h"
 
 class USphereComponent;
@@ -69,4 +70,11 @@ public:
     UFUNCTION(BlueprintCallable, Category = "Item")
     virtual void DestroyItem();
     
+    void SendItemPickedUp2Server(ABaseCharacter* Picker);
+
+public:
+    void SetItemType(Protocol::ItemType NewItemType) { ItemType = NewItemType; }
+    Protocol::ItemType GetItemType() const { return ItemType; }
+
+    Protocol::ItemType ItemType = Protocol::ItemType::NONE; // 아이템 타입 (기본값은 NONE)
 };

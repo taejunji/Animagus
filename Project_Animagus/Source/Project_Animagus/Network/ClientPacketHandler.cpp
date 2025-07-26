@@ -198,3 +198,13 @@ bool Handle_SC_SIGNUP_FAIL(SessionRef& session, Protocol::SC_SIGNUP_FAIL_PKT& pk
 
     return true;
 }
+
+bool Handle_SC_SET_POWERUP(SessionRef& session, Protocol::SC_SET_POWERUP_PKT& pkt)
+{
+    if (auto* GameInstance = Cast<UMyGameInstance>(GWorld->GetGameInstance()))
+    {
+        GameInstance->HandleSetPowerUp(pkt);
+    }
+
+    return true;
+}

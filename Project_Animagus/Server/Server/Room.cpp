@@ -628,6 +628,40 @@ bool Room::HandleJumpEffect(Protocol::CS_JUMP_EFT_PKT& pkt)
     return true;
 }
 
+bool Room::HandleItemPickedUp(Protocol::CS_ITEM_PICK_PKT& pkt, const uint16 ownerID)
+{
+    std::lock_guard lock(m_mutex);
+
+    const uint16 player_id = pkt.player_id;
+    if (m_players.contains(player_id) == false && m_aiPlayers.contains(player_id) == false) return false;
+
+    PlayerRef player;
+    if (player_id < 100) player = m_players[player_id];
+    else player = m_aiPlayers[player_id];
+    player->playerHP = pkt.hp;
+
+    if (pkt.item_type == Protocol::ItemType::POWERUP)
+    {
+        player->powerUpLevel = pkt.powerup_level;
+
+        SC_SET_POWERUP_PKT powerupPkt;
+        powerupPkt.player_id = player_id;
+        powerupPkt.powerup_level = pkt.powerup_level;
+
+        SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(powerupPkt);
+        Broadcast(sendBuffer, ownerID, true);
+    }
+
+    SC_UPDATE_HP_PKT updateHpPkt;
+    updateHpPkt.player_id = player_id;
+    updateHpPkt.hp = pkt.hp;
+
+    SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(updateHpPkt);
+    Broadcast(sendBuffer, ownerID, true);
+
+    return true;
+}
+
 void Room::InitializeGame()
 {
     //m_players.clear();
