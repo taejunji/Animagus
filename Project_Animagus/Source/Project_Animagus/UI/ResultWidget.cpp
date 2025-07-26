@@ -26,7 +26,7 @@ void UResultWidget::ShowOutcome(bool bIsWinner)
 {
     if (!TxtOutcome) return;
     TxtOutcome->SetText(
-        FText::FromString(bIsWinner ? TEXT("Win") : TEXT("Lose"))
+        FText::FromString(bIsWinner ? TEXT("우승!") : TEXT("패배.."))
     );
 }
 

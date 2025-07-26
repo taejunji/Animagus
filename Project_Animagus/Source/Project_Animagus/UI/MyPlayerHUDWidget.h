@@ -48,6 +48,11 @@ protected:
     UPROPERTY(meta = (BindWidget))
     UTextBlock* RoundTimeText;
 
+    UPROPERTY(meta = (BindWidget))
+    UTextBlock* TextRoundCount;
+
+    UPROPERTY(meta = (BindWidget))
+    UTextBlock* TextMaxRoundCount;
 protected:
 
     // 위젯 애니메이션
@@ -193,4 +198,6 @@ public:
     void ResetLevelImgage();
 
     void SetLevelImage(int32 num);
+
+    void SetRoundText(int32 CurrentRound);
 };
