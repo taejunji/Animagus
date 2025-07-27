@@ -61,18 +61,8 @@ void USmokeSkill::ActiveSkill_Implementation()
     FRotator SpawnRotation;
 
     // 플레이어(Owner)의 카메라 뷰포인트를 사용하여 스폰 위치 결정
-    FVector CameraLocation;
-    FRotator CameraRotation;
-    if (Owner->GetPawnType() == PawnType::PLAYER)
-    {
-        Owner->GetController()->GetPlayerViewPoint(CameraLocation, CameraRotation);
-    }
-    else
-    {
-        CameraLocation = OwnerLocation;
-        //CameraRotation = Owner->GetActorRotation();
-        CameraRotation = Rotation;
-    }
+    FVector CameraLocation = OwnerLocation;
+    FRotator CameraRotation = Rotation;
 
     // 진행 방향: 카메라 뷰 방향 사용
     SpawnRotation = CameraRotation;

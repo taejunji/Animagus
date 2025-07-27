@@ -59,18 +59,8 @@ void UMagicMissile::ActiveSkill_Implementation()
 
     // TPS 기준: 스폰 위치는 캐릭터 전면(약간 위쪽)에서 생성하고,
     // 진행 방향은 플레이어 컨트롤러의 카메라 뷰포인트 방향을 사용합니다.
-    FVector CameraLocation;
-    FRotator CameraRotation;
-    if (Owner->GetPawnType() == PawnType::PLAYER)
-    {
-        Owner->GetController()->GetPlayerViewPoint(CameraLocation, CameraRotation);
-    }
-    else
-    {
-        CameraLocation = Owner->GetActorLocation();
-        //CameraRotation = Owner->GetActorRotation();
-        CameraRotation = Rotation;
-    }
+    FVector CameraLocation = OwnerLocation;
+    FRotator CameraRotation = Rotation;
 
     // 진행 방향: 카메라 뷰 방향 사용
     SpawnRotation = CameraRotation + FRotator(2.f, 0.f, 0.f);

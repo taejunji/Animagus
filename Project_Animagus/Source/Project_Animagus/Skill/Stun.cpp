@@ -62,17 +62,8 @@ void UStun::ActiveSkill_Implementation()
     FRotator SpawnRotation;
 
     // 플레이어 컨트롤러를 통해 카메라 뷰포인트를 가져옵니다.
-    FVector CameraLocation;
-    FRotator CameraRotation;
-    if (Owner->GetPawnType() == PawnType::PLAYER)
-    {
-        Owner->GetController()->GetPlayerViewPoint(CameraLocation, CameraRotation);
-    }
-    else
-    {
-        CameraLocation = OwnerLocation;
-        CameraRotation = Rotation;
-    }
+    FVector CameraLocation = OwnerLocation;
+    FRotator CameraRotation = Rotation;
 
     // 진행 방향: 카메라 뷰 방향 사용
     SpawnRotation = CameraRotation + FRotator(1.f, 0.f, 0.f);;

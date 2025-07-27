@@ -59,17 +59,8 @@ void UFireball::ActiveSkill_Implementation()
     FVector SpawnLocation = OwnerLocation + Owner->GetActorForwardVector() * 80.f + Owner->GetActorRightVector() * 30.f; 
     FRotator SpawnRotation;
 
-    FVector CameraLocation;
-    FRotator CameraRotation;
-    if (Owner->GetPawnType() == PawnType::PLAYER)
-    {
-        Owner->GetController()->GetPlayerViewPoint(CameraLocation, CameraRotation);
-    }
-    else
-    {
-        CameraLocation = OwnerLocation;
-        CameraRotation = Rotation;
-    }
+    FVector CameraLocation = OwnerLocation;
+    FRotator CameraRotation = Rotation;
 
     SpawnRotation = CameraRotation + FRotator(1.f, 0.f, 0.f);
 
@@ -129,7 +120,7 @@ void UFireball::ActiveSkill_Implementation()
     if (bFirstUse)
     {
         bFirstUse = false;
-    } 
+    }
     StartCooldown();
 }
 

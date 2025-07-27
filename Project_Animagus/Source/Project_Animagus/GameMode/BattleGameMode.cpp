@@ -695,14 +695,20 @@ void ABattleGameMode::SpawnSkill(Protocol::CS_USING_SKILL_PKT& pkt)
         return;
     }
 
+    bool is_mine = false;
+    if (PlayerCharacter)
+    {
+        is_mine = PlayerCharacter->GetPlayerId() == pkt.player_id;
+    }
+
     ABaseCharacter* Player;
-    if (true == pkt.is_mine)
+    if (is_mine)
     {
         Player = Cast<ABaseCharacter>(PlayerCharacter);
     }
     else
     {
-        if (SpawnedPlayers.Contains(static_cast<int32>(pkt.player_id)) == false) return;
+        if (false == SpawnedPlayers.Contains(static_cast<int32>(pkt.player_id))) return;
         Player = SpawnedPlayers[static_cast<int32>(pkt.player_id)];
     }
 
@@ -776,16 +782,19 @@ void ABattleGameMode::SpawnSkill(Protocol::CS_USING_SKILL_PKT& pkt)
 
     Skill->SetSkillLocation(FVector(pkt.x, pkt.y, pkt.z));
     Skill->Owner = Player;
-    if (true == pkt.is_mine && false == Player->Skills[Player->skill_Sellect]->IsOnCooldown())
+    if (is_mine)
     {
-        //Player->Skills[Player->skill_Sellect]->StartCooldown();
-        Player->Skills[Player->skill_Sellect]->ActiveSkill();
-        //Skill->ActiveSkill();
-        return;
+        Skill = Player->Skills[Player->skill_Sellect];
+        if (Skill && false == Skill->IsOnCooldown())
+        {
+            Skill->SetSkillLocation(FVector(pkt.x, pkt.y, pkt.z));
+            Skill->SetSkillRotation(pkt.pitch, pkt.yaw, pkt.roll);
+            Skill->ActiveSkill();
+            return;
+        }
     }
-    else if (pkt.player_id >= 100)
+    else
     {
-
         Skill->ActiveSkill();
     }
 }

@@ -98,6 +98,8 @@ bool GameServer::Initialize()
             std::cout << "Delete User Success" << std::endl;
         }
     }
+
+    dbManager.DBDisconnect();
     //-------------------------------------
 
 #else

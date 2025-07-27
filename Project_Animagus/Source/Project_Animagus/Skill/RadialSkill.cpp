@@ -61,17 +61,9 @@ void URadialSkill::ActiveSkill_Implementation()
     FVector CharacterLocation = OwnerLocation;
     FRotator BaseRotation;
 
-    FVector CameraLocation;
-    FRotator CameraRotation;
-    if (Owner->GetPawnType() == PawnType::PLAYER)
-    {
-        Owner->GetController()->GetPlayerViewPoint(CameraLocation, CameraRotation);
-        BaseRotation = CameraRotation;
-    }
-    else
-    {
-        BaseRotation = Rotation;
-    }
+    FVector CameraLocation = OwnerLocation;
+    FRotator CameraRotation = Rotation;
+    BaseRotation = CameraRotation;
 
     // --- 회전 스프레드 계산
     float BaseYaw = BaseRotation.Yaw;

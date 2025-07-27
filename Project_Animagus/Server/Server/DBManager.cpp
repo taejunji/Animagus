@@ -97,7 +97,7 @@ bool DBManager::DBDisconnect()
         return false;
     }
 
-    const wchar_t* sqlQuery = L"{CALL user_logout_all()}";
+    const wchar_t* sqlQuery = L"{CALL user_logout_all}";
     retcode = SQLPrepare(hstmt, (SQLWCHAR*)sqlQuery, SQL_NTS);
     if (!(retcode == SQL_SUCCESS || retcode == SQL_SUCCESS_WITH_INFO)) {
         HandleDiagnosticRecord(hstmt, SQL_HANDLE_STMT, retcode);

@@ -126,7 +126,7 @@ void AItem_Box_Base::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor,
 
         // 플레이어인 경우 데미지 UI 띄우기
         if (Cast<APlayerCharacter>(Projectile->Shooter)) {
-            ShowDmgIndicator(Damage);
+            //ShowDmgIndicator(Damage);
         }
 
         ApplyDamage(Damage);

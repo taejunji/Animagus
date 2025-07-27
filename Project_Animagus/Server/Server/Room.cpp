@@ -172,8 +172,8 @@ bool Room::HandleStartGame(PlayerRef player)
         //newPlayer.z = player->z;
         //newPlayer.rotation = player->rotation;
         newPlayer.host = (player->playerID == m_hostPlayer->playerID);
-        //newPlayer.spawn_index = 0;
-        newPlayer.spawn_index = m_indexGen++ % m_maxPlayerCount;
+        newPlayer.spawn_index = 0;
+        //newPlayer.spawn_index = m_indexGen++ % m_maxPlayerCount;
         newPlayer.server_time = m_gameStartTickCount;
         SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(newPlayer);
         if (auto session = player->ownerSession.lock())
@@ -492,7 +492,8 @@ bool Room::HandleDamageLocked(const Protocol::CS_DAMAGE_PKT& pkt, const uint16 o
     //player->isAlive = pkt.hp > 0;
 
 #ifndef _DUMMYTEST
-    std::cout << "Room#" << m_roomID << " Player#" << player_id << " Got Damage - HP: " << pkt.hp << std::endl;
+    if (player_id < 100)
+        std::cout << "Room#" << m_roomID << " Player#" << player_id << " Got Damage - HP: " << pkt.hp << std::endl;
 #endif
 
     SC_UPDATE_HP_PKT updateHpPkt;
