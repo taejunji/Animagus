@@ -219,7 +219,8 @@ namespace Protocol {
         uint16 room_id;
         SkillType s_type;
         float x, y, z;          // 위치, 근데, 필요한가? 이미 클라이언트에서도 player_id 로 해당 플레이어의 위치 접근 가능하지 않나?
-        float pitch, yaw, roll;       
+        float pitch, yaw, roll;
+        bool is_mine;
     };
     struct CS_AI_MOVE_PKT
     {

@@ -695,8 +695,19 @@ void ABattleGameMode::SpawnSkill(Protocol::CS_USING_SKILL_PKT& pkt)
         return;
     }
 
-    if (SpawnedPlayers.Contains(static_cast<int32>(pkt.player_id)) == false) return;
-    ABaseCharacter* Player = SpawnedPlayers[static_cast<int32>(pkt.player_id)];
+    ABaseCharacter* Player;
+    if (true == pkt.is_mine)
+    {
+        Player = Cast<ABaseCharacter>(PlayerCharacter);
+    }
+    else
+    {
+        if (SpawnedPlayers.Contains(static_cast<int32>(pkt.player_id)) == false) return;
+        Player = SpawnedPlayers[static_cast<int32>(pkt.player_id)];
+    }
+
+    //if (SpawnedPlayers.Contains(static_cast<int32>(pkt.player_id)) == false) return;
+    //ABaseCharacter* Player = SpawnedPlayers[static_cast<int32>(pkt.player_id)];
     //if (static_cast<int32>(pkt.player_id) == PlayerId) return;    // 자신이 쏜 스킬은 스폰X
     if (Player == nullptr) return;
 
@@ -761,9 +772,20 @@ void ABattleGameMode::SpawnSkill(Protocol::CS_USING_SKILL_PKT& pkt)
         return;
     }
 
-    if (Skill) {
-        Skill->SetSkillLocation(FVector(pkt.x, pkt.y, pkt.z));
-        Skill->Owner = Player;
+    if (nullptr == Skill) return;
+
+    Skill->SetSkillLocation(FVector(pkt.x, pkt.y, pkt.z));
+    Skill->Owner = Player;
+    if (true == pkt.is_mine && false == Player->Skills[Player->skill_Sellect]->IsOnCooldown())
+    {
+        //Player->Skills[Player->skill_Sellect]->StartCooldown();
+        Player->Skills[Player->skill_Sellect]->ActiveSkill();
+        //Skill->ActiveSkill();
+        return;
+    }
+    else if (pkt.player_id >= 100)
+    {
+
         Skill->ActiveSkill();
     }
 }

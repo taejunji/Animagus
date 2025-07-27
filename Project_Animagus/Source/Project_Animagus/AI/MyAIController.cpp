@@ -292,6 +292,18 @@ void AMyAIController::CheckDisableTarget()
         Blackboard->ClearValue(BoxTargetKey.SelectedKeyName); 
     }
 
+    //ABaseItem* TargetIem = Cast<ABaseItem>(Blackboard->GetValueAsObject(ItemTargetKey.SelectedKeyName));
+    //if (TargetIem && TargetBox->GetHp() <= 0.f) {
+    //    if (AI) {
+    //        AI->bUseControllerRotationYaw = false;
+    //        AI->GetCharacterMovement()->bOrientRotationToMovement = true;
+    //        AI->GetCharacterMovement()->bUseControllerDesiredRotation = false;
+    //    }
+
+    //    ClearFocus(EAIFocusPriority::Gameplay);
+    //    Blackboard->ClearValue(ItemTargetKey.SelectedKeyName);
+    //}
+
     // 3. 게임 라운드에 따라 해제
     if (BattleMode && AI)
     {

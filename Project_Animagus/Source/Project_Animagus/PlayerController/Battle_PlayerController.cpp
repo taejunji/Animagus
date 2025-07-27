@@ -324,7 +324,7 @@ void ABattle_PlayerController::Input_Attack(const FInputActionValue& InputValue)
 
             FVector Location = MyCharacter->GetActorLocation();
             Skill->SetSkillLocation(Location);
-            Skill->ActiveSkill();
+            //Skill->ActiveSkill();
 
             MyCharacter->SetMoveState(Protocol::PlayerState::MOVE_STATE_SKILL);
 
@@ -341,6 +341,7 @@ void ABattle_PlayerController::Input_Attack(const FInputActionValue& InputValue)
             SkillPkt.s_type = Skill->SkillType;
             SkillPkt.x = Location.X; SkillPkt.y = Location.Y; SkillPkt.z = Location.Z;  // 필수인가?
             SkillPkt.pitch = Rotation.Pitch; SkillPkt.yaw = Rotation.Yaw; SkillPkt.roll = Rotation.Roll;
+            SkillPkt.is_mine = true;
 
             SendBufferRef SendBuffer = ClientPacketHandler::MakeSendBuffer(SkillPkt);
             Cast<UMyGameInstance>(GWorld->GetGameInstance())->SendPacket(SendBuffer);

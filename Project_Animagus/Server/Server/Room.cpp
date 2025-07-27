@@ -365,7 +365,8 @@ bool Room::HandleSkillLocked(Protocol::CS_USING_SKILL_PKT& pkt)
     // 뭐 더 붙일 정보가 있나?
 
     SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(pkt);
-    Broadcast(sendBuffer, playerId, true);
+//    Broadcast(sendBuffer, playerId, true);
+    Broadcast(sendBuffer, 0, true);
 
     return true;
 }
@@ -466,11 +467,13 @@ bool Room::HandleAISkillLocked(const Protocol::CS_AI_USING_SKILL_PKT& pkt, const
     aiSkillPkt.roll = pkt.roll;
     aiSkillPkt.s_type = pkt.s_type;
     aiSkillPkt.x = pkt.x; aiSkillPkt.y = pkt.y; aiSkillPkt.z = pkt.z;
+    aiSkillPkt.is_mine = false;
 
     //std::cout << "AI Using Skill " << static_cast<int>(aiSkillPkt.s_type) << " Rotation: " << aiSkillPkt.pitch << ", " << aiSkillPkt.yaw << ", " << aiSkillPkt.roll << std::endl;
 
     SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(aiSkillPkt);
-    Broadcast(sendBuffer, ownerID, true);
+//    Broadcast(sendBuffer, ownerID, true);
+    Broadcast(sendBuffer, 0, true);
 
     return true;
 }

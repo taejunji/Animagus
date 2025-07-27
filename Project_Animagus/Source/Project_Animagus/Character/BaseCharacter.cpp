@@ -807,9 +807,11 @@ bool ABaseCharacter::UseSkillByName(const FString& DesiredSkillName)
                 Cast<UMyGameInstance>(GWorld->GetGameInstance())->SendPacket(SendBuffer);
             }
 
-            Skill->SetSkillRotation(Rotation.Pitch, Rotation.Yaw, Rotation.Roll);
-            Skill->SetSkillLocation(MyLocation);
-            Skill->ActiveSkill();
+            //Skill->SetSkillRotation(Rotation.Pitch, Rotation.Yaw, Rotation.Roll);
+            //Skill->SetSkillLocation(MyLocation);
+            //Skill->ActiveSkill();
+            Skill->StartCooldown();
+            Skill->bFirstUse = false;
 
             return true; // 하나만 사용하고 끝내려면 여기서 리턴
         }
