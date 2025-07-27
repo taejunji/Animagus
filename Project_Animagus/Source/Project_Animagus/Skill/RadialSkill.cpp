@@ -58,7 +58,7 @@ void URadialSkill::ActiveSkill_Implementation()
     // 공격 애니메이션
     Owner->PlayAnimMontageByType(MontageType::DefaultAttack);
 
-    FVector CharacterLocation = Owner->GetActorLocation();
+    FVector CharacterLocation = OwnerLocation;
     FRotator BaseRotation;
 
     FVector CameraLocation;

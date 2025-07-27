@@ -762,6 +762,7 @@ void ABattleGameMode::SpawnSkill(Protocol::CS_USING_SKILL_PKT& pkt)
     }
 
     if (Skill) {
+        Skill->SetSkillLocation(FVector(pkt.x, pkt.y, pkt.z));
         Skill->Owner = Player;
         Skill->ActiveSkill();
     }

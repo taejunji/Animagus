@@ -56,7 +56,7 @@ void UChangeSkill::ActiveSkill_Implementation()
     Owner->PlayAnimMontageByType(MontageType::DefaultAttack);
 
     // 투사체 스폰 위치
-    FVector SpawnLocation = Owner->GetActorLocation() + Owner->GetActorForwardVector() * 80.f + Owner->GetActorRightVector() * 20.f;
+    FVector SpawnLocation = OwnerLocation + Owner->GetActorForwardVector() * 80.f + Owner->GetActorRightVector() * 20.f;
     FRotator SpawnRotation;
 
     // 플레이어 컨트롤러를 통해 카메라 뷰포인트를 가져옵니다.
@@ -68,7 +68,7 @@ void UChangeSkill::ActiveSkill_Implementation()
     }
     else
     {
-        CameraLocation = Owner->GetActorLocation();
+        CameraLocation = OwnerLocation;
         CameraRotation = Rotation;
     }
 

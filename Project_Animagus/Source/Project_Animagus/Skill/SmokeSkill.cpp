@@ -57,7 +57,7 @@ void USmokeSkill::ActiveSkill_Implementation()
     Owner->PlayAnimMontageByType(MontageType::DefaultAttack);
 
     // 스폰 위치: 캐릭터의 전면 (예: 캐릭터 위치에서 전방으로 70cm)
-    FVector SpawnLocation = Owner->GetActorLocation() + Owner->GetActorForwardVector() * 80.f + Owner->GetActorRightVector() * 30.f;
+    FVector SpawnLocation = OwnerLocation + Owner->GetActorForwardVector() * 80.f + Owner->GetActorRightVector() * 30.f;
     FRotator SpawnRotation;
 
     // 플레이어(Owner)의 카메라 뷰포인트를 사용하여 스폰 위치 결정
@@ -69,7 +69,7 @@ void USmokeSkill::ActiveSkill_Implementation()
     }
     else
     {
-        CameraLocation = Owner->GetActorLocation();
+        CameraLocation = OwnerLocation;
         //CameraRotation = Owner->GetActorRotation();
         CameraRotation = Rotation;
     }

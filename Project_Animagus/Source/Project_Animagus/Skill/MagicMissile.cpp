@@ -54,7 +54,7 @@ void UMagicMissile::ActiveSkill_Implementation()
     // 공격 애니메이션
     Owner->PlayAnimMontageByType(MontageType::DefaultAttack);
 
-    FVector SpawnLocation = Owner->GetActorLocation() + Owner->GetActorForwardVector() * 80.f + Owner->GetActorRightVector() * 30.f;
+    FVector SpawnLocation = OwnerLocation + Owner->GetActorForwardVector() * 80.f + Owner->GetActorRightVector() * 30.f;
     FRotator SpawnRotation;
 
     // TPS 기준: 스폰 위치는 캐릭터 전면(약간 위쪽)에서 생성하고,

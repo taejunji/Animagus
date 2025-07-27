@@ -94,9 +94,11 @@ public:
     bool bFirstUse;
 
     void SetSkillRotation(float pitch, float yaw, float roll);
+    void SetSkillLocation(const FVector& InLocation) { OwnerLocation = InLocation; }
 
 public:
     Protocol::SkillType SkillType = Protocol::SkillType::NONE;
 
     FRotator Rotation;
+    FVector OwnerLocation;
 };

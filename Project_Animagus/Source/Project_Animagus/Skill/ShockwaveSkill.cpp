@@ -61,7 +61,7 @@ void UShockwaveSkill::ActiveSkill_Implementation()
     Owner->PlayAnimMontageByType(MontageType::DefaultAttack);
 
     // 스폰 위치는 스킬 시전자의 현재 위치
-    FVector SpawnLocation = Owner->GetActorLocation();
+    FVector SpawnLocation = OwnerLocation;
     FRotator SpawnRotation = FRotator::ZeroRotator;
 
     // ShockwaveActor 스폰

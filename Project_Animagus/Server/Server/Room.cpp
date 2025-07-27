@@ -172,8 +172,8 @@ bool Room::HandleStartGame(PlayerRef player)
         //newPlayer.z = player->z;
         //newPlayer.rotation = player->rotation;
         newPlayer.host = (player->playerID == m_hostPlayer->playerID);
-        newPlayer.spawn_index = 0;
-        //newPlayer.spawn_index = m_indexGen++ % m_maxPlayerCount;
+        //newPlayer.spawn_index = 0;
+        newPlayer.spawn_index = m_indexGen++ % m_maxPlayerCount;
         newPlayer.server_time = m_gameStartTickCount;
         SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(newPlayer);
         if (auto session = player->ownerSession.lock())
@@ -465,6 +465,7 @@ bool Room::HandleAISkillLocked(const Protocol::CS_AI_USING_SKILL_PKT& pkt, const
     aiSkillPkt.yaw = pkt.yaw;
     aiSkillPkt.roll = pkt.roll;
     aiSkillPkt.s_type = pkt.s_type;
+    aiSkillPkt.x = pkt.x; aiSkillPkt.y = pkt.y; aiSkillPkt.z = pkt.z;
 
     //std::cout << "AI Using Skill " << static_cast<int>(aiSkillPkt.s_type) << " Rotation: " << aiSkillPkt.pitch << ", " << aiSkillPkt.yaw << ", " << aiSkillPkt.roll << std::endl;
 
@@ -488,7 +489,7 @@ bool Room::HandleDamageLocked(const Protocol::CS_DAMAGE_PKT& pkt, const uint16 o
     //player->isAlive = pkt.hp > 0;
 
 #ifndef _DUMMYTEST
-    //std::cout << "Room#" << m_roomID << " Player#" << player_id << " Got Damage - HP: " << pkt.hp << std::endl;
+    std::cout << "Room#" << m_roomID << " Player#" << player_id << " Got Damage - HP: " << pkt.hp << std::endl;
 #endif
 
     SC_UPDATE_HP_PKT updateHpPkt;
@@ -671,6 +672,7 @@ void Room::InitializeGame()
         player->s_mutex.lock();
         player->player_state = PlayerRoomState::WAITING;
         player->playerHP = 100;
+        player->isAlive = true;
         player->s_mutex.unlock();
     }
     m_aiPlayers.clear();

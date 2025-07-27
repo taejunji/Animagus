@@ -56,7 +56,7 @@ void UFireball::ActiveSkill_Implementation()
     Owner->PlayAnimMontageByType(MontageType::DefaultAttack);
 
     // 투사체 스폰 위치
-    FVector SpawnLocation = Owner->GetActorLocation() + Owner->GetActorForwardVector() * 80.f + Owner->GetActorRightVector() * 30.f; 
+    FVector SpawnLocation = OwnerLocation + Owner->GetActorForwardVector() * 80.f + Owner->GetActorRightVector() * 30.f; 
     FRotator SpawnRotation;
 
     FVector CameraLocation;
@@ -67,13 +67,13 @@ void UFireball::ActiveSkill_Implementation()
     }
     else
     {
-        CameraLocation = Owner->GetActorLocation();
+        CameraLocation = OwnerLocation;
         CameraRotation = Rotation;
     }
 
     SpawnRotation = CameraRotation + FRotator(1.f, 0.f, 0.f);
 
-    UE_LOG(LogTemp, Log, TEXT("Fireball Skill: OwnerLocation = %s"), *Owner->GetActorLocation().ToString());
+    UE_LOG(LogTemp, Log, TEXT("Fireball Skill: OwnerLocation = %s"), *OwnerLocation.ToString());
     // UE_LOG(LogTemp, Log, TEXT("Fireball Skill: CameraRotation = %s"), *CameraRotation.ToString());
     UE_LOG(LogTemp, Log, TEXT("Fireball Skill: SpawnLocation = %s"), *SpawnLocation.ToString());
     UE_LOG(LogTemp, Log, TEXT("Fireball Skill: SpawnRotation = %s"), *SpawnRotation.ToString());

@@ -776,6 +776,7 @@ bool ABaseCharacter::UseSkillByName(const FString& DesiredSkillName)
             // UE_LOG(LogTemp, Warning, TEXT("Used skill: %s"), *DesiredSkillName);
 
             FRotator Rotation;
+            FVector MyLocation = GetActorLocation();
 
             if (AMyAIController* AIController = Cast<AMyAIController>(GetController()))
             {
@@ -787,7 +788,7 @@ bool ABaseCharacter::UseSkillByName(const FString& DesiredSkillName)
                 }
                 if (TargetCharacter)
                 {
-                    FVector DirectionToTarget = (TargetCharacter->GetActorLocation() - GetActorLocation()).GetSafeNormal();
+                    FVector DirectionToTarget = (TargetCharacter->GetActorLocation() - MyLocation).GetSafeNormal();
                     Rotation = DirectionToTarget.Rotation();
                 }
                 else
@@ -799,7 +800,7 @@ bool ABaseCharacter::UseSkillByName(const FString& DesiredSkillName)
                 Protocol::CS_AI_USING_SKILL_PKT SkillPkt;
                 SkillPkt.ai_id = GetPlayerId();
                 SkillPkt.s_type = Skill->SkillType;
-                //SkillPkt.x = Location.X; SkillPkt.y = Location.Y; SkillPkt.z = Location.Z;  // 필수인가?
+                SkillPkt.x = MyLocation.X; SkillPkt.y = MyLocation.Y; SkillPkt.z = MyLocation.Z;  // 필수인가?
                 SkillPkt.pitch = Rotation.Pitch; SkillPkt.yaw = Rotation.Yaw; SkillPkt.roll = Rotation.Roll;
 
                 SendBufferRef SendBuffer = ClientPacketHandler::MakeSendBuffer(SkillPkt);
@@ -807,8 +808,8 @@ bool ABaseCharacter::UseSkillByName(const FString& DesiredSkillName)
             }
 
             Skill->SetSkillRotation(Rotation.Pitch, Rotation.Yaw, Rotation.Roll);
+            Skill->SetSkillLocation(MyLocation);
             Skill->ActiveSkill();
-
 
             return true; // 하나만 사용하고 끝내려면 여기서 리턴
         }

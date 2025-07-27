@@ -10,7 +10,7 @@
 ADeathPowerUpItem::ADeathPowerUpItem()
 {
     // 생성 직후 충돌 비활성화
-    CollisionComp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+    //CollisionComp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 
     if (AActor* Spawner = GetOwner())
     {
@@ -30,13 +30,13 @@ void ADeathPowerUpItem::BeginPlay()
     }
     
     // 1.5초 뒤에 충돌 활성화 & 이펙트 재생
-    GetWorldTimerManager().SetTimer(
-        EnableTimerHandle,
-        this,
-        &ADeathPowerUpItem::EnableCollisionAndEffect,
-        1.5f,
-        false
-    );
+    //GetWorldTimerManager().SetTimer(
+    //    EnableTimerHandle,
+    //    this,
+    //    &ADeathPowerUpItem::EnableCollisionAndEffect,
+    //    1.5f,
+    //    false
+    //);
 
     SetItemType(Protocol::ItemType::POWERUP);
 }
