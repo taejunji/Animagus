@@ -16,7 +16,8 @@ AProjectile_MagicMissile::AProjectile_MagicMissile()
     AccelerationThreshold = 0.7f;         // 생성 후 3초가 지나면 가속 시작
     SuddenAccelerationFactor = 2.f;        // 이 값은 원하는 가속의 강도에 맞게 조정 (높을수록 급격하게 가속)
     
-    ProjectileMovement->InitialSpeed = 500.f;
+    ProjectileMovement->InitialSpeed = 700.f;
+
     // ProjectileMovementComponent가 ProjectileBase에 이미 포함되어 있다고 가정합니다.
     if (ProjectileMovement)
     {

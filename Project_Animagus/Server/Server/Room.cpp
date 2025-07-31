@@ -110,7 +110,11 @@ bool Room::HandleEnterPlayer(PlayerRef player)
     std::cout << "Room#" << m_roomID << " Player Enter :" << player->playerID << std::endl;
 #endif
 
-    std::cout << "Room#" << m_roomID  << " Player Count - " << m_playerCount << std::endl;
+    std::cout << "Room#" << m_roomID  << "Player Count - " << m_playerCount << std::endl;
+    if (m_playerCount == m_maxPlayerCount) m_isValid = false;
+
+    // Room 입장 성공 패킷 전송
+
 
     bool isHost = false;
     int n_pid = 0;
@@ -172,8 +176,8 @@ bool Room::HandleStartGame(PlayerRef player)
         //newPlayer.z = player->z;
         //newPlayer.rotation = player->rotation;
         newPlayer.host = (player->playerID == m_hostPlayer->playerID);
-        newPlayer.spawn_index = 0;
-        //newPlayer.spawn_index = m_indexGen++ % m_maxPlayerCount;
+        //newPlayer.spawn_index = 0;
+        newPlayer.spawn_index = m_indexGen++ % m_maxPlayerCount;
         newPlayer.server_time = m_gameStartTickCount;
         SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(newPlayer);
         if (auto session = player->ownerSession.lock())
@@ -492,8 +496,8 @@ bool Room::HandleDamageLocked(const Protocol::CS_DAMAGE_PKT& pkt, const uint16 o
     //player->isAlive = pkt.hp > 0;
 
 #ifndef _DUMMYTEST
-    if (player_id < 100)
-        std::cout << "Room#" << m_roomID << " Player#" << player_id << " Got Damage - HP: " << pkt.hp << std::endl;
+    //if (player_id < 100)
+    //    std::cout << "Room#" << m_roomID << " Player#" << player_id << " Got Damage - HP: " << pkt.hp << std::endl;
 #endif
 
     SC_UPDATE_HP_PKT updateHpPkt;
@@ -510,6 +514,7 @@ bool Room::HandleDamageLocked(const Protocol::CS_DAMAGE_PKT& pkt, const uint16 o
         player->isAlive = false;
         m_alivePlayerCount--;
         std::cout << "Room#" << m_roomID << " Alive Player Count - " << m_alivePlayerCount << std::endl;
+        m_deathPlayer.push(player->playerID);
         if (m_alivePlayerCount == 1)
         {
             std::cout << "Room#" << m_roomID << " Last Player Standing" << std::endl;
@@ -546,8 +551,17 @@ bool Room::HandleRoundEndLocked(const Protocol::CS_ROUND_END_PKT& pkt)
 #ifndef _DUMMYTEST
         //std::cout << item.first << ":" << item.second << ", ";
 #endif
-        accumRanking[item.first] += scoreBoard[scoreBoardIndex++];  // 여기가 문젠가?
-        std::cout << item.first << ":" << accumRanking[item.first] << ", ";
+        uint16 playerId = item.first;
+
+        if (item.second <= 0) 
+        {
+            if (false == m_deathPlayer.empty())
+            {
+                playerId = m_deathPlayer.top();
+                m_deathPlayer.pop();
+            }
+        }
+        accumRanking[playerId] += scoreBoard[scoreBoardIndex++];  // 여기가 문젠가?
     }
     std::cout << std::endl;
 
@@ -567,7 +581,8 @@ bool Room::HandleRoundEndLocked(const Protocol::CS_ROUND_END_PKT& pkt)
             return a.second > b.second;
         });
 
-    for (int8 i = 0; i < 8; ++i) {
+    for (int8 i = 0; i < 8; ++i) 
+    {
         roundEndPkt.ranking[i] = sortedPlayersByScore[i].first;
         strcpy_s(roundEndPkt.name[i], m_playerNames[sortedPlayersByScore[i].first].c_str());
         roundEndPkt.score[i] = sortedPlayersByScore[i].second;
@@ -685,6 +700,8 @@ void Room::InitializeGame()
     m_loadingOverCount = 0;
     m_indexGen = 0;
     m_alivePlayerCount = 8;
+    while (false == m_deathPlayer.empty())
+        m_deathPlayer.pop();
 
     InitItemInfo();
 }
@@ -801,6 +818,6 @@ void Room::InitializeRoom()
     m_aiNameGen = 0;
     accumRanking.clear();
     m_nowPlayerCount = 0;
-
+    m_isValid = true;
 }
 

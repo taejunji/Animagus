@@ -15,7 +15,7 @@ URadialSkill::URadialSkill()
     NumberOfProjectiles = 3;             // 7개의 투사체 발사
     SpreadAngle = 190.0f;                 // 전체 90도 부채꼴
     RadialDamage = 10.0f;                // 투사체 데미지
-    RadialSpeed = 1600.f;                // 투사체 속도
+    RadialSpeed = 4000.f;                // 투사체 속도
     SkillDescription = TEXT("여러개의 투사체를 발사합니다.");
     SpawnRadius = 80.f;                  // 캐릭터 기준으로 80cm 떨어진 위치에서 스폰
     VerticalOffset = 20.f;               // 캐릭터 기준으로 위쪽 20cm
@@ -107,6 +107,9 @@ void URadialSkill::ActiveSkill_Implementation()
                 {
                     Projectile->ProjectileMovement->InitialSpeed = RadialSpeed;
                     Projectile->ProjectileMovement->MaxSpeed = RadialSpeed;
+
+                    FVector Dir = Projectile->ProjectileMovement->Velocity.GetSafeNormal();
+                    Projectile->ProjectileMovement->Velocity = Dir * RadialSpeed;
                 }
 
                 UE_LOG(LogTemp, Log, TEXT("URadialSkill: %d번째 투사체 스폰 성공: %s"), i, *Projectile->GetName());

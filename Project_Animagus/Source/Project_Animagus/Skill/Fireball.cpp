@@ -17,7 +17,7 @@ UFireball::UFireball()
     
     CooldownTime = 3.f;
     FireballDamage = 10.0f;
-    FireballSpeed = 2000.f;
+    FireballSpeed = 3500.f;
     static ConstructorHelpers::FClassFinder<AProjectile_FireBall> FireballBPFinder(TEXT("/Game/WorkFolder/Bluprints/Projectiles/MyProjectile_FireBall"));
     if (FireballBPFinder.Succeeded())
     {
@@ -130,7 +130,7 @@ void UFireball::UpgradeSkill(int32 NewPowerUpLevel)
 
     FireballDamage = BaseFireballDamage + (3.f * NewPowerUpLevel);
     CooldownTime = BaseCooldownTime * CooldownMultiplier;
-    FireballSpeed = 2000.f + (150.f * NewPowerUpLevel);
+    FireballSpeed = 3500.f + (100.f * NewPowerUpLevel);
 
     UE_LOG(LogTemp, Log, TEXT("Fireball upgraded: PowerUpLevel %d, Damage: %f, Cooldown: %f"), 
         NewPowerUpLevel, FireballDamage, CooldownTime);

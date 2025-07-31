@@ -16,8 +16,8 @@ UMagicMissile::UMagicMissile()
     SkillDescription = TEXT("일정 시간후에 빨라지는 미사일을 발사합니다.");
     CooldownTime = 10.0f; // 
     MissileDamage = 20.0f;
-    MissileSpeed = 4000.f;
-    startMissileSpeed = 500.f;
+    MissileSpeed = 5000.f;
+    startMissileSpeed = 700.f;
     BaseCooldownTime = CooldownTime;
     knockbackForce = 1000.f;
     BaseknockbackForce = knockbackForce;

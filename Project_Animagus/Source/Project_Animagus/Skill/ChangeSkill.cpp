@@ -15,7 +15,7 @@ UChangeSkill::UChangeSkill()
     SkillName = "ChangeSkill";  // 스킬 이름 설정
     CooldownTime = 10.0f;        // 쿨타임 5초
     ChangeDamage = 1.0f;        // 데미지 없음(교환 효과 목적)
-    ChangeSpeed = 1500.f;       // 투사체 속도
+    ChangeSpeed = 3500.f;       // 투사체 속도
     SkillDescription = TEXT("적중한 적 바로 앞으로 순간이동합니다.");
     BaseCooldownTime = CooldownTime;
     //ProjectileBPClass = nullptr;  // 에디터에서 할당할 것
@@ -122,7 +122,7 @@ void UChangeSkill::UpgradeSkill(int32 NewPowerUpLevel)
     float CooldownMultiplier = FMath::Clamp(1.0f - (0.05f * NewPowerUpLevel), 0.5f, 1.0f);
     CooldownTime = BaseCooldownTime * CooldownMultiplier;
 
-    ChangeSpeed = BaseChangeSpeed + (Level * 400.f);
+    ChangeSpeed = BaseChangeSpeed + (Level * 100.f);
    
     UE_LOG(LogTemp, Warning, TEXT("changeSpeed %f"), ChangeSpeed);
     

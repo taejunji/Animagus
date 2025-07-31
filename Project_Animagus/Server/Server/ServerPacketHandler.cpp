@@ -30,6 +30,14 @@ bool Handle_DCS_TEST(SessionRef& session, DCS_TEST_PKT& pkt)
 bool Handle_CS_ENTER_ROOM(SessionRef& session, CS_ENTER_ROOM_PKT& pkt)
 {
     //Handle_CS_ENTER_GAME 내용 잘라서 여기 붙이기
+
+    if (false == GRoom[pkt.room_id]->IsValid())
+    {
+        // Room 입장 실패 패킷 전송
+
+        return true;
+    }
+
     PlayerRef player = PlayerFactory::CreatePlayer(std::static_pointer_cast<Session>(session));
 
     //GRoom->Enter(player);
@@ -54,6 +62,7 @@ bool Handle_CS_START_GAME(SessionRef& session, CS_START_GAME_PKT& pkt)
         return false;
 
     std::cout << "Room#" << room->m_roomID << " Host Request to Start Game" << std::endl;
+    room->m_isValid = false;
 
     SC_START_GAME_PKT start_pkt;
     SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(start_pkt);

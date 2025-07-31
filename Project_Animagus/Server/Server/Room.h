@@ -31,6 +31,7 @@ public:
 
 public:
     uint16 GetPlayerCount() { return m_playerCount; }   // 사람 수 받을 때 동기화 작업 필요
+    bool IsValid() { return m_isValid; }
 
 public:
     void InitializeGame();
@@ -40,6 +41,7 @@ public:
 
 public:
     uint16 m_roomID;
+    std::atomic_bool    m_isValid = true;
     std::atomic<uint16> m_roundCount = 1;
     std::atomic<uint16> m_indexGen = 0;
     std::atomic<uint16> m_loadingOverCount = 0;
@@ -63,6 +65,8 @@ private:
 
     PlayerRef m_hostPlayer = nullptr;
     std::array<Protocol::SC_SPAWN_ITEM_PKT, 3> m_itemInfo;
+
+    std::stack<uint16>                                  m_deathPlayer;
 };
 
 extern std::array<RoomRef, ROOM_COUNT> GRoom;       // 배열 or 벡터로 관리해 여러 게임룸을 생성

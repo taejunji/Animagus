@@ -500,7 +500,7 @@ void ABattle_PlayerController::Input_Init(const FInputActionValue& InputValue)
     UE_LOG(LogTemp, Warning, TEXT("초기화 입력 요청"));
 
     ABattleGameMode* BattleMode = Cast<ABattleGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
-    if (BattleMode != nullptr && BattleMode->AmIHost == true)
+    if (nullptr != BattleMode && true == BattleMode->AmIHost)
     {
         Protocol::CS_ROUND_END_PKT timeOverPkt;
 
