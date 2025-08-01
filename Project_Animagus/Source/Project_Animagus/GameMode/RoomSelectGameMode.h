@@ -17,6 +17,11 @@ class PROJECT_ANIMAGUS_API ARoomSelectGameMode : public AGameModeBase
 public:
     ARoomSelectGameMode();
     virtual void BeginPlay() override;
+    virtual void Tick(float DeltaTime) override;
+
+public:
+    void HandleRoomEnter();
+    void HandleRoomEnterFail();
 };
 
 

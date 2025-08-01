@@ -24,6 +24,9 @@ public:
     void ShowRoomSelectUI();
 
     void EnterRoom(uint8 roomIndex);
+    void HandleRoomEnter();
+    void HandleRoomEnterFail();
+
     
     /** 룸 선택 버튼 핸들러 */
     UFUNCTION() void OnRoom1Clicked();

@@ -208,3 +208,23 @@ bool Handle_SC_SET_POWERUP(SessionRef& session, Protocol::SC_SET_POWERUP_PKT& pk
 
     return true;
 }
+
+bool Handle_SC_ROOM_SUCC(SessionRef& session, Protocol::SC_ROOM_SUCC_PKT& pkt)
+{
+    if (auto* GameInstance = Cast<UMyGameInstance>(GWorld->GetGameInstance()))
+    {
+        GameInstance->HandleRoomEnter();
+    }
+
+    return true;
+}
+
+bool Handle_SC_ROOM_FAIL(SessionRef& session, Protocol::SC_ROOM_FAIL_PKT& pkt)
+{
+    if (auto* GameInstance = Cast<UMyGameInstance>(GWorld->GetGameInstance()))
+    {
+        GameInstance->HandleRoomEnterFail();
+    }
+
+    return true;
+}

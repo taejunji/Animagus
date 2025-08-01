@@ -34,7 +34,10 @@ bool Handle_CS_ENTER_ROOM(SessionRef& session, CS_ENTER_ROOM_PKT& pkt)
     if (false == GRoom[pkt.room_id]->IsValid())
     {
         // Room 입장 실패 패킷 전송
+        SC_ROOM_FAIL_PKT room_fail;
 
+        SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(room_fail);
+        session->Send(sendBuffer);
         return true;
     }
 

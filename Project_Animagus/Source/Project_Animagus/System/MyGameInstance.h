@@ -134,6 +134,8 @@ public:
     void HandleSignUpSuccess();
     void HandleSignUpFail();
     void HandleSetPowerUp(Protocol::SC_SET_POWERUP_PKT& pkt);
+    void HandleRoomEnter();
+    void HandleRoomEnterFail();
 
     // 로그인 메인 룸 BGM
     UPROPERTY(EditDefaultsOnly, Category="Audio")

@@ -43,6 +43,11 @@ void AConnectPlayerController::BeginPlay()
     
     if (UMyGameInstance* GI = GetGameInstance<UMyGameInstance>())
         OnMeshSelected(GI->player_data.stored_mesh);
+
+    if (true == Cast<UMyGameInstance>(GetGameInstance())->AmIHost)
+    {
+        ActiveStartButton();
+    }
 }
 
 void AConnectPlayerController::ShowConnectUI()

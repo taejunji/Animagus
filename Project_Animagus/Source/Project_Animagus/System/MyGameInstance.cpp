@@ -17,6 +17,8 @@
 #include "../GameMode/BattleGameMode.h"
 #include "../GameMode/LoginGameMode.h"
 #include "../GameMode/ConnectGameMode.h"
+#include "../GameMode/RoomSelectGameMode.h"
+
 #include "../Animation/CharacterAnimInstance.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "../Actor/ItemBox/Item_Box_Base.h"
@@ -310,21 +312,22 @@ void UMyGameInstance::HandleLobbyHost(Protocol::SC_UR_HOST_PKT& pkt)
 
     AmIHost = true;
 
-    auto* World = GetWorld();
-    if (World == nullptr)
-        return;
+    //auto* World = GetWorld();
+    //if (World == nullptr)
+    //    return;
 
-    AGameModeBase* BaseGameMode = UGameplayStatics::GetGameMode(World);
-    if (BaseGameMode)
-    {
-        if (AConnectGameMode* GameMode = Cast<AConnectGameMode>(BaseGameMode))
-        {
-            if (AConnectPlayerController* PC = Cast<AConnectPlayerController>(UGameplayStatics::GetPlayerController(GameMode, 0))) {
-                GameMode->AmIHost = true;
-                PC->ActiveStartButton();
-            }
-        }
-    }
+    //AGameModeBase* BaseGameMode = UGameplayStatics::GetGameMode(World);
+    //if (BaseGameMode)
+    //{
+    //    if (AConnectGameMode* GameMode = Cast<AConnectGameMode>(BaseGameMode))
+    //    {
+    //        if (AConnectPlayerController* PC = Cast<AConnectPlayerController>(UGameplayStatics::GetPlayerController(GameMode, 0))) {
+    //            GameMode->AmIHost = true;
+    //            PC->ActiveStartButton();
+    //        }
+    //    }
+    //}
+
 }
 
 void UMyGameInstance::HandleStartGame(Protocol::SC_START_GAME_PKT& pkt)
@@ -738,6 +741,44 @@ void UMyGameInstance::HandleSetPowerUp(Protocol::SC_SET_POWERUP_PKT& pkt)
         if (ABattleGameMode* GameMode = Cast<ABattleGameMode>(BaseGameMode))
         {
             GameMode->HandleSetPowerUp(pkt);
+        }
+    }
+}
+
+void UMyGameInstance::HandleRoomEnter()
+{
+    if (Socket == nullptr || ClientSession == nullptr)
+        return;
+
+    auto* World = GetWorld();
+    if (World == nullptr)
+        return;
+
+    AGameModeBase* BaseGameMode = UGameplayStatics::GetGameMode(World);
+    if (BaseGameMode)
+    {
+        if (ARoomSelectGameMode* GameMode = Cast<ARoomSelectGameMode>(BaseGameMode))
+        {
+            GameMode->HandleRoomEnter();
+        }
+    }
+}
+
+void UMyGameInstance::HandleRoomEnterFail()
+{
+    if (Socket == nullptr || ClientSession == nullptr)
+        return;
+
+    auto* World = GetWorld();
+    if (World == nullptr)
+        return;
+
+    AGameModeBase* BaseGameMode = UGameplayStatics::GetGameMode(World);
+    if (BaseGameMode)
+    {
+        if (ARoomSelectGameMode* GameMode = Cast<ARoomSelectGameMode>(BaseGameMode))
+        {
+            GameMode->HandleRoomEnterFail();
         }
     }
 }

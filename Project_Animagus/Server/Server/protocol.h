@@ -112,6 +112,8 @@ namespace Protocol {
         SC_LOGIN_FAIL,
         SC_SIGNUP_SUCC,
         SC_SIGNUP_FAIL,
+        SC_ROOM_SUCC,
+        SC_ROOM_FAIL,
         SC_UR_HOST,
         SC_START_GAME,
         SC_ENTER_GAME,
@@ -281,6 +283,12 @@ namespace Protocol {
     {
     };
     struct SC_SIGNUP_FAIL_PKT
+    {
+    };
+    struct SC_ROOM_SUCC_PKT
+    {
+    };
+    struct SC_ROOM_FAIL_PKT
     {
     };
     struct SC_UR_HOST_PKT

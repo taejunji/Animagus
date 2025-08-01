@@ -114,7 +114,12 @@ bool Room::HandleEnterPlayer(PlayerRef player)
     if (m_playerCount == m_maxPlayerCount) m_isValid = false;
 
     // Room 입장 성공 패킷 전송
-
+    {
+        SC_ROOM_SUCC_PKT room_enter;
+        SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(room_enter);
+        if (auto session = player->ownerSession.lock())
+            session->Send(sendBuffer);
+    }
 
     bool isHost = false;
     int n_pid = 0;

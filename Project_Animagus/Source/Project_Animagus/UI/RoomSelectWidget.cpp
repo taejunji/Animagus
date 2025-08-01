@@ -2,6 +2,7 @@
 
 
 #include "RoomSelectWidget.h"
+#include "Components/TextBlock.h"
 #include "Components/Button.h"
 #include "../PlayerController/RoomSelectController.h"
 
@@ -16,6 +17,19 @@ void URoomSelectWidget::NativeConstruct()
 {
     Super::NativeConstruct();
     
+    InitMessage = FText::FromString(
+        TEXT(
+            "조금 전에 보신\n"
+            "애니마구스의 인트로 영상은\n"
+            "김현 교수님이 담당하시는\n"
+            "3D 애니메이션2 교과목에서\n"
+            "제작한 거예요!\n\n"
+            "강의 많이 수강해 주세요!"
+        ));
+
+    if (!DragonText) return;
+    DragonText->SetText(InitMessage);
+    DragonText->SetVisibility(ESlateVisibility::Visible);
 }
 
 void URoomSelectWidget::BindAllButtons()
@@ -56,4 +70,10 @@ void URoomSelectWidget::BindAllButtons()
             BtnRoom5->OnClicked.AddDynamic(Owner.Get(), &ARoomSelectController::OnRoom5Clicked);
         }
     }
+}
+
+void URoomSelectWidget::ShowResult(const FText& Message)
+{
+    if (!DragonText) return;
+    DragonText->SetText(Message);
 }

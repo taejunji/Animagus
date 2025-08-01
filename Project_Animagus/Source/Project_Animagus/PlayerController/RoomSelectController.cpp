@@ -10,6 +10,8 @@
 #include "../System/MyGameInstance.h"
 #include "../Network/ClientPacketHandler.h"
 #include "../Server/Server/protocol.h"
+#include "../PlayerController/ConnectPlayerController.h"
+#include "../GameMode/ConnectGameMode.h"
 
 
 void ARoomSelectController::BeginPlay()
@@ -47,6 +49,44 @@ void ARoomSelectController::EnterRoom(uint8 roomIndex)
     Cast<UMyGameInstance>(GWorld->GetGameInstance())->SendPacket(sendBuffer);
 }
 
+void ARoomSelectController::HandleRoomEnter()
+{
+    RoomSelectWidget->ShowResult(FText::FromString(
+        TEXT("입장 성공!")));
+
+    FTimerHandle UnusedHandle;
+    GetWorldTimerManager().SetTimer(
+        UnusedHandle,
+        [this]()
+        {
+            RoomSelectWidget->ShowResult(RoomSelectWidget->InitMessage);
+
+            UGameplayStatics::OpenLevel(this, TEXT("/Game/WorkFolder/Levels/L_Connect"));
+        },
+        1.0f,
+        false  // 한번만
+    );
+
+}
+
+void ARoomSelectController::HandleRoomEnterFail()
+{
+    RoomSelectWidget->ShowResult(FText::FromString(
+        TEXT("입장 실패!")));
+
+    FTimerHandle UnusedHandle;
+    GetWorldTimerManager().SetTimer(
+        UnusedHandle,
+        [this]()
+        {
+            RoomSelectWidget->ShowResult(RoomSelectWidget->InitMessage);
+        },
+        1.0f,
+        false  // 한번만
+    );
+
+}
+
 void ARoomSelectController::PlayHoverSound()
 {
     if (HoverSound)
@@ -64,8 +104,6 @@ void ARoomSelectController::OnRoom1Clicked()
     PlayClickSound();
 
     EnterRoom(0);
-    
-    UGameplayStatics::OpenLevel(this, TEXT("L_Connect"));
 }
 
 void ARoomSelectController::OnRoom2Clicked()
@@ -73,8 +111,6 @@ void ARoomSelectController::OnRoom2Clicked()
     PlayClickSound();
 
     EnterRoom(1);
-    
-    UGameplayStatics::OpenLevel(this, TEXT("L_Connect"));
 }
 
 void ARoomSelectController::OnRoom3Clicked()
@@ -82,8 +118,6 @@ void ARoomSelectController::OnRoom3Clicked()
     PlayClickSound();
     
     EnterRoom(2);
-    
-    UGameplayStatics::OpenLevel(this, TEXT("L_Connect"));
 }
 
 void ARoomSelectController::OnRoom4Clicked()
@@ -91,8 +125,6 @@ void ARoomSelectController::OnRoom4Clicked()
     PlayClickSound();
 
     EnterRoom(3);
-    
-    UGameplayStatics::OpenLevel(this, TEXT("L_Connect"));
 }
 
 void ARoomSelectController::OnRoom5Clicked()
@@ -101,5 +133,4 @@ void ARoomSelectController::OnRoom5Clicked()
 
     EnterRoom(4);
     
-    UGameplayStatics::OpenLevel(this, TEXT("L_Connect"));
 }
