@@ -82,7 +82,7 @@ void AAttractionZone::UpdateAttractionParameters(float DeltaTime)
     if (OwnerCharacter == nullptr) return;
 
 	// 플레이어가 영역 내에 있으면 Niagara 파라미터 업데이트 및 데미지 적용
-    if (IsActorInsideZone(OwnerCharacter))
+    if (IsActorInsideZone(OwnerCharacter) && false == OwnerCharacter->GetIsDead())
     {
 		if (NiagaraComp)
 		{

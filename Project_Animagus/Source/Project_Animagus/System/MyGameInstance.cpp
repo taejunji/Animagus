@@ -633,6 +633,7 @@ void UMyGameInstance::HandleBattleModeEnd(Protocol::SC_GAME_END_PKT& pkt)
         return;
 
     round_count = 0;
+    AmIHost = false;
 
     AGameModeBase* BaseGameMode = UGameplayStatics::GetGameMode(World);
     if (BaseGameMode)

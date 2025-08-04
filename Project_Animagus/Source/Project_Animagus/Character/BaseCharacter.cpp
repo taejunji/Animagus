@@ -330,7 +330,7 @@ float ABaseCharacter::TakeDamage(float DamageAmount, struct FDamageEvent const& 
 
         // 플레이어가 아닌 캐릭터인 경우 데미지 UI 띄우기
         if (nullptr == Cast<APlayerCharacter>(this)) {
-            //ShowDmgIndicator(ActualDamage);
+            ShowDmgIndicator(ActualDamage);
         }
     }
 
