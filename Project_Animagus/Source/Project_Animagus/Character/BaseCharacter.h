@@ -31,7 +31,6 @@ class PROJECT_ANIMAGUS_API ABaseCharacter : public ACharacter
     GENERATED_BODY()
 
 public:
-
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement")
     float default_walk_speed; // 기본 걷기 속도
 
@@ -60,6 +59,8 @@ protected:
     bool is_dead; // 죽었는지
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stat")
     bool is_grounddead = false; 
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stat")
+    FString character_name; // 캐릭터 이름
 protected:
     UPROPERTY(EditAnywhere, Category = "AnimationMontage")
     TObjectPtr<class UAnimMontage> attack_montage;
@@ -93,6 +94,13 @@ public:
         AController* EventInstigator,
         AActor* DamageCauser
     ) override;
+    
+    // 서버에서 char형 이름 받아서 언리얼 FString으로 적용
+    void SetCharacterName(const char* name);
+
+    // 블루프린트에서 함수를 직접 구현
+    UFUNCTION(BlueprintImplementableEvent, Category = "Effects")
+    void SetCharacterNameWidget();
 
     // 블루프린트에서 함수를 직접 구현
     UFUNCTION(BlueprintImplementableEvent, Category = "Effects")
