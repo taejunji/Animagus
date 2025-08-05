@@ -46,6 +46,7 @@ ABaseCharacter::ABaseCharacter()
     Skills.SetNum(5); 
 
     PowerUpLevel = 0;
+    PrevPowerUpLevel = PowerUpLevel;
 
     skill_Sellect = 0;
     
@@ -204,6 +205,8 @@ void ABaseCharacter::BeginPlay()
     const char* name = "애니마구스";
     SetCharacterName(name);
     
+    SetPowerLevelWidget(PowerUpLevel);
+
     // 공중 제어 능력 높임. 기본값이 낮으면 공중에서 이동키가 약하게 반응함.
     GetCharacterMovement()->AirControl = 0.6f; // 기본 AirControl은 보통 0.2 ~ 0.3 정도임. 높이면 공중 이동이 민감해짐.
 
@@ -805,6 +808,12 @@ void ABaseCharacter::UpdateAuraColorBasedOnPowerUpLevel()
     {
         UE_LOG(LogTemp, Warning, TEXT("UpdateAuraColorBasedOnPowerUpLevel: Failed to get dynamic material instance."));
         return;
+    }
+
+    // 이름 왼쪽에 레벨 UI 업데이트
+    if (PrevPowerUpLevel != PowerUpLevel) {
+        SetPowerLevelWidget(PowerUpLevel);
+        PrevPowerUpLevel = PowerUpLevel;
     }
 
     FLinearColor NewColor;

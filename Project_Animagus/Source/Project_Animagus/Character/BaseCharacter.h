@@ -50,6 +50,10 @@ public:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "PowerUp")
     int32 PowerUpLevel;
     
+    // UI 업데이트 전 레벨을 기억해서 업데이트를 Tick마다 하는 것을 방지
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "PowerUp")
+    int32 PrevPowerUpLevel;
+
 protected:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stat")
     float hp; // HP 체력
@@ -105,6 +109,10 @@ public:
     // 블루프린트에서 함수를 직접 구현
     UFUNCTION(BlueprintImplementableEvent, Category = "Effects")
     void ShowDmgIndicator(float ActualDmg);
+
+
+    UFUNCTION(BlueprintImplementableEvent, Category = "Effects")
+    void SetPowerLevelWidget(int32 level);
 
     // 4개의 스킬 슬롯 (TArray를 사용)
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Skills")
