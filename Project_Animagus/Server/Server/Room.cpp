@@ -114,7 +114,7 @@ bool Room::HandleEnterPlayer(PlayerRef player)
 #endif
 
     std::cout << "Room#" << m_roomID  << "Player Count - " << m_playerCount << std::endl;
-    if (m_playerCount == m_maxPlayerCount) m_isValid = false;
+    if (m_playerCount == MAX_PLAYER) m_isValid = false;
 
     // Room 입장 성공 패킷 전송
     {
@@ -185,7 +185,7 @@ bool Room::HandleStartGame(PlayerRef player)
         //newPlayer.rotation = player->rotation;
         newPlayer.host = (player->playerID == m_hostPlayer->playerID);
         //newPlayer.spawn_index = 0;
-        newPlayer.spawn_index = m_indexGen++ % m_maxPlayerCount;
+        newPlayer.spawn_index = m_indexGen++ % MAX_PLAYER;
         newPlayer.server_time = m_gameStartTickCount;
         strcpy_s(newPlayer.name, player->name.c_str());
 
@@ -212,7 +212,7 @@ bool Room::HandleStartGame(PlayerRef player)
         {
             SC_AI_SPAWN_PKT aiSpawn;
             aiSpawn.player_count = static_cast<int16>(m_players.size());
-            for (int i = 0; i < m_maxPlayerCount; ++i) 
+            for (int i = 0; i < MAX_PLAYER; ++i) 
             {
                 uint16 aiID = 101 + i;
                 aiSpawn.types[i] = aiPlayerTypes[i];
@@ -224,7 +224,7 @@ bool Room::HandleStartGame(PlayerRef player)
                     m_playerNames[aiID] = AINameList[m_aiNameGen];
                 }
 
-                int j = m_maxPlayerCount - 1 - i;
+                int j = MAX_PLAYER - 1 - i;
                 strcpy_s(aiSpawn.name[j], m_playerNames[aiID].c_str());
             }
 
@@ -414,7 +414,7 @@ bool Room::HandleEnterAIPlayer(const Protocol::CS_AI_ENTER_PKT& pkt)
     ai->name = pkt.name;
     //if (false == m_playerNames.contains(aiID))
     //{
-    //    m_aiNameGen = m_aiNameGen >= m_maxPlayerCount - 1 ? 0 : m_aiNameGen + 1;
+    //    m_aiNameGen = m_aiNameGen >= MAX_PLAYER - 1 ? 0 : m_aiNameGen + 1;
     //    m_playerNames[aiID] = AINameList[m_aiNameGen];
     //}
 
@@ -596,7 +596,7 @@ bool Room::HandleRoundEndLocked(const Protocol::CS_ROUND_END_PKT& pkt)
 
     // 우승자 정보 + ???
     std::vector<std::pair<int16/*id*/, int16/*score*/>> sortedPlayersByScore;
-    sortedPlayersByScore.reserve(m_maxPlayerCount);
+    sortedPlayersByScore.reserve(MAX_PLAYER);
     for (auto& p : accumRanking)
         sortedPlayersByScore.emplace_back(p);
 
