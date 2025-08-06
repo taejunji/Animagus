@@ -33,7 +33,6 @@ class PROJECT_ANIMAGUS_API ABaseCharacter : public ACharacter
     GENERATED_BODY()
 
 public:
-
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement")
     float default_walk_speed; // 기본 걷기 속도
 
@@ -53,6 +52,10 @@ public:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "PowerUp")
     int32 PowerUpLevel;
     
+    // UI 업데이트 전 레벨을 기억해서 업데이트를 Tick마다 하는 것을 방지
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "PowerUp")
+    int32 PrevPowerUpLevel;
+
 protected:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stat")
     float hp; // HP 체력
@@ -62,6 +65,8 @@ protected:
     bool is_dead; // 죽었는지
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stat")
     bool is_grounddead = false; 
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stat")
+    FString character_name; // 캐릭터 이름
 protected:
     UPROPERTY(EditAnywhere, Category = "AnimationMontage")
     TObjectPtr<class UAnimMontage> attack_montage;
@@ -95,10 +100,21 @@ public:
         AController* EventInstigator,
         AActor* DamageCauser
     ) override;
+    
+    // 서버에서 char형 이름 받아서 언리얼 FString으로 적용
+    void SetCharacterName(const char* name);
+
+    // 블루프린트에서 함수를 직접 구현
+    UFUNCTION(BlueprintImplementableEvent, Category = "Effects")
+    void SetCharacterNameWidget();
 
     // 블루프린트에서 함수를 직접 구현
     UFUNCTION(BlueprintImplementableEvent, Category = "Effects")
     void ShowDmgIndicator(float ActualDmg);
+
+
+    UFUNCTION(BlueprintImplementableEvent, Category = "Effects")
+    void SetPowerLevelWidget(int32 level);
 
     // 4개의 스킬 슬롯 (TArray를 사용)
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Skills")

@@ -125,7 +125,7 @@ void AItem_Box_Base::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor,
         float Damage = Projectile->DamageValue; // ProjectileBase의 공개 멤버
 
         // 플레이어인 경우 데미지 UI 띄우기
-        if (Cast<APlayerCharacter>(Projectile->Shooter)) {
+        if (Cast<ABaseCharacter>(Projectile->Shooter)) {
             ShowDmgIndicator(Damage);
         }
 

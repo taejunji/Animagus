@@ -52,6 +52,7 @@ ABaseCharacter::ABaseCharacter()
     Skills.SetNum(5); 
 
     PowerUpLevel = 0;
+    PrevPowerUpLevel = PowerUpLevel;
 
     skill_Sellect = 0;
     
@@ -207,6 +208,11 @@ void ABaseCharacter::BeginPlay()
 
     SetWalkSpeed(default_walk_speed);
 
+    const char* name = "애니마구스";
+    SetCharacterName(name);
+    
+    SetPowerLevelWidget(PowerUpLevel);
+
     // 공중 제어 능력 높임. 기본값이 낮으면 공중에서 이동키가 약하게 반응함.
     GetCharacterMovement()->AirControl = 0.6f; // 기본 AirControl은 보통 0.2 ~ 0.3 정도임. 높이면 공중 이동이 민감해짐.
 
@@ -214,9 +220,6 @@ void ABaseCharacter::BeginPlay()
     (int)GetCapsuleComponent()->GetCollisionResponseToChannel(ECollisionChannel::ECC_GameTraceChannel2));
     
     InitializeSkills();
-    
-
-
 }
 
 void ABaseCharacter::PlayAnimMontageByType(MontageType montage_type)
@@ -315,6 +318,20 @@ void ABaseCharacter::SetWalkSpeed(float fValue)
     GetCharacterMovement()->MaxWalkSpeed = fValue;
 }
 
+void ABaseCharacter::SetCharacterName(const char* name)
+{
+    // const char* (기본 C 문자열) → 보통 UTF-8 인코딩 (특히 현대 시스템에서는)
+    // FString(언리얼 문자열) → UTF - 16 기반 TCHAR * 문자열(Windows에서는 2바이트 유니코드)
+    //
+    // C++의 const char* 문자열을 FString으로 바꾸려면 인코딩 변환이 반드시 필요하고, 언리얼은 이걸 UTF8_TO_TCHAR() 매크로로 처리
+
+    character_name = FString(UTF8_TO_TCHAR(name)); 
+    // 플레이어가 아닌 캐릭터인 경우 이름 UI 띄우기
+    if (nullptr == Cast<APlayerCharacter>(this)) {
+        SetCharacterNameWidget();
+    }
+}
+
 float ABaseCharacter::TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent,
     AController* EventInstigator, AActor* DamageCauser)
 {
@@ -400,7 +417,6 @@ float ABaseCharacter::TakeDamage(float DamageAmount, struct FDamageEvent const& 
     //return Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
     
 }
-
 
 void ABaseCharacter::EquipSkill(int32 SlotIndex, UBaseSkill* NewSkill)
 {
@@ -886,6 +902,12 @@ void ABaseCharacter::UpdateAuraColorBasedOnPowerUpLevel()
     {
         UE_LOG(LogTemp, Warning, TEXT("UpdateAuraColorBasedOnPowerUpLevel: Failed to get dynamic material instance."));
         return;
+    }
+
+    // 이름 왼쪽에 레벨 UI 업데이트
+    if (PrevPowerUpLevel != PowerUpLevel) {
+        SetPowerLevelWidget(PowerUpLevel);
+        PrevPowerUpLevel = PowerUpLevel;
     }
 
     FLinearColor NewColor;
