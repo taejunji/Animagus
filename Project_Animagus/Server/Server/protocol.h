@@ -204,6 +204,7 @@ namespace Protocol {
         PlayerType p_type;
         float x, y, z;
         float rotation;
+        char name[MAX_NAME_LEN];
     };
     struct CS_MOVE_PKT
     {
@@ -305,11 +306,13 @@ namespace Protocol {
         bool host;
         int16 spawn_index;
         uint64 server_time;
+        char name[MAX_NAME_LEN];
     };
     struct SC_AI_SPAWN_PKT
     {
         int16 player_count;
         PlayerType types[8];
+        char name[8][MAX_NAME_LEN];
     };
     struct SC_LEAVE_PKT
     {   // 로비로 보내기
@@ -320,7 +323,7 @@ namespace Protocol {
         PlayerType p_type;
         float x, y, z;
         float rotation;
-        //char name[MAX_NAME_LEN];
+        char name[MAX_NAME_LEN];
     };
     struct SC_SPAWN_ITEM_PKT
     {

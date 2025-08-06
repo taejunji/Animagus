@@ -62,90 +62,89 @@ bool GameServer::Initialize()
     auto& dbManager = DBManager::GetInstance();
     dbManager.DBConnect();
 
-    // ------------- DB test --------------
-    std::string UserID = "great1625";
-    std::string UserPasswd = "testghksgml2";
+    //// ------------- DB test --------------
+    //std::string UserID = "great1625";
+    //std::string UserPasswd = "testghksgml2";
 
-    char UserName[21];
-    char flag;
-    if (true == dbManager.DBFindById(UserID.c_str(), UserPasswd.c_str(), UserName, &flag))
-    {
-        std::string userNameStr(UserName);
-        userNameStr.erase(remove(userNameStr.begin(), userNameStr.end(), ' '), userNameStr.end());
-        std::cout << userNameStr << " LogIn Success" << std::endl;
-    }
-    else {
-        if (flag == Protocol::LOGIN_USING)
-            std::cout << "Someone Using" << std::endl;
-        else if (flag == Protocol::LOGIN_NOEX)
-            std::cout << "NO Data in DB" << std::endl;
-        else {
-            std::cout << "Error" << std::endl;
-        }
-    }
+    //char UserName[21];
+    //char flag;
+    //if (true == dbManager.DBFindById(UserID.c_str(), UserPasswd.c_str(), UserName, &flag))
+    //{
+    //    std::string userNameStr(UserName);
+    //    userNameStr.erase(remove(userNameStr.begin(), userNameStr.end(), ' '), userNameStr.end());
+    //    std::cout << userNameStr << " LogIn Success" << std::endl;
+    //}
+    //else {
+    //    if (flag == Protocol::LOGIN_USING)
+    //        std::cout << "Someone Using" << std::endl;
+    //    else if (flag == Protocol::LOGIN_NOEX)
+    //        std::cout << "NO Data in DB" << std::endl;
+    //    else {
+    //        std::cout << "Error" << std::endl;
+    //    }
+    //}
 
-    if (true == dbManager.DBLogOutById(UserID.c_str())) {
-        std::cout << "LogOut Success" << std::endl;
-    }
+    //if (true == dbManager.DBLogOutById(UserID.c_str())) {
+    //    std::cout << "LogOut Success" << std::endl;
+    //}
 
-    std::string SignID = "testid";
-    std::string SignPasswd = "testpasswd";
-    std::string SignName = "TestUser";
-    if (true == dbManager.DBSignUp(SignID.c_str(), SignPasswd.c_str(), SignName.c_str()))
-    {
-        std::cout << "SignUp Success" << std::endl;
-        if (true == dbManager.DBDeleteUserById(SignID.c_str())) {
-            std::cout << "Delete User Success" << std::endl;
-        }
-    }
+    //std::string SignID = "testid";
+    //std::string SignPasswd = "testpasswd";
+    //std::string SignName = "TestUser";
+    //if (true == dbManager.DBSignUp(SignID.c_str(), SignPasswd.c_str(), SignName.c_str()))
+    //{
+    //    std::cout << "SignUp Success" << std::endl;
+    //    if (true == dbManager.DBDeleteUserById(SignID.c_str())) {
+    //        std::cout << "Delete User Success" << std::endl;
+    //    }
+    //}
 
-    dbManager.DBDisconnect();
-    //-------------------------------------
+    ////-------------------------------------
 
 #else
     auto& textDbManager = TextDBManager::GetInstance();
     textDbManager.DBConnect();
 
-    // ----------- TextDB test -------------
-    std::string UserID = "great1625";
-    std::string UserPasswd = "testghksgml2";
-    
-    char UserName[21];
-    char flag;
-    if (true == textDbManager.DBFindById(UserID.c_str(), UserPasswd.c_str(), UserName, &flag))
-    {
-        std::string userNameStr(UserName);
-        userNameStr.erase(remove(userNameStr.begin(), userNameStr.end(), ' '), userNameStr.end());
-        std::cout << userNameStr << " LogIn Success" << std::endl;
-    }
-    else {
-        if (flag == Protocol::LOGIN_USING)
-            std::cout << "Someone Using" << std::endl;
-        else if (flag == Protocol::LOGIN_NOEX)
-            std::cout << "NO Data in DB" << std::endl;
-        else {
-            std::cout << "Error" << std::endl;
-        }
-    }
+    //// ----------- TextDB test -------------
+    //std::string UserID = "great1625";
+    //std::string UserPasswd = "testghksgml2";
+    //
+    //char UserName[21];
+    //char flag;
+    //if (true == textDbManager.DBFindById(UserID.c_str(), UserPasswd.c_str(), UserName, &flag))
+    //{
+    //    std::string userNameStr(UserName);
+    //    userNameStr.erase(remove(userNameStr.begin(), userNameStr.end(), ' '), userNameStr.end());
+    //    std::cout << userNameStr << " LogIn Success" << std::endl;
+    //}
+    //else {
+    //    if (flag == Protocol::LOGIN_USING)
+    //        std::cout << "Someone Using" << std::endl;
+    //    else if (flag == Protocol::LOGIN_NOEX)
+    //        std::cout << "NO Data in DB" << std::endl;
+    //    else {
+    //        std::cout << "Error" << std::endl;
+    //    }
+    //}
 
-    if (true == textDbManager.DBLogOutById(UserID.c_str())) {
-        std::cout << "LogOut Success" << std::endl;
-    }
+    //if (true == textDbManager.DBLogOutById(UserID.c_str())) {
+    //    std::cout << "LogOut Success" << std::endl;
+    //}
 
-    std::string SignID = "testid";
-    std::string SignPasswd = "testpasswd";
-    std::string SignName = "TestUser";
-    if (true == textDbManager.DBSignUp(SignID.c_str(), SignPasswd.c_str(), SignName.c_str()))
-    {
-        std::cout << "SignUp Success" << std::endl;
-        if (true == textDbManager.DBDeleteUserById(SignID.c_str())) {
-            std::cout << "Delete User Success" << std::endl;
-        }
-    }
-    else {
-        std::cout << "SignUp Failed" << std::endl;
-    }
-    // --------------------------------------
+    //std::string SignID = "testid";
+    //std::string SignPasswd = "testpasswd";
+    //std::string SignName = "TestUser";
+    //if (true == textDbManager.DBSignUp(SignID.c_str(), SignPasswd.c_str(), SignName.c_str()))
+    //{
+    //    std::cout << "SignUp Success" << std::endl;
+    //    if (true == textDbManager.DBDeleteUserById(SignID.c_str())) {
+    //        std::cout << "Delete User Success" << std::endl;
+    //    }
+    //}
+    //else {
+    //    std::cout << "SignUp Failed" << std::endl;
+    //}
+    //// --------------------------------------
 #endif
 
     return true;

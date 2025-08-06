@@ -443,6 +443,7 @@ void ABattleGameMode::SpawnAIPlayers(Protocol::SC_AI_SPAWN_PKT& pkt)
         if (!AIChar) continue;
 
         AIChar->SetPlayerMesh(pkt.types[i]);
+        AIChar->SetCharacterName(pkt.name[i]);
 
         AIChar->bUseControllerRotationYaw = false;
 
@@ -452,7 +453,7 @@ void ABattleGameMode::SpawnAIPlayers(Protocol::SC_AI_SPAWN_PKT& pkt)
         //Movement->bUseAccelerationForPaths = false; // MoveTo가 목적지 가까워져도 감속 없이 직선 고속 이동
 
         AIChar->SetPlayerId(AIId);
-
+        
 
         //SpawnedPlayers.Add(AIChar);
         SpawnedPlayers.Add(static_cast<int32>(AIId), AIChar);
@@ -474,6 +475,7 @@ void ABattleGameMode::SpawnAIPlayers(Protocol::SC_AI_SPAWN_PKT& pkt)
         AIPkt.y = SpawnLocations[i].Y;
         AIPkt.z = SpawnLocations[i].Z;
         AIPkt.rotation = SpawnRotations[i].Yaw;
+        strcpy_s(AIPkt.name, pkt.name[i]);
 
         SendBufferRef SendBuffer = ClientPacketHandler::MakeSendBuffer(AIPkt);
         Cast<UMyGameInstance>(GWorld->GetGameInstance())->SendPacket(SendBuffer);
@@ -516,6 +518,7 @@ void ABattleGameMode::SpawnPlayer(Protocol::SC_SPAWN_PKT& pkt)
         // TODO
         NewPlayer->SetPlayerId(p_id);
         NewPlayer->SetPlayerType(type);
+        NewPlayer->SetCharacterName(pkt.name);
 
         //if (SpawnedPlayers.Contains(p_id) == true)
         //{

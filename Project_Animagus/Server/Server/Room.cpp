@@ -12,15 +12,18 @@ static std::mt19937       gen(rd());
 std::array<RoomRef, ROOM_COUNT> GRoom{};
 std::array<uint8, 8> scoreBoard = {10, 7, 6, 5, 4, 3, 2, 1};
 
-std::string AINameList[] = {
+std::array<std::string, 14> AINameList = {
     "HwanHee", "TaeJun", "GwangSin", "JaeGyeong",
-    "DaeHyeon", "YongSik", "JiWoong", "NaeHoon"
+    "DaeHyeon", "YoungSik", "JiWoong", "NaeHoon",
+    "KyungChul", "InHee", "Hwangseok", "Jeonghyeon",
+    "YongHee", "HyeongGu"
 };
 
 Room::Room()
 {
     InitializeGame();
     InitAiTypes();
+    InitializeRoom();
 }
 
 bool Room::Enter(PlayerRef player)
@@ -184,6 +187,8 @@ bool Room::HandleStartGame(PlayerRef player)
         //newPlayer.spawn_index = 0;
         newPlayer.spawn_index = m_indexGen++ % m_maxPlayerCount;
         newPlayer.server_time = m_gameStartTickCount;
+        strcpy_s(newPlayer.name, player->name.c_str());
+
         SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(newPlayer);
         if (auto session = player->ownerSession.lock())
             session->Send(sendBuffer);
@@ -207,9 +212,20 @@ bool Room::HandleStartGame(PlayerRef player)
         {
             SC_AI_SPAWN_PKT aiSpawn;
             aiSpawn.player_count = static_cast<int16>(m_players.size());
-            for (int i = 0; i < m_maxPlayerCount; ++i) {
+            for (int i = 0; i < m_maxPlayerCount; ++i) 
+            {
+                uint16 aiID = 101 + i;
                 aiSpawn.types[i] = aiPlayerTypes[i];
-                //std::cout << static_cast<int>(aiSpawn.types[i]) << std::endl;
+
+                // 여기서 AI들 이름 정해서 보내기
+                if (false == m_playerNames.contains(aiID))
+                {   // 첫 라운드
+                    m_aiNameGen = (m_aiNameGen + 1) % AINameList.size();
+                    m_playerNames[aiID] = AINameList[m_aiNameGen];
+                }
+
+                int j = m_maxPlayerCount - 1 - i;
+                strcpy_s(aiSpawn.name[j], m_playerNames[aiID].c_str());
             }
 
             SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(aiSpawn);
@@ -237,6 +253,7 @@ bool Room::HandleStartGame(PlayerRef player)
             oldPlayer.rotation = o_player->rotation;
             oldPlayer.player_id = o_player->playerID;
             oldPlayer.p_type = o_player->type;
+            strcpy_s(oldPlayer.name, o_player->name.c_str());
 
             SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(oldPlayer);
             if (auto session = player->ownerSession.lock())
@@ -258,6 +275,7 @@ bool Room::HandleStartGame(PlayerRef player)
             oldPlayer.rotation = ai_player->rotation;
             oldPlayer.player_id = ai_player->aiID;
             oldPlayer.p_type = ai_player->type;
+            strcpy_s(oldPlayer.name, ai_player->name.c_str());
 
             SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(oldPlayer);
             if (auto session = player->ownerSession.lock())
@@ -278,6 +296,7 @@ bool Room::HandleStartGame(PlayerRef player)
         newPlayer.rotation = player->rotation;
         newPlayer.player_id = player->playerID;
         newPlayer.p_type = player->type;
+        strcpy_s(newPlayer.name, player->name.c_str());
         SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(newPlayer);
         Broadcast(sendBuffer, player->playerID, true);
     }
@@ -388,21 +407,21 @@ bool Room::HandleEnterAIPlayer(const Protocol::CS_AI_ENTER_PKT& pkt)
     uint16 aiID = pkt.ai_id;
     if (m_aiPlayers.contains(aiID) == true) return false;
 
-    std::cout << "Room#" << m_roomID << "AI Enter: " << aiID << ", Owner: " << ownerID << ", Type: " << static_cast<int>(pkt.p_type) << std::endl;
-
     AIPlayerRef ai = std::make_shared<AIPlayer>(pkt.x, pkt.y, pkt.z, pkt.rotation);
     ai->aiID = aiID;
     ai->playerID = aiID;
     ai->type = pkt.p_type;
+    ai->name = pkt.name;
+    //if (false == m_playerNames.contains(aiID))
+    //{
+    //    m_aiNameGen = m_aiNameGen >= m_maxPlayerCount - 1 ? 0 : m_aiNameGen + 1;
+    //    m_playerNames[aiID] = AINameList[m_aiNameGen];
+    //}
 
     m_aiPlayers.insert(make_pair(aiID, ai));
     ai->room.store(shared_from_this());
 
-    if (false == m_playerNames.contains(aiID))
-    {
-        m_aiNameGen = m_aiNameGen >= m_maxPlayerCount - 1 ? 0 : m_aiNameGen + 1;
-        m_playerNames[aiID] = AINameList[m_aiNameGen];
-    }
+    std::cout << "Room#" << m_roomID << "AI Enter: " << aiID << ", Owner: " << ownerID << ", Type: " << static_cast<int>(pkt.p_type) << ", Name: " << ai->name << std::endl;
 
     //m_playerCount++;
 
@@ -414,6 +433,7 @@ bool Room::HandleEnterAIPlayer(const Protocol::CS_AI_ENTER_PKT& pkt)
     newPlayer.rotation = ai->rotation;
     newPlayer.player_id = ai->aiID;
     newPlayer.p_type = ai->type;
+    strcpy_s(newPlayer.name, ai->name.c_str());
 
     SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(newPlayer);
     Broadcast(sendBuffer, ownerID, true);
@@ -501,8 +521,7 @@ bool Room::HandleDamageLocked(const Protocol::CS_DAMAGE_PKT& pkt, const uint16 o
     //player->isAlive = pkt.hp > 0;
 
 #ifndef _DUMMYTEST
-    //if (player_id < 100)
-    //    std::cout << "Room#" << m_roomID << " Player#" << player_id << " Got Damage - HP: " << pkt.hp << std::endl;
+    //std::cout << "Room#" << m_roomID << " Player#" << player_id << " Got Damage - HP: " << pkt.hp << std::endl;
 #endif
 
     SC_UPDATE_HP_PKT updateHpPkt;
@@ -568,7 +587,7 @@ bool Room::HandleRoundEndLocked(const Protocol::CS_ROUND_END_PKT& pkt)
         }
         accumRanking[playerId] += scoreBoard[scoreBoardIndex++];  // 여기가 문젠가?
     }
-    std::cout << std::endl;
+    //std::cout << std::endl;
 
     // 라운드 초기화 작업
     InitializeGame();
@@ -591,7 +610,12 @@ bool Room::HandleRoundEndLocked(const Protocol::CS_ROUND_END_PKT& pkt)
         roundEndPkt.ranking[i] = sortedPlayersByScore[i].first;
         strcpy_s(roundEndPkt.name[i], m_playerNames[sortedPlayersByScore[i].first].c_str());
         roundEndPkt.score[i] = sortedPlayersByScore[i].second;
+
+#ifndef _DUMMYTEST
+        std::cout << roundEndPkt.name[i] << ":" << static_cast<int>(roundEndPkt.score[i]) << ", ";
+#endif
     }
+    std::cout << std::endl;
 
     SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(roundEndPkt);
     Broadcast(sendBuffer, 0);
@@ -824,5 +848,10 @@ void Room::InitializeRoom()
     accumRanking.clear();
     m_nowPlayerCount = 0;
     m_isValid = true;
+
+    std::random_device rd;
+    std::mt19937 g(rd());
+
+    std::shuffle(AINameList.begin(), AINameList.end(), g);
 }
 
