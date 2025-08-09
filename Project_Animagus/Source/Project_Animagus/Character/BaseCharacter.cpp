@@ -326,11 +326,13 @@ void ABaseCharacter::SetCharacterName(const char* name)
     //
     // C++의 const char* 문자열을 FString으로 바꾸려면 인코딩 변환이 반드시 필요하고, 언리얼은 이걸 UTF8_TO_TCHAR() 매크로로 처리
 
-    character_name = FString(UTF8_TO_TCHAR(name)); 
-    // 플레이어가 아닌 캐릭터인 경우 이름 UI 띄우기
-    if (nullptr == Cast<APlayerCharacter>(this)) {
-        SetCharacterNameWidget();
-    }
+    SetCharacterName(FString(UTF8_TO_TCHAR(name)));
+}
+
+void ABaseCharacter::SetCharacterName(const FString name)
+{
+    character_name = name;
+    SetCharacterNameWidget();
 }
 
 float ABaseCharacter::TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent,

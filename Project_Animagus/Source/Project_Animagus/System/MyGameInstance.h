@@ -102,6 +102,8 @@ public:
     UFUNCTION(BlueprintCallable, Category = "Round")
     int32 GetRoundCount() const { return round_count; }
 
+    FString GetPlayerName() const { return MyPlayerName; }
+
 public:
     UFUNCTION(BlueprintCallable)
     void ConnectToGameServer();
@@ -136,6 +138,7 @@ public:
     void HandleSetPowerUp(Protocol::SC_SET_POWERUP_PKT& pkt);
     void HandleRoomEnter();
     void HandleRoomEnterFail();
+    void HandleAlivePlayerCount(Protocol::SC_PLAYER_COUNT_PKT& pkt);
 
     // 로그인 메인 룸 BGM
     UPROPERTY(EditDefaultsOnly, Category="Audio")

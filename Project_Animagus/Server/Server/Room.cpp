@@ -524,14 +524,16 @@ bool Room::HandleDamageLocked(const Protocol::CS_DAMAGE_PKT& pkt, const uint16 o
     //std::cout << "Room#" << m_roomID << " Player#" << player_id << " Got Damage - HP: " << pkt.hp << std::endl;
 #endif
 
-    SC_UPDATE_HP_PKT updateHpPkt;
-    updateHpPkt.player_id = player_id;
-    //updateHpPkt.room_id = 0;
-    updateHpPkt.hp = pkt.hp;
-    //updateHpPkt.isAlive = pkt.isAlive;
+    {
+        SC_UPDATE_HP_PKT updateHpPkt;
+        updateHpPkt.player_id = player_id;
+        //updateHpPkt.room_id = 0;
+        updateHpPkt.hp = pkt.hp;
+        //updateHpPkt.isAlive = pkt.isAlive;
 
-    SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(updateHpPkt);
-    Broadcast(sendBuffer, ownerID, true);
+        SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(updateHpPkt);
+        Broadcast(sendBuffer, ownerID, true);
+    }
 
     if (pkt.hp <= 0 && player->isAlive == true)
     {
@@ -541,6 +543,10 @@ bool Room::HandleDamageLocked(const Protocol::CS_DAMAGE_PKT& pkt, const uint16 o
         m_deathPlayer.push(player->playerID);
 
         // 여기서 생존자 카운트 보내기
+        SC_PLAYER_COUNT_PKT alive_count;
+        alive_count.alive_player_count = m_alivePlayerCount;
+        SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(alive_count);
+        Broadcast(sendBuffer, 0, true);
 
         if (m_alivePlayerCount == 1)
         {

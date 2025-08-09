@@ -105,6 +105,7 @@ public:
     
     // 서버에서 char형 이름 받아서 언리얼 FString으로 적용
     void SetCharacterName(const char* name);
+    void SetCharacterName(const FString name);
 
     // 블루프린트에서 함수를 직접 구현
     UFUNCTION(BlueprintImplementableEvent, Category = "Effects")

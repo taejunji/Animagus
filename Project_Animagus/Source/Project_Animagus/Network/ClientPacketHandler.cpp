@@ -228,3 +228,13 @@ bool Handle_SC_ROOM_FAIL(SessionRef& session, Protocol::SC_ROOM_FAIL_PKT& pkt)
 
     return true;
 }
+
+bool Handle_SC_PLAYER_COUNT(SessionRef& session, Protocol::SC_PLAYER_COUNT_PKT& pkt)
+{
+    if (auto* GameInstance = Cast<UMyGameInstance>(GWorld->GetGameInstance()))
+    {
+        GameInstance->HandleAlivePlayerCount(pkt);
+    }
+
+    return true;
+}

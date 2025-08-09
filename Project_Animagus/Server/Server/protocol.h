@@ -127,6 +127,7 @@ namespace Protocol {
         SC_ROUND_INIT,
         SC_GAME_END,
         SC_SET_POWERUP,
+        SC_PLAYER_COUNT,
     };
 
 
@@ -361,6 +362,10 @@ namespace Protocol {
     {
         uint16 player_id;
         int32 powerup_level;    // Picker 의 현재 파워업 레벨
+    };
+    struct SC_PLAYER_COUNT_PKT
+    {
+        int16 alive_player_count;
     };
 
 #pragma pack(pop)

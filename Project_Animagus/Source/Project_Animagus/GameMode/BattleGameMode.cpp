@@ -382,6 +382,16 @@ void ABattleGameMode::SpawnPlayers()    // 스킬 셀렉 전에 SpawnPlayers 호
         if (NewCharacter)
         {
             PlayerCharacter = Cast<APlayerCharacter>(NewCharacter);
+
+            auto* GameInstance = Cast<UMyGameInstance>(GetGameInstance());
+            FString MyPlayerName = GameInstance->GetPlayerName();
+            PlayerCharacter->SetCharacterName(MyPlayerName);
+
+            int32 CurRoundCnt = GameInstance->GetRoundCount();
+            bool isNight = (CurRoundCnt == static_cast<int32>(RoundDay::Night));
+            PlayerCharacter->SetHandItemActive(isNight);
+            //PlayerCharacter->SetHandItemActive(true);
+
             UE_LOG(LogTemp, Log, TEXT("BattleGameMode: 플레이어 %d 스폰됨, 위치: %s"), PossessIndex, *SpawnLocations[PossessIndex].ToString());
 
             IndexingSpawnedPlayers.Add(PlayerCharacter);
@@ -454,6 +464,9 @@ void ABattleGameMode::SpawnAIPlayers(Protocol::SC_AI_SPAWN_PKT& pkt)
 
         AIChar->SetPlayerId(AIId);
         
+        int32 CurRoundCnt = Cast<UMyGameInstance>(GetGameInstance())->GetRoundCount();
+        bool isNight = (CurRoundCnt == static_cast<int32>(RoundDay::Night));
+        AIChar->SetHandItemActive(isNight);
 
         //SpawnedPlayers.Add(AIChar);
         SpawnedPlayers.Add(static_cast<int32>(AIId), AIChar);
@@ -519,6 +532,10 @@ void ABattleGameMode::SpawnPlayer(Protocol::SC_SPAWN_PKT& pkt)
         NewPlayer->SetPlayerId(p_id);
         NewPlayer->SetPlayerType(type);
         NewPlayer->SetCharacterName(pkt.name);
+
+        int32 CurRoundCnt = Cast<UMyGameInstance>(GetGameInstance())->GetRoundCount();
+        bool isNight = (CurRoundCnt == static_cast<int32>(RoundDay::Night));
+        NewPlayer->SetHandItemActive(isNight);
 
         //if (SpawnedPlayers.Contains(p_id) == true)
         //{
@@ -914,12 +931,25 @@ void ABattleGameMode::HandleSetPowerUp(Protocol::SC_SET_POWERUP_PKT& pkt)
     Player->UpdateAuraColorBasedOnPowerUpLevel();
 }
 
+void ABattleGameMode::HandleAlivePlayerCount(Protocol::SC_PLAYER_COUNT_PKT& pkt)
+{
+
+    if (ABattle_PlayerController* BPC = Cast<ABattle_PlayerController>(GetWorld()->GetFirstPlayerController()))
+    {
+        if (BPC->PlayerHUD)
+        {
+            BPC->PlayerHUD->UpdateAlivePlayerCount(static_cast<int32>(pkt.alive_player_count));
+        }
+    }
+}
+
 void ABattleGameMode::SetBattleLevel()
 {
     if (auto* GameInstance = Cast<UMyGameInstance>(GetGameInstance()))
     {
         int32 CurrentRound = GameInstance->GetRoundCount();
 
+        //CurrentRound = 2;
         SetPostProcess(CurrentRound);
 
         SetBluePrintLevel(CurrentRound);
@@ -950,7 +980,7 @@ void ABattleGameMode::SetPostProcess(int32 CurRound)
             {
             case static_cast<int32>(RoundDay::Morning): 
                 PPVolume->Settings.AutoExposureMinBrightness = -1.0f; 
-                PPVolume->Settings.AutoExposureMaxBrightness = 20.0f; 
+                PPVolume->Settings.AutoExposureMaxBrightness = 20.0f;
                 break;
 
             case static_cast<int32>(RoundDay::SunSet): 
@@ -959,8 +989,8 @@ void ABattleGameMode::SetPostProcess(int32 CurRound)
                 break;
 
             case static_cast<int32>(RoundDay::Night):
-                PPVolume->Settings.AutoExposureMinBrightness = 2.0f;
-                PPVolume->Settings.AutoExposureMaxBrightness = 4.0f;
+                PPVolume->Settings.AutoExposureMinBrightness = 4.5f;
+                PPVolume->Settings.AutoExposureMaxBrightness = 7.0f;
                 break;
             }
         }

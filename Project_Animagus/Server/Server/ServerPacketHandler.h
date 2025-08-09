@@ -83,7 +83,7 @@ public:
     static SendBufferRef MakeSendBuffer(SC_SET_POWERUP_PKT& pkt) { return MakeSendBuffer(pkt, (uint16)PacketID::SC_SET_POWERUP); }
     static SendBufferRef MakeSendBuffer(SC_ROOM_SUCC_PKT& pkt) { return MakeSendBuffer(pkt, (uint16)PacketID::SC_ROOM_SUCC); }
     static SendBufferRef MakeSendBuffer(SC_ROOM_FAIL_PKT& pkt) { return MakeSendBuffer(pkt, (uint16)PacketID::SC_ROOM_FAIL); }
-
+    static SendBufferRef MakeSendBuffer(SC_PLAYER_COUNT_PKT& pkt) { return MakeSendBuffer(pkt, (uint16)PacketID::SC_PLAYER_COUNT); }
     
 private:
     template<typename PacketType, typename ProcessFunc>

@@ -654,6 +654,8 @@ void UMyGameInstance::HandleLoginSuccess(Protocol::SC_LOGIN_SUCC_PKT& pkt)
     if (World == nullptr)
         return;
 
+
+
     AGameModeBase* BaseGameMode = UGameplayStatics::GetGameMode(World);
     if (BaseGameMode)
     {
@@ -780,6 +782,25 @@ void UMyGameInstance::HandleRoomEnterFail()
         if (ARoomSelectGameMode* GameMode = Cast<ARoomSelectGameMode>(BaseGameMode))
         {
             GameMode->HandleRoomEnterFail();
+        }
+    }
+}
+
+void UMyGameInstance::HandleAlivePlayerCount(Protocol::SC_PLAYER_COUNT_PKT& pkt)
+{
+    if (Socket == nullptr || ClientSession == nullptr)
+        return;
+
+    auto* World = GetWorld();
+    if (World == nullptr)
+        return;
+
+    AGameModeBase* BaseGameMode = UGameplayStatics::GetGameMode(World);
+    if (BaseGameMode)
+    {
+        if (ABattleGameMode* GameMode = Cast<ABattleGameMode>(BaseGameMode))
+        {
+            GameMode->HandleAlivePlayerCount(pkt);
         }
     }
 }

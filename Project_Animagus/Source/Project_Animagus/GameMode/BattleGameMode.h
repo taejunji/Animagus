@@ -163,7 +163,7 @@ public:    // 네트워크 서비스 관련
     void UpdateHp(Protocol::SC_UPDATE_HP_PKT& pkt);
     void HandleJumpEffect(Protocol::CS_JUMP_EFT_PKT& pkt);
     void HandleSetPowerUp(Protocol::SC_SET_POWERUP_PKT& pkt);
-
+    void HandleAlivePlayerCount(Protocol::SC_PLAYER_COUNT_PKT& pkt);
 
     bool AmIHost = false;
     int16 RoomId = 0;
