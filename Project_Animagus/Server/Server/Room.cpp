@@ -113,7 +113,7 @@ bool Room::HandleEnterPlayer(PlayerRef player)
     std::cout << "Room#" << m_roomID << " Player Enter :" << player->playerID << std::endl;
 #endif
 
-    std::cout << "Room#" << m_roomID  << "Player Count - " << m_playerCount << std::endl;
+    std::cout << "Room#" << m_roomID  << " Player Count - " << m_playerCount << std::endl;
     if (m_playerCount == MAX_PLAYER) m_isValid = false;
 
     // Room 입장 성공 패킷 전송
@@ -224,7 +224,7 @@ bool Room::HandleStartGame(PlayerRef player)
                     m_playerNames[aiID] = AINameList[m_aiNameGen];
                 }
 
-                int j = MAX_PLAYER - 1 - i;
+                int j = MAX_PLAYER - 1 - i; // 클라이언트에서 루프를 거꾸로 돌면서 읽고있음
                 strcpy_s(aiSpawn.name[j], m_playerNames[aiID].c_str());
             }
 
@@ -394,7 +394,7 @@ bool Room::HandleSkillLocked(Protocol::CS_USING_SKILL_PKT& pkt)
 
     SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(pkt);
 //    Broadcast(sendBuffer, playerId, true);
-    Broadcast(sendBuffer, 0, true);
+    Broadcast(sendBuffer, 0, true); // 이제 자기 자신, AI 스킬도 서버로부터 요청
 
     return true;
 }
@@ -421,7 +421,7 @@ bool Room::HandleEnterAIPlayer(const Protocol::CS_AI_ENTER_PKT& pkt)
     m_aiPlayers.insert(make_pair(aiID, ai));
     ai->room.store(shared_from_this());
 
-    std::cout << "Room#" << m_roomID << "AI Enter: " << aiID << ", Owner: " << ownerID << ", Type: " << static_cast<int>(pkt.p_type) << ", Name: " << ai->name << std::endl;
+    std::cout << "Room#" << m_roomID << " AI Enter: " << aiID << ", Owner: " << ownerID << ", Type: " << static_cast<int>(pkt.p_type) << ", Name: " << ai->name << std::endl;
 
     //m_playerCount++;
 
@@ -539,6 +539,9 @@ bool Room::HandleDamageLocked(const Protocol::CS_DAMAGE_PKT& pkt, const uint16 o
         m_alivePlayerCount--;
         std::cout << "Room#" << m_roomID << " Alive Player Count - " << m_alivePlayerCount << std::endl;
         m_deathPlayer.push(player->playerID);
+
+        // 여기서 생존자 카운트 보내기
+
         if (m_alivePlayerCount == 1)
         {
             std::cout << "Room#" << m_roomID << " Last Player Standing" << std::endl;
@@ -552,7 +555,7 @@ bool Room::HandleDamageLocked(const Protocol::CS_DAMAGE_PKT& pkt, const uint16 o
 bool Room::HandleRoundEndLocked(const Protocol::CS_ROUND_END_PKT& pkt)
 {
 #ifndef _DUMMYTEST
-    std::cout << "Room#" << m_roomID << " Time Over" << std::endl;
+    std::cout << "Room#" << m_roomID << " Ended Round" << std::endl;
 #endif
 
     //std::lock_guard lock(m_mutex);    // recursive locking error
