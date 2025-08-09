@@ -52,6 +52,15 @@ void UMyPlayerHUDWidget::UpdateHP(float HPPercent)
     }
 }
 
+void UMyPlayerHUDWidget::UpdateAlivePlayerCount(int32 LivingPlayers)
+{
+    if (TextPlayerCount)
+    {
+        // 숫자를 문자열로 변환해서 텍스트 세팅
+        TextPlayerCount->SetText(FText::AsNumber(LivingPlayers));
+    }
+}
+
 void UMyPlayerHUDWidget::UpdateSkillIcon(int32 SkillIndex, UTexture2D* NewTexture)
 {
     UImage* TargetImage = nullptr;

@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "../Server/Server/protocol.h"
+#include "Engine/EngineTypes.h"
 #include "BaseCharacter.generated.h"
 
 /*
@@ -26,6 +27,7 @@ class UNiagaraSystem;
 class USoundBase;
 class USoundAttenuation;
 class ADeathPowerUpItem;
+class UChildActorComponent;
 
 UCLASS()
 class PROJECT_ANIMAGUS_API ABaseCharacter : public ACharacter
@@ -238,6 +240,21 @@ public:
 
     UPROPERTY(EditAnywhere, Category="Audio")
     USoundAttenuation* AttenuationSettings;
+
+public:
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Hand Item")
+    FComponentReference HandItemCompRef;
+
+    UFUNCTION(BlueprintCallable, Category="Hand Item")
+    void SetHandItemActive(bool bActive);
+
+    UFUNCTION(BlueprintCallable, Category="Hand Item")
+    void ShowHandItem(); 
+
+    UFUNCTION(BlueprintCallable, Category="Hand Item")
+    void HideHandItem();
+
+    UChildActorComponent* ResolveHandItemComp() const;
 };
 
 // Called to bind functionality to input
