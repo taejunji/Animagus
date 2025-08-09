@@ -35,6 +35,10 @@ protected:
 
     UPROPERTY(meta = (BindWidget))
     UTextBlock* CurrentHPText;
+
+    UPROPERTY(meta = (BindWidget))
+    UTextBlock* TextPlayerCount;
+
 protected:
     UPROPERTY(EditAnywhere, Category="HUD")
     TArray<UTexture2D*> HUDTextures;
@@ -167,6 +171,9 @@ public:
     // 업데이트를 위해 외부에서 호출할 함수, HP 비율(0~1) 전달
     UFUNCTION(BlueprintCallable, Category = "UI")
     void UpdateHP(float HPPercent);
+
+    UFUNCTION(BlueprintCallable, Category = "UI")
+    void UpdateAlivePlayerCount(int32 LivingPlayers);
 
     // 스킬 아이콘 업데이트 함수 (각 스킬 슬롯에 아이콘 이미지를 설정)
     UFUNCTION(BlueprintCallable, Category = "UI")
