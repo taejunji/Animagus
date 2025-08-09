@@ -27,6 +27,7 @@
 #include "../Skill/BaseSkill.h"
 #include "../Skill/Fireball.h"
 #include "../Skill/MagicMissile.h"
+#include "Components/LightComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Project_Animagus/Item/DeathPowerUpItem.h"
 
@@ -768,6 +769,63 @@ void ABaseCharacter::Jump()
             );
         }
     }
+}
+
+void ABaseCharacter::SetHandItemActive(bool bActive)
+{
+    UChildActorComponent* HandItemComp = ResolveHandItemComp();
+    if (!HandItemComp)
+    {
+        UE_LOG(LogTemp, Warning, TEXT("HandItemCompRef not set or not found."));
+        return;
+    }
+
+    // 부모 컴포넌트 렌더 토글
+    HandItemComp->SetVisibility(bActive, /*PropagateToChildren*/true);
+    HandItemComp->SetHiddenInGame(!bActive);
+
+    // 자식 BP 액터까지 확실히 토글
+    if (AActor* Child = HandItemComp->GetChildActor())
+    {
+        Child->SetActorHiddenInGame(!bActive);
+        //Child->SetActorEnableCollision(bActive);
+        Child->SetActorTickEnabled(bActive);
+
+        // 라이트
+        {
+            TInlineComponentArray<ULightComponent*> Lights(Child);
+            for (ULightComponent* L : Lights)
+            {
+                if (!L) continue;
+                L->SetVisibility(bActive);
+                L->SetCastShadows(bActive);
+            }
+        }
+    }
+}
+
+void ABaseCharacter::ShowHandItem()
+{
+    SetHandItemActive(true);
+}
+
+void ABaseCharacter::HideHandItem()
+{
+    SetHandItemActive(false);
+}
+
+UChildActorComponent* ABaseCharacter::ResolveHandItemComp() const
+{
+    if (!HandItemCompRef.ComponentProperty.IsValid())
+    {
+        return nullptr; // 에디터에서 아직 안 물려준 경우
+    }
+    // 에디터에서 지정한 컴포넌트 참조 해석
+    if (UActorComponent* Comp = HandItemCompRef.GetComponent(const_cast<ABaseCharacter*>(this)))
+    {
+        return Cast<UChildActorComponent>(Comp);
+    }
+    return nullptr;
 }
 
 void ABaseCharacter::IncreasePowerUpLevel()
