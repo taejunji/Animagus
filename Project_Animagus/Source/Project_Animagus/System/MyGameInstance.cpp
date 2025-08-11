@@ -243,48 +243,47 @@ void UMyGameInstance::SendPacket(SendBufferRef SendBuffer)
 
 void UMyGameInstance::SaveBGMPlaybackTime()
 {
-    if (LoginBGMComponent && LoginBGMComponent->IsPlaying())
+    if (BGMComponent && BGMComponent->IsPlaying())
     {
-        //LoginBGMPlaybackTime = LoginBGMComponent->GetPlaybackTime();
+        //LoginBGMPlaybackTime = BGMComponent->GetPlaybackTime();
     }
 }
 
 void UMyGameInstance::PauseLoginBGM()
 {
-    if (LoginBGMComponent && LoginBGMComponent->IsPlaying())
+    if (BGMComponent && BGMComponent->IsPlaying())
     {
-        LoginBGMComponent->SetPaused(true);
+        BGMComponent->SetPaused(true);
     }
 }
 
 void UMyGameInstance::ResetLoginBGM()
 {
-    if (LoginBGMComponent && LoginBGMComponent->IsValidLowLevel())
+    if (BGMComponent && BGMComponent->IsValidLowLevel())
     {
-        LoginBGMComponent->Stop();
-        LoginBGMComponent->DestroyComponent();
+        BGMComponent->Stop();
+        BGMComponent->DestroyComponent();
     }
 
     // 메뉴 레벨로 돌아올 때마다 새로 생성 & Looping
-    LoginBGMComponent = UGameplayStatics::SpawnSound2D(
+    BGMComponent = UGameplayStatics::SpawnSound2D(
         GetWorld(),       // 반드시 현재 월드 컨텍스트
         MenuBGM,          // SoundBase*
         1.f, 1.f, 0.f,    // 볼륨, 피치, 스타트타임
         nullptr,          // Attenuation
         true // 반복 재생
     );
-    LoginBGMComponent->SetSound(MenuBGM);
-
+    //BGMComponent->SetSound(MenuBGM);
 }
 
 void UMyGameInstance::OnStart()
 {
     Super::OnStart();
 
-    if (LoginBGM && !LoginBGMComponent)
+    if (LoginBGM && !BGMComponent)
     {
         // 이제는 GetWorld()가 유효하고 AudioDevice도 준비된 후
-        LoginBGMComponent = UGameplayStatics::SpawnSound2D(GetWorld(), LoginBGM, 1.f, 1.f, 0.f, nullptr, true);
+        BGMComponent = UGameplayStatics::SpawnSound2D(GetWorld(), LoginBGM, 1.f, 1.f, 0.f, nullptr, true);
         // 마지막 파라미터(true)로 Looping까지 한 번에 걸 수 있습니다.
     }
 

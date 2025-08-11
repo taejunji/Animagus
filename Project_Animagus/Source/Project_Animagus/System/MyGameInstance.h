@@ -149,7 +149,7 @@ public:
 
     // 재생용 컴포넌트
     UPROPERTY(Transient)
-    UAudioComponent* LoginBGMComponent;
+    UAudioComponent* BGMComponent;
 
     UPROPERTY(BlueprintReadWrite, Category = "Settings")
     float MasterVolume = 1.0f;
