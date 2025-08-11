@@ -142,24 +142,27 @@ public:
 
     // 로그인 메인 룸 BGM
     UPROPERTY(EditDefaultsOnly, Category="Audio")
+    USoundBase* LoginBGM;
+
+    UPROPERTY(EditDefaultsOnly, Category = "Audio")
     USoundBase* MenuBGM;
 
     // 재생용 컴포넌트
     UPROPERTY(Transient)
-    UAudioComponent* MenuBGMComponent;
+    UAudioComponent* LoginBGMComponent;
 
     UPROPERTY(BlueprintReadWrite, Category = "Settings")
     float MasterVolume = 1.0f;
 
     UPROPERTY()
-    float MenuBGMPlaybackTime = 0.f; // 저장된 재생 위치
+    float LoginBGMPlaybackTime = 0.f; // 저장된 재생 위치
 
     UFUNCTION()
     void SaveBGMPlaybackTime();
 
     // 메뉴 BGM 재생
-    void PauseMenuBGM();         
-    void ResetMenuBGM(); 
+    void PauseLoginBGM();         
+    void ResetLoginBGM(); 
 
     virtual void OnStart() override;
 public:

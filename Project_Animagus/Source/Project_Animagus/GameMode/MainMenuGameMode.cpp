@@ -20,7 +20,7 @@ void AMainMenuGameMode::BeginPlay()
     if (auto* GI = Cast<UMyGameInstance>(GetGameInstance()))
     {
 
-        GI->ResetMenuBGM();
+        GI->ResetLoginBGM();
     }
 }
 

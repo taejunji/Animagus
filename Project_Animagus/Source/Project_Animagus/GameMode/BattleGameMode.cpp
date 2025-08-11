@@ -168,7 +168,7 @@ void ABattleGameMode::StartPlay()
 
     if (auto* GI = Cast<UMyGameInstance>(GetGameInstance()))
     {
-        GI->PauseMenuBGM();
+        GI->PauseLoginBGM();
     }
 
     // 1) 로딩 UI 띄우기

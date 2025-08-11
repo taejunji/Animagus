@@ -19,10 +19,10 @@ void ALoginGameMode::BeginPlay()
 {
     Super::BeginPlay();
     
-    if (auto* GI = Cast<UMyGameInstance>(GetGameInstance()))
-    {
-        GI->ResetMenuBGM();
-    }
+    //if (auto* GI = Cast<UMyGameInstance>(GetGameInstance()))
+    //{
+    //    GI->ResetLoginBGM();
+    //}
 }
 
 void ALoginGameMode::Tick(float DeltaTime)
