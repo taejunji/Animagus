@@ -65,11 +65,15 @@ bool Handle_CS_START_GAME(SessionRef& session, CS_START_GAME_PKT& pkt)
         return false;
 
     std::cout << "Room#" << room->m_roomID << " Host Request to Start Game" << std::endl;
-    room->m_isValid = false;
 
-    SC_START_GAME_PKT start_pkt;
-    SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(start_pkt);
-    room->Broadcast(sendBuffer, 0);
+    if (false == room->m_selectWait)
+    {
+        room->m_isValid = false;
+
+        SC_START_GAME_PKT start_pkt;
+        SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(start_pkt);
+        room->Broadcast(sendBuffer, 0);
+    }
 
     return true;
 }
@@ -248,7 +252,12 @@ bool Handle_CS_SELECT_CHARACTER(SessionRef& session, CS_SELECT_CHARACTER_PKT& pk
     if (player == nullptr)
         return false;
 
+    RoomRef room = player->room.load().lock();
+    if (room == nullptr)
+        return false;
+
     player->type = pkt.p_type;
+    room->m_selectWait = false;
 
     std::cout << "Room#" << player->room.load().lock()->m_roomID << " Player[" << player->playerID << "] Selected Character Type: " << static_cast<int>(pkt.p_type) << std::endl;
 
@@ -380,6 +389,23 @@ bool Handle_CS_ITEM_PICK(SessionRef& session, CS_ITEM_PICK_PKT& pkt)
         return false;
 
     room->HandleItemPickedUp(pkt, player->playerID);
+
+    return true;
+}
+
+bool Handle_CS_DEATH_ITEM(SessionRef& session, CS_DEATH_ITEM_PKT& pkt)
+{
+    auto gameSession = static_pointer_cast<Session>(session);
+
+    PlayerRef player = gameSession->m_player.load();
+    if (player == nullptr)
+        return false;
+
+    RoomRef room = player->room.load().lock();
+    if (room == nullptr)
+        return false;
+
+    room->HandleDeathItem(pkt);
 
     return true;
 }

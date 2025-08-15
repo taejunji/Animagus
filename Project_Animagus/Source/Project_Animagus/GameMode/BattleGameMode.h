@@ -151,8 +151,6 @@ public:    // 게임 오브젝트 관련
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "PowerUp")
     TArray<class ABaseItem*> SpawnedItems;
 
-
-
 public:    // 네트워크 서비스 관련
     void SetPlayerIndex(uint16 playerIndex);
     void SpawnPlayer(Protocol::SC_SPAWN_PKT& pkt);
@@ -160,6 +158,7 @@ public:    // 네트워크 서비스 관련
     void SpawnSkill(Protocol::CS_USING_SKILL_PKT& pkt);
     void SpawnItem(Protocol::SC_SPAWN_ITEM_PKT& pkt);
     void SpawnItemsInArea3(Protocol::SC_SPAWN_ITEM_PKT& pkt);
+    void SpawnDeathItem(Protocol::CS_DEATH_ITEM_PKT& pkt);
     void UpdateHp(Protocol::SC_UPDATE_HP_PKT& pkt);
     void HandleJumpEffect(Protocol::CS_JUMP_EFT_PKT& pkt);
     void HandleSetPowerUp(Protocol::SC_SET_POWERUP_PKT& pkt);
@@ -225,6 +224,9 @@ public:
     TSubclassOf<class AAttractionZone> AttractionBpclass;
 
     TSubclassOf<class AItem_Box_High> ItemBoxHighBpclass;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item")
+    TSubclassOf<class ADeathPowerUpItem> DeathPowerClass;
 
     UPROPERTY()
     UAudioComponent* BackgroundMusicComponent;

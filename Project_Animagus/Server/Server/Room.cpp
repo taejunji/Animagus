@@ -124,6 +124,8 @@ bool Room::HandleEnterPlayer(PlayerRef player)
             session->Send(sendBuffer);
     }
 
+    m_selectWait = true;
+
     bool isHost = false;
     int n_pid = 0;
     if (m_playerCount == 1)
@@ -720,6 +722,22 @@ bool Room::HandleItemPickedUp(Protocol::CS_ITEM_PICK_PKT& pkt, const uint16 owne
     return true;
 }
 
+bool Room::HandleDeathItem(Protocol::CS_DEATH_ITEM_PKT& pkt)
+{
+    std::lock_guard lock(m_mutex);
+
+    const uint16 player_id = pkt.player_id;
+    if (m_players.contains(player_id) == false && m_aiPlayers.contains(player_id) == false) return false;
+
+    SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(pkt);
+    if (player_id < 100)
+        Broadcast(sendBuffer, player_id, true);
+    else
+        Broadcast(sendBuffer, m_hostPlayer->playerID, true);
+
+    return true;
+}
+
 void Room::InitializeGame()
 {
     //m_players.clear();
@@ -857,6 +875,7 @@ void Room::InitializeRoom()
     accumRanking.clear();
     m_nowPlayerCount = 0;
     m_isValid = true;
+    m_selectWait = false;
 
     std::random_device rd;
     std::mt19937 g(rd());

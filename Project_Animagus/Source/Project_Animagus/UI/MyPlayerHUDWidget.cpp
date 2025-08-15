@@ -232,7 +232,7 @@ void UMyPlayerHUDWidget::SetCurrentHP(float hp, float max_hp)
     CurrentHPText->SetText(FText::FromString(NewText));
 }
 
-void UMyPlayerHUDWidget::ResetLevelImgage()
+void UMyPlayerHUDWidget::ResetLevelImage()
 {
     for (auto* Image : ArrayLevel) {
         Image->SetVisibility(ESlateVisibility::Hidden);

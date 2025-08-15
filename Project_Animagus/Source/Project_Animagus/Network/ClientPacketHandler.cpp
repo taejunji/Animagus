@@ -238,3 +238,13 @@ bool Handle_SC_PLAYER_COUNT(SessionRef& session, Protocol::SC_PLAYER_COUNT_PKT& 
 
     return true;
 }
+
+bool Handle_CS_DEATH_ITEM(SessionRef& session, Protocol::CS_DEATH_ITEM_PKT& pkt)
+{
+    if (auto* GameInstance = Cast<UMyGameInstance>(GWorld->GetGameInstance()))
+    {
+        GameInstance->HandleSpawnDeathItem(pkt);
+    }
+
+    return true;
+}

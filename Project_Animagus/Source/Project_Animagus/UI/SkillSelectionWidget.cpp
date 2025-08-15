@@ -17,6 +17,7 @@
 #include "Components/SizeBox.h"
 #include "Project_Animagus/PlayerController/Battle_PlayerController.h"
 
+
 void USkillSelectionWidget::NativeConstruct()
 {
   Super::NativeConstruct();
@@ -96,17 +97,16 @@ void USkillSelectionWidget::OnSlotClicked(int32 SlotIndex)
 
 void USkillSelectionWidget::SetupOwner(ABattle_PlayerController* InController)
 {
-  OwnerController = InController;
+    OwnerController = InController;
 }
 
 void USkillSelectionWidget::SetupWidget(float InTimeLimit)
 {
-    
-  // 초기 UI 업데이트
-  if (TimerText)
-  {
-      // TimerText->SetText(FText::AsNumber(FMath::CeilToInt()));
-  }
+    // 초기 UI 업데이트
+    if (TimerText)
+    {
+        // TimerText->SetText(FText::AsNumber(FMath::CeilToInt()));
+    }
 }
 
 void USkillSelectionWidget::UpdateTimerDisplay(int32 RemainingSeconds)
@@ -119,16 +119,16 @@ void USkillSelectionWidget::UpdateTimerDisplay(int32 RemainingSeconds)
 
 void USkillSelectionWidget::OnConfirmClicked()
 {
-  // 완료 버튼 
+      // 완료 버튼 
 
-  // 컨트롤러에게 직접 호출
-  if (OwnerController.IsValid())
-  {
-   OwnerController->OnSkillSelectionConfirmed(ChosenClasses);
-  }
+      // 컨트롤러에게 직접 호출
+      if (OwnerController.IsValid())
+      {
+          OwnerController->OnSkillSelectionConfirmed(ChosenClasses);
+      }
 
-  // 위젯 제거 및 타이머 정리
-  RemoveFromParent();
+      // 위젯 제거 및 타이머 정리
+      RemoveFromParent();
 }
 
 void USkillSelectionWidget::AutoFillAndConfirm()
@@ -196,7 +196,7 @@ void USkillSelectionWidget::AutoFillAndConfirm()
 
 void USkillSelectionWidget::OnClearAllClicked()
 {
-  ChosenClasses.Empty();
+    ChosenClasses.Empty();
     
     int32 SlotCount = SlotContainer->GetChildrenCount();
     for (int32 i = 0; i < SlotCount; ++i)

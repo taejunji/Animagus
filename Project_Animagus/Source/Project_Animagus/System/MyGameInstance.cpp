@@ -342,7 +342,10 @@ void UMyGameInstance::HandleStartGame(Protocol::SC_START_GAME_PKT& pkt)
     if (BaseGameMode)
     {
         AConnectGameMode* GameMode = Cast<AConnectGameMode>(BaseGameMode);
-        if (GameMode == nullptr) return;
+        if (GameMode == nullptr)  // 룸 선택창에서 캐릭 선택창으로 넘어가는 1초 사이에서도 OpenLevel 시 자원 정리 필요
+        {
+            GameMode->GetWorldTimerManager().ClearAllTimersForObject(GameMode);
+        }
     }
 
     static const FName TargetLevelName = TEXT("L_Map");
@@ -553,9 +556,15 @@ void UMyGameInstance::HandleBattleRoundInit(Protocol::SC_ROUND_INIT_PKT& pkt)
         if (GameMode)
         {
             if (ABattle_PlayerController* PC = Cast<ABattle_PlayerController>(
-                UGameplayStatics::GetPlayerController(this, 0))) {
+                UGameplayStatics::GetPlayerController(this, 0)))
+            {
                 PC->RoundResultwidget->HideSelf();
-                PC->PlayerHUD->ResetLevelImgage();
+                //PC->PlayerHUD->ResetLevelImage();
+                if (PC->PlayerHUD)  // HUD 초기화
+                {
+                    PC->PlayerHUD->RemoveFromParent();
+                    PC->PlayerHUD = nullptr;
+                }
             }
             round_count++;
             GameMode->isRoundEnd = false;
@@ -801,6 +810,25 @@ void UMyGameInstance::HandleAlivePlayerCount(Protocol::SC_PLAYER_COUNT_PKT& pkt)
         if (ABattleGameMode* GameMode = Cast<ABattleGameMode>(BaseGameMode))
         {
             GameMode->HandleAlivePlayerCount(pkt);
+        }
+    }
+}
+
+void UMyGameInstance::HandleSpawnDeathItem(Protocol::CS_DEATH_ITEM_PKT& pkt)
+{
+    if (Socket == nullptr || ClientSession == nullptr)
+        return;
+
+    auto* World = GetWorld();
+    if (World == nullptr)
+        return;
+
+    AGameModeBase* BaseGameMode = UGameplayStatics::GetGameMode(World);
+    if (BaseGameMode)
+    {
+        if (ABattleGameMode* GameMode = Cast<ABattleGameMode>(BaseGameMode))
+        {
+            GameMode->SpawnDeathItem(pkt);
         }
     }
 }

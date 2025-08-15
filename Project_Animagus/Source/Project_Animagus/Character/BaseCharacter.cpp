@@ -266,10 +266,11 @@ void ABaseCharacter::Tick(float DeltaTime)
             }*/
         }
 
-        if (GetCharacterMovement()->IsFalling() == false &&  is_grounddead == false) {
+        if (false == GetCharacterMovement()->IsFalling() &&  false == is_grounddead) 
+        {
             is_grounddead = true;
 
-            if (DeathPowerClass)
+            if (DeathPowerClass && GetPawnType() != PawnType::NETWORK)
             {
                 FVector SpawnLoc = GetActorLocation();
                 const float ZOffsetDown = 30.f; 
@@ -298,7 +299,20 @@ void ABaseCharacter::Tick(float DeltaTime)
                         GameMode->SpawnedItems.Add(NewItem);
                     }
                 }
+
+                Protocol::CS_DEATH_ITEM_PKT DeathItemPkt;
+                DeathItemPkt.player_id = GetPlayerId();
+                DeathItemPkt.powerup_level = PowerUpLevel;
+                DeathItemPkt.x = SpawnLoc.X; DeathItemPkt.y = SpawnLoc.Y; DeathItemPkt.z = SpawnLoc.Z;
+
+                SendBufferRef SendBuffer = ClientPacketHandler::MakeSendBuffer(DeathItemPkt);
+                Cast<UMyGameInstance>(GWorld->GetGameInstance())->SendPacket(SendBuffer);
+
             }
+            //else
+            //{
+            //    UE_LOG(LogTemp, Warning, TEXT("넷플레이어 z 속도: %f"), GetCharacterMovement()->Velocity.Z);
+            //}
             
             // 일시적으로 이동을 멈추고 싶다면? → DisableMovement()
             // 이동을 완전히 비활성화하고 싶다면 ? → SetMovementMode(MOVE_None)
@@ -935,7 +949,7 @@ void ABaseCharacter::IncreasePowerUpLevel()
     UE_LOG(LogTemp, Log, TEXT("%s PowerUpLevel increased to %d"), *GetName(), PowerUpLevel);
 
     if (auto* PC = Cast<ABattle_PlayerController>(GetController())) {
-        PC->PlayerHUD->ResetLevelImgage(); 
+        PC->PlayerHUD->ResetLevelImage(); 
         PC->PlayerHUD->SetLevelImage(PowerUpLevel);
     }
 

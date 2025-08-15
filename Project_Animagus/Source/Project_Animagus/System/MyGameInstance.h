@@ -139,6 +139,7 @@ public:
     void HandleRoomEnter();
     void HandleRoomEnterFail();
     void HandleAlivePlayerCount(Protocol::SC_PLAYER_COUNT_PKT& pkt);
+    void HandleSpawnDeathItem(Protocol::CS_DEATH_ITEM_PKT& pkt);
 
     // 로그인 메인 룸 BGM
     UPROPERTY(EditDefaultsOnly, Category="Audio")

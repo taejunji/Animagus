@@ -107,6 +107,7 @@ namespace Protocol {
         CS_ROUND_INIT,
         CS_JUMP_EFT,
         CS_ITEM_PICK,
+        CS_DEATH_ITEM,
 
         SC_LOGIN_SUCC,
         SC_LOGIN_FAIL,
@@ -270,6 +271,12 @@ namespace Protocol {
         ItemType item_type;
         int32 powerup_level;    // Picker 의 현재 파워업 레벨
         float hp;               // 파워업, 힐 아이템 획득 시 HP 업데이트 필요
+    };
+    struct CS_DEATH_ITEM_PKT
+    {
+        uint16 player_id;
+        int32 powerup_level;
+        float x, y, z;
     };
 
     struct SC_LOGIN_FAIL_PKT

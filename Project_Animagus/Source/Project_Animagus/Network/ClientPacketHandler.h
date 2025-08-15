@@ -36,6 +36,7 @@ bool Handle_SC_SET_POWERUP(SessionRef& session, Protocol::SC_SET_POWERUP_PKT& pk
 bool Handle_SC_ROOM_SUCC(SessionRef& session, Protocol::SC_ROOM_SUCC_PKT& pkt);
 bool Handle_SC_ROOM_FAIL(SessionRef& session, Protocol::SC_ROOM_FAIL_PKT& pkt);
 bool Handle_SC_PLAYER_COUNT(SessionRef& session, Protocol::SC_PLAYER_COUNT_PKT& pkt);
+bool Handle_CS_DEATH_ITEM(SessionRef& session, Protocol::CS_DEATH_ITEM_PKT& pkt);
 
 
 class ClientPacketHandler
@@ -66,6 +67,7 @@ public:
         GClientPacketHandler[(int32)Protocol::PacketID::SC_ROOM_SUCC] = [](SessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<Protocol::SC_ROOM_SUCC_PKT>(Handle_SC_ROOM_SUCC, session, buffer, len); };
         GClientPacketHandler[(int32)Protocol::PacketID::SC_ROOM_FAIL] = [](SessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<Protocol::SC_ROOM_FAIL_PKT>(Handle_SC_ROOM_FAIL, session, buffer, len); };
         GClientPacketHandler[(int32)Protocol::PacketID::SC_PLAYER_COUNT] = [](SessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<Protocol::SC_PLAYER_COUNT_PKT>(Handle_SC_PLAYER_COUNT, session, buffer, len); };
+        GClientPacketHandler[(int32)Protocol::PacketID::CS_DEATH_ITEM] = [](SessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<Protocol::CS_DEATH_ITEM_PKT>(Handle_CS_DEATH_ITEM, session, buffer, len); };
 
     }
 
@@ -94,7 +96,8 @@ public:
     static SendBufferRef MakeSendBuffer(Protocol::CS_ROUND_INIT_PKT& pkt) { return MakeSendBuffer(pkt, (uint16)Protocol::PacketID::CS_ROUND_INIT); }
     static SendBufferRef MakeSendBuffer(Protocol::CS_JUMP_EFT_PKT& pkt) { return MakeSendBuffer(pkt, (uint16)Protocol::PacketID::CS_JUMP_EFT); }
     static SendBufferRef MakeSendBuffer(Protocol::CS_ITEM_PICK_PKT& pkt) { return MakeSendBuffer(pkt, (uint16)Protocol::PacketID::CS_ITEM_PICK); }
-    
+    static SendBufferRef MakeSendBuffer(Protocol::CS_DEATH_ITEM_PKT& pkt) { return MakeSendBuffer(pkt, (uint16)Protocol::PacketID::CS_DEATH_ITEM); }
+
 private:
     template<typename PacketType, typename ProcessFunc>
     static bool HandlePacket(ProcessFunc func, SessionRef& session, BYTE* buffer, int32 len)

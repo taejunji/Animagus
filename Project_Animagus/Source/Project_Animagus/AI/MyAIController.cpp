@@ -234,7 +234,7 @@ void AMyAIController::Tick(float DeltaTime)
     {
         // State 설정
 
-        if (AI->GetMovementComponent()->IsFalling() == false)
+        if (false == AI->GetMovementComponent()->IsFalling())
         {
             AI->SetMoveState(Protocol::PlayerState::MOVE_STATE_RUN);
 

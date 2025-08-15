@@ -22,6 +22,7 @@
 #include "Project_Animagus/Actor/ItemBox/Item_Box_Base.h"
 #include "Project_Animagus/Actor/ItemBox/Item_Box_High.h"
 #include "Project_Animagus/Item/PowerUpItem.h"
+#include "Project_Animagus/Item/DeathPowerUpItem.h"
 #include "../UI/SkillSelectionWidget.h"
 #include "Runtime/Core/Tests/Containers/TestUtils.h"
 #include "../Network/ClientPacketHandler.h"
@@ -643,7 +644,7 @@ void ABattleGameMode::MoveOtherPlayer(Protocol::CS_MOVE_PKT& pkt)
 
 
     const uint16 playerId = pkt.player_info.player_id;
-    if (SpawnedPlayers.Find(playerId) == nullptr)
+    if (nullptr == SpawnedPlayers.Find(playerId))
         return;
 
     //if (playerId == PossessIndex)
@@ -989,7 +990,7 @@ void ABattleGameMode::SetPostProcess(int32 CurRound)
                 break;
 
             case static_cast<int32>(RoundDay::Night):
-                PPVolume->Settings.AutoExposureMinBrightness = 4.5f;
+                PPVolume->Settings.AutoExposureMinBrightness = 2.7f;
                 PPVolume->Settings.AutoExposureMaxBrightness = 7.0f;
                 break;
             }
@@ -1535,4 +1536,34 @@ void ABattleGameMode::SpawnItemsInArea3(Protocol::SC_SPAWN_ITEM_PKT& pkt)
         }
     }
 
+}
+
+void ABattleGameMode::SpawnDeathItem(Protocol::CS_DEATH_ITEM_PKT& pkt)
+{
+    if (nullptr == SpawnedPlayers.Find(pkt.player_id)) return;
+    if (nullptr == DeathPowerClass) return;
+
+    FVector SpawnLocation;
+    SpawnLocation.X = pkt.x; SpawnLocation.Y = pkt.y; SpawnLocation.Z = pkt.z;
+    FRotator SpawnRotation = FRotator::ZeroRotator;
+
+    FActorSpawnParameters SpawnParams;
+    SpawnParams.Owner = SpawnedPlayers[pkt.player_id];
+
+    ADeathPowerUpItem* NewItem = GetWorld()->SpawnActor<ADeathPowerUpItem>(
+        DeathPowerClass,
+        SpawnLocation, SpawnRotation,
+        SpawnParams
+    );
+
+    if (NewItem)
+    {
+        // 사망 캐릭터의 강화 횟수 저장
+        NewItem->StoredPowerUpCount = pkt.powerup_level;
+
+        // (충돌 컴포넌트는 생성자에서 이미 NoCollision)
+
+        // 라운드 초기화 시 삭제시킬 관심목록에 등록
+        SpawnedItems.Add(NewItem);
+    }
 }

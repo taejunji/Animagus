@@ -27,6 +27,7 @@ bool Handle_CS_LOGIN(SessionRef& session, CS_LOGIN_PKT& pkt);
 bool Handle_CS_SIGN_UP(SessionRef& session, CS_SIGN_UP_PKT& pkt);
 bool Handle_CS_JUMP_EFT(SessionRef& session, CS_JUMP_EFT_PKT& pkt);
 bool Handle_CS_ITEM_PICK(SessionRef& session, CS_ITEM_PICK_PKT& pkt);
+bool Handle_CS_DEATH_ITEM(SessionRef& session, CS_DEATH_ITEM_PKT& pkt);
 
 class ServerPacketHandler
 {
@@ -53,6 +54,7 @@ public:
         GServerPacketHandler[(int32)PacketID::CS_SIGN_UP] = [](SessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<CS_SIGN_UP_PKT>(Handle_CS_SIGN_UP, session, buffer, len); };
         GServerPacketHandler[(int32)PacketID::CS_JUMP_EFT] = [](SessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<CS_JUMP_EFT_PKT>(Handle_CS_JUMP_EFT, session, buffer, len); };
         GServerPacketHandler[(int32)PacketID::CS_ITEM_PICK] = [](SessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<CS_ITEM_PICK_PKT>(Handle_CS_ITEM_PICK, session, buffer, len); };
+        GServerPacketHandler[(int32)PacketID::CS_DEATH_ITEM] = [](SessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<CS_DEATH_ITEM_PKT>(Handle_CS_DEATH_ITEM, session, buffer, len); };
 
     }
 
@@ -84,7 +86,8 @@ public:
     static SendBufferRef MakeSendBuffer(SC_ROOM_SUCC_PKT& pkt) { return MakeSendBuffer(pkt, (uint16)PacketID::SC_ROOM_SUCC); }
     static SendBufferRef MakeSendBuffer(SC_ROOM_FAIL_PKT& pkt) { return MakeSendBuffer(pkt, (uint16)PacketID::SC_ROOM_FAIL); }
     static SendBufferRef MakeSendBuffer(SC_PLAYER_COUNT_PKT& pkt) { return MakeSendBuffer(pkt, (uint16)PacketID::SC_PLAYER_COUNT); }
-    
+    static SendBufferRef MakeSendBuffer(CS_DEATH_ITEM_PKT& pkt) { return MakeSendBuffer(pkt, (uint16)PacketID::CS_DEATH_ITEM); }
+
 private:
     template<typename PacketType, typename ProcessFunc>
     static bool HandlePacket(ProcessFunc func, SessionRef& session, BYTE* buffer, int32 len)
