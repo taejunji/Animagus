@@ -46,4 +46,6 @@ protected:
     // 플레이어에게 데미지를 적용하는 함수
     void ApplyGasDamage(AActor* AffectedActor, float DeltaTime);
     
+public:
+    class ABaseCharacter* OwnerCharacter = nullptr;
 };

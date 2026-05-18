@@ -7,6 +7,12 @@
 #include "Perception/AIPerceptionStimuliSourceComponent.h"
 #include "Perception/AISense_Sight.h"
 
+#include "../System/MyGameInstance.h"
+#include "../Server/Server/protocol.h"
+#include "../Network/Session.h"
+#include "../Network/ClientPacketHandler.h"
+
+
 ABaseItem::ABaseItem()
 {
     PrimaryActorTick.bCanEverTick = true;
@@ -103,6 +109,11 @@ void ABaseItem::OnPickedUp(ABaseCharacter* Picker)
     {
         bIsPickedUp = true;
        
+        if (Picker->GetPawnType() != PawnType::NETWORK)
+        {
+            SendItemPickedUp2Server(Picker);
+        }
+
         DestroyItem();
     }
 }
@@ -122,6 +133,21 @@ void ABaseItem::DestroyItem()
         ItemEffect->Deactivate();
     }
     Destroy();
+}
+
+void ABaseItem::SendItemPickedUp2Server(ABaseCharacter* Picker)
+{
+    if (PawnType::NETWORK != Picker->GetPawnType())
+    {
+        Protocol::CS_ITEM_PICK_PKT ItemPickPkt;
+        ItemPickPkt.player_id = Picker->GetPlayerId();
+        ItemPickPkt.hp = Picker->GetHP();
+        ItemPickPkt.item_type = ItemType;
+        ItemPickPkt.powerup_level = Picker->PowerUpLevel;
+
+        SendBufferRef SendBuffer = ClientPacketHandler::MakeSendBuffer(ItemPickPkt);
+        Cast<UMyGameInstance>(GWorld->GetGameInstance())->SendPacket(SendBuffer);
+    }
 }
 
 

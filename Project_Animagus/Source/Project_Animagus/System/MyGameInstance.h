@@ -4,6 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "Engine/GameInstance.h"
+#include "../Project_Animagus.h"
+#include "../Server/Server/protocol.h"
 #include "MyGameInstance.generated.h"
 
 
@@ -23,7 +25,9 @@ enum class CharacterMesh
     Cow,
     Unicorn,
     Zebra,
-    Donkey     
+    Donkey,
+
+    Count
 };
 
 struct StoredPlayerData
@@ -77,7 +81,7 @@ public:
     int32 AimImageIndex = 0;
 
     UPROPERTY(BlueprintReadWrite, Category="Settings")
-    int32 myRank = 0;
+    int32 myRank = 1;
 
 public:
     UMyGameInstance(const FObjectInitializer& ObjectInitializer);
@@ -98,17 +102,68 @@ public:
     UFUNCTION(BlueprintCallable, Category = "Round")
     int32 GetRoundCount() const { return round_count; }
 
+    FString GetPlayerName() const { return MyPlayerName; }
+
 public:
+    UFUNCTION(BlueprintCallable)
+    void ConnectToGameServer();
+
+    UFUNCTION(BlueprintCallable)
+    void DisconnectFromGameServer();
+
+    UFUNCTION(BlueprintCallable)
+    void HandleRecvPackets();
+
+    void SendPacket(SendBufferRef SendBuffer);
+
+
+public:
+    void HandleLobbyHost(Protocol::SC_UR_HOST_PKT& pkt);
+    void HandleStartGame(Protocol::SC_START_GAME_PKT& pkt);
+    void HandleEnterGame(Protocol::SC_ENTER_GAME_PKT& pkt);
+    void HandleSpawn(Protocol::SC_SPAWN_PKT& pkt);
+    void HandleMove(Protocol::CS_MOVE_PKT& pkt);
+    void HandleSkill(Protocol::CS_USING_SKILL_PKT& pkt);
+    void HandleSpawnItem(Protocol::SC_SPAWN_ITEM_PKT& pkt);
+    void HandleUpdateHp(Protocol::SC_UPDATE_HP_PKT& pkt);
+    void HandleBattleRoundEnd(Protocol::SC_ROUND_END_PKT& pkt);
+    void HandleBattleRoundInit(Protocol::SC_ROUND_INIT_PKT& pkt);
+    void HandleAISpawn(Protocol::SC_AI_SPAWN_PKT& pkt);
+    void HandleJumpEffect(Protocol::CS_JUMP_EFT_PKT& pkt);
+    void HandleBattleModeEnd(Protocol::SC_GAME_END_PKT& pkt);
+    void HandleLoginSuccess(Protocol::SC_LOGIN_SUCC_PKT& pkt);
+    void HandleLoginFail(Protocol::SC_LOGIN_FAIL_PKT& pkt);
+    void HandleSignUpSuccess();
+    void HandleSignUpFail();
+    void HandleSetPowerUp(Protocol::SC_SET_POWERUP_PKT& pkt);
+    void HandleRoomEnter();
+    void HandleRoomEnterFail();
+    void HandleAlivePlayerCount(Protocol::SC_PLAYER_COUNT_PKT& pkt);
+    void HandleSpawnDeathItem(Protocol::CS_DEATH_ITEM_PKT& pkt);
+
     // 로그인 메인 룸 BGM
     UPROPERTY(EditDefaultsOnly, Category="Audio")
+    USoundBase* LoginBGM;
+
+    UPROPERTY(EditDefaultsOnly, Category = "Audio")
     USoundBase* MenuBGM;
 
     // 재생용 컴포넌트
     UPROPERTY(Transient)
-    UAudioComponent* MenuBGMComponent;
+    UAudioComponent* BGMComponent;
 
-    void PauseMenuBGM();         
-    void ResetMenuBGM(); 
+    UPROPERTY(BlueprintReadWrite, Category = "Settings")
+    float MasterVolume = 1.0f;
+
+    UPROPERTY()
+    float LoginBGMPlaybackTime = 0.f; // 저장된 재생 위치
+
+    UFUNCTION()
+    void SaveBGMPlaybackTime();
+
+    // 메뉴 BGM 재생
+    void PauseLoginBGM();         
+    void ResetLoginBGM(); 
 
     virtual void OnStart() override;
 public:
@@ -117,4 +172,13 @@ public:
 
     // AI 추가 함수
     // void AddAICharacter(AAICharacter* AICharacter);
+
+    class FSocket* Socket;
+    //FString IpAddress = TEXT("182.230.58.32");
+    int16 Port = 7777;
+    TSharedPtr<class Session> ClientSession;
+
+    uint16 MyPlayerId = 0;
+    bool    AmIHost = false; // 내가 호스트인지 여부
+    FString MyPlayerName; // 플레이어 이름
 };

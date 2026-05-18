@@ -8,22 +8,36 @@
 #include "UObject/ConstructorHelpers.h"
 #include "../AI/MyAIController.h"
 #include "../Character/AICharacter.h"
+#include "../Character/PlayerCharacter.h"
 #include "../PlayerController/Battle_PlayerController.h"
 #include "GameFramework/CharacterMovementComponent.h"
+
+#include "../Character/NetworkCharacter.h"
+#include "Project_Animagus/UI/MyPlayerHUDWidget.h"
+#include "../Skill/SkillsPch.h"
+
 #include "GameFramework/NavMovementComponent.h"
 #include "Project_Animagus/Item/BaseItem.h"
-#include "Project_Animagus/UI/MyPlayerHUDWidget.h"
 #include "Algo/RandomShuffle.h"
 #include "Project_Animagus/Actor/ItemBox/Item_Box_Base.h"
+#include "Project_Animagus/Actor/ItemBox/Item_Box_High.h"
 #include "Project_Animagus/Item/PowerUpItem.h"
+#include "Project_Animagus/Item/DeathPowerUpItem.h"
 #include "../UI/SkillSelectionWidget.h"
 #include "Runtime/Core/Tests/Containers/TestUtils.h"
+#include "../Network/ClientPacketHandler.h"
+#include "../Actor/Zones/AttractionZone.h"
 #include "../Actor/Zones/ShrinkingZone.h"
+#include "EngineUtils.h"
+#include "Components/AudioComponent.h"
+
+#include "NiagaraComponent.h"
+#include "NiagaraFunctionLibrary.h"
 
 
 ABattleGameMode::ABattleGameMode()
 {
-    PrimaryActorTick.bCanEverTick = false;
+    PrimaryActorTick.bCanEverTick = true;
 
     // BluePirnt Class인 BP_Player, BP_PlayerController의 정보를 생성자에서 읽어서 게임모드에 설정한다.
     static ConstructorHelpers::FClassFinder<APawn> PlayerPawn(TEXT("/Game/WorkFolder/Bluprints/BP_Player.BP_Player_C"));
@@ -32,7 +46,15 @@ ABattleGameMode::ABattleGameMode()
         DefaultPawnClass = PlayerPawn.Class;
         UE_LOG(LogTemp, Warning, TEXT("폰 로드 성공"));
     }
-    else UE_LOG(LogTemp, Warning, TEXT("디폴트 폰 로드 실패")); 
+    else UE_LOG(LogTemp, Warning, TEXT("디폴트 폰 로드 실패"));
+
+    static ConstructorHelpers::FClassFinder<APawn> NetPlayerPawn(TEXT("/Game/WorkFolder/Bluprints/MyNetworkCharacter"));
+    if (NetPlayerPawn.Succeeded())
+    {
+        NetPawnClass = NetPlayerPawn.Class;
+    }
+    else UE_LOG(LogTemp, Warning, TEXT("디폴트 폰 로드 실패"));
+
 
     static ConstructorHelpers::FClassFinder<APlayerController> PController(TEXT("/Game/WorkFolder/Controller/BP_Battle_PlayerController.BP_Battle_PlayerController_C"));
     if (PController.Succeeded())
@@ -62,25 +84,37 @@ ABattleGameMode::ABattleGameMode()
     // }
     // else UE_LOG(LogTemp, Warning, TEXT("AI 폰 로드 실패")); 
 
-    UE_LOG(LogTemp, Warning, TEXT("AI 폰 로드 후/파워 아이템 로드 전 "));
+    UE_LOG(LogTemp, Warning, TEXT("AI 폰 로드 후/파워 아이템 로드 전"));
     
     static ConstructorHelpers::FClassFinder<APowerUpItem> Powerupitem(TEXT("/Game/WorkFolder/Bluprints/Item/MyPowerUpItem"));
     if (Powerupitem.Succeeded())
     {
         PowerUpBpclass = Powerupitem.Class;
-        UE_LOG(LogTemp, Warning, TEXT("파워 아이템 로드 성공"));
     }
-    else UE_LOG(LogTemp, Warning, TEXT("파워 아이템 로드 실패")); 
+    else UE_LOG(LogTemp, Warning, TEXT("파워업 아이템 로드 실패"));
 
     UE_LOG(LogTemp, Warning, TEXT("파워 아이템 로드 후 / 아이템 박스 로드 전"));
     
     static ConstructorHelpers::FClassFinder<AItem_Box_Base> ItemboxBp(TEXT("/Game/WorkFolder/Bluprints/Actor/MyItem_Box_Base"));
     if (ItemboxBp.Succeeded())
     {
-        ItemBoxBpclass = ItemboxBp.Class;    
-        UE_LOG(LogTemp, Warning, TEXT("아이템 박스 로드 성공"));
+        ItemBoxBpclass = ItemboxBp.Class;
     }
-    else UE_LOG(LogTemp, Warning, TEXT("아이템 박스 로드 실패")); 
+    else UE_LOG(LogTemp, Warning, TEXT("아이템박스_기본 로드 실패"));
+
+    static ConstructorHelpers::FClassFinder<AAttractionZone> AttractionZoneBp(TEXT("/Game/WorkFolder/Bluprints/Spiders/BP_AttractionZone"));
+    if (AttractionZoneBp.Succeeded())
+    {
+        AttractionBpclass = AttractionZoneBp.Class;
+    }
+    else UE_LOG(LogTemp, Warning, TEXT("거미존 로드 실패"));
+
+    static ConstructorHelpers::FClassFinder<AItem_Box_High> ItemboxplusBp(TEXT("/Game/WorkFolder/Bluprints/Actor/MyItem_Box_High"));
+    if (ItemboxplusBp.Succeeded())
+    {
+        ItemBoxHighBpclass = ItemboxplusBp.Class;
+    }
+    else UE_LOG(LogTemp, Warning, TEXT("아이템박스_노랑 로드 실패"));
 
     UE_LOG(LogTemp, Warning, TEXT("아이템 박스 로드 후"));
     
@@ -91,23 +125,52 @@ ABattleGameMode::ABattleGameMode()
     spawn_transform.Add(3, FTransform(FRotator(0, 270, 0), FVector(0.0f, 13500.0f, 800.f))); // Spawn_3
     
     // SpawnLocations 기본값 설정 (에디터에서 재조정 가능)
-    SpawnLocations.Add(FVector(-13500.0f, 0.0f, 800.f));
-    SpawnLocations.Add(FVector(0.0f, -13500.0f, 800.f));
-    SpawnLocations.Add(FVector(13500.0f, 0.0f, 800.f));
-    SpawnLocations.Add(FVector(0.0f, 13500.0f, 800.f));
+    SpawnLocations.Add(FVector(-12850.0f, -2000.0f, 800.f));
+    SpawnLocations.Add(FVector(2000.0f, -12850.0f, 800.f));
+    SpawnLocations.Add(FVector(12850.0f, 2000.0f, 800.f));
+    SpawnLocations.Add(FVector(2000.0f, 12850.0f, 800.f));
+
+    SpawnLocations.Add(FVector(-12850.0f, 2000.0f, 800.f));
+    SpawnLocations.Add(FVector(-2000.0f, -12850.0f, 800.f));
+    SpawnLocations.Add(FVector(12850.0f, -2000.0f, 800.f));
+    SpawnLocations.Add(FVector(-2000.0f, 12850.0f, 800.f));
 
     SpawnRotations.Add(FRotator(0.f, 0.f, 0.f));
     SpawnRotations.Add(FRotator(0.f, 90.f, 0.f));
     SpawnRotations.Add(FRotator(0.f, 180.f, 0.f));
     SpawnRotations.Add(FRotator(0.f, 270.f, 0.f));
-    
+
+    SpawnRotations.Add(FRotator(0.f, 0.f, 0.f));
+    SpawnRotations.Add(FRotator(0.f, 90.f, 0.f));
+    SpawnRotations.Add(FRotator(0.f, 180.f, 0.f));
+    SpawnRotations.Add(FRotator(0.f, 270.f, 0.f));
+
     PossessIndex = 0; // 기본적으로 0번 플레이어를 소유하도록 설정
 
+}
+
+TArray<ABaseCharacter*> ABattleGameMode::GetSpawnedPlayers()
+{
+    TArray<ABaseCharacter*> Players;
+    Players.Add(Cast<ABaseCharacter>(GetWorld()->GetFirstPlayerController()->GetPawn())); // 첫번째 플레이어는 항상 포함
+    for (auto Item : SpawnedPlayers)
+    {
+        auto Player = Cast<ABaseCharacter>(Item.Value);
+        if (Player && Player->GetPawnType() != PawnType::NETWORK)
+            Players.Add(Player);
+    }
+
+    return Players;
 }
 
 void ABattleGameMode::StartPlay()
 {
     Super::StartPlay();
+
+    if (auto* GI = Cast<UMyGameInstance>(GetGameInstance()))
+    {
+        GI->PauseLoginBGM();
+    }
 
     // 1) 로딩 UI 띄우기
     if (LoadingWidgetClass)
@@ -125,33 +188,69 @@ void ABattleGameMode::StartPlay()
         DelayHandle,
         this,
         &ABattleGameMode::OnPostLoadInitialize,
-        5.0f,   // 5초 뒤 실행
+        6.0f,   // 5초 뒤 실행
         false   // 한번만
     );
-    
-   
+
 }
 
 void ABattleGameMode::OnPostLoadInitialize()
 {
     InitBattleMode();
     
-    if (LoadingWidget)
-    {
-        LoadingWidget->RemoveFromParent();
-        LoadingWidget = nullptr;
-    }
-    
-    if (BackgroundMusic)
-    {
-        UGameplayStatics::PlaySound2D(GetWorld(), BackgroundMusic);
-    } 
+    FTimerHandle CleanupHandle;
+    GetWorldTimerManager().SetTimer(
+        CleanupHandle,
+        FTimerDelegate::CreateLambda([this]()
+            {
+                if (LoadingWidget)
+                {
+                    LoadingWidget->RemoveFromParent();
+                    LoadingWidget = nullptr;
+                }
+                if (BackgroundMusic)
+                {
+                    //UGameplayStatics::PlaySound2D(GetWorld(), BackgroundMusic);
+                    PlayBackgroundMusic();      // -> TODO: BGM 재생 타이밍 조절 시 이부분 짤라서 복붙
+                }
+            }),
+        0.3f,
+        false
+    );
 }
 
 void ABattleGameMode::Tick(float DeltaTime)
 {
     Super::Tick(DeltaTime);
  
+    Cast<UMyGameInstance>(GWorld->GetGameInstance())->HandleRecvPackets();
+}
+
+void ABattleGameMode::PlayBackgroundMusic()
+{
+    if (!BackgroundMusic) return;
+
+    // 기존 재생 중이면 중지
+    if (BackgroundMusicComponent)
+    {
+        BackgroundMusicComponent->Stop();
+        BackgroundMusicComponent->DestroyComponent();
+    }
+
+    // 2D 사운드 재생하고 컴포넌트 레퍼런스 저장
+    BackgroundMusicComponent = UGameplayStatics::SpawnSound2D(
+        this,
+        BackgroundMusic,
+        1.0f, // Volume
+        1.0f, // Pitch
+        0.0f  // StartTime
+    );
+
+    // 루프 설정
+    //if (BackgroundMusicComponent)
+    //{
+    //    BackgroundMusicComponent->bLooping = true;
+    //}
 }
 
 void ABattleGameMode::InitBattleMode()
@@ -159,9 +258,23 @@ void ABattleGameMode::InitBattleMode()
     UMyGameInstance* MyGameInstance = Cast<UMyGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));  
     if (MyGameInstance)
     {
+        //PossessIndex = MyGameInstance->GetMyPlayerIndex();
+
+        elasped_time = 0.0f; 
+        GetWorld()->GetTimerManager().ClearTimer(battle_timer_handle); // 타이머가 중지됨 
+
+        //SpawnPlayers(); 
+
+        // 5초 후에 플레이어 입력 활성화
+        //FTimerHandle GameStartTimerHandle; 
+        //GetWorld()->GetTimerManager().SetTimer(GameStartTimerHandle, this, &ABattleGameMode::ActivateInput, 6.0f, false); 
+
+        // 1초마다 경과시간 호출 함수 타이머 설정
+        // GetWorld()->GetTimerManager().SetTimer(battle_timer_handle, this, &ABattleGameMode::PrintElapsedtime, 1.0f, true); 
+
+        // TDOO: 서버에 배틀모드 입장 알림
         SetBattleLevel();
 
-        SpawnPlayers(); 
 
         // 여기서 스킬셀렉 띄움.
         if (ABattle_PlayerController* BPC = Cast<ABattle_PlayerController>(GetWorld()->GetFirstPlayerController()))
@@ -169,34 +282,24 @@ void ABattleGameMode::InitBattleMode()
             ActiveSkillSelectionWidget = BPC->ShowSkillSelectionWidget(30.f);
         }
 
-        SelectionTimeRemaining = 30;
 
-        GetWorldTimerManager().SetTimer(
-          SkillSelectionTickHandle,
-          this,
-          &ABattleGameMode::OnSkillSelectionTick,
-          1.0f,
-          true
-        );
-        
-        GetWorldTimerManager().SetTimer(
-          SkillSelectionTimerHandle,
-          this,
-          &ABattleGameMode::OnSkillSelectionTimeout,
-          1.0f,
-          false
-        );
-        
-    }
-    
-    if (AttractSoundWave)
-    {
-        FVector SoundLocation(0.0f, 0.0f, 210.0f);
-        UGameplayStatics::PlaySoundAtLocation(
-            this,
-            AttractSoundWave,
-            SoundLocation
-        );
+        SelectionTimeRemaining = SelectionTime;
+
+        //GetWorldTimerManager().SetTimer(
+        //    SkillSelectionTimerHandle,
+        //    this,
+        //    &ABattleGameMode::OnSkillSelectionTimeout,
+        //    30.0f,
+        //    false
+        //);
+
+        CurrentCountdownTime = CountdownTime;
+        CurrentRoundTime = 0;
+        CalledConfirmInput = false;
+        RoundTimerUpdate();
+
+        // 1초마다 CountdownTimerUpdate() 호출
+        //GetWorld()->GetTimerManager().SetTimer(CountdownTimerHandle, this, &ABattleGameMode::CountdownTimerUpdate, 1.0f, true);
     }
 
     UWorld* World = GetWorld();
@@ -205,21 +308,36 @@ void ABattleGameMode::InitBattleMode()
         UE_LOG(LogTemp, Warning, TEXT("BattleGameMode: World가 null임."));
         return;
     }
-    
-    FTransform ShrinkSpawnTransform;
-    ShrinkSpawnTransform.SetLocation(FVector(0.f, 0.f, 1162.f));
-    ShrinkingZone = World->SpawnActor<AShrinkingZone>(ShrinkzoneBpclass, ShrinkSpawnTransform);
+
+    IndexingSpawnedPlayers.Empty();
+    SpawnedPlayers.Empty();
+
+    AreaSpawnPoints.Empty();
+    SpawnedItemBoxes.Empty();
+    AttractionZones.Empty();
+
+    //FTransform ShrinkSpawnTransform;
+    //ShrinkSpawnTransform.SetLocation(FVector(0.f, 0.f, 1162.f));
+    //ShrinkingZone = World->SpawnActor<AShrinkingZone>(ShrinkzoneBpclass, ShrinkSpawnTransform);
     
     InitializeArea1SpawnPoints();
     InitializeArea2SpawnPoints();
     InitializeArea3SpawnPoints();
-    SpawnItemsInArea1();
-    SpawnItemsInArea2();
-    SpawnItemsInArea3();
+
+    //SpawnItemsInArea1();
+    //SpawnItemsInArea3();
+
+    Protocol::CS_ENTER_GAME_PKT enterGamePkt;
+    SendBufferRef sendBuffer = ClientPacketHandler::MakeSendBuffer(enterGamePkt);
+    Cast<UMyGameInstance>(GWorld->GetGameInstance())->SendPacket(sendBuffer);
 }
 
-void ABattleGameMode::SpawnPlayers()
+void ABattleGameMode::SpawnPlayers()    // 스킬 셀렉 전에 SpawnPlayers 호출하도록 반드시
 {
+    GetWorld()->GetTimerManager().SetTimer(RoundTimerHandle, this, &ABattleGameMode::RoundTimerUpdate, 0.2f, true);
+
+    CalledActiveInput = false;
+
     // 먼저 자동으로 생성된 Pawn이 있다면 제거함
     UWorld* World = GetWorld();
     if (!World)
@@ -227,8 +345,7 @@ void ABattleGameMode::SpawnPlayers()
         UE_LOG(LogTemp, Warning, TEXT("BattleGameMode: World가 null임."));
         return;
     }
-    
-#if 1
+
     APlayerController* PC = UGameplayStatics::GetPlayerController(World, 0);
     if (PC)
     {
@@ -239,140 +356,236 @@ void ABattleGameMode::SpawnPlayers()
             AutoPawn->Destroy();
         }
     }
-    
-    // 플레이어 캐릭터들을 SpawnLocations 배열에 따라 스폰함
-    SpawnedPlayers.Empty();
-    if (!World)
-    {
-        UE_LOG(LogTemp, Warning, TEXT("BattleGameMode: World가 null임."));
-        return;
-    }
-    
-    // SpawnLocations 배열에 최소 4개가 있어야 함.
-    if (SpawnLocations.Num() < 4)
+
+    //SpawnLocations 배열에 최소 8개가 있어야 함.
+    if (SpawnLocations.Num() < 8)
     {
         UE_LOG(LogTemp, Warning, TEXT("BattleGameMode: SpawnLocations 수가 충분하지 않음."));
         return;
     }
-    
-    for (int32 i = 0; i < 1; i++)
+
     {
+        UE_LOG(LogTemp, Warning, TEXT("PossessIndex: %d"), PossessIndex);
+
         FTransform SpawnTransform;
-        SpawnTransform.SetLocation(SpawnLocations[i]);
-        SpawnTransform.SetLocation(SpawnLocations[i]);
+        SpawnTransform.SetLocation(SpawnLocations[PossessIndex]);
         // 회전값은 SpawnRotations 배열의 값을 사용함 (있으면)
-        if (SpawnRotations.IsValidIndex(i))
+        if (SpawnRotations.IsValidIndex(PossessIndex))
         {
-            SpawnTransform.SetRotation(SpawnRotations[i].Quaternion());
+            SpawnTransform.SetRotation(SpawnRotations[PossessIndex].Quaternion());
         }
         else
         {
             SpawnTransform.SetRotation(FRotator::ZeroRotator.Quaternion());
         }
+
         ABaseCharacter* NewCharacter = World->SpawnActor<ABaseCharacter>(DefaultPawnClass, SpawnTransform);
         if (NewCharacter)
         {
-            SpawnedPlayers.Add(NewCharacter); 
-            UE_LOG(LogTemp, Log, TEXT("BattleGameMode: 플레이어 %d 스폰됨, 위치: %s"), i, *SpawnLocations[i].ToString());
+            PlayerCharacter = Cast<APlayerCharacter>(NewCharacter);
+
+            auto* GameInstance = Cast<UMyGameInstance>(GetGameInstance());
+            FString MyPlayerName = GameInstance->GetPlayerName();
+            PlayerCharacter->SetCharacterName(MyPlayerName);
+
+            int32 CurRoundCnt = GameInstance->GetRoundCount();
+            bool isNight = (CurRoundCnt == static_cast<int32>(RoundDay::Night));
+            PlayerCharacter->SetHandItemActive(isNight);
+            //PlayerCharacter->SetHandItemActive(true);
+
+            UE_LOG(LogTemp, Log, TEXT("BattleGameMode: 플레이어 %d 스폰됨, 위치: %s"), PossessIndex, *SpawnLocations[PossessIndex].ToString());
+
+            IndexingSpawnedPlayers.Add(PlayerCharacter);
         }
         else
         {
-            UE_LOG(LogTemp, Warning, TEXT("BattleGameMode: 플레이어 %d 스폰 실패"), i);
+            UE_LOG(LogTemp, Warning, TEXT("BattleGameMode: 플레이어 %d 스폰 실패"), PossessIndex);
         }
-    }
-    
-    // PossessIndex 안전 검사 후, 해당 인덱스의 캐릭터를 소유하도록 함
-    if (SpawnedPlayers.IsValidIndex(PossessIndex))
-    {
+
         PC = UGameplayStatics::GetPlayerController(World, 0);
         if (PC)
         {
-            PC->Possess(SpawnedPlayers[PossessIndex]);
+            PC->Possess(PlayerCharacter);
             PC->DisableInput(PC); // 입력 비활성화
-    
+
             //if (UCharacterMovementComponent* MovementComp = SpawnedPlayers[PossessIndex]->GetCharacterMovement())
             //{
             //    MovementComp->SetMovementMode(EMovementMode::MOVE_None);   // 공중에서 멈춰서 5초 
             //    MovementComp->SetMovementMode(EMovementMode::MOVE_Falling);// 시작하자마자 낙하하고 5초 
             //}
-    
+
             UE_LOG(LogTemp, Log, TEXT("BattleGameMode: PlayerController가 인덱스 %d의 캐릭터를 소유함."), PossessIndex);
         }
+
+        // 0.2초마다 OnSkillSelectionTick() 호출
+        GetWorldTimerManager().SetTimer(SkillSelectionTickHandle, this,
+            &ABattleGameMode::OnSkillSelectionTick, 0.2f, true);
+
+        FTransform AttractionSpawnTransform;
+        AttractionSpawnTransform.SetLocation(FVector(0.f, 0.f, 236.f));
+        AAttractionZone* AttractionZone = World->SpawnActor<AAttractionZone>(AttractionBpclass, AttractionSpawnTransform);
+        AttractionZone->OwnerCharacter = PlayerCharacter;
+        AttractionZones.Add(AttractionZone);
     }
-    else
+
+    //if (true == AmIHost) SpawnAIPlayers();
+}
+
+void ABattleGameMode::SpawnAIPlayers(Protocol::SC_AI_SPAWN_PKT& pkt)
+{
+    if (false == AmIHost) return;
+
+    UWorld* World = GetWorld();
+    if (!World)
     {
-        UE_LOG(LogTemp, Warning, TEXT("BattleGameMode: PossessIndex %d가 유효하지 않음."), PossessIndex);
+        UE_LOG(LogTemp, Warning, TEXT("BattleGameMode: World가 null임."));
+        return;
     }
-#endif
 
-    // "0"번 플레이어가 아닌 경우 AI 생성하지 않고 나가기
-    if (PossessIndex != 0) return;
-
-    // ** AI를 추가할 경우 -> 0번 플레이어만 만들 것임 ** AI 플레이어 수 설정
-    for (int32 i = 1; i < 4; ++i)
+    uint16 AIId = 101;
+    for (int32 i = MAX_PLAYER - 1; i >= pkt.player_count; --i)
     {
-        // AI 플레이어 생성 (임의의 `ABaseCharacter`로 가정)
-        // FVector AI_SpawnLocation = spawn_transform[i].GetLocation();
-        //FRotator AI_SpawnRotation = spawn_transform[i].Rotator();
-
         FTransform SpawnTransform;
         SpawnTransform.SetLocation(SpawnLocations[i]);
         SpawnTransform.SetRotation(FQuat(SpawnRotations[i]));
-        
+
         // AI 캐릭터 스폰
-        AAICharacter* AIChar = GetWorld()->SpawnActor<AAICharacter>(AIPlayerClass,SpawnTransform);
+        AAICharacter* AIChar = GetWorld()->SpawnActor<AAICharacter>(AIPlayerClass, SpawnTransform);
         if (!AIChar) continue;
+
+        AIChar->SetPlayerMesh(pkt.types[i]);
+        AIChar->SetCharacterName(pkt.name[i]);
 
         AIChar->bUseControllerRotationYaw = false;
 
-        auto Movement = AIChar->GetCharacterMovement(); 
-        Movement->bOrientRotationToMovement = true; 
-        Movement->bUseControllerDesiredRotation = false; 
+        auto Movement = AIChar->GetCharacterMovement();
+        Movement->bOrientRotationToMovement = true;
+        Movement->bUseControllerDesiredRotation = false;
         //Movement->bUseAccelerationForPaths = false; // MoveTo가 목적지 가까워져도 감속 없이 직선 고속 이동
 
-
-        // AI 컨트롤러 생성 및 연결
-        UClass* LoadedAIControllerClass = AIControllerClass.LoadSynchronous();
-        if (LoadedAIControllerClass)
-        {
-            AMyAIController* AICtrl = GetWorld()->SpawnActor<AMyAIController>(
-                LoadedAIControllerClass,
-                SpawnTransform
-            );
-            if (AICtrl)
-            {
-                AICtrl->Possess(AIChar);
-                AICtrl->SetControlRotation(FRotator(SpawnTransform.GetRotation()));
-                AICtrl->SetIgnoreMoveInput(true);
-                AICtrl->SetIgnoreLookInput(true);
-                AICtrl->SetSkillCoolTime();
-            }
-
-            SpawnedPlayers.Add(AIChar);
-        }
-        else
-        {
-            UE_LOG(LogTemp, Error, TEXT("AIControllerClass 로드에 실패했습니다!"));
-        }
+        AIChar->SetPlayerId(AIId);
         
-        // AMyAIController* AICtrl = GetWorld()->SpawnActor<AMyAIController>(AIControllerClass, SpawnTransform);
-        // if (AICtrl)
-        // {
-        //     AICtrl->Possess(AIChar);
-        //     AICtrl->SetControlRotation(FRotator(SpawnTransform.GetRotation()));
-        //     AICtrl->SetIgnoreMoveInput(true);
-        //     AICtrl->SetIgnoreLookInput(true);
-        //     AICtrl->SetSkillCoolTime();
-        // }
-        //
-        // SpawnedPlayers.Add(AIChar);
+        int32 CurRoundCnt = Cast<UMyGameInstance>(GetGameInstance())->GetRoundCount();
+        bool isNight = (CurRoundCnt == static_cast<int32>(RoundDay::Night));
+        AIChar->SetHandItemActive(isNight);
+
+        //SpawnedPlayers.Add(AIChar);
+        SpawnedPlayers.Add(static_cast<int32>(AIId), AIChar);
+
+        IndexingSpawnedPlayers.Add(AIChar);
+
+        FTransform AttractionSpawnTransform;
+        AttractionSpawnTransform.SetLocation(FVector(0.f, 0.f, 236.f));
+        AAttractionZone* AttractionZone = World->SpawnActor<AAttractionZone>(AttractionBpclass, AttractionSpawnTransform);
+        AttractionZone->OwnerCharacter = AIChar;
+        AttractionZones.Add(AttractionZone);
+
+        Protocol::CS_AI_ENTER_PKT AIPkt;
+
+        AIPkt.player_id = Cast<UMyGameInstance>(GWorld->GetGameInstance())->MyPlayerId;
+        AIPkt.ai_id = AIId;
+        AIPkt.p_type = AIChar->GetPlayerType();
+        AIPkt.x = SpawnLocations[i].X;
+        AIPkt.y = SpawnLocations[i].Y;
+        AIPkt.z = SpawnLocations[i].Z;
+        AIPkt.rotation = SpawnRotations[i].Yaw;
+        strcpy_s(AIPkt.name, pkt.name[i]);
+
+        SendBufferRef SendBuffer = ClientPacketHandler::MakeSendBuffer(AIPkt);
+        Cast<UMyGameInstance>(GWorld->GetGameInstance())->SendPacket(SendBuffer);
+
+        AIId++;
     }
+}
+
+
+
+void ABattleGameMode::SpawnPlayer(Protocol::SC_SPAWN_PKT& pkt)
+{
+    UWorld* World = GetWorld();
+    if (!World)
+    {
+        UE_LOG(LogTemp, Error, TEXT("SpawnPlayer: World is null"));
+        return;
+    }
+
+    // 플레이어 ID 중복체크
+    uint16 p_id = pkt.player_id;
+    if (SpawnedPlayers.Contains(static_cast<int32>(p_id)) == true) SpawnedPlayers[p_id]->Destroy();
+
+    if (p_id >= 100)
+    {
+        UE_LOG(LogTemp, Warning, TEXT("AI Player Spawn: %d"), p_id);
+    }
+
+    Protocol::PlayerType type = pkt.p_type;
+
+    // 플레이어 스폰 데이터
+    FVector SpawnLocation(pkt.x, pkt.y, pkt.z);
+    FRotator SpawnRotation(0.0f, pkt.rotation, 0.0f);
+    FTransform SpawnTransform(SpawnRotation, SpawnLocation);
+
+
+    ANetworkCharacter* NewPlayer = World->SpawnActor<ANetworkCharacter>(NetPawnClass, SpawnTransform);
+    if (NewPlayer)
+    {
+        // TODO
+        NewPlayer->SetPlayerId(p_id);
+        NewPlayer->SetPlayerType(type);
+        NewPlayer->SetCharacterName(pkt.name);
+
+        int32 CurRoundCnt = Cast<UMyGameInstance>(GetGameInstance())->GetRoundCount();
+        bool isNight = (CurRoundCnt == static_cast<int32>(RoundDay::Night));
+        NewPlayer->SetHandItemActive(isNight);
+
+        //if (SpawnedPlayers.Contains(p_id) == true)
+        //{
+        //    NewPlayer->Destroy();
+        //    UE_LOG(LogTemp, Warning, TEXT("유령 네트워크 캐릭터 삭제"));
+        //    return;
+        //}
+
+        SpawnedPlayers.Add(static_cast<int32>(p_id), NewPlayer);
+
+        IndexingSpawnedPlayers.Add(NewPlayer);
+
+        FTransform AttractionSpawnTransform;
+        AttractionSpawnTransform.SetLocation(FVector(0.f, 0.f, 236.f));
+        AAttractionZone* AttractionZone = World->SpawnActor<AAttractionZone>(AttractionBpclass, AttractionSpawnTransform);
+        AttractionZone->OwnerCharacter = NewPlayer;
+        AttractionZones.Add(AttractionZone);
+
+        if (AmIHost == false)
+            UE_LOG(LogTemp, Log, TEXT("SpawnPlayer: Spawned player %d at (%f, %f, %f)"),
+                pkt.player_id, SpawnLocation.X, SpawnLocation.Y, SpawnLocation.Z);
+    }
+    else
+    {
+        UE_LOG(LogTemp, Error, TEXT("SpawnPlayer: Failed to spawn player actor"));
+    }
+
+    //TArray<AActor*> FoundActors;
+    //// 1) 월드에서 ANetworkCharacter 클래스를 모두 찾아 배열에 채우기
+    //UGameplayStatics::GetAllActorsOfClass(World, ANetworkCharacter::StaticClass(), FoundActors);
+
+    //// 2) 배열 순회하며 Destroy()
+    //for (auto& Actor : FoundActors)
+    //{
+    //    ANetworkCharacter* NetChar = Cast<ANetworkCharacter>(Actor);
+    //    if (Actor && SpawnedPlayers.Contains(NetChar->GetPlayerId()) == false)
+    //    {
+    //        UE_LOG(LogTemp, Warning, TEXT("유령 네트워크 캐릭터 삭제"));
+    //        Actor->Destroy();
+    //    }
+    //}
 }
 
 void ABattleGameMode::ActivateInput()
 {
+    GetWorld()->GetTimerManager().ClearTimer(GameStartTimerSoundHandle);    // 카운트다운 사운드 재생 타이머 정지
+
+    ABattle_PlayerController* PlayerController = Cast<ABattle_PlayerController>(PlayerCharacter->GetController()); // 첫 번째 플레이어 컨트롤러 가져오기
     
-    ABattle_PlayerController* PlayerController = Cast<ABattle_PlayerController>(SpawnedPlayers[PossessIndex]->GetController()); // 첫 번째 플레이어 컨트롤러 가져오기
     if (PlayerController)
     {
         PlayerController->EnableInput(PlayerController);
@@ -384,12 +597,21 @@ void ABattleGameMode::ActivateInput()
         }
     }
 
+    if (StartSound)
+    {
+        UGameplayStatics::PlaySound2D(GetWorld(), StartSound);
+    }
+
+    CalledActiveInput = true;
+
     // "0"번 플레이어가 아닌 경우 AI 생성하지 않고 나가기
-    if (PossessIndex != 0) return;
+    if (AmIHost == false) return;
 
     // **AI들의 Behavior Tree 실행**
-    for (ABaseCharacter* Players : SpawnedPlayers)
+    for (auto& Item : SpawnedPlayers)
     {
+        ABaseCharacter* Players = Item.Value;
+
         if (AAICharacter* AICastedChar = Cast<AAICharacter>(Players))
         {
             AMyAIController* AICtrl = Cast<AMyAIController>(AICastedChar->GetController());
@@ -408,9 +630,317 @@ void ABattleGameMode::ActivateInput()
         }
     }
 
-    if (StartSound)
+}
+
+void ABattleGameMode::MoveOtherPlayer(Protocol::CS_MOVE_PKT& pkt)
+{
+    uint16 my_id = Cast<UMyGameInstance>(GWorld->GetGameInstance())->MyPlayerId;
+
+    if (pkt.player_info.player_id == my_id)
     {
-        UGameplayStatics::PlaySound2D(GetWorld(), StartSound);
+        HandleServerTime(pkt.server_time);
+        return;
+    }
+
+
+    const uint16 playerId = pkt.player_info.player_id;
+    if (nullptr == SpawnedPlayers.Find(playerId))
+        return;
+
+    //if (playerId == PossessIndex)
+    //    return;
+
+    Protocol::PlayerInfo Info = pkt.player_info;
+    FVector Location(Info.x, Info.y, Info.z);
+    FRotator Rotation(0, Info.rotation, 0);
+    Protocol::PlayerState State = Info.player_state;
+
+    ANetworkCharacter* Player = Cast<ANetworkCharacter>(SpawnedPlayers[playerId]);
+
+    Player->SetActorLocation(Location);
+    Player->SetActorRotation(Rotation);
+    Player->GetCharacterMovement()->Velocity = FVector(0, Info.speed_2d, Info.speed_z);
+
+    if (Player->GetPlayerId() < 100) {
+        //UE_LOG(LogTemp, Warning, TEXT("OtherAccel: %f - %d"), Player->GetCharacterMovement()->GetCurrentAcceleration().Size2D(), Player->GetPlayerId());
+    }
+
+    if (State == Protocol::PlayerState::MOVE_STATE_JUMP)
+        Player->GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_Falling);
+    else if (State == Protocol::PlayerState::MOVE_STATE_RUN)
+        Player->GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_Walking);
+    else if (State == Protocol::PlayerState::MOVE_STATE_IDLE)
+        Player->GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_None);
+
+}
+
+void ABattleGameMode::HandleServerTime(uint64 server_time)
+{
+    uint64 NowMs = server_time;
+    uint64 ElapsedMs = NowMs - StartTime2Server;
+    uint64 ElapsedSecInt = ElapsedMs / 1000;
+
+    if (ElapsedSecInt >= 0)
+    {
+        // 스킬 선택창 30초
+        if (false == CalledConfirmInput && ElapsedSecInt >= SelectionTime)
+        {
+            CalledConfirmInput = true;
+            OnSkillSelectionTimeout();
+        }
+
+        // 게임시작 카운트다운 6초
+        if (false == CalledActiveInput && ElapsedSecInt >= SelectionTime + CountdownTime)
+        {
+            UE_LOG(LogTemp, Warning, TEXT("Active input"));
+            ActivateInput();
+        }
+
+        // 스킬 선택창 카운트다운 업데이트
+        if (ElapsedSecInt <= SelectionTime) SelectionTimeRemaining = SelectionTime - ElapsedSecInt;
+        // 게임시작 카운트다운 업데이트
+        if (ElapsedSecInt >= SelectionTime && ElapsedSecInt <= SelectionTime + CountdownTime) CurrentCountdownTime = SelectionTime + CountdownTime - ElapsedSecInt;
+        // 라운드 타이머 업데이트
+        if (false == isRoundEnd && ElapsedSecInt >= SelectionTime + CountdownTime && (ElapsedSecInt - CurrentRoundTime) <= (SelectionTime + CountdownTime + 5)) CurrentRoundTime = ElapsedSecInt - (SelectionTime + CountdownTime);
+
+        //UE_LOG(LogTemp, Warning, TEXT("%d - Time to Server: %d sec"), PlayerCharacter->GetPlayerId(), ElapsedSecInt);
+    }
+}
+
+void ABattleGameMode::SpawnSkill(Protocol::CS_USING_SKILL_PKT& pkt)
+{
+    UWorld* World = GetWorld();
+    if (!World)
+    {
+        UE_LOG(LogTemp, Error, TEXT("SpawnPlayer: World is null"));
+        return;
+    }
+
+    bool is_mine = false;
+    if (PlayerCharacter)
+    {
+        is_mine = PlayerCharacter->GetPlayerId() == pkt.player_id;
+    }
+
+    ABaseCharacter* Player;
+    if (is_mine)
+    {
+        Player = Cast<ABaseCharacter>(PlayerCharacter);
+    }
+    else
+    {
+        if (false == SpawnedPlayers.Contains(static_cast<int32>(pkt.player_id))) return;
+        Player = SpawnedPlayers[static_cast<int32>(pkt.player_id)];
+    }
+
+    //if (SpawnedPlayers.Contains(static_cast<int32>(pkt.player_id)) == false) return;
+    //ABaseCharacter* Player = SpawnedPlayers[static_cast<int32>(pkt.player_id)];
+    //if (static_cast<int32>(pkt.player_id) == PlayerId) return;    // 자신이 쏜 스킬은 스폰X
+    if (Player == nullptr) return;
+
+    UBaseSkill* Skill = nullptr;
+
+    switch (pkt.s_type)
+    {
+    case Protocol::SkillType::NONE:
+        UE_LOG(LogTemp, Error, TEXT("SpawnSkill: Skill type is NONE"));
+        return;
+    case Protocol::SkillType::FIREBALL:
+        Skill = NewObject<UFireball>(this, UFireball::StaticClass());
+        Skill->SetSkillRotation(pkt.pitch, pkt.yaw, pkt.roll);
+        Skill->UpgradeSkill(Player->PowerUpLevel);
+        break;
+    case Protocol::SkillType::SHIELD:
+        Skill = NewObject<UShieldSkill>(this, UShieldSkill::StaticClass());
+        Skill->UpgradeSkill(Player->PowerUpLevel);
+        break;
+    case Protocol::SkillType::BOUNCE:
+        Skill = NewObject<UBounce>(this, UBounce::StaticClass());
+        Skill->SetSkillRotation(pkt.pitch, pkt.yaw, pkt.roll);
+        Skill->UpgradeSkill(Player->PowerUpLevel);
+        break;
+    case Protocol::SkillType::MAGICMISSILE:
+        Skill = NewObject<UMagicMissile>(this, UMagicMissile::StaticClass());
+        Skill->SetSkillRotation(pkt.pitch, pkt.yaw, pkt.roll);
+        Skill->UpgradeSkill(Player->PowerUpLevel);
+        break;
+    case Protocol::SkillType::SMOKE:
+        Skill = NewObject<USmokeSkill>(this, USmokeSkill::StaticClass());
+        Skill->SetSkillRotation(pkt.pitch, pkt.yaw, pkt.roll);
+        Skill->UpgradeSkill(Player->PowerUpLevel);
+        break;
+    case Protocol::SkillType::RADIAL:
+        Skill = NewObject<URadialSkill>(this, URadialSkill::StaticClass());
+        Skill->SetSkillRotation(pkt.pitch, pkt.yaw, pkt.roll);
+        Skill->UpgradeSkill(Player->PowerUpLevel);
+        break;
+    case Protocol::SkillType::CHANGE:
+        Skill = NewObject<UChangeSkill>(this, UChangeSkill::StaticClass());
+        Skill->SetSkillRotation(pkt.pitch, pkt.yaw, pkt.roll);
+        Skill->UpgradeSkill(Player->PowerUpLevel);
+        break;
+    case Protocol::SkillType::STUN:
+        Skill = NewObject<UStun>(this, UStun::StaticClass());
+        Skill->SetSkillRotation(pkt.pitch, pkt.yaw, pkt.roll);
+        Skill->UpgradeSkill(Player->PowerUpLevel);
+        break;
+    case Protocol::SkillType::HASTE:
+        Skill = NewObject<UHasteSkill>(this, UHasteSkill::StaticClass());
+        Skill->SetSkillRotation(pkt.pitch, pkt.yaw, pkt.roll);
+        Skill->UpgradeSkill(Player->PowerUpLevel);
+        break;
+    case Protocol::SkillType::SHOCKWAVE:
+        Skill = NewObject<UShockwaveSkill>(this, UShockwaveSkill::StaticClass());
+        Skill->SetSkillRotation(pkt.pitch, pkt.yaw, pkt.roll);
+        Skill->UpgradeSkill(Player->PowerUpLevel);
+        break;
+    default:
+        UE_LOG(LogTemp, Error, TEXT("SpawnSkill: Unknown skill type"));
+        return;
+    }
+
+    if (nullptr == Skill) return;
+
+    Skill->SetSkillLocation(FVector(pkt.x, pkt.y, pkt.z));
+    Skill->Owner = Player;
+    if (is_mine)
+    {
+        Skill = Player->Skills[Player->skill_Sellect];
+        if (Skill && false == Skill->IsOnCooldown())
+        {
+            Skill->SetSkillLocation(FVector(pkt.x, pkt.y, pkt.z));
+            Skill->SetSkillRotation(pkt.pitch, pkt.yaw, pkt.roll);
+            Skill->ActiveSkill();
+            return;
+        }
+    }
+    else
+    {
+        Skill->ActiveSkill();
+    }
+}
+
+void ABattleGameMode::SpawnItem(Protocol::SC_SPAWN_ITEM_PKT& pkt)
+{
+    uint16 ZoneIndex = pkt.zone_index;
+    if (ZoneIndex >= 2)
+    {
+        SpawnItemsInArea3(pkt);
+        return;
+    }
+
+    int32 SpawnIndex[30];
+    int32 ItemLevel[30];
+
+    const uint16 Count = pkt.item_count;
+    for (int32 i = 0; i < Count; ++i)
+    {
+        SpawnIndex[i] = static_cast<int32>(pkt.spawn_index[i]);
+        ItemLevel[i] = static_cast<int32>(pkt.item_level[i]);
+    }
+
+    //UE_LOG(LogTemp, Warning, TEXT("%d - %d"), SpawnIndex[19], ItemLevel[19]);
+
+    if (AreaSpawnPoints[ZoneIndex].Num() == 0)
+    {
+        UE_LOG(LogTemp, Warning, TEXT("SpawnItemsInArea1: No spawn points available."));
+        return;
+    }
+
+    UWorld* World = GetWorld();
+    if (!World)
+    {
+        UE_LOG(LogTemp, Warning, TEXT("SpawnItemsInArea1: World is null."));
+        return;
+    }
+
+    // 지역 spawn 포인트 배열 복사 및 셔플
+
+    //int32 ItemsToSpawn = FMath::Min(NumItemsToSpawn, Area1SpawnPoints.Num());
+
+    for (int32 i = 0; i < Count; ++i)
+    {
+        int32 index = SpawnIndex[i];
+        FVector SpawnLocation = AreaSpawnPoints[ZoneIndex][index];
+        FRotator SpawnRotation = FRotator::ZeroRotator;
+
+        FActorSpawnParameters SpawnParams;
+        // 필요에 따라 SpawnParams.Owner 또는 Instigator 설정
+
+        AItem_Box_Base* NewItem = World->SpawnActor<AItem_Box_Base>(ItemBoxBpclass, SpawnLocation, SpawnRotation, SpawnParams);
+        //if (ItemLevel[i] < 2)
+        NewItem->SpawnItemType = ItemLevel[i];
+
+        if (NewItem)
+        {
+            SpawnedItemBoxes.Add(NewItem);
+            UE_LOG(LogTemp, Log, TEXT("SpawnItemsInArea1: Spawned item at %s"), *SpawnLocation.ToString());
+        }
+        else
+        {
+            UE_LOG(LogTemp, Warning, TEXT("SpawnItemsInArea1: Failed to spawn item at index %d"), i);
+        }
+    }
+
+}
+
+void ABattleGameMode::UpdateHp(Protocol::SC_UPDATE_HP_PKT& pkt)
+{
+    const uint16 playerId = pkt.player_id;
+    if (SpawnedPlayers.FindRef(playerId) == nullptr)
+        return;
+
+    ANetworkCharacter* Player = Cast<ANetworkCharacter>(SpawnedPlayers[playerId]);
+    if (Player == nullptr) return;
+    Player->SetHP(pkt.hp);
+
+    // TODO: 더 할게 있나?
+}
+
+void ABattleGameMode::HandleJumpEffect(Protocol::CS_JUMP_EFT_PKT& pkt)
+{
+    if (auto TargetPlayer = SpawnedPlayers.FindRef(pkt.jump_player_id)) {
+
+        TargetPlayer->PlayAnimMontageByType(MontageType::Jump);
+
+        if (false == pkt.is_first_jump) {
+            FVector TargetLocation = TargetPlayer->GetActorLocation();
+            FRotator TargetRotation = TargetPlayer->GetActorRotation();
+            UNiagaraFunctionLibrary::SpawnSystemAtLocation(this, Jumpeffect, TargetLocation + FVector(0.f, 0.f, -40.f), TargetRotation);
+
+            if (JumpSound)
+            {
+                UGameplayStatics::PlaySoundAtLocation(
+                    this, JumpSound, TargetLocation,
+                    FRotator::ZeroRotator, 1.f, 1.f, 0.f,
+                    AttenuationSettings
+                );
+            }
+        }
+    }
+}
+
+void ABattleGameMode::HandleSetPowerUp(Protocol::SC_SET_POWERUP_PKT& pkt)
+{
+    const uint16 playerId = pkt.player_id;
+    if (SpawnedPlayers.FindRef(playerId) == nullptr)
+        return;
+
+    ANetworkCharacter* Player = Cast<ANetworkCharacter>(SpawnedPlayers[playerId]);
+    if (Player == nullptr) return;
+    Player->PowerUpLevel = pkt.powerup_level;
+    Player->UpdateAuraColorBasedOnPowerUpLevel();
+}
+
+void ABattleGameMode::HandleAlivePlayerCount(Protocol::SC_PLAYER_COUNT_PKT& pkt)
+{
+
+    if (ABattle_PlayerController* BPC = Cast<ABattle_PlayerController>(GetWorld()->GetFirstPlayerController()))
+    {
+        if (BPC->PlayerHUD)
+        {
+            BPC->PlayerHUD->UpdateAlivePlayerCount(static_cast<int32>(pkt.alive_player_count));
+        }
     }
 }
 
@@ -420,11 +950,15 @@ void ABattleGameMode::SetBattleLevel()
     {
         int32 CurrentRound = GameInstance->GetRoundCount();
 
-        CurrentRound = 2;
-
+        //CurrentRound = 2;
         SetPostProcess(CurrentRound);
 
         SetBluePrintLevel(CurrentRound);
+
+        if (ABattle_PlayerController* BPC = Cast<ABattle_PlayerController>(GetWorld()->GetFirstPlayerController()))
+        {
+            if (BPC->PlayerHUD) BPC->PlayerHUD->SetRoundText(CurrentRound);
+        }
     }
 }
 
@@ -447,7 +981,7 @@ void ABattleGameMode::SetPostProcess(int32 CurRound)
             {
             case static_cast<int32>(RoundDay::Morning): 
                 PPVolume->Settings.AutoExposureMinBrightness = -1.0f; 
-                PPVolume->Settings.AutoExposureMaxBrightness = 20.0f; 
+                PPVolume->Settings.AutoExposureMaxBrightness = 20.0f;
                 break;
 
             case static_cast<int32>(RoundDay::SunSet): 
@@ -455,9 +989,9 @@ void ABattleGameMode::SetPostProcess(int32 CurRound)
                 PPVolume->Settings.AutoExposureMaxBrightness = 20.0f; 
                 break;
 
-            case static_cast<int32>(RoundDay::Night): 
-                PPVolume->Settings.AutoExposureMinBrightness = 3.0f; 
-                PPVolume->Settings.AutoExposureMaxBrightness = 5.0f; 
+            case static_cast<int32>(RoundDay::Night):
+                PPVolume->Settings.AutoExposureMinBrightness = 2.7f;
+                PPVolume->Settings.AutoExposureMaxBrightness = 7.0f;
                 break;
             }
         }
@@ -470,7 +1004,8 @@ void ABattleGameMode::PrintElapsedtime()
     elasped_time += 1.0f; 
      
     FString DebugMessage = FString::Printf(TEXT("라운드 경과 시간: %f초"), elasped_time);
-    GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Yellow, DebugMessage); 
+    //GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Yellow, DebugMessage); 
+    UE_LOG(LogTemp, Warning, TEXT("%s"), *DebugMessage);
 
     UMyGameInstance* MyGameInstance = Cast<UMyGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
     if (MyGameInstance)
@@ -481,6 +1016,20 @@ void ABattleGameMode::PrintElapsedtime()
             MyGameInstance->round_count++;
         }
         MyGameInstance->PrintGameInstanceData(); 
+    }
+}
+
+void ABattleGameMode::SetPlayerIndex(uint16 playerIndex)
+{
+    //PossessIndex = static_cast<int32>(playerIndex);
+
+    APlayerController* PC = UGameplayStatics::GetPlayerController(GetWorld(), 0);
+    if (PC)
+    {
+        if (APlayerCharacter* MyPlayer = Cast<APlayerCharacter>(PC->GetPawn()))
+        {
+            MyPlayer->SetPlayerId(playerIndex);
+        }
     }
 }
 
@@ -500,26 +1049,43 @@ void ABattleGameMode::OnSkillSelectionTimeout()
     elasped_time = 0.0f; 
     GetWorld()->GetTimerManager().ClearTimer(battle_timer_handle); // 타이머가 중지됨
         
-    // 5초 후에 플레이어 입력 활성화
-    FTimerHandle GameStartTimerHandle; 
-    GetWorld()->GetTimerManager().SetTimer(GameStartTimerHandle, this, &ABattleGameMode::ActivateInput, 6.0f, false); 
+    //// 5초 후에 플레이어 입력 활성화
+    //FTimerHandle GameStartTimerHandle; 
+    //GetWorld()->GetTimerManager().SetTimer(GameStartTimerHandle, this, &ABattleGameMode::ActivateInput, 6.0f, false); 
 
-    CurrentCountdownTime = start_time;
-    CurrentRoundTime = 0.0f;
+    // 1초마다 Countdown 사운드 호출, Countdown 효과 호출
+    GetWorld()->GetTimerManager().SetTimer(GameStartTimerSoundHandle, FTimerDelegate::CreateLambda([this]() {
+        if (ABattle_PlayerController* PC = Cast<ABattle_PlayerController>(PlayerCharacter->GetController()))
+            PC->PlayerHUD->PlayWidgetAnimation(PC->PlayerHUD->GetCountDownTime());
+        if (CountSound)
+        {
+            UGameplayStatics::PlaySound2D(GetWorld(), CountSound);
+        }}), 1.0f, true);
 
-    // 1초마다 CountdownTimerUpdate() 호출
-    GetWorld()->GetTimerManager().SetTimer(CountdownTimerHandle, this, &ABattleGameMode::CountdownTimerUpdate, 1.0f, true);
+    // 0.2초마다 CountdownTimerUpdate() 호출
+    GetWorld()->GetTimerManager().SetTimer(CountdownTimerHandle, this, &ABattleGameMode::CountdownTimerUpdate, 0.2f, true);
+
+
+    //CurrentCountdownTime = start_time;
+    //CurrentRoundTime = 0.0f;
+
+    //// 1초마다 CountdownTimerUpdate() 호출
+    //GetWorld()->GetTimerManager().SetTimer(CountdownTimerHandle, this, &ABattleGameMode::CountdownTimerUpdate, 1.0f, true);
 
     if(ABattle_PlayerController* BPC = Cast<ABattle_PlayerController>(GetWorld()->GetFirstPlayerController()))
     {
         BPC->DisPlayPlayerWidget(); 
     }
     
+    FTransform ShrinkSpawnTransform;
+    ShrinkSpawnTransform.SetLocation(FVector(0.f, 0.f, 1162.f));
+    ShrinkingZone = GWorld->SpawnActor<AShrinkingZone>(ShrinkzoneBpclass, ShrinkSpawnTransform);
+    ShrinkingZone->SetFogPostProcess(0);
 }
 
 void ABattleGameMode::OnSkillSelectionTick()
 {
-    if (--SelectionTimeRemaining <= 0)
+    if (SelectionTimeRemaining <= 0)
     {
         // 다음 타이머에서 Timeout 처리하므로 여기선 멈추기만
         GetWorldTimerManager().ClearTimer(SkillSelectionTickHandle);
@@ -534,257 +1100,175 @@ void ABattleGameMode::OnSkillSelectionTick()
     
 }
 
+
 void ABattleGameMode::CountdownTimerUpdate()
 {
-
     // DisplayTime이 0보다 큰 경우에만 HUD에 업데이트 (즉, 1초 이상일 때)
     float DisplayTime = FMath::CeilToFloat(CurrentCountdownTime);
+    ABattle_PlayerController* PC = Cast<ABattle_PlayerController>(PlayerCharacter->GetController());
+    //if (nullptr == PC || nullptr == PC->PlayerHUD) return;
     if (DisplayTime > 0)
     {
-        if (CountSound)
-        {
-            UGameplayStatics::PlaySound2D(GetWorld(), CountSound);
-        }
-        
-        // 각 플레이어의 HUD 업데이트 (SpawnedPlayers 배열의 각 플레이어의 컨트롤러에서 HUD에 업데이트)
-        for (ABaseCharacter* Player : SpawnedPlayers)
-        {
-            if (Player && Player->GetController())
-            {
-                ABattle_PlayerController* PC = Cast<ABattle_PlayerController>(Player->GetController());
-                if (PC && PC->PlayerHUD)
-                {
-                    PC->PlayerHUD->UpdateCountdown(DisplayTime);
-                    PC->PlayerHUD->PlayWidgetAnimation(PC->PlayerHUD->GetCountDownTime());
-                }
-            }
-        }
+        // 플레이어의 HUD 업데이트
+        PC->PlayerHUD->UpdateCountdown(DisplayTime);
+
         UE_LOG(LogTemp, Log, TEXT("Countdown: %.0f"), DisplayTime);
     }
     else
     {
-        // CountdownValue가 0 이하이면 HUD를 빈 텍스트로 업데이트하고 타이머 종료
-        for (ABaseCharacter* Player : SpawnedPlayers)
+        PC->PlayerHUD->UpdateCountdown(0.0f);
+        if (CountdownTimerHandle.IsValid())
         {
-            if (Player && Player->GetController())
-            {
-                ABattle_PlayerController* PC = Cast<ABattle_PlayerController>(Player->GetController());
-                if (PC && PC->PlayerHUD)
-                {
-                    PC->PlayerHUD->UpdateCountdown(0.0f);
-                }
-            }
+            GetWorld()->GetTimerManager().ClearTimer(CountdownTimerHandle);
         }
-        GetWorld()->GetTimerManager().ClearTimer(CountdownTimerHandle);
-        // 라운드 진행 타이머 시작
-        GetWorld()->GetTimerManager().SetTimer(RoundTimerHandle, this, &ABattleGameMode::RoundTimerUpdate, 1.0f, true);
+
         return;
     }
-
- 
-    
-    // 1초 경과 후 CountdownTime 감소
-    CurrentCountdownTime -= 1.0f;
-    
 }
 
 void ABattleGameMode::RoundTimerUpdate()
 {
-    CurrentRoundTime += 1.0f;
-    for (ABaseCharacter* Player : SpawnedPlayers)
+    //CurrentRoundTime += 1.0f;
+    //for (auto& Item : SpawnedPlayers)
+    //{
+    //    ABaseCharacter* Player = Item.Value;
+    //    if (Player && Player->GetController())
+    //    {
+    //        ABattle_PlayerController* PC = Cast<ABattle_PlayerController>(Player->GetController());
+    //        if (PC && PC->PlayerHUD)
+    //        {
+    //            PC->PlayerHUD->UpdateRoundTime(CurrentRoundTime);
+    //        }
+    //    }
+    //}
+
+    if (PlayerCharacter != nullptr)
     {
-        if (Player && Player->GetController())
+        ABattle_PlayerController* PC = Cast<ABattle_PlayerController>(PlayerCharacter->GetController());
+        if (PC && PC->PlayerHUD)
         {
-            ABattle_PlayerController* PC = Cast<ABattle_PlayerController>(Player->GetController());
-            if (PC && PC->PlayerHUD)
-            {
-                PC->PlayerHUD->UpdateRoundTime(CurrentRoundTime);
-            }
+            float RoundTimeCountdown = TIME_OVER - CurrentRoundTime;
+            PC->PlayerHUD->UpdateRoundTime(RoundTimeCountdown);
         }
     }
-    UE_LOG(LogTemp, Log, TEXT("Round Time: %.0f"), CurrentRoundTime);
+
+    //UE_LOG(LogTemp, Log, TEXT("Round Time: %d"), CurrentRoundTime);
+
+    if (false == Cast<UMyGameInstance>(GWorld->GetGameInstance())->AmIHost) return;
+    if (CurrentRoundTime >= TIME_OVER && false == isRoundEnd)
+    {
+        isRoundEnd = true;
+        Protocol::CS_ROUND_END_PKT roundEndPkt;
+
+        SendBufferRef SendBuffer = ClientPacketHandler::MakeSendBuffer(roundEndPkt);
+        Cast<UMyGameInstance>(GWorld->GetGameInstance())->SendPacket(SendBuffer);
+    }
 }
 
-float ABattleGameMode::GetCurrentRoundTime() const
-{
-    return CurrentRoundTime;
-}
-
-void ABattleGameMode::OnRoundEnd()
+void ABattleGameMode::OnRoundEnd(TArray<FString> Names, TArray<int32> Scores)
 {
     if (ABattle_PlayerController* PC = Cast<ABattle_PlayerController>(
     UGameplayStatics::GetPlayerController(this, 0)))
     {
-        PC->ShowRoundResults(RoundIDs, RoundScores, ResultDisplayDuration);
+        //PC->ShowRoundResults(RoundIDs, RoundScores, ResultDisplayDuration);
+        PC->ShowRoundResults(Names, Scores);
+        if (true == AmIHost)    // WidgetHide 는 RoundInit 시작할 때
+        {
+            FTimerHandle UnusedHandle;
+            GetWorld()->GetTimerManager().SetTimer(UnusedHandle, FTimerDelegate::CreateLambda([this]() {
+                Protocol::CS_ROUND_INIT_PKT roundInitPkt;
+                SendBufferRef SendBuffer = ClientPacketHandler::MakeSendBuffer(roundInitPkt);
+                Cast<UMyGameInstance>(GWorld->GetGameInstance())->SendPacket(SendBuffer);
+                }), ResultDisplayDuration, false);
+        }
     }
 }
 
 void ABattleGameMode::SpawnItemsInArea1()
 {
-    // 예시로 영역1에 10개의 아이템 스폰
-    const int32 NumItemsToSpawn = 20;
-    if (Area1SpawnPoints.Num() == 0)
-    {
-        UE_LOG(LogTemp, Warning, TEXT("SpawnItemsInArea1: No spawn points available."));
-        return;
-    }
-
-    // 만약 NumItemsToSpawn이 전체 스폰 포인트보다 많으면, 경고 로그 출력
-    if (NumItemsToSpawn > Area1SpawnPoints.Num())
-    {
-        UE_LOG(LogTemp, Warning, TEXT("SpawnItemsInArea1: Not enough spawn points available. Reducing item count."));
-    }
-
-    // SpawnedItems 배열 초기화
-    SpawnedItems.Empty();
-
-    UWorld* World = GetWorld();
-    if (!World)
-    {
-        UE_LOG(LogTemp, Warning, TEXT("SpawnItemsInArea1: World is null."));
-        return;
-    }
-
-    // 지역 spawn 포인트 배열 복사 및 셔플
-    TArray<FVector> LocalSpawnPoints = Area1SpawnPoints;
-    
-    Test::Shuffle(LocalSpawnPoints);
-    
-    int32 ItemsToSpawn = FMath::Min(NumItemsToSpawn, LocalSpawnPoints.Num());
-
-    for (int32 i = 0; i < ItemsToSpawn; i++)
-    {
-        FVector SpawnLocation = LocalSpawnPoints[i];
-        FRotator SpawnRotation = FRotator::ZeroRotator;
-        
-
-        AItem_Box_Base* NewItem = World->SpawnActor<AItem_Box_Base>(ItemBoxBpclass, SpawnLocation, SpawnRotation);
-        NewItem->SpawnItemType = 0;
-        
-        if (NewItem)
-        {
-            SpawnedItems.Add(NewItem);
-            UE_LOG(LogTemp, Log, TEXT("SpawnItemsInArea1: Spawned item at %s"), *SpawnLocation.ToString());
-        }
-        else
-        {
-            UE_LOG(LogTemp, Warning, TEXT("SpawnItemsInArea1: Failed to spawn item at index %d"), i);
-        }
-    }
+//    //// 예시로 영역1에 10개의 아이템 스폰
+//    //const int32 NumItemsToSpawn = 30;
+//    //if (Area1SpawnPoints.Num() == 0)
+//    //{
+//    //    UE_LOG(LogTemp, Warning, TEXT("SpawnItemsInArea1: No spawn points available."));
+//    //    return;
+//    //}
+//    // 예시로 영역1에 10개의 아이템 스폰
+//    const int32 NumItemsToSpawn = 20;
+//    if (Area1SpawnPoints.Num() == 0)
+//    {
+//        UE_LOG(LogTemp, Warning, TEXT("SpawnItemsInArea1: No spawn points available."));
+//        return;
+//    }
+//
+//    //// 만약 NumItemsToSpawn이 전체 스폰 포인트보다 많으면, 경고 로그 출력
+//    //if (NumItemsToSpawn > Area1SpawnPoints.Num())
+//    //{
+//    //    UE_LOG(LogTemp, Warning, TEXT("SpawnItemsInArea1: Not enough spawn points available. Reducing item count."));
+//    //}
+//
+//    //// SpawnedItemBoxes 배열 초기화
+//    //SpawnedItemBoxes.Empty();
+//
+//    //UWorld* World = GetWorld();
+//    //if (!World)
+//    //{
+//    //    UE_LOG(LogTemp, Warning, TEXT("SpawnItemsInArea1: World is null."));
+//    //    return;
+//    //}
+//
+//    //// 지역 spawn 포인트 배열 복사 및 셔플
+//    //TArray<FVector> LocalSpawnPoints = Area1SpawnPoints;
+//    //
+//    //Test::Shuffle(LocalSpawnPoints);
+//    //
+//    //int32 ItemsToSpawn = FMath::Min(NumItemsToSpawn, LocalSpawnPoints.Num());
+//
+//    //for (int32 i = 0; i < ItemsToSpawn; i++)
+//    //{
+//    //    FVector SpawnLocation = LocalSpawnPoints[i];
+//    //    FRotator SpawnRotation = FRotator::ZeroRotator;
+//
+//    //    FActorSpawnParameters SpawnParams;
+//    //    // 필요에 따라 SpawnParams.Owner 또는 Instigator 설정
+//
+//    //    ABaseItem* NewItem = World->SpawnActor<ABaseItem>(PowerUpBpclass, SpawnLocation, SpawnRotation, SpawnParams);
+//
+//    //    if (NewItem)
+//    //    {
+//    //        SpawnedItemBoxes.Add(NewItem);
+//    //        UE_LOG(LogTemp, Log, TEXT("SpawnItemsInArea1: Spawned item at %s"), *SpawnLocation.ToString());
+//    //    }
+//    //    else
+//    //    {
+//    //        UE_LOG(LogTemp, Warning, TEXT("SpawnItemsInArea1: Failed to spawn item at index %d"), i);
+//    //    }
+//    //}
+//    for (int32 i = 0; i < ItemsToSpawn; i++)
+//    {
+//        FVector SpawnLocation = LocalSpawnPoints[i];
+//        FRotator SpawnRotation = FRotator::ZeroRotator;
+//        
+//
+//        AItem_Box_Base* NewItem = World->SpawnActor<AItem_Box_Base>(ItemBoxBpclass, SpawnLocation, SpawnRotation);
+//        NewItem->SpawnItemType = 0;
+//        
+//        if (NewItem)
+//        {
+//            SpawnedItemBoxes.Add(NewItem);
+//            UE_LOG(LogTemp, Log, TEXT("SpawnItemsInArea1: Spawned item at %s"), *SpawnLocation.ToString());
+//        }
+//        else
+//        {
+//            UE_LOG(LogTemp, Warning, TEXT("SpawnItemsInArea1: Failed to spawn item at index %d"), i);
+//        }
+//    }
 }
-
-void ABattleGameMode::SpawnItemsInArea2()
-{
-    // 예시로 영역1에 10개의 아이템 스폰
-    const int32 NumItemsToSpawn = 20;
-    if (Area2SpawnPoints.Num() == 0)
-    {
-        UE_LOG(LogTemp, Warning, TEXT("SpawnItemsInArea1: No spawn points available."));
-        return;
-    }
-
-    // 만약 NumItemsToSpawn이 전체 스폰 포인트보다 많으면, 경고 로그 출력
-    if (NumItemsToSpawn > Area2SpawnPoints.Num())
-    {
-        UE_LOG(LogTemp, Warning, TEXT("SpawnItemsInArea1: Not enough spawn points available. Reducing item count."));
-    }
-
-    // SpawnedItems 배열 초기화
-    // SpawnedItems.Empty();
-
-    UWorld* World = GetWorld();
-    if (!World)
-    {
-        UE_LOG(LogTemp, Warning, TEXT("SpawnItemsInArea1: World is null."));
-        return;
-    }
-
-    // 지역 spawn 포인트 배열 복사 및 셔플
-    TArray<FVector> LocalSpawnPoints = Area2SpawnPoints;
-
-    Test::Shuffle(LocalSpawnPoints);
-
-    int32 ItemsToSpawn = FMath::Min(NumItemsToSpawn, LocalSpawnPoints.Num());
-
-    for (int32 i = 0; i < ItemsToSpawn; i++)
-    {
-        FVector SpawnLocation = LocalSpawnPoints[i];
-        FRotator SpawnRotation = FRotator::ZeroRotator;
-
-
-        AItem_Box_Base* NewItem = World->SpawnActor<AItem_Box_Base>(ItemBoxBpclass, SpawnLocation, SpawnRotation);
-        NewItem->SpawnItemType = 0;
-
-        if (NewItem)
-        {
-            SpawnedItems.Add(NewItem);
-            UE_LOG(LogTemp, Log, TEXT("SpawnItemsInArea1: Spawned item at %s"), *SpawnLocation.ToString());
-        }
-        else
-        {
-            UE_LOG(LogTemp, Warning, TEXT("SpawnItemsInArea1: Failed to spawn item at index %d"), i);
-        }
-    }
-}
-
-void ABattleGameMode::SpawnItemsInArea3()
-{
-    // 예시로 영역1에 10개의 아이템 스폰
-    const int32 NumItemsToSpawn = 10;
-    if (Area3SpawnPoints.Num() == 0)
-    {
-        UE_LOG(LogTemp, Warning, TEXT("SpawnItemsInArea1: No spawn points available."));
-        return;
-    }
-
-    // 만약 NumItemsToSpawn이 전체 스폰 포인트보다 많으면, 경고 로그 출력
-    if (NumItemsToSpawn > Area3SpawnPoints.Num())
-    {
-        UE_LOG(LogTemp, Warning, TEXT("SpawnItemsInArea1: Not enough spawn points available. Reducing item count."));
-    }
-
-    // SpawnedItems 배열 초기화
-    // SpawnedItems.Empty();
-
-    UWorld* World = GetWorld();
-    if (!World)
-    {
-        UE_LOG(LogTemp, Warning, TEXT("SpawnItemsInArea1: World is null."));
-        return;
-    }
-
-    // 지역 spawn 포인트 배열 복사 및 셔플
-    TArray<FVector> LocalSpawnPoints = Area3SpawnPoints;
-
-    Test::Shuffle(LocalSpawnPoints);
-
-    int32 ItemsToSpawn = FMath::Min(NumItemsToSpawn, LocalSpawnPoints.Num());
-
-    for (int32 i = 0; i < ItemsToSpawn; i++)
-    {
-        FVector SpawnLocation = LocalSpawnPoints[i];
-        FRotator SpawnRotation = FRotator::ZeroRotator;
-
-
-        AItem_Box_Base* NewItem = World->SpawnActor<AItem_Box_Base>(ItemBoxBpclass, SpawnLocation, SpawnRotation);
-        NewItem->SpawnItemType = 0;
-
-        if (NewItem)
-        {
-            SpawnedItems.Add(NewItem);
-            UE_LOG(LogTemp, Log, TEXT("SpawnItemsInArea1: Spawned item at %s"), *SpawnLocation.ToString());
-        }
-        else
-        {
-            UE_LOG(LogTemp, Warning, TEXT("SpawnItemsInArea1: Failed to spawn item at index %d"), i);
-        }
-    }
-
-}
-
 
 void ABattleGameMode::InitializeArea1SpawnPoints()
 {
+    // 95개
+
     // 기존 좌표 배열 초기화
     Area1SpawnPoints.Empty();
 
@@ -816,19 +1300,17 @@ void ABattleGameMode::InitializeArea1SpawnPoints()
     Area1SpawnPoints.Add(FVector(-12325.f, 3641.f, 61.f));
     Area1SpawnPoints.Add(FVector(-10195.f, -6392.f, 61.f));
     Area1SpawnPoints.Add(FVector(-9100.f, 6392.f, 61.f));
-    
     Area1SpawnPoints.Add(FVector(-8300.f, 8100.f, 61.f));
     Area1SpawnPoints.Add(FVector(-8300.f, 10800.f, 61.f));
-    Area1SpawnPoints.Add(FVector(-8300.f, 13500.f, 61.f));
 
+    Area1SpawnPoints.Add(FVector(-8300.f, 13500.f, 61.f));
     Area1SpawnPoints.Add(FVector(8300.f, 8100.f, 61.f));
     Area1SpawnPoints.Add(FVector(8300.f, 10800.f, 61.f));
     Area1SpawnPoints.Add(FVector(8300.f, 13500.f, 61.f));
-
     Area1SpawnPoints.Add(FVector(8300.f, -8100.f, 61.f));
+
     Area1SpawnPoints.Add(FVector(8300.f, -10800.f, 61.f));
     Area1SpawnPoints.Add(FVector(8300.f, -13500.f, 61.f));
-
     Area1SpawnPoints.Add(FVector(-8300.f, -8100.f, 61.f));
     Area1SpawnPoints.Add(FVector(-8300.f, -10800.f, 61.f));
     Area1SpawnPoints.Add(FVector(-8300.f, -13500.f, 61.f));
@@ -836,24 +1318,22 @@ void ABattleGameMode::InitializeArea1SpawnPoints()
     Area1SpawnPoints.Add(FVector(-5400.f, 8100.f, 61.f));
     Area1SpawnPoints.Add(FVector(-5400.f, 10800.f, 61.f));
     Area1SpawnPoints.Add(FVector(-5400.f, 13500.f, 61.f));
-
     Area1SpawnPoints.Add(FVector(5400.f, 8100.f, 61.f));
     Area1SpawnPoints.Add(FVector(5400.f, 10800.f, 61.f));
-    Area1SpawnPoints.Add(FVector(5400.f, 13500.f, 61.f));
 
+    Area1SpawnPoints.Add(FVector(5400.f, 13500.f, 61.f));
     Area1SpawnPoints.Add(FVector(-5400.f, -8100.f, 61.f));
     Area1SpawnPoints.Add(FVector(-5400.f, -10800.f, 61.f));
     Area1SpawnPoints.Add(FVector(-5400.f, -13500.f, 61.f));
-
     Area1SpawnPoints.Add(FVector(5400.f, -8100.f, 61.f));
+
     Area1SpawnPoints.Add(FVector(5400.f, -10800.f, 61.f));
     Area1SpawnPoints.Add(FVector(5400.f, -13500.f, 61.f));
-    
     Area1SpawnPoints.Add(FVector(1394.f, 11911.f, 61.f)); 
     Area1SpawnPoints.Add(FVector(2044.f, 10873.f, 61.f));
     Area1SpawnPoints.Add(FVector(4469.f, 9526.f, 61.f)); 
+
     Area1SpawnPoints.Add(FVector(5479.f, 10049.f, 61.f)); 
-    
     Area1SpawnPoints.Add(FVector(-1394.f, -11911.f, 61.f)); 
     Area1SpawnPoints.Add(FVector(-2044.f, -10873.f, 61.f));
     Area1SpawnPoints.Add(FVector(-4469.f, -9526.f, 61.f)); 
@@ -863,22 +1343,21 @@ void ABattleGameMode::InitializeArea1SpawnPoints()
     Area1SpawnPoints.Add(FVector(2044.f, -10873.f, 61.f));
     Area1SpawnPoints.Add(FVector(4469.f, -9526.f, 61.f)); 
     Area1SpawnPoints.Add(FVector(5479.f, -10049.f, 61.f)); 
-
     Area1SpawnPoints.Add(FVector(-1394.f, 11911.f, 61.f)); 
+
     Area1SpawnPoints.Add(FVector(-2044.f, 10873.f, 61.f));
     Area1SpawnPoints.Add(FVector(-4469.f, 9526.f, 61.f)); 
     Area1SpawnPoints.Add(FVector(-5479.f, 10049.f, 61.f));
-    
     Area1SpawnPoints.Add(FVector(-12031.f, 4344.f, 61.f)); 
     Area1SpawnPoints.Add(FVector(-10562.f, 6102.f, 61.f));
+
     Area1SpawnPoints.Add(FVector(-9121.f, 7897.f, 61.f)); 
     Area1SpawnPoints.Add(FVector(-9565.f, 4504.f, 61.f));
-
     Area1SpawnPoints.Add(FVector(12031.f, 4344.f, 61.f)); 
     Area1SpawnPoints.Add(FVector(10562.f, 6102.f, 61.f));
     Area1SpawnPoints.Add(FVector(9121.f, 7897.f, 61.f)); 
-    Area1SpawnPoints.Add(FVector(9565.f, 4504.f, 61.f));
 
+    Area1SpawnPoints.Add(FVector(9565.f, 4504.f, 61.f));
     Area1SpawnPoints.Add(FVector(12031.f, -4344.f, 61.f)); 
     Area1SpawnPoints.Add(FVector(10562.f, -6102.f, 61.f));
     Area1SpawnPoints.Add(FVector(9121.f, -7897.f, 61.f)); 
@@ -888,26 +1367,27 @@ void ABattleGameMode::InitializeArea1SpawnPoints()
     Area1SpawnPoints.Add(FVector(-10562.f, -6102.f, 61.f));
     Area1SpawnPoints.Add(FVector(-9121.f, -7897.f, 61.f)); 
     Area1SpawnPoints.Add(FVector(-9565.f, -4504.f, 61.f));
-
     Area1SpawnPoints.Add(FVector(-7845.f, -115.f, 61.f)); 
+
     Area1SpawnPoints.Add(FVector(-8151.f, -1855.f, 61.f));
     Area1SpawnPoints.Add(FVector(-8806.f, -2018.f, 61.f)); 
     Area1SpawnPoints.Add(FVector(-7416.f, -7377.f, 61.f)); 
-
     Area1SpawnPoints.Add(FVector(7845.f, -115.f, 61.f)); 
     Area1SpawnPoints.Add(FVector(8151.f, -1855.f, 61.f));
+
     Area1SpawnPoints.Add(FVector(8806.f, -2018.f, 61.f)); 
     Area1SpawnPoints.Add(FVector(7416.f, -7377.f, 61.f)); 
-
     Area1SpawnPoints.Add(FVector(7845.f, 115.f, 61.f)); 
     Area1SpawnPoints.Add(FVector(8151.f, 1855.f, 61.f));
     Area1SpawnPoints.Add(FVector(8806.f, 2018.f, 61.f)); 
-    Area1SpawnPoints.Add(FVector(7416.f, 7377.f, 61.f)); 
 
+    Area1SpawnPoints.Add(FVector(7416.f, 7377.f, 61.f)); 
     Area1SpawnPoints.Add(FVector(-7845.f, 115.f, 61.f)); 
     Area1SpawnPoints.Add(FVector(-8151.f, 1855.f, 61.f));
     Area1SpawnPoints.Add(FVector(-8806.f, 2018.f, 61.f)); 
     Area1SpawnPoints.Add(FVector(-7416.f, 7377.f, 61.f)); 
+    
+    AreaSpawnPoints.Add(Area1SpawnPoints);
     
     UE_LOG(LogTemp, Log, TEXT("InitializeRegion1SpawnPoints: Initialized %d spawn points."), Area1SpawnPoints.Num());
 }
@@ -970,11 +1450,14 @@ void ABattleGameMode::InitializeArea2SpawnPoints()
     Area2SpawnPoints.Add(FVector(-1966.f, -3540.f, 760.f));
     Area2SpawnPoints.Add(FVector(6068.f, 1640.f, 760.f));
     Area2SpawnPoints.Add(FVector(6672.f, 5137.f, 760.f));
-    Area2SpawnPoints.Add(FVector(-1193.f, -4795.f, 1172.f));
+    Area2SpawnPoints.Add(FVector(-1193.f, -4795.f, 1140.f));
 
-    Area2SpawnPoints.Add(FVector(-5025.f, -1134.f, 1172.f));
-    Area2SpawnPoints.Add(FVector(-1610.f, -4933.f, 1172.f));
-    Area2SpawnPoints.Add(FVector(4641.f, -253.f, 1172.f));
+    Area2SpawnPoints.Add(FVector(-5025.f, -1134.f, 1140.f));
+    Area2SpawnPoints.Add(FVector(-1610.f, -4933.f, 1140.f));
+    Area2SpawnPoints.Add(FVector(4641.f, -253.f, 1140.f));
+
+
+    AreaSpawnPoints.Add(Area2SpawnPoints);
 }
 
 void ABattleGameMode::InitializeArea3SpawnPoints()
@@ -996,5 +1479,91 @@ void ABattleGameMode::InitializeArea3SpawnPoints()
     Area3SpawnPoints.Add(FVector(-576.f, 380.f, 204.f));
     Area3SpawnPoints.Add(FVector(-271.f, -782.f, 204.f));
     Area3SpawnPoints.Add(FVector(-424.f, -183.f, 209.f));
+
+    AreaSpawnPoints.Add(Area3SpawnPoints);
 }
 
+void ABattleGameMode::SpawnItemsInArea3(Protocol::SC_SPAWN_ITEM_PKT& pkt)
+{
+    uint16 ZoneIndex = pkt.zone_index;
+
+    int32 SpawnIndex[12];
+    int32 ItemLevel[12];
+
+    const uint16 Count = pkt.item_count;
+    for (int32 i = 0; i < Count; ++i)
+    {
+        SpawnIndex[i] = static_cast<int32>(pkt.spawn_index[i]);
+        ItemLevel[i] = static_cast<int32>(pkt.item_level[i]);
+    }
+
+    //UE_LOG(LogTemp, Warning, TEXT("%d - %d"), SpawnIndex[9], ItemLevel[9]);
+
+    if (AreaSpawnPoints[ZoneIndex].Num() == 0)
+    {
+        UE_LOG(LogTemp, Warning, TEXT("SpawnItemsInArea1: No spawn points available."));
+        return;
+    }
+
+    UWorld* World = GetWorld();
+    if (!World)
+    {
+        UE_LOG(LogTemp, Warning, TEXT("SpawnItemsInArea1: World is null."));
+        return;
+    }
+
+    for (int32 i = 0; i < Count; ++i)
+    {
+        int32 index = SpawnIndex[i];
+        FVector SpawnLocation = AreaSpawnPoints[ZoneIndex][index];
+        FRotator SpawnRotation = FRotator::ZeroRotator;
+
+        FActorSpawnParameters SpawnParams;
+        // 필요에 따라 SpawnParams.Owner 또는 Instigator 설정
+
+        AItem_Box_High* NewItem = World->SpawnActor<AItem_Box_High>(ItemBoxHighBpclass, SpawnLocation, SpawnRotation, SpawnParams);
+        //if (ItemLevel[i] < 2)
+
+        if (NewItem)
+        {
+            NewItem->SpawnItemType = ItemLevel[i];
+            SpawnedItemBoxes.Add(NewItem);
+            UE_LOG(LogTemp, Log, TEXT("SpawnItemsInArea1: Spawned item at %s"), *SpawnLocation.ToString());
+        }
+        else
+        {
+            UE_LOG(LogTemp, Warning, TEXT("SpawnItemsInArea1: Failed to spawn item at index %d"), i);
+        }
+    }
+
+}
+
+void ABattleGameMode::SpawnDeathItem(Protocol::CS_DEATH_ITEM_PKT& pkt)
+{
+    if (nullptr == SpawnedPlayers.Find(pkt.player_id)) return;
+    if (nullptr == DeathPowerClass) return;
+
+    FVector SpawnLocation;
+    SpawnLocation.X = pkt.x; SpawnLocation.Y = pkt.y; SpawnLocation.Z = pkt.z;
+    FRotator SpawnRotation = FRotator::ZeroRotator;
+
+    FActorSpawnParameters SpawnParams;
+    SpawnParams.Owner = SpawnedPlayers[pkt.player_id];
+
+    ADeathPowerUpItem* NewItem = GetWorld()->SpawnActor<ADeathPowerUpItem>(
+        DeathPowerClass,
+        SpawnLocation, SpawnRotation,
+        SpawnParams
+    );
+
+    if (NewItem)
+    {
+        // 사망 캐릭터의 강화 횟수 저장
+        NewItem->StoredPowerUpCount = pkt.powerup_level;
+
+        // (충돌 컴포넌트는 생성자에서 이미 NoCollision)
+
+        // 라운드 초기화 시 삭제시킬 관심목록에 등록
+        SpawnedItems.Add(NewItem);
+    }
+}

@@ -6,12 +6,18 @@
 #include "../Character/BaseCharacter.h"
 #include "TimerManager.h"
 #include "Components/SphereComponent.h"
-#include "Project_Animagus/Character/BaseCharacter.h"
 
 ADeathPowerUpItem::ADeathPowerUpItem()
 {
     // 생성 직후 충돌 비활성화
-    CollisionComp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+    //CollisionComp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+
+    if (AActor* Spawner = GetOwner())
+    {
+        CollisionComp->IgnoreActorWhenMoving(Spawner, true);
+    }
+
+    SetItemType(Protocol::ItemType::POWERUP);
 }
 
 void ADeathPowerUpItem::BeginPlay()
@@ -24,13 +30,15 @@ void ADeathPowerUpItem::BeginPlay()
     }
     
     // 1.5초 뒤에 충돌 활성화 & 이펙트 재생
-    GetWorldTimerManager().SetTimer(
-        EnableTimerHandle,
-        this,
-        &ADeathPowerUpItem::EnableCollisionAndEffect,
-        3.f,
-        false
-    );
+    //GetWorldTimerManager().SetTimer(
+    //    EnableTimerHandle,
+    //    this,
+    //    &ADeathPowerUpItem::EnableCollisionAndEffect,
+    //    1.5f,
+    //    false
+    //);
+
+    SetItemType(Protocol::ItemType::POWERUP);
 }
 
 void ADeathPowerUpItem::EnableCollisionAndEffect()
@@ -65,12 +73,20 @@ void ADeathPowerUpItem::OnItemOverlapBegin(UPrimitiveComponent* OverlappedComp, 
         return;
     }
 
+    if (OtherActor == GetOwner())
+    {
+        return;
+    }
+
     ABaseCharacter* Picker = Cast<ABaseCharacter>(OtherActor);
     if (Picker)
     {
-        for (int32 i = 0; i < StoredPowerUpCount; ++i)
+        if (Picker->GetPawnType() != PawnType::NETWORK)
         {
-            Picker->IncreasePowerUpLevel();
+            for (int32 i = 0; i < StoredPowerUpCount; ++i)
+            {
+                Picker->IncreasePowerUpLevel();
+            }
         }
 
         // 기본 획득 이펙트·사운드

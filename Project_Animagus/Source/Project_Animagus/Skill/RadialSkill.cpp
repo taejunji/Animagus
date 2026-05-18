@@ -1,5 +1,6 @@
-﻿#include "RadialSkill.h"
+#include "RadialSkill.h"
 #include "../Projectile/ProjectileBase.h"
+#include "../Projectile/Projectile_Radial.h"
 #include "Kismet/GameplayStatics.h"
 #include "../Character/BaseCharacter.h"
 #include "GameFramework/PlayerController.h"
@@ -14,7 +15,7 @@ URadialSkill::URadialSkill()
     NumberOfProjectiles = 3;             // 7개의 투사체 발사
     SpreadAngle = 190.0f;                 // 전체 90도 부채꼴
     RadialDamage = 10.0f;                // 투사체 데미지
-    RadialSpeed = 1600.f;                // 투사체 속도
+    RadialSpeed = 4000.f;                // 투사체 속도
     SkillDescription = TEXT("여러개의 투사체를 발사합니다.");
     SpawnRadius = 80.f;                  // 캐릭터 기준으로 80cm 떨어진 위치에서 스폰
     VerticalOffset = 20.f;               // 캐릭터 기준으로 위쪽 20cm
@@ -22,7 +23,19 @@ URadialSkill::URadialSkill()
     BaseNumberOfProjectiles = NumberOfProjectiles;
     BaseRadialDamage = RadialDamage;
     
-    ProjectileBPClass = nullptr;         // 에디터에서 할당 필요
+    //ProjectileBPClass = nullptr;         // 에디터에서 할당 필요
+    static ConstructorHelpers::FClassFinder<AProjectile_Radial> RadialBPFinder(TEXT("/Game/WorkFolder/Bluprints/Projectiles/MyProjectile_Radial"));
+    if (RadialBPFinder.Succeeded())
+    {
+        ProjectileBPClass = RadialBPFinder.Class;
+    }
+    else
+    {
+        UE_LOG(LogTemp, Warning, TEXT("Failed to load Radial BP class!"));
+    }
+
+
+    SkillType = Protocol::SkillType::RADIAL;
 }
 
 void URadialSkill::ActiveSkill_Implementation()
@@ -45,47 +58,12 @@ void URadialSkill::ActiveSkill_Implementation()
     // 공격 애니메이션
     Owner->PlayAnimMontageByType(MontageType::DefaultAttack);
 
-    FVector CharacterLocation = Owner->GetActorLocation();
+    FVector CharacterLocation = OwnerLocation;
     FRotator BaseRotation;
 
-    // --- 회전 방향 결정 (AI or Player)
-    if (AMyAIController* AIController = Cast<AMyAIController>(Owner->GetController()))
-    {
-        ABaseCharacter* TargetCharacter = nullptr;
-        UBlackboardComponent* BBComp = AIController->GetBlackboardComponent();
-        if (BBComp && AIController->TargetKey.SelectedKeyName.IsValid())
-        {
-            TargetCharacter = Cast<ABaseCharacter>(BBComp->GetValueAsObject(AIController->TargetKey.SelectedKeyName));
-        }
-
-        if (TargetCharacter)
-        {
-            FVector DirectionToTarget = (TargetCharacter->GetActorLocation() - CharacterLocation).GetSafeNormal();
-            BaseRotation = DirectionToTarget.Rotation();
-        }
-        else
-        {
-            BaseRotation = Owner->GetActorRotation();
-        }
-
-        // UE_LOG(LogTemp, Log, TEXT("URadialSkill: AI 사용, BaseRotation = %s"), *BaseRotation.ToString());
-    }
-    else
-    {
-        FVector CameraLocation;
-        FRotator CameraRotation;
-        if (Owner->GetController())
-        {
-            Owner->GetController()->GetPlayerViewPoint(CameraLocation, CameraRotation);
-            BaseRotation = CameraRotation;
-        }
-        else
-        {
-            BaseRotation = Owner->GetActorRotation();
-        }
-
-        // UE_LOG(LogTemp, Log, TEXT("URadialSkill: Player 사용, BaseRotation = %s"), *BaseRotation.ToString());
-    }
+    FVector CameraLocation = OwnerLocation;
+    FRotator CameraRotation = Rotation;
+    BaseRotation = CameraRotation;
 
     // --- 회전 스프레드 계산
     float BaseYaw = BaseRotation.Yaw;
@@ -129,6 +107,9 @@ void URadialSkill::ActiveSkill_Implementation()
                 {
                     Projectile->ProjectileMovement->InitialSpeed = RadialSpeed;
                     Projectile->ProjectileMovement->MaxSpeed = RadialSpeed;
+
+                    FVector Dir = Projectile->ProjectileMovement->Velocity.GetSafeNormal();
+                    Projectile->ProjectileMovement->Velocity = Dir * RadialSpeed;
                 }
 
                 UE_LOG(LogTemp, Log, TEXT("URadialSkill: %d번째 투사체 스폰 성공: %s"), i, *Projectile->GetName());
@@ -163,7 +144,7 @@ void URadialSkill::UpgradeSkill(int32 NewPowerUpLevel)
     
     int32 EvenLevelSteps = Level;
     float DamageMultiplier = 1.0f * EvenLevelSteps; 
-    RadialDamage = BaseRadialDamage  + (NewPowerUpLevel * 1.f);
+    RadialDamage = BaseRadialDamage  + (NewPowerUpLevel * 5.f);
 
 
     UE_LOG(LogTemp, Log, TEXT("RadialSkill upgraded: Level %d, Projectiles: %d, Damage: %f"), Level, NumberOfProjectiles, RadialDamage);

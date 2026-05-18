@@ -161,6 +161,18 @@ public:
 
     void ClearFocusTarget();
 
+protected:
+    const float MOVE_PACKET_SEND_DELAY = 1.f / 60.f;
+    float MovePacketSendTimer = MOVE_PACKET_SEND_DELAY;
+
+    // Cache
+    FVector2D DesiredInput;
+    FVector DesiredMoveDirection;
+    float DesiredYaw;
+
+    // Dirty Flag Test
+    FVector2D LastDesiredInput;
+
     // NavMesh 복귀 
     void CheckAndRecoverFromNavMesh();
 

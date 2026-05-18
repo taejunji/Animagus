@@ -25,6 +25,12 @@
 #include "Perception/AISense_Damage.h"
 #include "Perception/AIPerceptionSystem.h"
 
+#include "../System/MyGameInstance.h"
+
+#include "../Server/Server/protocol.h"
+#include "../Network/Session.h"
+#include "../Network/ClientPacketHandler.h"
+
 #include "../Actor/ItemBox/Item_Box_Base.h"
 #include "../Item/BaseItem.h"
 #include "../Actor/Zones/ShrinkingZone.h"
@@ -104,7 +110,7 @@ void AMyAIController::BeginPlay()
             AIPerceptionComponent->OnPerceptionUpdated.AddDynamic(this, &AMyAIController::OnPerceptionUpdated);
         }
     }
-#if 1
+#if 0
     StartBehaviorTree(); 
 #endif
 
@@ -187,30 +193,78 @@ void AMyAIController::Tick(float DeltaTime)
     Super::Tick(DeltaTime);
 
     ABaseCharacter* AI = Cast<ABaseCharacter>(GetPawn());
-    if (AI == nullptr || AI->GetIsDead()) return;
+    if (AI == nullptr) return;
     
-    UBlackboardComponent* BlackboardComponent = GetBlackboardComponent();
-    if (!BlackboardComponent) return;
+    if (false == AI->GetIsDead())
+    {
+        UBlackboardComponent* BlackboardComponent = GetBlackboardComponent();
+        if (!BlackboardComponent) return;
 
-    // 유요한 네비 경로 확인
-    CheckAndRecoverFromNavMesh();
+        // 유요한 네비 경로 확인
+        CheckAndRecoverFromNavMesh();
 
-    // 유효한 네비 경로 확인
-    // CheckFindPathFromNavMesh();
+        // 유효한 네비 경로 확인
+        // CheckFindPathFromNavMesh();
 
-    // 타겟을 해제해야하는지 확인
-    CheckDisableTarget();
+        // 타겟을 해제해야하는지 확인
+        CheckDisableTarget();
 
-    // 스킬 쿨타임 확인
-    // CheckSkillCoolTime(AI);
+        // 스킬 쿨타임 확인
+        // CheckSkillCoolTime(AI);
 
-    // 달리기 속도 설정
-    SetAIRunSpeed(AI, DeltaTime);
+        // 달리기 속도 설정
+        SetAIRunSpeed(AI, DeltaTime);
 
-    // 고정 액터 회전
-    SetStaticActorRotation(DeltaTime);
+        // 고정 액터 회전
+        SetStaticActorRotation(DeltaTime);
+    }
 
-    // if (ControlMode != AIControlMode::AIController) return;
+    // Send 판정
+    bool ForceSendPacket = false;
+
+    if (LastDesiredInput != DesiredInput)
+    {
+        ForceSendPacket = true;
+        LastDesiredInput = DesiredInput;
+    }
+
+    MovePacketSendTimer -= DeltaTime;
+
+    if (MovePacketSendTimer <= 0 || ForceSendPacket)
+    {
+        // State 설정
+
+        if (false == AI->GetMovementComponent()->IsFalling())
+        {
+            AI->SetMoveState(Protocol::PlayerState::MOVE_STATE_RUN);
+
+            if (AI->GetVelocity().Size2D() <= 0.3f)
+                AI->SetMoveState(Protocol::PlayerState::MOVE_STATE_IDLE);
+        }
+
+        MovePacketSendTimer = MOVE_PACKET_SEND_DELAY;
+
+        Protocol::CS_AI_MOVE_PKT MovePkt;
+
+        // 현재 위치 정보
+        {
+            Protocol::PlayerInfo Info;
+            FVector Location = AI->GetActorLocation();
+            Info.x = Location.X; Info.y = Location.Y; Info.z = Location.Z;
+            Info.rotation = AI->GetActorRotation().Yaw;
+            Info.player_id = AI->GetPlayerId();
+            //Info.player_type = AI->GetPlayerType();
+            Info.player_state = AI->GetMoveState();
+            Info.speed_2d = AI->GetMovementComponent()->Velocity.Size2D();
+            Info.speed_z = AI->GetMovementComponent()->Velocity.Z;
+
+            MovePkt.player_info = Info;
+        }
+
+        SendBufferRef SendBuffer = ClientPacketHandler::MakeSendBuffer(MovePkt);
+        Cast<UMyGameInstance>(GWorld->GetGameInstance())->SendPacket(SendBuffer);
+    }
+
 }
 
 void AMyAIController::CheckDisableTarget()
@@ -237,6 +291,18 @@ void AMyAIController::CheckDisableTarget()
         ClearFocus(EAIFocusPriority::Gameplay);
         Blackboard->ClearValue(BoxTargetKey.SelectedKeyName); 
     }
+
+    //ABaseItem* TargetIem = Cast<ABaseItem>(Blackboard->GetValueAsObject(ItemTargetKey.SelectedKeyName));
+    //if (TargetIem && TargetBox->GetHp() <= 0.f) {
+    //    if (AI) {
+    //        AI->bUseControllerRotationYaw = false;
+    //        AI->GetCharacterMovement()->bOrientRotationToMovement = true;
+    //        AI->GetCharacterMovement()->bUseControllerDesiredRotation = false;
+    //    }
+
+    //    ClearFocus(EAIFocusPriority::Gameplay);
+    //    Blackboard->ClearValue(ItemTargetKey.SelectedKeyName);
+    //}
 
     // 3. 게임 라운드에 따라 해제
     if (BattleMode && AI)

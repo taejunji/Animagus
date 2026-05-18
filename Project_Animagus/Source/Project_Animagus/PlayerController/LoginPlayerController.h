@@ -4,9 +4,11 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/PlayerController.h"
+#include "../Server/Server/protocol.h"
 #include "LoginPlayerController.generated.h"
 
 class ULoginWidget;
+class USignUpWidget;
 
 UCLASS()
 class PROJECT_ANIMAGUS_API ALoginPlayerController : public APlayerController
@@ -24,7 +26,18 @@ public:
     // Signup 버튼 클릭
     UFUNCTION() void OnSignupClicked();
 
+    // SignUp Ok 버튼 클릭
+    UFUNCTION() void OnSignOkClicked();
 
+    // SignUp Cancel 버튼 클릭
+    UFUNCTION() void OnSignCancelClicked();
+
+    void HandleLoginSuccess();
+    void HandleLoginFail(Protocol::SC_LOGIN_FAIL_PKT& pkt);
+    void HandleSignUpSuccess();
+    void HandleSignUpFail();
+
+public:
     
     // Widget Blueprint 클래스 지정
     UPROPERTY(EditAnywhere, Category="UI")
@@ -34,5 +47,11 @@ public:
     ULoginWidget* LoginWidget;
 
 
-   
+    // Widget Blueprint 클래스 지정
+    UPROPERTY(EditAnywhere, Category = "UI")
+    TSubclassOf<USignUpWidget> SignUpWidgetClass;
+
+    UPROPERTY()
+    USignUpWidget* SignUpWidget;
+
 };

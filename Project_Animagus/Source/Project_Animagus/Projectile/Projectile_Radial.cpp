@@ -26,13 +26,6 @@ void AProjectile_Radial::BeginPlay()
 void AProjectile_Radial::OnHit(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
     UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 {
-    if (OtherActor == Shooter )
-    {
-        return;
-        
-    }
-    
-    
     // 기본 AProjectileBase의 충돌 처리 전에, 충돌 대상이 유효하고, 자신과 발사자(Shooter)와 충돌하지 않을 때 처리
     if (OtherActor && OtherActor != this && OtherActor != Shooter)
     {

@@ -19,6 +19,7 @@ class PROJECT_ANIMAGUS_API AItem_Box_Base : public AActor
 public:
     AItem_Box_Base();
 
+public:
     // 아이템 스폰 타입: 0이면 BaseItem, 1이면 BaseItemPlus
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Box")
     int32 SpawnItemType;

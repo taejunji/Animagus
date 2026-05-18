@@ -1,4 +1,4 @@
-﻿// Fill out your copyright notice in the Description page of Project Settings.
+// Fill out your copyright notice in the Description page of Project Settings.
 
 
 #include "Stun.h"
@@ -15,14 +15,28 @@ UStun::UStun()
     SkillName = "Stun";
     CooldownTime = 8.0f; // 예시 쿨타임
     StunDamage = 10.0f;  // 예시 데미지
-    StunSpeed = 2500.f;  // 예시 이동 속도
+    StunSpeed = 5000.f;  // 예시 이동 속도
     StunDuration = 1.67f; // 예시 스턴 지속 시간
 
     // ProjectileBPClass는 에디터에서 할당 (예: MyProjectile_Stun_BP)
-    ProjectileBPClass = nullptr;
+    //ProjectileBPClass = nullptr;
+    static ConstructorHelpers::FClassFinder<AProjectile_Stun> StunBPFinder(TEXT("/Game/WorkFolder/Bluprints/Projectiles/MyProjectile_Stun"));
+    if (StunBPFinder.Succeeded())
+    {
+        ProjectileBPClass = StunBPFinder.Class;
+    }
+    else
+    {
+        UE_LOG(LogTemp, Warning, TEXT("Failed to load StunSkill BP class!"));
+    }
+
+    //ProjectileBPClass = nullptr;
     SkillDescription = TEXT("피격시 움직임을 제한 하는 투사체를 발사합니다.");
     BaseCooldownTime = CooldownTime;
     BaseStunDuration = StunDuration;
+
+    SkillType = Protocol::SkillType::STUN;
+
 }
 
 void UStun::ActiveSkill_Implementation()
@@ -44,48 +58,15 @@ void UStun::ActiveSkill_Implementation()
     Owner->PlayAnimMontageByType(MontageType::DefaultAttack);
 
     // 투사체 스폰 위치
-    FVector SpawnLocation = Owner->GetActorLocation() + Owner->GetActorForwardVector() * 80.f + Owner->GetActorRightVector() * 30.f;
+    FVector SpawnLocation = OwnerLocation + Owner->GetActorForwardVector() * 80.f + Owner->GetActorRightVector() * 30.f;
     FRotator SpawnRotation;
 
-    // AI가 호출한 경우
-    if (AMyAIController* AIController = Cast<AMyAIController>(Owner->GetController()))
-    {
-        ABaseCharacter* TargetCharacter = nullptr;
-        UBlackboardComponent* BBComp = AIController->GetBlackboardComponent();
-        if (BBComp && AIController->TargetKey.SelectedKeyName.IsValid())
-        {
-            TargetCharacter = Cast<ABaseCharacter>(BBComp->GetValueAsObject(AIController->TargetKey.SelectedKeyName));
-        }
-        if (TargetCharacter)
-        {
-            FVector DirectionToTarget = (TargetCharacter->GetActorLocation() - SpawnLocation).GetSafeNormal();
-            SpawnRotation = DirectionToTarget.Rotation();
-        }
-        else
-        {
-            // 타겟이 없다면 AI Panw이 바라보는 방향으로 발사
-            SpawnRotation = Owner->GetActorRotation() + FRotator(1.f, 0.f, 0.f);;
-        }
-    }
-    else // Player 혹은 Network가 호출한 경우
-    {
-        // 플레이어 컨트롤러를 통해 카메라 뷰포인트를 가져옵니다.
-        FVector CameraLocation;
-        FRotator CameraRotation;
-        if (Owner->GetController())
-        {
-            Owner->GetController()->GetPlayerViewPoint(CameraLocation, CameraRotation);
-        }
-        else
-        {
-            CameraLocation = Owner->GetActorLocation();
-            CameraRotation = Owner->GetActorRotation();
-        }
+    // 플레이어 컨트롤러를 통해 카메라 뷰포인트를 가져옵니다.
+    FVector CameraLocation = OwnerLocation;
+    FRotator CameraRotation = Rotation;
 
-        // 진행 방향: 카메라 뷰 방향 사용
-        SpawnRotation = CameraRotation + FRotator(1.f, 0.f, 0.f);;
-    }
-
+    // 진행 방향: 카메라 뷰 방향 사용
+    SpawnRotation = CameraRotation + FRotator(1.f, 0.f, 0.f);;
 
     UE_LOG(LogTemp, Log, TEXT("UStunSkill: SpawnLocation = %s, SpawnRotation = %s"), *SpawnLocation.ToString(), *SpawnRotation.ToString());
 

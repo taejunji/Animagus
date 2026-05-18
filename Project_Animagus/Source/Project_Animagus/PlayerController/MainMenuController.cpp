@@ -113,19 +113,21 @@ void AMainMenuController::OnSettingsClicked()
     // 마우스 감도 초기값을 슬라이더에 세팅
     if (SettingsWidget->VolumeSlider)
     {
-        // 기본 음량 읽어와서
-        float CurrentVol = 1.0f;
-        // (없다면 1.0 기본)
-        SettingsWidget->VolumeSlider->SetValue(CurrentVol);
-    }
-    
-    if (SettingsWidget->SensitivitySlider)
+        float SavedVol = 1.0f;
+        if (UMyGameInstance* GI = GetGameInstance<UMyGameInstance>())
         {
-         if (UMyGameInstance* GI = GetGameInstance<UMyGameInstance>())
-            {
-              SettingsWidget->SensitivitySlider->SetValue(GI->MouseSensitivity);
-            }
+            SavedVol = GI->MasterVolume;
         }
+        SettingsWidget->VolumeSlider->SetValue(SavedVol);
+    }
+
+    if (SettingsWidget->SensitivitySlider)
+    {
+        if (UMyGameInstance* GI = GetGameInstance<UMyGameInstance>())
+        {
+            SettingsWidget->SensitivitySlider->SetValue(GI->MouseSensitivity);
+        }
+    }
 }
 
 // 사운드 볼륨 조절
@@ -133,12 +135,6 @@ void AMainMenuController::HandleVolumeChanged(float NewVolume)
 {
     if (MasterVolumeMix && MasterSoundClass)
     {
-        
-        // if (!bMixPushed)
-        // {
-        //     UGameplayStatics::PushSoundMixModifier(this, MasterVolumeMix);
-        //     bMixPushed = true;
-        // }
 
         if (!bMixPushed)
         {
@@ -146,21 +142,21 @@ void AMainMenuController::HandleVolumeChanged(float NewVolume)
             bMixPushed = true;
         }
 
-         UGameplayStatics::SetSoundMixClassOverride(
+        UGameplayStatics::SetSoundMixClassOverride(
             this,
             MasterVolumeMix,
             MasterSoundClass,
             NewVolume,    // Volume
-            1.0f,         
+            1.0f,
             0.0f,         // FadeOutTime
-            true          // bApplyToChildren (잘 못 매핑)
+            true          // bApplyToChildren
         );
-        
-        UE_LOG(LogTemp, Log, TEXT("  Pushed SoundMixModifier"));
-    }
-    else
-    {
-        UE_LOG(LogTemp, Warning, TEXT("  MasterVolumeMix or MasterSoundClass is null"));
+
+        // ▶ 변경된 볼륨을 GameInstance에 저장
+        if (UMyGameInstance* GI = GetGameInstance<UMyGameInstance>())
+        {
+            GI->MasterVolume = NewVolume;
+        }
     }
 }
 

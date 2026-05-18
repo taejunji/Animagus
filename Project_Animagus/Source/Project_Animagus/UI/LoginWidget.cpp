@@ -60,4 +60,27 @@ void ULoginWidget::BindButtons()
         BtnSignup->OnClicked.AddDynamic(this, &ULoginWidget::PlayClickSound);
         BtnSignup->OnHovered.AddDynamic(this, &ULoginWidget::PlayHoverSound); 
     }
+    if (BtnQuit)
+    {
+        BtnQuit->OnClicked.AddDynamic(this, &ULoginWidget::OnQuitBtnClicked);
+        BtnQuit->OnClicked.AddDynamic(this, &ULoginWidget::PlayClickSound);
+        BtnQuit->OnHovered.AddDynamic(this, &ULoginWidget::PlayHoverSound);
+    }
+}
+
+void ULoginWidget::OnQuitBtnClicked()
+{
+    APlayerController* PC = GetOwningPlayer();
+    if (!PC)
+    {
+        UE_LOG(LogTemp, Warning, TEXT("QuitGame 실패: PlayerController가 없습니다."));
+        return;
+    }
+
+    UKismetSystemLibrary::QuitGame(
+        this,           // WorldContextObject: UUserWidget은 OK
+        PC,             // SpecificPlayer: nullptr 금지!
+        EQuitPreference::Quit,
+        true            // Force quit
+    );
 }

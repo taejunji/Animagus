@@ -4,6 +4,9 @@
 #include "../System/MyGameInstance.h"
 #include "Kismet/GameplayStatics.h"
 #include "Project_Animagus/GameMode/ConnectGameMode.h"
+#include "../Network/ClientPacketHandler.h"
+#include "Components/Button.h"
+
 #include "Components/SkeletalMeshComponent.h"
 
 void AConnectPlayerController::BeginPlay()
@@ -40,6 +43,11 @@ void AConnectPlayerController::BeginPlay()
     
     if (UMyGameInstance* GI = GetGameInstance<UMyGameInstance>())
         OnMeshSelected(GI->player_data.stored_mesh);
+
+    if (true == Cast<UMyGameInstance>(GetGameInstance())->AmIHost)
+    {
+        ActiveStartButton();
+    }
 }
 
 void AConnectPlayerController::ShowConnectUI()
@@ -74,6 +82,52 @@ void AConnectPlayerController::OnMeshSelected(CharacterMesh Selected)
             {
                 // 이제 SetMesh만 호출: Idle만 재생
                 PreviewActor->SetMesh(*MeshPtr);
+
+                Protocol::CS_SELECT_CHARACTER_PKT selectCharacterPkt;
+                selectCharacterPkt.p_type = Protocol::PlayerType::NONE;
+                switch (Selected)
+                {
+                case CharacterMesh::Monkey:
+                    selectCharacterPkt.p_type = Protocol::PlayerType::MONKEY;
+                    break;
+                case CharacterMesh::Koala:
+                    selectCharacterPkt.p_type = Protocol::PlayerType::KOALA;
+                    break;
+                case CharacterMesh::Sheep:
+                    selectCharacterPkt.p_type = Protocol::PlayerType::RAM;
+                    break;
+                case CharacterMesh::Fox:
+                    selectCharacterPkt.p_type = Protocol::PlayerType::FOX;
+                    break;
+                case CharacterMesh::Sloth:
+                    selectCharacterPkt.p_type = Protocol::PlayerType::SLOTH;
+                    break;
+                case CharacterMesh::Elephant:
+                    selectCharacterPkt.p_type = Protocol::PlayerType::ELEPHANT;
+                    break;
+                case CharacterMesh::Raccoon:
+                    selectCharacterPkt.p_type = Protocol::PlayerType::RACCOON;
+                    break;
+                case CharacterMesh::Deer:
+                    selectCharacterPkt.p_type = Protocol::PlayerType::DEER;
+                    break;
+                case CharacterMesh::Cow:
+                    selectCharacterPkt.p_type = Protocol::PlayerType::COW;
+                    break;
+                case CharacterMesh::Unicorn:
+                    selectCharacterPkt.p_type = Protocol::PlayerType::UNICORN;
+                    break;
+                case CharacterMesh::Zebra:
+                    selectCharacterPkt.p_type = Protocol::PlayerType::ZEBRA;
+                    break;
+                case CharacterMesh::Donkey:
+                    selectCharacterPkt.p_type = Protocol::PlayerType::DONKEY;
+                    break;
+
+                }
+
+                SendBufferRef sendBuffer = ClientPacketHandler::MakeSendBuffer(selectCharacterPkt);
+                Cast<UMyGameInstance>(GWorld->GetGameInstance())->SendPacket(sendBuffer);
             }
         }
     }
@@ -118,11 +172,21 @@ void AConnectPlayerController::OnMeshSelected(CharacterMesh Selected)
 
 void AConnectPlayerController::OnStartGame()
 {
-    // 여기가  
+    // 레벨 전환
+    //UGameplayStatics::OpenLevel(this, TEXT("L_Map"));
 
+    Protocol::CS_START_GAME_PKT OnClickBtnPkt;
 
-    
-    UGameplayStatics::OpenLevel(this, TEXT("L_Map"));
+    SendBufferRef SendBuffer = ClientPacketHandler::MakeSendBuffer(OnClickBtnPkt);
+    Cast<UMyGameInstance>(GWorld->GetGameInstance())->SendPacket(SendBuffer);
+}
+
+void AConnectPlayerController::ActiveStartButton()
+{
+    if (nullptr != MeshSelectWidget)
+    {
+        MeshSelectWidget->ActiveStartButton();
+    }
 }
 
 void AConnectPlayerController::OnPossess(APawn* InPawn)

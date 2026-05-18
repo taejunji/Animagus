@@ -117,3 +117,6 @@ Saved/
 
 # Ignore Unreal Build Tool generated PDBs
 *.pdb
+
+# 패키지 파일 무시
+Windows/

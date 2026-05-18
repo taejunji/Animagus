@@ -18,12 +18,19 @@ class PROJECT_ANIMAGUS_API AConnectGameMode : public AGameModeBase
     GENERATED_BODY()
 
 public:
+    AConnectGameMode() {
+        PrimaryActorTick.bCanEverTick = true;
+    }
+    ~AConnectGameMode() = default;
+
     virtual void BeginPlay() override;
-    
+    virtual void Tick(float DeltaTime) override;
+
     ASkeletalPreviewActor* GetPreviewActor() const { return PreviewActor; }
 
     // PostLogin을 잡아서, 로그인(스폰) 직후 시작 위치를 고정
     virtual void PostLogin(APlayerController* NewPlayer) override;
+
 protected:
     /** PreviewActor용 클래스 지정 (BP에서 할당) */
     UPROPERTY(EditAnywhere, Category="Preview")
@@ -45,4 +52,7 @@ protected:
 
     UPROPERTY(EditAnywhere, Category="Spawn")
     FRotator SpawnRotation = FRotator(0.f, 90.f, 0.f);
+
+public:
+    bool AmIHost = false; // 호스트 여부
 };

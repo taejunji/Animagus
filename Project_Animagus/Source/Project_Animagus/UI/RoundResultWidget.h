@@ -41,7 +41,7 @@ protected:
     UPROPERTY(EditAnywhere, Category="UI")
     TSubclassOf<URoundResultRowWidget> RowWidgetClass;
     
-private:
+public:
     FTimerHandle HideTimerHandle;
 
     /** 화면에서 제거 */

@@ -11,6 +11,7 @@
 #include "Animation/AnimInstance.h"
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "../GameMode/BattleGameMode.h"
 
 #include "../Actor/Zones/AttractionZone.h"
 #include "../Actor/Zones/ShrinkingZone.h"
@@ -39,6 +40,11 @@
 #include "Project_Animagus/Skill/ShockwaveSkill.h"
 #include "Project_Animagus/Skill/SmokeSkill.h"
 #include "Project_Animagus/Skill/Stun.h"
+
+#include "../System/MyGameInstance.h"
+#include "../Server/Server/protocol.h"
+#include "../Network/Session.h"
+#include "../Network/ClientPacketHandler.h"
 
 ABaseCharacter::ABaseCharacter()
 {
@@ -260,10 +266,11 @@ void ABaseCharacter::Tick(float DeltaTime)
             }*/
         }
 
-        if (GetCharacterMovement()->IsFalling() == false &&  is_grounddead == false) {
+        if (false == GetCharacterMovement()->IsFalling() &&  false == is_grounddead) 
+        {
             is_grounddead = true;
 
-            if (DeathPowerClass)
+            if (DeathPowerClass && GetPawnType() != PawnType::NETWORK)
             {
                 FVector SpawnLoc = GetActorLocation();
                 const float ZOffsetDown = 30.f; 
@@ -283,8 +290,29 @@ void ABaseCharacter::Tick(float DeltaTime)
                     NewItem->StoredPowerUpCount = PowerUpLevel;
 
                     // (충돌 컴포넌트는 생성자에서 이미 NoCollision)
+
+                    // 라운드 초기화 시 삭제시킬 관심목록에 등록
+                    if (auto GameMode = GetWorld()->GetAuthGameMode<ABattleGameMode>())
+                    {
+                        UE_LOG(LogTemp, Warning, TEXT("죽음아이템 추가"));
+
+                        GameMode->SpawnedItems.Add(NewItem);
+                    }
                 }
+
+                Protocol::CS_DEATH_ITEM_PKT DeathItemPkt;
+                DeathItemPkt.player_id = GetPlayerId();
+                DeathItemPkt.powerup_level = PowerUpLevel;
+                DeathItemPkt.x = SpawnLoc.X; DeathItemPkt.y = SpawnLoc.Y; DeathItemPkt.z = SpawnLoc.Z;
+
+                SendBufferRef SendBuffer = ClientPacketHandler::MakeSendBuffer(DeathItemPkt);
+                Cast<UMyGameInstance>(GWorld->GetGameInstance())->SendPacket(SendBuffer);
+
             }
+            //else
+            //{
+            //    UE_LOG(LogTemp, Warning, TEXT("넷플레이어 z 속도: %f"), GetCharacterMovement()->Velocity.Z);
+            //}
             
             // 일시적으로 이동을 멈추고 싶다면? → DisableMovement()
             // 이동을 완전히 비활성화하고 싶다면 ? → SetMovementMode(MOVE_None)
@@ -312,17 +340,24 @@ void ABaseCharacter::SetCharacterName(const char* name)
     //
     // C++의 const char* 문자열을 FString으로 바꾸려면 인코딩 변환이 반드시 필요하고, 언리얼은 이걸 UTF8_TO_TCHAR() 매크로로 처리
 
-    character_name = FString(UTF8_TO_TCHAR(name)); 
-    // 플레이어가 아닌 캐릭터인 경우 이름 UI 띄우기
-    if (nullptr == Cast<APlayerCharacter>(this)) {
-        SetCharacterNameWidget();
-    }
+    SetCharacterName(FString(UTF8_TO_TCHAR(name)));
+}
+
+void ABaseCharacter::SetCharacterName(const FString name)
+{
+    character_name = name;
+    SetCharacterNameWidget();
 }
 
 float ABaseCharacter::TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent,
     AController* EventInstigator, AActor* DamageCauser)
 {
     float ActualDamage = Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
+
+    //hp -= ActualDamage;
+
+    // 내가 데미지를 받으면 서버로 패킷을 전송한다. 서버에서 데미지를 계산해 Broadcast. 다른 클라에서는 그걸로 SetHp
+
 
     if (false == DamageCauser->IsA<AAttractionZone>() && false == DamageCauser->IsA<AShrinkingZone>()) {
         PlayAnimMontageByType(MontageType::Hit);
@@ -332,7 +367,20 @@ float ABaseCharacter::TakeDamage(float DamageAmount, struct FDamageEvent const& 
             ShowDmgIndicator(ActualDamage);
         }
     }
-    hp -= ActualDamage;
+
+    if (hp >= -10.f && GetPawnType() != PawnType::NETWORK)
+    {
+        hp -= ActualDamage;
+
+        Protocol::CS_DAMAGE_PKT DamagePkt;
+        DamagePkt.player_id = GetPlayerId();
+        DamagePkt.room_id = 0;
+        DamagePkt.hp = GetHP();
+        DamagePkt.isAlive = (hp <= 0.f);
+
+        SendBufferRef SendBuffer = ClientPacketHandler::MakeSendBuffer(DamagePkt);
+        Cast<UMyGameInstance>(GWorld->GetGameInstance())->SendPacket(SendBuffer);
+    }
 
     // AI에게 데미지를 알림
     if (AAICharacter* AI = Cast<AAICharacter>(this))
@@ -554,9 +602,27 @@ void ABaseCharacter::TestSkill_Change()
     }
 
     // 슬롯 2: UChangeSkill 스킬 생성
-    if (ChangeBPClass)
+    //if (ChangeBPClass)
+    //{
+    //    UBaseSkill* NewSkill = NewObject<UChangeSkill>(this, ChangeBPClass);
+    //    if (NewSkill)
+    //    {
+    //        NewSkill->Owner = this;
+    //        Skills[2] = NewSkill;
+    //        UE_LOG(LogTemp, Log, TEXT("TestSkill_Change: Successfully created Change skill for slot 2: %s"), *NewSkill->GetName());
+    //    }
+    //    else
+    //    {
+    //        UE_LOG(LogTemp, Warning, TEXT("TestSkill_Change: Failed to create Change skill for slot 2"));
+    //    }
+    //}
+    //else
+    //{
+    //    UE_LOG(LogTemp, Warning, TEXT("TestSkill_Change: ChangeBPClass is not assigned."));
+    //}
+    if (ShockwaveBPClass)
     {
-        UBaseSkill* NewSkill = NewObject<UChangeSkill>(this, ChangeBPClass);
+        UBaseSkill* NewSkill = NewObject<UShockwaveSkill>(this, ShockwaveBPClass);
         if (NewSkill)
         {
             NewSkill->Owner = this;
@@ -613,10 +679,10 @@ void ABaseCharacter::AIchar_SkillSet()
         MagicMissileBPClass,
         StunBPClass,
         RadialBPClass,
-        ChangeBPClass,
+        //ChangeBPClass,
         SmokeBPClass,
-        ShieldBPClass,
-        //ShockwaveBPClass,
+        //ShieldBPClass,
+        ShockwaveBPClass,
         HasteBPClass,
     };
 
@@ -652,9 +718,9 @@ void ABaseCharacter::AIchar_SkillSet()
         }
     }
     
-    if (ShockwaveBPClass)
+    if (ShieldBPClass)
     {
-        UBaseSkill* NewSkill = NewObject<UShockwaveSkill>(this, ShockwaveBPClass);
+        UBaseSkill* NewSkill = NewObject<UShieldSkill>(this, ShieldBPClass);
         if (NewSkill)
         {
             NewSkill->Owner = this;
@@ -740,8 +806,46 @@ bool ABaseCharacter::UseSkillByName(const FString& DesiredSkillName)
 
         if (Skill->SkillName == DesiredSkillName && Skill->CanActivateSkill())
         {
-            Skill->ActiveSkill(); // 실제 스킬 실행 함수
             // UE_LOG(LogTemp, Warning, TEXT("Used skill: %s"), *DesiredSkillName);
+
+            FRotator Rotation;
+            FVector MyLocation = GetActorLocation();
+
+            if (AMyAIController* AIController = Cast<AMyAIController>(GetController()))
+            {
+                ABaseCharacter* TargetCharacter = nullptr;
+                UBlackboardComponent* BBComp = AIController->GetBlackboardComponent();
+                if (BBComp && AIController->TargetKey.SelectedKeyName.IsValid())
+                {
+                    TargetCharacter = Cast<ABaseCharacter>(BBComp->GetValueAsObject(AIController->TargetKey.SelectedKeyName));
+                }
+                if (TargetCharacter)
+                {
+                    FVector DirectionToTarget = (TargetCharacter->GetActorLocation() - MyLocation).GetSafeNormal();
+                    Rotation = DirectionToTarget.Rotation();
+                }
+                else
+                {
+                    // 타겟이 없다면 AI Panw이 바라보는 방향으로 발사
+                    Rotation = GetActorRotation();
+                }
+
+                Protocol::CS_AI_USING_SKILL_PKT SkillPkt;
+                SkillPkt.ai_id = GetPlayerId();
+                SkillPkt.s_type = Skill->SkillType;
+                SkillPkt.x = MyLocation.X; SkillPkt.y = MyLocation.Y; SkillPkt.z = MyLocation.Z;  // 필수인가?
+                SkillPkt.pitch = Rotation.Pitch; SkillPkt.yaw = Rotation.Yaw; SkillPkt.roll = Rotation.Roll;
+
+                SendBufferRef SendBuffer = ClientPacketHandler::MakeSendBuffer(SkillPkt);
+                Cast<UMyGameInstance>(GWorld->GetGameInstance())->SendPacket(SendBuffer);
+            }
+
+            //Skill->SetSkillRotation(Rotation.Pitch, Rotation.Yaw, Rotation.Roll);
+            //Skill->SetSkillLocation(MyLocation);
+            //Skill->ActiveSkill();
+            Skill->StartCooldown();
+            Skill->bFirstUse = false;
+
             return true; // 하나만 사용하고 끝내려면 여기서 리턴
         }
     }
@@ -758,8 +862,6 @@ void ABaseCharacter::Jump()
     if (JumpCurrentCount > 0 && JumpMaxCount >JumpCurrentCount)
     {
         UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), Jumpeffect, GetActorLocation()+ FVector(0.f, 0.f, -40.f), GetActorRotation());
-       // 여기서 소리 재생
-
         if (JumpSound)
         {
             UGameplayStatics::PlaySoundAtLocation(
@@ -768,7 +870,15 @@ void ABaseCharacter::Jump()
                 AttenuationSettings
             );
         }
+
     }
+
+    Protocol::CS_JUMP_EFT_PKT jumpPkt;
+    jumpPkt.jump_player_id = GetPlayerId();
+    jumpPkt.is_first_jump = !(JumpCurrentCount > 0 && JumpMaxCount > JumpCurrentCount);
+
+    SendBufferRef SendBuffer = ClientPacketHandler::MakeSendBuffer(jumpPkt);
+    Cast<UMyGameInstance>(GWorld->GetGameInstance())->SendPacket(SendBuffer);
 }
 
 void ABaseCharacter::SetHandItemActive(bool bActive)
@@ -839,7 +949,7 @@ void ABaseCharacter::IncreasePowerUpLevel()
     UE_LOG(LogTemp, Log, TEXT("%s PowerUpLevel increased to %d"), *GetName(), PowerUpLevel);
 
     if (auto* PC = Cast<ABattle_PlayerController>(GetController())) {
-        PC->PlayerHUD->ResetLevelImgage(); 
+        PC->PlayerHUD->ResetLevelImage(); 
         PC->PlayerHUD->SetLevelImage(PowerUpLevel);
     }
 
@@ -876,7 +986,11 @@ void ABaseCharacter::UpdateAuraColorBasedOnPowerUpLevel()
 
     FLinearColor NewColor;
     // PowerUpLevel에 따라 색상 결정 (예시: 1~2: Red, 3~4: Orange, 5~6: Yellow, 7~8: Green, 9~10: Blue, 11~12: Indigo, 13~14: Purple)
-    if (PowerUpLevel == 1 || PowerUpLevel == 7)
+    if (PowerUpLevel == 0) 
+    {
+        NewColor = FLinearColor::White;
+    }
+    else if (PowerUpLevel == 1 || PowerUpLevel == 7)
     {
         NewColor = FLinearColor::Red;
     }

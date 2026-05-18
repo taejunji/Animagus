@@ -51,6 +51,8 @@ private:
     void Input_Skill_3(const FInputActionValue& InputValue);
     void Input_Skill_4(const FInputActionValue& InputValue);
 
+    void Input_Init(const FInputActionValue& InputValue);
+
    // void Input_Skill1(const FInputActionValue& InputValue);
    // void Input_Skill2(const FInputActionValue& InputValue);
    // void Input_Skill3(const FInputActionValue& InputValue);
@@ -107,6 +109,10 @@ protected:
     UPROPERTY(EditAnywhere, Category = "Input")
     TObjectPtr<class UInputAction> skill_4_action;
 
+    UPROPERTY(EditAnywhere, Category = "Input")
+    TObjectPtr<class UInputAction> init_action;
+
+
 public:
     // HUD 위젯 클래스를 에디터에서 지정할 수 있도록 함
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UI")
@@ -119,6 +125,8 @@ public:
     UPROPERTY()
     class UMyPlayerHUDWidget* PlayerHUD;
 
+    // Dirty Flag Test
+    FVector2D LastDesiredInput;
     UPROPERTY()
     class USkillSelectionWidget* SkillSelectionWidget;
     
@@ -134,8 +142,16 @@ public:
     UPROPERTY()
     int32 Skilltest;
 
+protected:
+    const float MOVE_PACKET_SEND_DELAY = 1.0f / 60.0f;
+    float MovePacketSendTimer = MOVE_PACKET_SEND_DELAY;
+
+    // Cache
+    FVector2D DesiredInput;
+    FVector DesiredMoveDirection;
+    float DesiredYaw;
+
 public:
-    
     // 감도 턴측
     void TurnAtRate(float Rate);
     // 감도 룩측

@@ -17,9 +17,6 @@ class PROJECT_ANIMAGUS_API AAICharacter : public ABaseCharacter
 protected:
     virtual void BeginPlay() override;
 
-private:
-    void InitPlayerMesh(enum class CharacterMesh MeshType);
-
 public:
     
     virtual void ApplyStun(float Duration);
@@ -33,4 +30,7 @@ public:
 
 private:
     void InitPlayerMesh();
+
+public:
+    void SetPlayerMesh(Protocol::PlayerType MeshType) { PlayerType = MeshType; InitPlayerMesh(); }
 };

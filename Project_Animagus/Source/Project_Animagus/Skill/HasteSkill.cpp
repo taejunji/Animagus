@@ -21,6 +21,7 @@ UHasteSkill::UHasteSkill()
     BaseBoostedRunSpeed = BoostedRunSpeed;
     BaseHasteColldown = CooldownTime;
     
+    SkillType = Protocol::SkillType::HASTE;
 }
 
 void UHasteSkill::ActiveSkill_Implementation()
@@ -35,7 +36,7 @@ void UHasteSkill::ActiveSkill_Implementation()
         Char->default_run_speed     = BoostedRunSpeed;
         Char->SetWalkSpeed(BoostedRunSpeed);
 
-        if (LanchedSound && Char->IsLocallyControlled())
+        if (LanchedSound && Char->IsLocallyControlled() && Char->GetPawnType() == PawnType::PLAYER)
         {
             UGameplayStatics::PlaySound2D(this, LanchedSound);
         }
@@ -109,8 +110,8 @@ void UHasteSkill::CheckSpeed()
 
     // 로컬 플레이어 캐릭터인지 확인
     AController* Ctrl = Char->GetController();
-    if (!(Ctrl && Ctrl->IsLocalController()))
-        return;
+    if (Ctrl == nullptr) return;
+    if (Char->GetPawnType() != PawnType::PLAYER) return;
 
 
     // current_speed 기준으로 PostProcess 토글

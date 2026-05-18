@@ -25,6 +25,13 @@ void AConnectGameMode::BeginPlay()
     }
 }
 
+void AConnectGameMode::Tick(float DeltaTime)
+{
+    Super::Tick(DeltaTime);
+
+    Cast<UMyGameInstance>(GWorld->GetGameInstance())->HandleRecvPackets();
+}
+
 void AConnectGameMode::PostLogin(APlayerController* NewPlayer)
 {
     Super::PostLogin(NewPlayer);
@@ -38,4 +45,3 @@ void AConnectGameMode::PostLogin(APlayerController* NewPlayer)
     }
     
 }
-

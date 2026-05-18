@@ -68,30 +68,33 @@ void AAttractionZone::UpdateAttractionParameters(float DeltaTime)
 		return;
 	}
 
-	if (!BM->SpawnedPlayers.IsValidIndex(ControlledPlayerIndex))
-	{
-		// UE_LOG(LogTemp, Warning, TEXT("AttractionZone: Invalid ControlledPlayerIndex %d"), ControlledPlayerIndex);
-		return;
-	}
+    //if (!BM->SpawnedPlayers.IsValidIndex(ControlledPlayerIndex))
+ //   if (!BM->SpawnedPlayers.Contains(ControlledPlayerIndex))
+ //   {
+	//	// UE_LOG(LogTemp, Warning, TEXT("AttractionZone: Invalid ControlledPlayerIndex %d"), ControlledPlayerIndex);
+	//	return;
+	//}
 
-	AActor* PlayerActor = BM->SpawnedPlayers[ControlledPlayerIndex];
-	if (!PlayerActor)
-		return;
+	//AActor* PlayerActor = reinterpret_cast<AActor*>(BM->SpawnedPlayers[ControlledPlayerIndex]);
+	//if (!PlayerActor)
+	//	return;
+
+    if (OwnerCharacter == nullptr) return;
 
 	// 플레이어가 영역 내에 있으면 Niagara 파라미터 업데이트 및 데미지 적용
-	if (IsActorInsideZone(PlayerActor))
-	{
+    if (IsActorInsideZone(OwnerCharacter) && false == OwnerCharacter->GetIsDead())
+    {
 		if (NiagaraComp)
 		{
 			NiagaraComp->SetVariableFloat(FName("Attack"), 1.0f);
-			NiagaraComp->SetVariableVec3(FName("Player"), PlayerActor->GetActorLocation());
+			NiagaraComp->SetVariableVec3(FName("Player"), OwnerCharacter->GetActorLocation());
 			UE_LOG(LogTemp, Log, TEXT("AttractionZone: Player %d inside zone. Attack=1, Player position updated."), ControlledPlayerIndex);
 		}
 		// 로컬 컨트롤된 플레이어일 경우에만 데미지 적용
-		APawn* Pawn = Cast<APawn>(PlayerActor);
+		APawn* Pawn = Cast<APawn>(OwnerCharacter);
 		if (Pawn && Pawn->IsLocallyControlled())
 		{
-			ApplyGasDamage(PlayerActor, DeltaTime);
+			ApplyGasDamage(OwnerCharacter, DeltaTime);
 		}
 	}
 	else

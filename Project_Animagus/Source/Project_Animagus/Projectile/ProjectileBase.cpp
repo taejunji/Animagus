@@ -75,6 +75,7 @@ void AProjectileBase::BeginPlay()
     if (!Shooter)
     {
         Shooter = GetInstigator();
+        CollisionSphere->IgnoreActorWhenMoving(Shooter, true);
     }
 
     // 발사 사운드

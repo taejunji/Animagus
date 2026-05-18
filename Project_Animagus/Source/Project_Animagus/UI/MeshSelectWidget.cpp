@@ -10,6 +10,15 @@ void UMeshSelectWidget::SetupOwner(AConnectPlayerController* InController)
     Owner = InController;
 }
 
+void UMeshSelectWidget::ActiveStartButton()
+{
+    if (BtnStart)
+    {
+        BtnStart->SetIsEnabled(true);
+        BtnStart->SetVisibility(ESlateVisibility::Visible);
+    }
+}
+
 void UMeshSelectWidget::NativeConstruct()
 {
     Super::NativeConstruct();
@@ -27,6 +36,7 @@ void UMeshSelectWidget::NativeConstruct()
         BtnNext->OnClicked.AddDynamic(this, &UMeshSelectWidget::PlayClickSound);
         BtnNext->OnHovered.AddDynamic(this, &UMeshSelectWidget::PlayHoverSound); 
     }
+
  // Monkey
     if (BtnMonkey)
     {
@@ -131,6 +141,8 @@ void UMeshSelectWidget::NativeConstruct()
         //BtnStart->SetVisibility(ESlateVisibility::Collapsed);
 
     }
+
+    BtnStart->SetVisibility(ESlateVisibility::Collapsed);
 }
 
 void UMeshSelectWidget::PlayHoverSound()

@@ -3,8 +3,15 @@
 
 #include "BTTaskNode_Skill_2.h"
 #include "AIController.h"
+#include "MyAIController.h"
 #include "../Character/AICharacter.h"
 #include "Project_Animagus/Skill/BaseSkill.h"
+
+#include "../System/MyGameInstance.h"
+
+#include "../Server/Server/protocol.h"
+#include "../Network/Session.h"
+#include "../Network/ClientPacketHandler.h"
 
 UBTTaskNode_Skill_2::UBTTaskNode_Skill_2()
 {
@@ -26,12 +33,6 @@ EBTNodeResult::Type UBTTaskNode_Skill_2::ExecuteTask(UBehaviorTreeComponent& Own
     {
         return EBTNodeResult::Failed;
     }
-
-    if (Character && Character->Skills.IsValidIndex(2) && Character->Skills[2])
-    {
-        Character->Skills[2]->ActiveSkill();
-    }
-
 
     return EBTNodeResult::Succeeded;
 }

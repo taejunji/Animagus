@@ -37,6 +37,8 @@ public:
     
     UPROPERTY(meta=(BindWidget)) UButton* BtnLogin;
     UPROPERTY(meta=(BindWidget)) UButton* BtnSignup;
+    UPROPERTY(meta=(BindWidget)) UButton* BtnQuit;
+
 
     
     UPROPERTY(meta=(BindWidget)) UTextBlock* TxtResult;
@@ -57,4 +59,6 @@ public:
 
     void BindButtons();
 	
+    UFUNCTION()
+    void OnQuitBtnClicked();
 };

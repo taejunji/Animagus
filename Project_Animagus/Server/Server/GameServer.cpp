@@ -4,6 +4,10 @@
 #include "Session.h"
 #include "Listener.h"
 #include "SocketUtils.h"
+#include "ServerPacketHandler.h"
+#include "Room.h"
+#include "DBManager.h"
+#include "TextDBManager.h"
 
 
 GameServer::GameServer() : m_running(false) 
@@ -28,44 +32,21 @@ bool GameServer::Initialize()
         return false;
     }
     SocketUtils::Init();
+    ServerPacketHandler::Init();
 
-    //// 리슨 소켓 생성
-    //m_listenSocket = WSASocket(AF_INET, SOCK_STREAM, IPPROTO_TCP, 0, 0, WSA_FLAG_OVERLAPPED);
-    //if (m_listenSocket == INVALID_SOCKET) {
-    //    std::cerr << "Failed to create listen socket." << std::endl;
-    //    return false;
-    //}
+    // Room array Initialize
+    for (int32 i = 0; i < ROOM_COUNT; ++i)
+    {
+        GRoom[i] = std::make_shared<Room>();
+        GRoom[i]->m_roomID = i;
+    }
 
-    //SOCKADDR_IN serverAddr;
-    //ZeroMemory(&serverAddr, sizeof(serverAddr));
-    //serverAddr.sin_family = AF_INET;
-    //serverAddr.sin_port = htons(SERVER_PORT);           // 포트 번호
-    //serverAddr.sin_addr.s_addr = htonl(INADDR_ANY); // 모든 인터페이스
-    //if (bind(m_listenSocket, reinterpret_cast<sockaddr*>(&serverAddr), sizeof(serverAddr)) == SOCKET_ERROR) {
-    //    std::cerr << "Bind failed." << std::endl;
-    //    closesocket(m_listenSocket);
-    //    return false;
-    //}
-    //if (listen(m_listenSocket, SOMAXCONN) == SOCKET_ERROR) {
-    //    std::cerr << "Listen failed." << std::endl;
-    //    closesocket(m_listenSocket);
-    //    return false;
-    //}
-
-    //// 리슨소켓 CP등록
-    //if (m_iocpCore->Register(&m_listener))
-    //{
-    //    std::cerr << "리슨 소켓 IOCP 등록 실패." << std::endl;
-    //    return false;
-    //}
-
-    //HANDLE iocpHandle = m_iocpCore->GetHandle();
-    //if (CreateIoCompletionPort(reinterpret_cast<HANDLE>(m_listenSocket), iocpHandle, 0, 0) == nullptr) {
-    //    std::cerr << "리슨 소켓 IOCP 등록 실패." << std::endl;
-    //    return false;
-    //}
-
-    // TODO : AcceptEx 등록
+    m_iocpCore = std::make_shared<IocpCore>();
+    if (!m_iocpCore || m_iocpCore->GetHandle() == nullptr)
+    {
+        std::cerr << "Failed to create IOCP handle." << std::endl;
+        return false;
+    }
 
     m_listener = std::make_shared<Listener>();
     if (m_listener == nullptr)
@@ -75,7 +56,97 @@ bool GameServer::Initialize()
     if (m_listener->StartAccept(server) == false)
         return false;
 
-    std::cout << "[GameServer] Network and IOCP initialization complete." << std::endl;
+    std::cout << "[GameServer] Network initialization complete." << std::endl;
+
+#ifdef _DBMODE
+    auto& dbManager = DBManager::GetInstance();
+    dbManager.DBConnect();
+
+    //// ------------- DB test --------------
+    //std::string UserID = "great1625";
+    //std::string UserPasswd = "testghksgml2";
+
+    //char UserName[21];
+    //char flag;
+    //if (true == dbManager.DBFindById(UserID.c_str(), UserPasswd.c_str(), UserName, &flag))
+    //{
+    //    std::string userNameStr(UserName);
+    //    userNameStr.erase(remove(userNameStr.begin(), userNameStr.end(), ' '), userNameStr.end());
+    //    std::cout << userNameStr << " LogIn Success" << std::endl;
+    //}
+    //else {
+    //    if (flag == Protocol::LOGIN_USING)
+    //        std::cout << "Someone Using" << std::endl;
+    //    else if (flag == Protocol::LOGIN_NOEX)
+    //        std::cout << "NO Data in DB" << std::endl;
+    //    else {
+    //        std::cout << "Error" << std::endl;
+    //    }
+    //}
+
+    //if (true == dbManager.DBLogOutById(UserID.c_str())) {
+    //    std::cout << "LogOut Success" << std::endl;
+    //}
+
+    //std::string SignID = "testid";
+    //std::string SignPasswd = "testpasswd";
+    //std::string SignName = "TestUser";
+    //if (true == dbManager.DBSignUp(SignID.c_str(), SignPasswd.c_str(), SignName.c_str()))
+    //{
+    //    std::cout << "SignUp Success" << std::endl;
+    //    if (true == dbManager.DBDeleteUserById(SignID.c_str())) {
+    //        std::cout << "Delete User Success" << std::endl;
+    //    }
+    //}
+
+    ////-------------------------------------
+
+#else
+    auto& textDbManager = TextDBManager::GetInstance();
+    textDbManager.DBConnect();
+
+    //// ----------- TextDB test -------------
+    //std::string UserID = "great1625";
+    //std::string UserPasswd = "testghksgml2";
+    //
+    //char UserName[21];
+    //char flag;
+    //if (true == textDbManager.DBFindById(UserID.c_str(), UserPasswd.c_str(), UserName, &flag))
+    //{
+    //    std::string userNameStr(UserName);
+    //    userNameStr.erase(remove(userNameStr.begin(), userNameStr.end(), ' '), userNameStr.end());
+    //    std::cout << userNameStr << " LogIn Success" << std::endl;
+    //}
+    //else {
+    //    if (flag == Protocol::LOGIN_USING)
+    //        std::cout << "Someone Using" << std::endl;
+    //    else if (flag == Protocol::LOGIN_NOEX)
+    //        std::cout << "NO Data in DB" << std::endl;
+    //    else {
+    //        std::cout << "Error" << std::endl;
+    //    }
+    //}
+
+    //if (true == textDbManager.DBLogOutById(UserID.c_str())) {
+    //    std::cout << "LogOut Success" << std::endl;
+    //}
+
+    //std::string SignID = "testid";
+    //std::string SignPasswd = "testpasswd";
+    //std::string SignName = "TestUser";
+    //if (true == textDbManager.DBSignUp(SignID.c_str(), SignPasswd.c_str(), SignName.c_str()))
+    //{
+    //    std::cout << "SignUp Success" << std::endl;
+    //    if (true == textDbManager.DBDeleteUserById(SignID.c_str())) {
+    //        std::cout << "Delete User Success" << std::endl;
+    //    }
+    //}
+    //else {
+    //    std::cout << "SignUp Failed" << std::endl;
+    //}
+    //// --------------------------------------
+#endif
+
     return true;
 }
 
@@ -86,8 +157,9 @@ void GameServer::Run()  // 메인 스레드도 이 함수 돌리는게 나을듯
     unsigned int workerCount = std::thread::hardware_concurrency() - 1;
     if (workerCount == 0)
     {
-        workerCount = 4; // 기본값
+        workerCount = 4; // default
     }
+    m_workerThreads.resize(workerCount);
 
     std::cout << "[GameServer] Running..." << std::endl;
 
@@ -97,14 +169,29 @@ void GameServer::Run()  // 메인 스레드도 이 함수 돌리는게 나을듯
         m_workerThreads.emplace_back([this]() {
             while (m_running.load())
             {
-                if (m_iocpCore->Dispatch(10))
-                {
-                    // TODO : error log
-                }
+                m_iocpCore->Dispatch(10);
             }
             });
     }
 
+    // 메인 스레드
+    while (m_running.load())
+    {
+        m_iocpCore->Dispatch(10);
+
+        // TEMP : test 용
+        //if (m_sessionCount == 0) continue;
+        //DCS_TEST_PKT pkt;
+        //std::string msg = "Hello";
+        //::memcpy(pkt.msg, msg.c_str(), msg.size());
+        //pkt.len = 5;
+
+        //SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(pkt);
+        //for (auto& session : m_sessions)
+        //    session->Send(sendBuffer);
+
+        //std::this_thread::sleep_for(std::chrono::seconds(1));
+    }
 }
 
 void GameServer::Shutdown() {
@@ -129,7 +216,7 @@ void GameServer::Shutdown() {
 
 void GameServer::AddSession(SessionRef session)
 {
-    std::lock_guard lock(m_mutex);
+    std::lock_guard<std::mutex> lock(m_mutex);
 
     m_sessionCount++;
     m_sessions.insert(session);
@@ -137,7 +224,7 @@ void GameServer::AddSession(SessionRef session)
 
 void GameServer::ReleaseSession(SessionRef session)
 {
-    std::lock_guard lock(m_mutex);
+    std::lock_guard<std::mutex> lock(m_mutex);
 
     if (m_sessions.erase(session) != 0);
     m_sessionCount--;

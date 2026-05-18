@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "../Server/Server/protocol.h"
 #include "Engine/EngineTypes.h"
 #include "BaseCharacter.generated.h"
 
@@ -19,6 +20,7 @@
  
 */
 
+enum class PawnType { NONE, PLAYER, AI, NETWORK };
 enum class MontageType { DefaultAttack, Hit, Jump };
 class UNiagaraComponent;
 class UNiagaraSystem;
@@ -103,6 +105,7 @@ public:
     
     // 서버에서 char형 이름 받아서 언리얼 FString으로 적용
     void SetCharacterName(const char* name);
+    void SetCharacterName(const FString name);
 
     // 블루프린트에서 함수를 직접 구현
     UFUNCTION(BlueprintImplementableEvent, Category = "Effects")
@@ -208,9 +211,24 @@ public:
     bool UseSkillByName(const FString& DesiredSkillName);
     
 public:
+    Protocol::PlayerType GetPlayerType() const { return PlayerType; }
+    uint16 GetPlayerId() const { return PlayerId; }
+    Protocol::PlayerState GetMoveState() const { return PlayerState; }
+    void SetMoveState(Protocol::PlayerState state) { PlayerState = state; }
+    void SetPlayerId(uint16 playerId) { PlayerId = playerId; }
+
+    void SetPawnType(PawnType type) { mPawnType = type; }
+    PawnType GetPawnType() { return mPawnType; }
+
+protected:
+    uint16 PlayerId = 0;
+    Protocol::PlayerType PlayerType = Protocol::PlayerType::RAM;
+    Protocol::PlayerState PlayerState = Protocol::PlayerState::MOVE_STATE_NONE;
+    PawnType mPawnType = PawnType::NONE;
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Jump")
     int32 MyjumpMax = 1;
 
+public:
     virtual void Jump() override;
 
     UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Jump")

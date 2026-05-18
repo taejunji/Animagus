@@ -3,8 +3,15 @@
 
 #include "BTTaskNode_Fire.h"
 #include "AIController.h"
+#include "MyAIController.h"
 #include "../Character/AICharacter.h"
 #include "Project_Animagus/Skill/BaseSkill.h"
+
+#include "../System/MyGameInstance.h"
+
+#include "../Server/Server/protocol.h"
+#include "../Network/Session.h"
+#include "../Network/ClientPacketHandler.h"
 
 
 UBTTaskNode_Fire::UBTTaskNode_Fire()

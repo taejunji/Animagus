@@ -202,7 +202,7 @@ public:
 
     UWidgetAnimation* GetCountDownTime() const { return CountDownTime; }
 
-    void ResetLevelImgage();
+    void ResetLevelImage();
 
     void SetLevelImage(int32 num);
 

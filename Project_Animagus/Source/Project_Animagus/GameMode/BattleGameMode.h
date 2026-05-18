@@ -4,6 +4,10 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/GameModeBase.h"
+#include "../Character/PlayerCharacter.h"
+
+#include "../Server/Server/protocol.h"
+
 #include "BattleGameMode.generated.h"
 
 /**
@@ -15,6 +19,8 @@ class ABaseCharacter;
 class AItem_Box_Base;
 class USoundBase;
 class AShrinkingZone;
+class AAttractionZone;
+class UAudioComponent;
 class USkillSelectionWidget;
 
 enum class RoundDay { Morning, SunSet, Night };
@@ -29,11 +35,21 @@ public:
     virtual void StartPlay() override;
     virtual void Tick(float DeltaTime) override;
 
-public:
+public:    // 게임 시스템 관련
     ABattleGameMode();
+    TArray<ABaseCharacter*> GetSpawnedPlayers();
 
-    void SpawnPlayers();
+    void InitBattleMode();
     void ActivateInput();
+
+    // 타이머 업데이트 함수
+    void PrintElapsedtime();
+    void CountdownTimerUpdate();
+    void RoundTimerUpdate();
+    void HandleServerTime(uint64 server_time);
+    float GetCurrentRoundTime() const { return CurrentRoundTime; }
+
+    float TIME_OVER = 60.0f * 3.f;    // 라운드 종료 시간
 
     // 서버에서 라운드 받아서 설정하는 함수
     UFUNCTION(BlueprintCallable, Category = "Level")
@@ -46,27 +62,119 @@ public:
     void SetBluePrintLevel(int32 CurRound);
 
 
-protected:
+public:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Battle Settings")
-    float start_time; // ex) 5초 후에 입력 활성화
+    float start_time;               // 라운드 시작 시간 (안씀)
+    uint64 StartTime2Server = 0;    // 라운드 시작 시간
+    float CurrentCountdownTime;     // 현재 카운트다운 시간
+    float CountdownTime = 5.0f;
+    uint64 CurrentRoundTime;        // 현재 라운드 진행시간
+    float elasped_time;             // 현재 라운드 진행시간 (안씀)
+    int32 SelectionTimeRemaining;   // 현재 스킬 선택 남은시간
+    int32 SelectionTime = 10;
+
+    // 시간별 이벤트 토글
+    bool CalledActiveInput = false;
+    bool CalledConfirmInput = false;
+    bool isRoundEnd = false;
+    bool GameStartHUDtoggle = false;
+
+    // 타이머 핸들들
+    FTimerHandle SkillSelectionTimerHandle; // 스킬선택 남은시간 갱신 (안씀)
+    FTimerHandle SkillSelectionTickHandle;  // 스킬선택 남은시간 갱신
+    FTimerHandle CountdownTimerHandle;      // 카운트다운 갱신
+    FTimerHandle GameStartTimerSoundHandle; // 카운트다운 사운드 재생
+    FTimerHandle RoundTimerHandle;          // 라운드 진행시간 갱신
+    FTimerHandle battle_timer_handle;       // 라운드 진행시간 갱신 (안씀)
+
+
+public:    // 게임 오브젝트 관련
+    void SpawnPlayers();
+    void SpawnAIPlayers(Protocol::SC_AI_SPAWN_PKT& pkt);
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Classes)
+    TSubclassOf<APawn> NetPawnClass;
+
+    const uint16 MAX_PLAYER = 8;
+    uint16 CurrentPlayerCount = 1;
 
     // 플레이어 ID를 (Key)로 스폰위치(Location, Rotation)를 (Value)로 갖음
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Battle Settings")
     TMap<int32, FTransform> spawn_transform;
+    // 스폰된 플레이어 캐릭터들을 저장할 배열
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Spawning", meta = (AllowPrivateAccess = "true"))
+    TMap<int32, ABaseCharacter*> SpawnedPlayers;
+    //TArray<ABaseCharacter*> SpawnedPlayers;
+    // 플레이어 스폰 위치 배열 (에디터에서 조절 가능)
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawning", meta = (AllowPrivateAccess = "true"))
+    TArray<FVector> SpawnLocations;
+    // 플레이어 스폰 회전 배열 (에디터에서 조절 가능)
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawning", meta = (AllowPrivateAccess = "true"))
+    TArray<FRotator> SpawnRotations;
+    // 내가 소유할 플레이어 인덱스 (예: GameInstance에서 가져올 수 있음)
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawning", meta = (AllowPrivateAccess = "true"))
+    int32 PossessIndex;
 
-    // 현재 카운트다운 시간
-    float CurrentCountdownTime;
+    APlayerCharacter* PlayerCharacter; // 플레이어 캐릭터 포인터
+    // 관전 시 순회를 위한 배열
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Spawning", meta = (AllowPrivateAccess = "true"))
+    TArray<ABaseCharacter*> IndexingSpawnedPlayers;
 
-    // 현재 라운드 진행 시간 (카운트다운 종료 후)
-    float CurrentRoundTime;
 
-    // 타이머 핸들들
-    FTimerHandle CountdownTimerHandle;
-    FTimerHandle RoundTimerHandle;
 
-    // 타이머 업데이트 함수
-    void CountdownTimerUpdate();
-    void RoundTimerUpdate();
+    UFUNCTION(BlueprintCallable, Category = "PowerUp")
+    void InitializeArea1SpawnPoints();
+
+    UFUNCTION(BlueprintCallable, Category = "PowerUp")
+    void SpawnItemsInArea1();
+
+    UFUNCTION(BlueprintCallable, Category = "PowerUp")
+    void InitializeArea2SpawnPoints();
+
+    UFUNCTION(BlueprintCallable, Category = "PowerUp")
+    void InitializeArea3SpawnPoints();
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawning")
+    TArray<FVector> Area1SpawnPoints;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawning")
+    TArray<FVector> Area2SpawnPoints;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawning")
+    TArray<FVector> Area3SpawnPoints;
+
+    TArray<TArray<FVector>> AreaSpawnPoints;
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "PowerUp")
+    TArray<class AItem_Box_Base*> SpawnedItemBoxes;
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "PowerUp")
+    TArray<class ABaseItem*> SpawnedItems;
+
+public:    // 네트워크 서비스 관련
+    void SetPlayerIndex(uint16 playerIndex);
+    void SpawnPlayer(Protocol::SC_SPAWN_PKT& pkt);
+    void MoveOtherPlayer(Protocol::CS_MOVE_PKT& pkt);
+    void SpawnSkill(Protocol::CS_USING_SKILL_PKT& pkt);
+    void SpawnItem(Protocol::SC_SPAWN_ITEM_PKT& pkt);
+    void SpawnItemsInArea3(Protocol::SC_SPAWN_ITEM_PKT& pkt);
+    void SpawnDeathItem(Protocol::CS_DEATH_ITEM_PKT& pkt);
+    void UpdateHp(Protocol::SC_UPDATE_HP_PKT& pkt);
+    void HandleJumpEffect(Protocol::CS_JUMP_EFT_PKT& pkt);
+    void HandleSetPowerUp(Protocol::SC_SET_POWERUP_PKT& pkt);
+    void HandleAlivePlayerCount(Protocol::SC_PLAYER_COUNT_PKT& pkt);
+
+    bool AmIHost = false;
+    int16 RoomId = 0;
+    int16 PlayerIndex = 0;
+
+    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Jump")
+    UNiagaraSystem* Jumpeffect;
+
+
+protected:
+
+
 
     UPROPERTY(EditAnywhere, Category = "Audio")
     USoundBase* BackgroundMusic;
@@ -76,6 +184,12 @@ protected:
 
     UPROPERTY(EditAnywhere, Category = "Audio")
     USoundBase* StartSound;
+
+    UPROPERTY(EditAnywhere, Category = "Audio")
+    USoundBase* JumpSound;
+
+    UPROPERTY(EditAnywhere, Category = "Audio")
+    USoundAttenuation* AttenuationSettings;
 
 public:
     
@@ -107,30 +221,24 @@ public:
     UPROPERTY(EditAnywhere, Category = "Item")
     TSubclassOf<class AItem_Box_Base> ItemBoxBpclass;
 
-    class AShrinkingZone* ShrinkingZone;
+    TSubclassOf<class AAttractionZone> AttractionBpclass;
 
+    TSubclassOf<class AItem_Box_High> ItemBoxHighBpclass;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item")
+    TSubclassOf<class ADeathPowerUpItem> DeathPowerClass;
+
+    UPROPERTY()
+    UAudioComponent* BackgroundMusicComponent;
+    void PlayBackgroundMusic();
+    
     UPROPERTY(EditAnywhere, Category = "ShrinkZone")
     TSubclassOf<class AShrinkingZone> ShrinkzoneBpclass;
-
-    // 라운드 경과 시간 출력
-    FTimerHandle battle_timer_handle;
-    float elasped_time;
-
-    void InitBattleMode();
-    void PrintElapsedtime();
 
 public:
     UPROPERTY()
     USkillSelectionWidget* ActiveSkillSelectionWidget;
 
-    // 30초 선택 단계 타이머
-    FTimerHandle SkillSelectionTimerHandle;
-
-    // 1초마다 남은 시간 갱신용 타이머 핸들
-    FTimerHandle SkillSelectionTickHandle;
-
-    // 남은 선택 시간(초)
-    int32 SelectionTimeRemaining;
 
     UFUNCTION()
     void OnSkillSelectionTimeout();
@@ -140,60 +248,14 @@ public:
     void OnSkillSelectionTick();
     
 public:
-    // 스폰된 플레이어 캐릭터들을 저장할 배열
-    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Spawning", meta = (AllowPrivateAccess = "true"))
-    TArray<ABaseCharacter*> SpawnedPlayers;
+    AShrinkingZone* ShrinkingZone;
 
-    // 플레이어 스폰 위치 배열 (에디터에서 조절 가능)
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawning", meta = (AllowPrivateAccess = "true"))
-    TArray<FVector> SpawnLocations;
+    TArray<AAttractionZone*> AttractionZones;
 
-    // 플레이어 스폰 회전 배열 (에디터에서 조절 가능)
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawning", meta = (AllowPrivateAccess = "true"))
-    TArray<FRotator> SpawnRotations;
-
-    // 내가 소유할 플레이어 인덱스 (예: GameInstance에서 가져올 수 있음)
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawning", meta = (AllowPrivateAccess = "true"))
-    int32 PossessIndex;
-
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawning")
-    TArray<FVector> Area1SpawnPoints;
-
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawning")
-    TArray<FVector> Area2SpawnPoints;
-
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawning")
-    TArray<FVector> Area3SpawnPoints;
-
-    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "PowerUp")
-    TArray<class AItem_Box_Base*> SpawnedItems;
-
-
-    // 영역1의 스폰 좌표들을 초기화하는 함수 
-    UFUNCTION(BlueprintCallable, Category = "PowerUp")
-    void InitializeArea1SpawnPoints();
-
-    UFUNCTION(BlueprintCallable, Category = "PowerUp")
-    void InitializeArea2SpawnPoints();
-
-    UFUNCTION(BlueprintCallable, Category = "PowerUp")
-    void InitializeArea3SpawnPoints();
-
-    UFUNCTION(BlueprintCallable, Category = "PowerUp")
-    void SpawnItemsInArea1();
-
-    UFUNCTION(BlueprintCallable, Category = "PowerUp")
-    void SpawnItemsInArea2();
-
-    UFUNCTION(BlueprintCallable, Category = "PowerUp")
-    void SpawnItemsInArea3();
-
-    float GetCurrentRoundTime() const;
-
-    public:
+public:
 
     UFUNCTION()
-    void OnRoundEnd();
+    void OnRoundEnd(TArray<FString> Names, TArray<int32> Scores);
 
     UPROPERTY(EditAnywhere, Category="Round Results")
     TArray<int32> RoundScores;

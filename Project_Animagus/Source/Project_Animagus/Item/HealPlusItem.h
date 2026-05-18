@@ -16,5 +16,6 @@ class PROJECT_ANIMAGUS_API AHealPlusItem : public ABaseItem
 public:
     AHealPlusItem();
     
+    virtual void BeginPlay() override;
     virtual void OnPickedUp(class ABaseCharacter* Picker) override;	
 };

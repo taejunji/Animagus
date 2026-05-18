@@ -1,4 +1,4 @@
-﻿#include "Fireball.h"
+#include "Fireball.h"
 #include "../Projectile/Projectile_FireBall.h"
 #include "Kismet/GameplayStatics.h"
 #include "../Character/BaseCharacter.h"
@@ -16,8 +16,8 @@ UFireball::UFireball()
     SkillName = "Fireball";
     
     CooldownTime = 3.f;
-    FireballDamage = 5.0f;
-    FireballSpeed = 1500.f;
+    FireballDamage = 10.0f;
+    FireballSpeed = 3500.f;
     static ConstructorHelpers::FClassFinder<AProjectile_FireBall> FireballBPFinder(TEXT("/Game/WorkFolder/Bluprints/Projectiles/MyProjectile_FireBall"));
     if (FireballBPFinder.Succeeded())
     {
@@ -27,6 +27,9 @@ UFireball::UFireball()
     {
         UE_LOG(LogTemp, Warning, TEXT("Failed to load Fireball BP class!"));
     }
+
+    SkillType = Protocol::SkillType::FIREBALL;
+
     // 기본값 저장 (강화 전 기본 수치)
     SkillDescription = TEXT("가장 기본적인 스킬");
     BaseFireballDamage = FireballDamage;
@@ -53,55 +56,15 @@ void UFireball::ActiveSkill_Implementation()
     Owner->PlayAnimMontageByType(MontageType::DefaultAttack);
 
     // 투사체 스폰 위치
-    FVector SpawnLocation = Owner->GetActorLocation() + Owner->GetActorForwardVector() * 80.f + Owner->GetActorRightVector() * 30.f; 
+    FVector SpawnLocation = OwnerLocation + Owner->GetActorForwardVector() * 80.f + Owner->GetActorRightVector() * 30.f; 
     FRotator SpawnRotation;
 
-    // AI가 호출한 경우
-    if (AMyAIController* AIController = Cast<AMyAIController>(Owner->GetController()))
-    {
-        ABaseCharacter* TargetCharacter = nullptr; 
-        UBlackboardComponent* BBComp = AIController->GetBlackboardComponent();
-        if (BBComp && AIController->TargetKey.SelectedKeyName.IsValid())
-        {
-            TargetCharacter = Cast<ABaseCharacter>(BBComp->GetValueAsObject(AIController->TargetKey.SelectedKeyName));
-        }
-        if (TargetCharacter)
-        {
-            FVector DirectionToTarget = (TargetCharacter->GetActorLocation() - SpawnLocation).GetSafeNormal();
-            SpawnRotation = DirectionToTarget.Rotation() + FRotator(1.f, 0.f, 0.f);
+    FVector CameraLocation = OwnerLocation;
+    FRotator CameraRotation = Rotation;
 
-            //UE_LOG(LogTemp, Log, TEXT("SpawnRotation - Pitch: %f, Yaw: %f, Roll: %f"),
-            //    SpawnRotation.Pitch,
-            //    SpawnRotation.Yaw,
-            //    SpawnRotation.Roll);
-        }
-        else
-        {
-            // 타겟이 없다면 AI Panw이 바라보는 방향으로 발사
-            SpawnRotation = Owner->GetActorRotation() + FRotator(1.f, 0.f, 0.f);
+    SpawnRotation = CameraRotation + FRotator(1.f, 0.f, 0.f);
 
-        }
-    }
-    else // Player 혹은 Network가 호출한 경우
-    {
-        // 플레이어 컨트롤러를 통해 카메라 뷰포인트를 가져옵니다.
-        FVector CameraLocation;
-        FRotator CameraRotation;
-        if (Owner->GetController())
-        {
-            Owner->GetController()->GetPlayerViewPoint(CameraLocation, CameraRotation);
-        }
-        else
-        {
-            CameraLocation = Owner->GetActorLocation();
-            CameraRotation = Owner->GetActorRotation();
-        }
-
-        // 진행 방향: 카메라 뷰 방향 사용
-        SpawnRotation = CameraRotation + FRotator(1.f, 0.f, 0.f);
-    }
-
-    UE_LOG(LogTemp, Log, TEXT("Fireball Skill: OwnerLocation = %s"), *Owner->GetActorLocation().ToString());
+    UE_LOG(LogTemp, Log, TEXT("Fireball Skill: OwnerLocation = %s"), *OwnerLocation.ToString());
     // UE_LOG(LogTemp, Log, TEXT("Fireball Skill: CameraRotation = %s"), *CameraRotation.ToString());
     UE_LOG(LogTemp, Log, TEXT("Fireball Skill: SpawnLocation = %s"), *SpawnLocation.ToString());
     UE_LOG(LogTemp, Log, TEXT("Fireball Skill: SpawnRotation = %s"), *SpawnRotation.ToString());
@@ -125,7 +88,7 @@ void UFireball::ActiveSkill_Implementation()
     if (ProjectileBPClass)
     {
         Owner->PlayAnimMontageByType(MontageType::DefaultAttack);
-        
+
         if (FireballProj)
         {
             FireballProj->Shooter = Owner;    
@@ -135,6 +98,9 @@ void UFireball::ActiveSkill_Implementation()
             {
                 FireballProj->ProjectileMovement->InitialSpeed = FireballSpeed;
                 FireballProj->ProjectileMovement->MaxSpeed = FireballSpeed;
+
+                FVector Dir = FireballProj->ProjectileMovement->Velocity.GetSafeNormal();
+                FireballProj->ProjectileMovement->Velocity = Dir * FireballSpeed;
             }
             UE_LOG(LogTemp, Log, TEXT("Fireball Skill: Projectile spawned successfully."));
             UE_LOG(LogTemp, Log, TEXT("FireballProj->Shooter set to: %s"), 
@@ -154,17 +120,17 @@ void UFireball::ActiveSkill_Implementation()
     if (bFirstUse)
     {
         bFirstUse = false;
-    } 
+    }
     StartCooldown();
 }
 
 void UFireball::UpgradeSkill(int32 NewPowerUpLevel)
 {
-
     float CooldownMultiplier = FMath::Clamp(1.0f - (0.05f * NewPowerUpLevel), 0.5f, 1.0f);
 
     FireballDamage = BaseFireballDamage + (3.f * NewPowerUpLevel);
     CooldownTime = BaseCooldownTime * CooldownMultiplier;
+    FireballSpeed = 3500.f + (100.f * NewPowerUpLevel);
 
     UE_LOG(LogTemp, Log, TEXT("Fireball upgraded: PowerUpLevel %d, Damage: %f, Cooldown: %f"), 
         NewPowerUpLevel, FireballDamage, CooldownTime);

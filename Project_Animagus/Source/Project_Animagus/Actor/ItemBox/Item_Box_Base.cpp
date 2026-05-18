@@ -10,6 +10,7 @@
 #include "UObject/ConstructorHelpers.h"
 #include "Perception/AIPerceptionStimuliSourceComponent.h"
 #include "Perception/AISense_Sight.h"
+#include "../../GameMode/BattleGameMode.h"
 
 #include "../Zones/AttractionZone.h"
 #include "../Zones/ShrinkingZone.h"
@@ -213,6 +214,12 @@ void AItem_Box_Base::BreakBox()
         if (SpawnedItem)
         {
             UE_LOG(LogTemp, Log, TEXT("Item_Box_Base: Spawned item at %s"), *SpawnLocation.ToString());
+            if (auto GameMode = GetWorld()->GetAuthGameMode<ABattleGameMode>())
+            {
+                UE_LOG(LogTemp, Warning, TEXT("상자부서져서 아이템 추가"));
+
+                GameMode->SpawnedItems.Add(SpawnedItem);
+            }
         }
         else
         {

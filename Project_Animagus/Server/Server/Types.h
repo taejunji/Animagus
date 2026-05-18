@@ -1,4 +1,5 @@
 #pragma once
+#include <memory>
 
 using BYTE = unsigned char;
 using int8 = __int8;
@@ -18,6 +19,11 @@ USING_SHARED_PTR(IocpObject);
 USING_SHARED_PTR(Session);
 USING_SHARED_PTR(Listener);
 USING_SHARED_PTR(GameServer);
+USING_SHARED_PTR(SendBuffer);
+USING_SHARED_PTR(RecvBuffer);
+USING_SHARED_PTR(Player);
+USING_SHARED_PTR(Room);
+USING_SHARED_PTR(AIPlayer);
 
 
 #define size16(val) static_cast<int16>(sizeof(val))

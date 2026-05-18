@@ -4,6 +4,9 @@
 
 #include "CoreMinimal.h"
 #include "BaseCharacter.h"
+
+#include "../Server/Server/protocol.h"
+
 #include "NetworkCharacter.generated.h"
 
 /**
@@ -13,9 +16,25 @@ UCLASS()
 class PROJECT_ANIMAGUS_API ANetworkCharacter : public ABaseCharacter  
 {
 	GENERATED_BODY() 
+	
+public:
+    ANetworkCharacter();
+    virtual ~ANetworkCharacter();
+
 protected:
     virtual void BeginPlay() override;
-        
+    virtual void Tick(float DeltaTime) override;
+
+public:
+    void SetPlayerType(Protocol::PlayerType type) { PlayerType = type; InitPlayerMesh(); }
+    void SetPlayerInfo(Protocol::PlayerInfo& info);
+    void SetDestInfo(Protocol::PlayerInfo& info);
+
+
 private:
-    void InitPlayerMesh();	
+    void InitPlayerMesh();
+
+protected:
+    Protocol::PlayerInfo* PlayerInfo; // 현재 위치
+    Protocol::PlayerInfo* DestInfo;   // 목적지
 };

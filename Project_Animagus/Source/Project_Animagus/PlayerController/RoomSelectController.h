@@ -23,7 +23,10 @@ public:
     /** 위젯 생성 & 화면에 띄우기 */
     void ShowRoomSelectUI();
 
-void EnterRoom();
+    void EnterRoom(uint8 roomIndex);
+    void HandleRoomEnter();
+    void HandleRoomEnterFail();
+
     
     /** 룸 선택 버튼 핸들러 */
     UFUNCTION() void OnRoom1Clicked();

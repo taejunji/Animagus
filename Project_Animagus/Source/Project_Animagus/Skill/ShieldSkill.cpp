@@ -16,8 +16,19 @@ UShieldSkill::UShieldSkill()
     BaseCooldownTime = CooldownTime;
     SkillDescription = TEXT("다른 스킬들로 부터 사용자를 보호하는 보호막을 소환합니다.");
     ShieldActorBPClass = nullptr; // 에디터에서 보호막 액터 블루프린트 클래스를 할당할 것
+    static ConstructorHelpers::FClassFinder<AShieldActor> ShieldBPFinder(TEXT("/Game/WorkFolder/Bluprints/Shield/MyShieldActor"));
+    if (ShieldBPFinder.Succeeded())
+    {
+        ShieldActorBPClass = ShieldBPFinder.Class;
+    }
+    else
+    {
+        UE_LOG(LogTemp, Warning, TEXT("Failed to load Shield BP class!"));
+    }
 
- 
+
+    SkillType = Protocol::SkillType::SHIELD;
+
 }
 void UShieldSkill::UpgradeSkill(int32 NewPowerUpLevel)
 {

@@ -19,7 +19,7 @@ public:
     void ShowConnectUI();
     void OnMeshSelected(CharacterMesh Selected);  
     void OnStartGame();
-
+    void ActiveStartButton();
 
     virtual void OnPossess(APawn* InPawn) override;
     

@@ -10,9 +10,14 @@
 #include "GameFramework/CharacterMovementComponent.h" 
 #include "Project_Animagus/Skill/BaseSkill.h"
 #include "../UI/MyPlayerHUDWidget.h"
+#include "../System/MyGameInstance.h"
+
+#include "../Server/Server/protocol.h"
+#include "../Network/Session.h"
+#include "../Network/ClientPacketHandler.h"
+
 #include "../GameMode/BattleGameMode.h"
 #include "Kismet/GameplayStatics.h"
-#include "Project_Animagus/System/MyGameInstance.h"
 #include "Project_Animagus/UI/RoundResultWidget.h"
 #include "Project_Animagus/UI/SkillSelectionWidget.h"
 
@@ -68,7 +73,9 @@ void ABattle_PlayerController::DisPlayPlayerWidget()
             PlayerHUD->AddToViewport();
             PlayerHUD->UpdateSelectedSkillOutline(0);
         }
-    } 
+
+    DisableInput(this); // 입력 비활성화
+    }
 }
 
 
@@ -111,6 +118,7 @@ void ABattle_PlayerController::SetupInputComponent()
         // "Camera 변경: <-, ->"
         EnhancedInputComponent->BindAction(convert_camera_action, ETriggerEvent::Started, this, &ThisClass::Input_ConvertCamera);
 
+        EnhancedInputComponent->BindAction(init_action, ETriggerEvent::Started, this, &ThisClass::Input_Init);
     }
 }
 
@@ -165,6 +173,68 @@ void ABattle_PlayerController::Tick(float DeltaTime)
                 
             }
         }
+
+
+        // Send 판정
+        bool ForceSendPacket = false;
+
+        if (LastDesiredInput != DesiredInput)
+        {
+            ForceSendPacket = true;
+            LastDesiredInput = DesiredInput;
+        }
+
+        //// State 정보
+        //if (DesiredInput == FVector2D::Zero())
+        //    MyPlayer->SetMoveState(Protocol::PlayerState::MOVE_STATE_IDLE);
+        //else
+        //    MyPlayer->SetMoveState(Protocol::PlayerState::MOVE_STATE_RUN);
+        // state 를 캐릭터 클래스에서 사용하나?
+        // 안하면 그냥 컨트롤러에 박아놓고 사용
+
+        MovePacketSendTimer -= DeltaTime;
+
+        if (MovePacketSendTimer <= 0 || ForceSendPacket)
+        {
+            // State 설정
+            if (false == MyPlayer->GetMovementComponent()->IsFalling())
+            {
+                MyPlayer->SetMoveState(Protocol::PlayerState::MOVE_STATE_RUN);
+                if (MyPlayer->GetVelocity().Size2D() == 0.0f)
+                    MyPlayer->SetMoveState(Protocol::PlayerState::MOVE_STATE_IDLE);
+            }
+            else {
+                MyPlayer->SetMoveState(Protocol::PlayerState::MOVE_STATE_JUMP);
+            }
+
+            MovePacketSendTimer = MOVE_PACKET_SEND_DELAY;
+
+            Protocol::CS_MOVE_PKT MovePkt;
+
+            // 현재 위치 정보
+            {
+                FVector Velo = MyPlayer->GetMovementComponent()->Velocity;
+
+                Protocol::PlayerInfo Info;
+                FVector Location = MyPlayer->GetActorLocation();
+                Info.x = Location.X; Info.y = Location.Y; Info.z = Location.Z;
+                Info.rotation = MyPlayer->GetActorRotation().Yaw;
+                Info.player_id = MyPlayer->GetPlayerId();
+                //Info.player_type = MyPlayer->GetPlayerType();
+                Info.player_state = MyPlayer->GetMoveState();
+                Info.speed_2d = MyPlayer->GetMovementComponent()->Velocity.Size2D();
+                Info.speed_z = MyPlayer->GetMovementComponent()->Velocity.Z;
+                //UE_LOG(LogTemp, Warning, TEXT("MySpeed: %f - %d"), Info.speed, MyPlayer->GetPlayerId());
+
+                MovePkt.player_info = Info;
+            }
+
+            //UE_LOG(LogTemp, Warning, TEXT("PlayerInfo Send"));
+
+            SendBufferRef SendBuffer = ClientPacketHandler::MakeSendBuffer(MovePkt);
+            Cast<UMyGameInstance>(GWorld->GetGameInstance())->SendPacket(SendBuffer);
+        }
+
     }
 }
 
@@ -174,11 +244,14 @@ void ABattle_PlayerController::Input_Move(const FInputActionValue& InputValue)
     // IMC에 연결된 Action이 행해지면 InputValue에서 값을 추출할 수 있다. 
     // Axis2D의 값 = 2D float => X는 앞뒤 이동, Y는 양옆 이동
 
+    DesiredInput = MoveInput;
+    DesiredMoveDirection = FVector::ZeroVector;
+
     if (MoveInput.X != 0)
     {
         // 플레이어 컨트롤러가 바라보는 방향에 따라 캐릭터가 이동할 방향을 계산하고 움직임을 처리하는 코드
 
-        // 1. 현재 컨트롤러가 바라보는 방향의 회전 정보 
+        // 1. 현재 컨트롤러가 바라보는 방향의 회전 정보
         // 2. UKismetMathLibrary::GetForwardVector 함수는 입력받은 FRotator를 기준으로 
         //      기본 전방 Forward 벡터 (1, 0, 0)을 회전시켜 새로운 방향 벡터를 반환
         // 
@@ -188,6 +261,8 @@ void ABattle_PlayerController::Input_Move(const FInputActionValue& InputValue)
         FRotator Rotator = GetControlRotation();
         FVector Direction = UKismetMathLibrary::GetForwardVector(FRotator(0, Rotator.Yaw, 0));
         GetPawn()->AddMovementInput(Direction, MoveInput.X);
+
+        DesiredMoveDirection += Direction * MoveInput.Y;
     }
 
     if (MoveInput.Y != 0)
@@ -195,7 +270,21 @@ void ABattle_PlayerController::Input_Move(const FInputActionValue& InputValue)
         FRotator Rotator = GetControlRotation();
         FVector Direction = UKismetMathLibrary::GetRightVector(FRotator(0, Rotator.Yaw, 0));
         GetPawn()->AddMovementInput(Direction, MoveInput.Y);
+
+        DesiredMoveDirection += Direction * MoveInput.X;
     }
+
+    DesiredMoveDirection.Normalize();
+
+    auto* MyPlayer = Cast<APlayerCharacter>(GetPawn());
+    if (MyPlayer == nullptr) return;
+
+    // 이동 보정 관련
+    const FVector Location = MyPlayer->GetActorLocation();
+    FRotator Rotator = UKismetMathLibrary::FindLookAtRotation(Location, Location + DesiredMoveDirection);
+    DesiredYaw = Rotator.Yaw;
+
+
 }
 
 void ABattle_PlayerController::Input_Rotate(const FInputActionValue& InputValue)
@@ -215,6 +304,8 @@ void ABattle_PlayerController::Input_Jump(const FInputActionValue& InputValue)
             MyPlayer->PlayAnimMontageByType(MontageType::Jump);
         }
         MyPlayer->Jump();
+
+        MyPlayer->SetMoveState(Protocol::PlayerState::MOVE_STATE_JUMP);
     }
 }
 
@@ -228,7 +319,32 @@ void ABattle_PlayerController::Input_Attack(const FInputActionValue& InputValue)
         int32 now_skill_idx = MyCharacter->skill_Sellect;
         if (MyCharacter->GetIsDead() == false && MyCharacter->Skills.IsValidIndex(now_skill_idx) && MyCharacter->Skills[now_skill_idx] != nullptr)
         {
-            MyCharacter->Skills[now_skill_idx]->ActiveSkill();
+            UBaseSkill* Skill = MyCharacter->Skills[now_skill_idx];
+            if (Skill->CanActivateSkill() == false) return;
+
+            FVector Location = MyCharacter->GetActorLocation();
+            Skill->SetSkillLocation(Location);
+            //Skill->ActiveSkill();
+
+            MyCharacter->SetMoveState(Protocol::PlayerState::MOVE_STATE_SKILL);
+
+            // TODO: 유동적으로 스킬 사용 할 수 있도록 설정
+
+            // 스폰 위치: 캐릭터의 전면 (예: 캐릭터 위치에서 전방으로 70cm)
+            //FRotator Rotation11 = MyCharacter->GetController()->GetControlRotation();
+            FRotator Rotation = MyCharacter->GetViewRotation();
+
+            //UE_LOG(LogTemp, Warning, TEXT("(%f, %f, %f) - (%f, %f, %f)"), Rotation11.Pitch, Rotation11.Yaw, Rotation11.Roll, Rotation.Pitch, Rotation.Yaw, Rotation.Roll);
+
+            Protocol::CS_USING_SKILL_PKT SkillPkt;
+            SkillPkt.player_id = MyCharacter->GetPlayerId();
+            SkillPkt.s_type = Skill->SkillType;
+            SkillPkt.x = Location.X; SkillPkt.y = Location.Y; SkillPkt.z = Location.Z;  // 필수인가?
+            SkillPkt.pitch = Rotation.Pitch; SkillPkt.yaw = Rotation.Yaw; SkillPkt.roll = Rotation.Roll;
+            SkillPkt.is_mine = true;
+
+            SendBufferRef SendBuffer = ClientPacketHandler::MakeSendBuffer(SkillPkt);
+            Cast<UMyGameInstance>(GWorld->GetGameInstance())->SendPacket(SendBuffer);
         }
     }
 
@@ -276,7 +392,7 @@ void ABattle_PlayerController::Input_ConvertCamera(const FInputActionValue& Inpu
     int32 Direction = FMath::RoundToInt(InputValue.Get<float>()); 
     ABattleGameMode* BM = Cast<ABattleGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
 
-    if (Direction == 0 || BM->SpawnedPlayers.Num() == 0) return;
+    if (Direction == 0 || BM->IndexingSpawnedPlayers.Num() == 0) return;
 
     int32 StartIndex = current_camera_index;
 
@@ -284,9 +400,9 @@ void ABattle_PlayerController::Input_ConvertCamera(const FInputActionValue& Inpu
     {
         // 방향에 따라 인덱스 조정
         // (현재 인덱스 + 방향 + Num) % Num 구조는 항상 양수 인덱스를 보장하기 위한 패턴
-        current_camera_index = (current_camera_index + Direction + BM->SpawnedPlayers.Num()) % BM->SpawnedPlayers.Num();
+        current_camera_index = (current_camera_index + Direction + BM->IndexingSpawnedPlayers.Num()) % BM->IndexingSpawnedPlayers.Num();
 
-        ABaseCharacter* TargetPawn = BM->SpawnedPlayers[current_camera_index];
+        ABaseCharacter* TargetPawn = BM->IndexingSpawnedPlayers[current_camera_index];
         if (TargetPawn && !TargetPawn->GetIsDead())
         {
             /*PlayerHUD->SetCurrentHP(TargetPawn->GetHP(), TargetPawn->GetMax_Hp());
@@ -379,6 +495,20 @@ void ABattle_PlayerController::Input_Skill_4(const FInputActionValue& InputValue
     UE_LOG(LogTemp, Display, TEXT("Skill_4_Pressed"));
 }
 
+void ABattle_PlayerController::Input_Init(const FInputActionValue& InputValue)
+{
+    UE_LOG(LogTemp, Warning, TEXT("초기화 입력 요청"));
+
+    ABattleGameMode* BattleMode = Cast<ABattleGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
+    if (nullptr != BattleMode && true == BattleMode->AmIHost)
+    {
+        Protocol::CS_ROUND_END_PKT timeOverPkt;
+
+        SendBufferRef SendBuffer = ClientPacketHandler::MakeSendBuffer(timeOverPkt);
+        Cast<UMyGameInstance>(GWorld->GetGameInstance())->SendPacket(SendBuffer);
+    }
+}
+
 void ABattle_PlayerController::Input_ControlToggle_Pressed()
 {
     // 키가 눌렸을 때 -> RPG 
@@ -392,7 +522,8 @@ void ABattle_PlayerController::Input_ControlToggle_Pressed()
         {
             MyPlayer->Initialize_RPG_Settings();
         }
-        GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Emerald, TEXT("RPG 컨트롤 모드"));
+        //GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Emerald, TEXT("RPG 컨트롤 모드"));
+        UE_LOG(LogTemp, Warning, TEXT("RPG 컨트롤 모드"));
     }
 }
 
@@ -410,7 +541,8 @@ void ABattle_PlayerController::Input_ControlToggle_Released()
             MyPlayer->Initialize_TPS_Settings();
         }
     }
-    GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Emerald, TEXT("TPS 컨트롤 모드"));
+    //GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Emerald, TEXT("TPS 컨트롤 모드"));
+    UE_LOG(LogTemp, Warning, TEXT("TPS 컨트롤 모드"));
 }
 
 void ABattle_PlayerController::Input_RunToggle_Pressed()

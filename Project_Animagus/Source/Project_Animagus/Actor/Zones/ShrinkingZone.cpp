@@ -6,6 +6,7 @@
 #include "GameFramework/Pawn.h"
 #include "DrawDebugHelpers.h"
 #include "../../Character/BaseCharacter.h"
+#include "../../GameMode/BattleGameMode.h"
 
 AShrinkingZone::AShrinkingZone()
 {
@@ -75,55 +76,58 @@ void AShrinkingZone::Tick(float DeltaTime)
 	}
 
 
-    APlayerController* PC = GetWorld()->GetFirstPlayerController();
-    if (!PC) return;
+    //APawn* tempPawn = GetWorld()->GetFirstPlayerController()->GetPawn();
 
-    APawn* MyPawn = PC->GetPawn();
-    if (!MyPawn) return;
-
-    ABaseCharacter* BCharacter = Cast<ABaseCharacter>(MyPawn);
-    if (!BCharacter) return;
-
-    if (BCharacter->GetIsDead())
-    {
-        SetFogPostProcess(0);
-        return;
+    TArray<ABaseCharacter*> SpawnedPlayers;
+    if (auto World = GetWorld()) {
+        auto GameMode = Cast<ABattleGameMode>(World->GetAuthGameMode());
+        if (GameMode) {
+            SpawnedPlayers = GameMode->GetSpawnedPlayers();
+        }
     }
 
-	if (MyPawn && MyPawn->IsLocallyControlled())
-	{
-		if (!IsActorInsideZone(MyPawn))
-		{
-			if (!Is_in)
-			{
-			    if (EnterZoneSound)
-			    {
-			        UGameplayStatics::PlaySound2D(this, EnterZoneSound);
-			        UE_LOG(LogTemp, Log, TEXT("SHRINKSOUND ON") );
-			    }
-			        
-			    Is_in = true;
-			    SetFogPostProcess(1);
+    //APawn* tempPawn = GetWorld()->GetNumPlayerControllers();
+    for (auto& MyPawn : SpawnedPlayers)
+    {
+        if (MyPawn->GetPawnType() == PawnType::PLAYER && MyPawn->GetIsDead())
+        {
+            SetFogPostProcess(0);
+            return;
+        }
+        if (MyPawn && MyPawn->GetPawnType() != PawnType::NETWORK)
+        {
+            if (!IsActorInsideZone(MyPawn))
+            {
+                if (!Is_in && MyPawn->GetPawnType() == PawnType::PLAYER)
+                {
+                    if (EnterZoneSound)
+                    {
+                        UGameplayStatics::PlaySound2D(this, EnterZoneSound);
+                        UE_LOG(LogTemp, Log, TEXT("SHRINKSOUND ON"));
+                    }
 
-			}
+                    Is_in = true;
+                    SetFogPostProcess(1);
+
+                }
+                else
+                {
+                    UE_LOG(LogTemp, Log, TEXT("SHRINKIn and Is_in true"));
+                }
+                ApplyGasDamage(MyPawn, DeltaTime);
+
+            }
             else
             {
-                UE_LOG(LogTemp, Log, TEXT("SHRINKIn and Is_in true") ); 
-            } 
-			ApplyGasDamage(MyPawn, DeltaTime);
-			   
-		}
-		else
-		{
-		    if (Is_in)
-		    {
-		        UE_LOG(LogTemp, Log, TEXT("SHRINKout and Is_in true") ); 
-		        Is_in = false;
-		        SetFogPostProcess(0);
-		    }
-		}
-	}
-	
+                if (Is_in && MyPawn->GetPawnType() == PawnType::PLAYER)
+                {
+                    UE_LOG(LogTemp, Log, TEXT("SHRINKout and Is_in true"));
+                    Is_in = false;
+                    SetFogPostProcess(0);
+                }
+            }
+        }
+    }
 }
 
 bool AShrinkingZone::IsActorInsideZone(AActor* OtherActor) const

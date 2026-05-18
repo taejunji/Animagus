@@ -1,4 +1,4 @@
-﻿// Fill out your copyright notice in the Description page of Project Settings.
+// Fill out your copyright notice in the Description page of Project Settings.
 
 
 #include "MagicMissile.h"
@@ -15,9 +15,9 @@ UMagicMissile::UMagicMissile()
     SkillName = "MagicMissile";
     SkillDescription = TEXT("일정 시간후에 빨라지는 미사일을 발사합니다.");
     CooldownTime = 10.0f; // 
-    MissileDamage = 10.0f;
-    MissileSpeed = 4000.f;
-    startMissileSpeed = 500.f;
+    MissileDamage = 20.0f;
+    MissileSpeed = 5000.f;
+    startMissileSpeed = 700.f;
     BaseCooldownTime = CooldownTime;
     knockbackForce = 1000.f;
     BaseknockbackForce = knockbackForce;
@@ -31,6 +31,9 @@ UMagicMissile::UMagicMissile()
     {
         UE_LOG(LogTemp, Warning, TEXT("Failed to load MagicMissile BP class!"));
     }
+
+    SkillType = Protocol::SkillType::MAGICMISSILE;
+
 }
 
 void UMagicMissile::ActiveSkill_Implementation()
@@ -51,50 +54,16 @@ void UMagicMissile::ActiveSkill_Implementation()
     // 공격 애니메이션
     Owner->PlayAnimMontageByType(MontageType::DefaultAttack);
 
-    // TPS 기준: 스폰 위치는 캐릭터 전면(약간 위쪽)에서 생성하고,
-    // 진행 방향은 플레이어 컨트롤러의 카메라 뷰포인트 방향을 사용합니다.
-    // 투사체 스폰 위치
-    FVector SpawnLocation = Owner->GetActorLocation() + Owner->GetActorForwardVector() * 80.f + Owner->GetActorRightVector() * 30.f;
+    FVector SpawnLocation = OwnerLocation + Owner->GetActorForwardVector() * 80.f + Owner->GetActorRightVector() * 30.f;
     FRotator SpawnRotation;
 
-    // AI가 호출한 경우
-    if (AMyAIController* AIController = Cast<AMyAIController>(Owner->GetController()))
-    {
-        ABaseCharacter* TargetCharacter = nullptr;
-        UBlackboardComponent* BBComp = AIController->GetBlackboardComponent();
-        if (BBComp && AIController->TargetKey.SelectedKeyName.IsValid())
-        {
-            TargetCharacter = Cast<ABaseCharacter>(BBComp->GetValueAsObject(AIController->TargetKey.SelectedKeyName));
-        }
-        if (TargetCharacter)
-        {
-            FVector DirectionToTarget = (TargetCharacter->GetActorLocation() - SpawnLocation).GetSafeNormal();
-            SpawnRotation = DirectionToTarget.Rotation() + FRotator(2.f, 0.f, 0.f);
-        }
-        else
-        {
-            // 타겟이 없다면 AI Panw이 바라보는 방향으로 발사
-            SpawnRotation = Owner->GetActorRotation() + FRotator(2.f, 0.f, 0.f);
-        }
-    }
-    else // Player 혹은 Network가 호출한 경우
-    {
-        // 플레이어 컨트롤러를 통해 카메라 뷰포인트를 가져옵니다.
-        FVector CameraLocation;
-        FRotator CameraRotation;
-        if (Owner->GetController())
-        {
-            Owner->GetController()->GetPlayerViewPoint(CameraLocation, CameraRotation);
-        }
-        else
-        {
-            CameraLocation = Owner->GetActorLocation();
-            CameraRotation = Owner->GetActorRotation();
-        }
+    // TPS 기준: 스폰 위치는 캐릭터 전면(약간 위쪽)에서 생성하고,
+    // 진행 방향은 플레이어 컨트롤러의 카메라 뷰포인트 방향을 사용합니다.
+    FVector CameraLocation = OwnerLocation;
+    FRotator CameraRotation = Rotation;
 
-        // 진행 방향: 카메라 뷰 방향 사용
-        SpawnRotation = CameraRotation + FRotator(2.f, 0.f, 0.f);
-    }
+    // 진행 방향: 카메라 뷰 방향 사용
+    SpawnRotation = CameraRotation + FRotator(2.f, 0.f, 0.f);
 
     UE_LOG(LogTemp, Log, TEXT("MagicMissile: OwnerLocation = %s"), *Owner->GetActorLocation().ToString());
     // UE_LOG(LogTemp, Log, TEXT("MagicMissile: CameraRotation = %s"), *CameraRotation.ToString());
@@ -160,5 +129,5 @@ void UMagicMissile::UpgradeSkill(int32 NewPowerUpLevel)
     
     CooldownTime = BaseCooldownTime * CooldownMultiplier;
 
-    knockbackForce = BaseknockbackForce + (NewPowerUpLevel * 100);
+    knockbackForce = BaseknockbackForce + (NewPowerUpLevel * 150);
 }

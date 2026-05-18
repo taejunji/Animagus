@@ -1,4 +1,4 @@
-﻿#include "ShockwaveSkill.h"
+#include "ShockwaveSkill.h"
 #include "Project_Animagus/Actor/Shockwave/ShockwaveActor.h"
 #include "Engine/World.h"
 #include "Kismet/GameplayStatics.h"
@@ -18,13 +18,25 @@ UShockwaveSkill::UShockwaveSkill()
     // 충격파 스킬 관련 기본 파라미터
     ShockwaveDamage = 10.f;
     KnockbackForce = 1500.f;
-    ExpansionSpeed = 600.f;  // cm/s
-    MaxRadius = 600.f;       // cm
+    ExpansionSpeed = 300.f;  // cm/s
+    MaxRadius = 300.f;       // cm
 
     BaseCooldownTime = CooldownTime;
     BaseKnockbackForce = KnockbackForce;
     
-    ShockwaveActorBPClass = nullptr; // 에디터에서 할당 (충격파 액터 블루프린트)
+    //ShockwaveActorBPClass = nullptr; // 에디터에서 할당 (충격파 액터 블루프린트)
+    static ConstructorHelpers::FClassFinder<AShockwaveActor> ShockwaveBPFinder(TEXT("/Game/WorkFolder/Bluprints/Shockwave/MyShockwaveActor"));
+    if (ShockwaveBPFinder.Succeeded())
+    {
+        ShockwaveActorBPClass = ShockwaveBPFinder.Class;
+    }
+    else
+    {
+        UE_LOG(LogTemp, Warning, TEXT("Failed to load Fireball BP class!"));
+    }
+
+    SkillType = Protocol::SkillType::SHOCKWAVE;
+
 }
 
 void UShockwaveSkill::ActiveSkill_Implementation()
@@ -49,7 +61,7 @@ void UShockwaveSkill::ActiveSkill_Implementation()
     Owner->PlayAnimMontageByType(MontageType::DefaultAttack);
 
     // 스폰 위치는 스킬 시전자의 현재 위치
-    FVector SpawnLocation = Owner->GetActorLocation();
+    FVector SpawnLocation = OwnerLocation;
     FRotator SpawnRotation = FRotator::ZeroRotator;
 
     // ShockwaveActor 스폰

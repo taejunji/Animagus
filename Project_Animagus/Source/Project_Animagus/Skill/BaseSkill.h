@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 //#include "../Character/BaseCharacter.h"
+#include "../Server/Server/protocol.h"
 
 #include "BaseSkill.generated.h"
 
@@ -91,4 +92,13 @@ public:
     // 첫 사용 여부 플래그 (처음 사용 시에는 무조건 사용되게 하기 위함)
     UPROPERTY(BlueprintReadOnly, Category="Skill")
     bool bFirstUse;
+
+    void SetSkillRotation(float pitch, float yaw, float roll);
+    void SetSkillLocation(const FVector& InLocation) { OwnerLocation = InLocation; }
+
+public:
+    Protocol::SkillType SkillType = Protocol::SkillType::NONE;
+
+    FRotator Rotation;
+    FVector OwnerLocation;
 };

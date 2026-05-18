@@ -20,6 +20,8 @@ public:
     UFUNCTION()
     void SetupOwner(class AConnectPlayerController* InController);
 
+    void ActiveStartButton();
+
 protected:
     virtual void NativeConstruct() override;
 
